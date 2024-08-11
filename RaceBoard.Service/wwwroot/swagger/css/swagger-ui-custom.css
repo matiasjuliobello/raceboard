@@ -1,0 +1,48 @@
+﻿img[alt="Swagger UI"] {
+    display: block;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    /*
+    max-width: 100%;
+    max-height: 100%;
+    */
+    content: url('../img/Logo.png');
+    height: 128px;
+    width: 128px;
+}
+
+.swagger-ui .topbar {
+    background-color: #00A2E5;
+    padding: 10px 0;
+    height: 130px;
+}
+
+.swagger-ui .topbar .download-url-wrapper .select-label select {
+    border: 2px solid #3f7da0;
+}
+
+.swagger-ui .btn.authorize {
+    border-color: #00A2E5;
+    color: #00A2E5;
+}
+
+.swagger-ui .btn.authorize svg {
+    fill: #00A2E5;
+}
+
+
+.swagger-ui .parameter__empty_value_toggle {
+    display: block;
+    float: left;
+    width: 15%;
+}
+
+.swagger-ui .parameter__empty_value_toggle input {
+    float: left;
+    width: 10%;
+}
+
+
+.swagger-ui .parameters-col_description {
+    width: 88%;
+}

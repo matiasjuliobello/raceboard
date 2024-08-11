@@ -1,0 +1,69 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:32650",
+      "sslPort": 0
+    }
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "BuildId": "1.0",
+        "CORS_AllowedOrigins": "https://wwww.raceboard.com/",
+        "SwaggerEnvironmentServerUrl": "https://wwww.raceboard.com/",
+        "ConnectionString_DB": "Server=VAR-9XN8VL3\\LOCAL;Database=RaceBoard;Trusted_Connection=True;",
+        "ConnectionString_Translations": "Server=VAR-9XN8VL3\\LOCAL;Database=Translations;Trusted_Connection=True;",
+        "ConnectionString_auditProvider": "Server={};Database={};Trusted_Connection=True;",
+        "SecurityTicket_TokenLifetime": "43200",
+        "SecurityTicket_SecretKey": "bd1a1ccf8095037f361a4d351e7c0de65f0776bfc2f478ea8d312c763bb6caca",
+        "SecurityTicket_Issuer": "https://www.RaceBoard.com",
+        "SecurityTicket_Audience": "RaceBoard_API",
+        "Logging_Enriched": "false",
+        "Translator_DefaultLanguage": "es-AR",
+        "Cache_Lifetime": "60",
+        "PasswordResetToken_Length": "32",
+        "PasswordResetToken_Lifetime": "15",
+        "Pagination_Default_PageSize": "25",
+        "CORS_Allowed_Origins": "http://localhost:4200,http://127.0.0.1:4200",
+        "FileStorageWorkDirectory": "C:\\FileStorage-TEMP",
+        "FileStorageDirectory": "C:\\FileStorage",
+        "BlobFileStorageUrl": "https://bunny.net/",
+        "BlobFileStorageUsername": "john",
+        "BlobFileStoragePassword": "123",
+        //[Mailer Send]
+        "EmailProvider_SenderEmailAddress": "matias.bello@trial-jy7zpl9xwdpl5vx6.mlsender.net",
+        "EmailProvider_SenderFriendlyName": "Race Board",
+        "EmailProvider_API_Key": "mlsn.6bab06df1150d9f4182531483f4fa3e1960ddf46dd3184a56e1fa14543a43b20",
+        "EmailProvider_URL_Base": "https://api.mailersend.com/v1/",
+        "SendPaymentEmails": "false",
+        "EmailProvider_URL_ResourceSingleDelivery": "email",
+        "EmailProvider_URL_ResourceBulkDelivery": "bulk-email",
+        "EmailProvider_API_Header_Authentication_Name": "Authorization",
+        "EmailProvider_API_Header_Auth_Prefix": ""
+        //[Mail Relay]
+        //"EmailProvider_SenderEmailAddress": "raceboard@ipzmarketing.com",
+        //"EmailProvider_SenderFriendlyName": "Race Board",
+        //"EmailProvider_API_Key": "QqNC2LGS4yDLoGu8pYH_JQffzVJkx_ececoRjeas",
+        //"EmailProvider_URL_Base": "https://raceboard.ipzmarketing.com/api/v1/",
+        //"EmailProvider_URL_ResourceSingleDelivery": "send_emails",
+        //"EmailProvider_URL_ResourceBulkDelivery": "???",
+        //"EmailProvider_API_Header_Authentication_Name": "X-AUTH-TOKEN",
+        //"EmailProvider_API_Header_Authentication_Prefix": ""
+      }
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/weatherforecast",
+      "publishAllPorts": true,
+      "useSSL": true
+    }
+  },
+  "$schema": "https://json.schemastore.org/launchsettings.json"
+}
