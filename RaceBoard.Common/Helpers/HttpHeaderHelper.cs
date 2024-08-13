@@ -47,15 +47,10 @@ namespace RaceBoard.Common.Helpers
             //if (authorization == null)
             //    throw new FunctionalException(Enums.ErrorType.Unauthorized, "Missing Access Token");
 
-            string idStudio = GetValueFromHeaders(headers, CommonValues.HttpCustomHeaders.StudioId);
-            //if (idStudio == null)
-            //    throw new FunctionalException(Enums.ErrorType.Unauthorized, "Missing Studio Id");
-
             if (string.IsNullOrEmpty(authorization))
             {
                 _context = new RequestContext
                 {
-                    IdStudio = idStudio,
                     Username = string.Empty,
                     Language = language
                 };
@@ -71,7 +66,6 @@ namespace RaceBoard.Common.Helpers
 
             _context = new RequestContext
             {
-                IdStudio = idStudio,
                 Username = username,
                 Language = language
             };

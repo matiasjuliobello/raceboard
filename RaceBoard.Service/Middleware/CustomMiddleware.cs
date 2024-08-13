@@ -148,12 +148,7 @@ namespace RaceBoard.Service.Middleware
             RequestContext requestContext = httpHeaderHelper.GetContext();
             if (requestContext != null)
             {
-                string studioId = $"IdStudio: {requestContext.IdStudio}";
-                string username = $"Username: {requestContext.Username}";
-
-                string context = !string.IsNullOrEmpty(requestContext.IdStudio) ? $"{studioId}, {username}" : username;
-
-                info += $" [{context}]";
+                info += $" [Username: {requestContext.Username}]";
             }
 
             if (!string.IsNullOrEmpty(body))

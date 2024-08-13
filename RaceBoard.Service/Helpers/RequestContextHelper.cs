@@ -37,15 +37,6 @@ namespace RaceBoard.Service.Helpers
             return _userManager.GetByUsername(_requestContext.Username);
         }
 
-        public int GetStudio()
-        {
-            int idStudio = 0;
-            if (!Int32.TryParse(_requestContext.IdStudio, out idStudio))
-                throw new FunctionalException(Common.Enums.ErrorType.NotFound, "IdStudioNotProvided");
-
-            return idStudio;
-        }
-        
         #endregion
 
         #region Private Methods

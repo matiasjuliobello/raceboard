@@ -16,4 +16,8 @@
     <ProjectReference Include="..\RaceBoard.Translations\RaceBoard.Translations.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\" />
+  </ItemGroup>
+
 </Project>

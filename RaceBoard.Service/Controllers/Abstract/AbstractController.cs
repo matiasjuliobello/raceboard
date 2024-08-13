@@ -41,12 +41,6 @@ namespace RaceBoard.Service.Controllers.Abstract
             return _requestContextHelper.GetUser();
         }
 
-        protected int GetStudioFromRequestContext()
-        {
-
-            return _requestContextHelper.GetStudio();
-        }
-
         protected UserSettings GetUserSettings(string username)
         {
             return _sessionHelper.GetUserSettings(username);

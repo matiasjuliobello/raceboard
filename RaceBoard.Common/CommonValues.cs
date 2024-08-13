@@ -20,7 +20,6 @@ namespace RaceBoard.Common
         public static class HttpCustomHeaders
         {
             public const string Authorization = "Authorization";
-            public const string StudioId = "X-Studio-Id";
             public const string Language = "X-Language";
             public const string CorrelationId = "X-Correlation-Id";
         }

@@ -7,6 +7,5 @@ namespace RaceBoard.Service.Helpers.Interfaces
     {
         RequestContext GetContext();
         User GetUser();
-        int GetStudio();
     }
 }

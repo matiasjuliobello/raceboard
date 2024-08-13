@@ -62,7 +62,7 @@ namespace RaceBoard.Service
             services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
 
             services.ConfigureIoC(_configuration);
-            services.AddTransient<IStudioAuthorizationActionFilter, StudioAuthorizationFilter>();
+            services.AddTransient<IAuthorizationActionFilter, AuthorizationFilter>();
             services.AddScoped<IRequestContextHelper, RequestContextHelper>();
             services.AddScoped<ICorrelationIdGenerator, CorrelationIdGenerator>();
             services.AddScoped<ISessionHelper, SessionHelper>();

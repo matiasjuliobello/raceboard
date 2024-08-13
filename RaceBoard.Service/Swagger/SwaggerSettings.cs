@@ -205,7 +205,6 @@ namespace RaceBoard.Service.Swagger
 
         private static void AddCustomFilters(SwaggerGenOptions options)
         {
-            options.OperationFilter<StudioIdParameterOperationFilter>();
             options.OperationFilter<LanguageOperationFilter>();
         }
 

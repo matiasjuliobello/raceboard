@@ -2,7 +2,7 @@
 
 namespace RaceBoard.Service.Filters.Interfaces
 {
-    public interface ICentralAuthorizationActionFilter : IActionFilter
+    public interface IAuthorizationActionFilter : IActionFilter
     {
     }
 }
