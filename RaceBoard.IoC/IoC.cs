@@ -32,6 +32,7 @@ namespace RaceBoard.IoC
             services.AddScoped<IUserSettingsManager, UserSettingsManager>();
             services.AddScoped<IUserPasswordResetManager, UserPasswordResetManager>();
             services.AddScoped<ITimeZoneManager, TimeZoneManager>();
+            services.AddScoped<ICompetitionManager, CompetitionManager>(); 
 
             #endregion
 
@@ -51,6 +52,7 @@ namespace RaceBoard.IoC
             services.AddScoped<IUserPasswordResetRepository, UserPasswordResetRepository>();
             services.AddScoped<ITranslationRepository, FakeTranslationRepository>();
             services.AddScoped<ITimeZoneRepository, TimeZoneRepository>();
+            services.AddScoped<ICompetitionRepository, CompetitionRepository>();
 
             #endregion
 

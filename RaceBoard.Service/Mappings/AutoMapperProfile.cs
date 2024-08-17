@@ -20,6 +20,7 @@ using RaceBoard.Translations.Entities;
 using File = RaceBoard.Domain.File;
 using TimeZone = RaceBoard.Domain.TimeZone;
 using Action = RaceBoard.Domain.Action;
+using RaceBoard.DTOs.Competition.Request;
 //using static RaceBoard.Service.Mappings.AutoMapperProfile;
 
 namespace RaceBoard.Service.Mappings
@@ -78,6 +79,16 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => new Role() { Id = src.IdRole }))
                 .ForMember(dest => dest.Permissions, opt => opt.MapFrom(src => src.Permissions));
 
+            CreateMap<CompetitionRequest, Competition>()
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => new City() { Id = src.IdCity }))
+                .ForMember(t => t.Organizations, opt =>
+                {
+                    opt.PreCondition(s => s.IdsOrganization?.Length > 0);
+                    opt.MapFrom(s => s.IdsOrganization.ToList());
+                });
+
+            CreateMap<int, Organization>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src));
 
             #endregion
 
