@@ -24,6 +24,7 @@ using RaceBoard.DTOs.Competition.Request;
 using RaceBoard.DTOs.Organization.Request;
 using RaceBoard.DTOs.Boat.Request;
 using RaceBoard.DTOs.RaceClass.Request;
+using RaceBoard.DTOs.Race.Request;
 //using static RaceBoard.Service.Mappings.AutoMapperProfile;
 
 namespace RaceBoard.Service.Mappings
@@ -99,6 +100,10 @@ namespace RaceBoard.Service.Mappings
             CreateMap<BoatRequest, Boat>();
 
             CreateMap<RaceClassRequest, RaceClass>();
+
+            CreateMap<RaceRequest, Race>()
+                .ForMember(dest => dest.Class, opt => opt.MapFrom(src => new RaceClass() { Id = src.IdRaceClass }))
+                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => new Competition() { Id = src.IdCompetition }));
 
             #endregion
 
