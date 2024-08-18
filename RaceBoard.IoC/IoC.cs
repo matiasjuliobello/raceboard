@@ -35,6 +35,7 @@ namespace RaceBoard.IoC
             services.AddScoped<ICompetitionManager, CompetitionManager>();
             services.AddScoped<IOrganizationManager, OrganizationManager>();
             services.AddScoped<IBoatManager, BoatManager>();
+            services.AddScoped<IRaceClassManager, RaceClassManager>();
 
             #endregion
 
@@ -57,6 +58,7 @@ namespace RaceBoard.IoC
             services.AddScoped<ICompetitionRepository, CompetitionRepository>();
             services.AddScoped<IOrganizationRepository, OrganizationRepository>();
             services.AddScoped<IBoatRepository, BoatRepository>();
+            services.AddScoped<IRaceClassRepository, RaceClassRepository>();
 
             #endregion
 
