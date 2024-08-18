@@ -58,7 +58,7 @@ namespace RaceBoard.Data.Repositories
         private void CreateOrganization(Organization organization, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [Organization]
-                                ( IdCity, Name)
+                                ( IdCity, Name )
                             VALUES
                                 ( @idCity, @name )";
 

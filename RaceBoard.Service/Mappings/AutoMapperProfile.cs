@@ -22,6 +22,7 @@ using TimeZone = RaceBoard.Domain.TimeZone;
 using Action = RaceBoard.Domain.Action;
 using RaceBoard.DTOs.Competition.Request;
 using RaceBoard.DTOs.Organization.Request;
+using RaceBoard.DTOs.Boat.Request;
 //using static RaceBoard.Service.Mappings.AutoMapperProfile;
 
 namespace RaceBoard.Service.Mappings
@@ -93,6 +94,8 @@ namespace RaceBoard.Service.Mappings
 
             CreateMap<OrganizationRequest, Organization>()
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => new City { Id = src.IdCity }));
+
+            CreateMap<BoatRequest, Boat>();
 
             #endregion
 
