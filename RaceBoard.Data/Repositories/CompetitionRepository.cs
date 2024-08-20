@@ -109,7 +109,7 @@ namespace RaceBoard.Data.Repositories
             base.ExecuteAndGetRowsAffected(context);
         }
 
-        public void SetCompetitionOrganizations(int idCompetition, List<Organization> organizations, ITransactionalContext? context = null)
+        private void SetCompetitionOrganizations(int idCompetition, List<Organization> organizations, ITransactionalContext? context = null)
         {
             int affectedRecords = this.DeleteCompetitionOrganizations(idCompetition, context);
 

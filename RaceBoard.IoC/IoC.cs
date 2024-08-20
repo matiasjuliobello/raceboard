@@ -37,6 +37,10 @@ namespace RaceBoard.IoC
             services.AddScoped<IBoatManager, BoatManager>();
             services.AddScoped<IRaceClassManager, RaceClassManager>();
             services.AddScoped<IRaceManager, RaceManager>();
+            services.AddScoped<IPersonManager, PersonManager>();
+            services.AddScoped<IContestantManager, ContestantManager>();
+            services.AddScoped<IContestantRoleManager, ContestantRoleManager>();
+            services.AddScoped<ITeamManager, TeamManager>();
 
             #endregion
 
@@ -61,6 +65,10 @@ namespace RaceBoard.IoC
             services.AddScoped<IBoatRepository, BoatRepository>();
             services.AddScoped<IRaceClassRepository, RaceClassRepository>();
             services.AddScoped<IRaceRepository, RaceRepository>();
+            services.AddScoped<IPersonRepository, PersonRepository>();
+            services.AddScoped<IContestantRepository, ContestantRepository>();
+            services.AddScoped<IContestantRoleRepository, ContestantRoleRepository>();
+            services.AddScoped<ITeamRepository, TeamRepository>();
 
             #endregion
 

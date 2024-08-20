@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+//using static RaceBoard.Service.Mappings.AutoMapperProfile;
 using RaceBoard.Common;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
@@ -17,15 +18,20 @@ using RaceBoard.DTOs.User.Request;
 using RaceBoard.DTOs.User.Response;
 using RaceBoard.DTOs.User.Response.Settings;
 using RaceBoard.Translations.Entities;
-using File = RaceBoard.Domain.File;
-using TimeZone = RaceBoard.Domain.TimeZone;
-using Action = RaceBoard.Domain.Action;
 using RaceBoard.DTOs.Competition.Request;
 using RaceBoard.DTOs.Organization.Request;
 using RaceBoard.DTOs.Boat.Request;
 using RaceBoard.DTOs.RaceClass.Request;
 using RaceBoard.DTOs.Race.Request;
-//using static RaceBoard.Service.Mappings.AutoMapperProfile;
+using RaceBoard.DTOs.Contestant.Request;
+using RaceBoard.DTOs.ContestantRole.Request;
+using RaceBoard.DTOs.Person.Request;
+using RaceBoard.DTOs.BloodType.Request;
+using RaceBoard.DTOs.MedicalInsurance.Request;
+using File = RaceBoard.Domain.File;
+using TimeZone = RaceBoard.Domain.TimeZone;
+using Action = RaceBoard.Domain.Action;
+using RaceBoard.DTOs.Team;
 
 namespace RaceBoard.Service.Mappings
 {
@@ -74,10 +80,10 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src));
 
             CreateMap<ActionSearchFilterRequest, ActionSearchFilter>();
-            
+
             CreateMap<ActionRoleRequest, ActionRole>()
                 .ForMember(dest => dest.Action, opt => opt.MapFrom(src => new Action() { Id = src.IdAction }))
-                .ForMember(dest => dest.Condition, opt => opt.MapFrom(src => new AuthorizationCondition() { Id = src.IdCondition } ));
+                .ForMember(dest => dest.Condition, opt => opt.MapFrom(src => new AuthorizationCondition() { Id = src.IdCondition }));
 
             CreateMap<RolePermissionsRequest, RolePermissions>()
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => new Role() { Id = src.IdRole }))
@@ -104,6 +110,33 @@ namespace RaceBoard.Service.Mappings
             CreateMap<RaceRequest, Race>()
                 .ForMember(dest => dest.Class, opt => opt.MapFrom(src => new RaceClass() { Id = src.IdRaceClass }))
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => new Competition() { Id = src.IdCompetition }));
+
+            CreateMap<BloodTypeRequest, BloodType>();
+
+            CreateMap<MedicalInsuranceRequest, MedicalInsurance>();
+
+            CreateMap<PersonRequest, Person>()
+                .ForMember(dest => dest.BloodType, opt => opt.MapFrom(src => new BloodType() { Id = src.IdBloodType }))
+                .ForMember(dest => dest.MedicalInsurance, opt => opt.MapFrom(src => new MedicalInsurance() { Id = src.IdMedicalInsurance }));
+
+            CreateMap<ContestantRequest, Contestant>()
+                .ForMember(dest => dest.Person, opt => opt.MapFrom(src => new Person() { Id = src.IdPerson }));
+
+            CreateMap<ContestantRoleRequest, ContestantRole>();
+
+            CreateMap<TeamRequest, Team>()
+                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => new Competition() { Id = src.IdCompetition }))
+                .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => new RaceClass() { Id = src.IdRaceClass }));
+
+            CreateMap<TeamBoatRequest, TeamBoat>()
+                .ForMember(dest => dest.Team, opt => opt.MapFrom(src => new Team() { Id = src.IdTeam }))
+                .ForMember(dest => dest.Boat, opt => opt.MapFrom(src => new Boat() { Id = src.IdBoat }));
+
+            CreateMap<TeamContestantRequest, TeamContestant>()
+                .ForMember(dest => dest.Contestant, opt => opt.MapFrom(src => new Contestant() { Id = src.IdContestant }))
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => new ContestantRole() { Id = src.IdContestantRole }));
+
+
 
             #endregion
 
