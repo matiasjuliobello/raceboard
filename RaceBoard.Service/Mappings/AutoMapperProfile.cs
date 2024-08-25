@@ -34,6 +34,8 @@ using Action = RaceBoard.Domain.Action;
 using RaceBoard.DTOs.Team;
 using RaceBoard.DTOs.BloodType.Response;
 using RaceBoard.DTOs.MedicalInsurance.Response;
+using RaceBoard.DTOs.Person.Response;
+using RaceBoard.DTOs.Country.Response;
 
 namespace RaceBoard.Service.Mappings
 {
@@ -60,23 +62,23 @@ namespace RaceBoard.Service.Mappings
             CreateMap<UserSearchFilterRequest, UserSearchFilter>();
 
             CreateMap<UserSettingsRequest, UserSettings>()
-                .ForMember(dest => dest.Culture, opt => opt.MapFrom(src => new Culture { Id = src.Id }))
-                .ForMember(dest => dest.Language, opt => opt.MapFrom(src => new Domain.Language { Id = src.IdLanguage }))
-                .ForMember(dest => dest.TimeZone, opt => opt.MapFrom(src => new TimeZone { Id = src.IdTimeZone }));
+                .ForMember(dest => dest.Culture, opt => opt.MapFrom(src => CreateObject<Culture>(src.Id)))
+                .ForMember(dest => dest.Language, opt => opt.MapFrom(src => CreateObject<Domain.Language>(src.IdLanguage)))
+                .ForMember(dest => dest.TimeZone, opt => opt.MapFrom(src => CreateObject<TimeZone>(src.IdTimeZone)));
 
             CreateMap<UserIdentificationRequest, UserIdentification>()
-                .ForMember(x => x.User, opt => opt.MapFrom(x => x.IdUser != null ? new User() { Id = x.IdUser } : null))
-                .ForMember(x => x.Type, opt => opt.MapFrom(x => x.IdType != null ? new IdentificationType() { Id = x.IdType } : null));
+                .ForMember(x => x.User, opt => opt.MapFrom(x => CreateObject<User>(x.IdUser)))
+                .ForMember(x => x.Type, opt => opt.MapFrom(x => CreateObject<IdentificationType>(x.IdType)));
 
             CreateMap<UserIdentificationSearchFilterRequest, UserIdentificationSearchFilter>()
-                .ForMember(x => x.User, opt => opt.MapFrom(x => x.IdUser != null ? new User() { Id = x.IdUser.Value } : null))
-                .ForMember(x => x.Type, opt => opt.MapFrom(x => x.IdType != null ? new IdentificationType() { Id = x.IdType.Value } : null));
+                .ForMember(x => x.User, opt => opt.MapFrom(x => CreateObject<User>(x.IdUser)))
+                .ForMember(x => x.Type, opt => opt.MapFrom(x => CreateObject<IdentificationType>(x.IdType)));
 
             CreateMap<PrivacyPolicyAgreementRequest, PrivacyPolicyAgreement>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.User, opt => opt.Ignore())
                 .ForMember(dest => dest.AgreementDate, opt => opt.Ignore())
-                .ForMember(dest => dest.PrivacyPolicy, opt => opt.MapFrom(src => new PrivacyPolicy { Id = src.IdPrivacyPolicy }));
+                .ForMember(dest => dest.PrivacyPolicy, opt => opt.MapFrom(src => CreateObject<PrivacyPolicy>(src.IdPrivacyPolicy)));
 
             CreateMap<int, Role>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src));
@@ -84,15 +86,15 @@ namespace RaceBoard.Service.Mappings
             CreateMap<ActionSearchFilterRequest, ActionSearchFilter>();
 
             CreateMap<ActionRoleRequest, ActionRole>()
-                .ForMember(dest => dest.Action, opt => opt.MapFrom(src => new Action() { Id = src.IdAction }))
-                .ForMember(dest => dest.Condition, opt => opt.MapFrom(src => new AuthorizationCondition() { Id = src.IdCondition }));
+                .ForMember(dest => dest.Action, opt => opt.MapFrom(src => CreateObject<Action>(src.IdAction)))
+                .ForMember(dest => dest.Condition, opt => opt.MapFrom(src => CreateObject<AuthorizationCondition>(src.IdCondition)));
 
             CreateMap<RolePermissionsRequest, RolePermissions>()
-                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => new Role() { Id = src.IdRole }))
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => CreateObject<Role>(src.IdRole)))
                 .ForMember(dest => dest.Permissions, opt => opt.MapFrom(src => src.Permissions));
 
             CreateMap<CompetitionRequest, Competition>()
-                .ForMember(dest => dest.City, opt => opt.MapFrom(src => new City() { Id = src.IdCity }))
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => CreateObject<City>(src.IdCity)))
                 .ForMember(t => t.Organizations, opt =>
                 {
                     opt.PreCondition(s => s.IdsOrganization?.Length > 0);
@@ -103,41 +105,43 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src));
 
             CreateMap<OrganizationRequest, Organization>()
-                .ForMember(dest => dest.City, opt => opt.MapFrom(src => new City { Id = src.IdCity }));
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => CreateObject<City>(src.IdCity)));
 
             CreateMap<BoatRequest, Boat>();
 
             CreateMap<RaceClassRequest, RaceClass>();
 
             CreateMap<RaceRequest, Race>()
-                .ForMember(dest => dest.Class, opt => opt.MapFrom(src => new RaceClass() { Id = src.IdRaceClass }))
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => new Competition() { Id = src.IdCompetition }));
+                .ForMember(dest => dest.Class, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)))
+                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)));
 
             CreateMap<BloodTypeSearchFilterRequest, BloodTypeSearchFilter>();
 
             CreateMap<MedicalInsuranceSearchFilterRequest, MedicalInsuranceSearchFilter>();
 
             CreateMap<PersonRequest, Person>()
-                .ForMember(dest => dest.BloodType, opt => opt.MapFrom(src => new BloodType() { Id = src.IdBloodType }))
-                .ForMember(dest => dest.MedicalInsurance, opt => opt.MapFrom(src => new MedicalInsurance() { Id = src.IdMedicalInsurance }));
+                .ForMember(dest => dest.Country, opt => opt.MapFrom(src => CreateObject<Country>(src.IdCountry)))
+                .ForMember(dest => dest.BloodType, opt => opt.MapFrom(src => CreateObject<BloodType>(src.IdBloodType)))
+                .ForMember(dest => dest.MedicalInsurance, opt => opt.MapFrom(src => CreateObject<MedicalInsurance>(src.IdMedicalInsurance)));
+
+            CreateMap<PersonSearchFilterRequest, PersonSearchFilter>();
 
             CreateMap<ContestantRequest, Contestant>()
-                .ForMember(dest => dest.Person, opt => opt.MapFrom(src => new Person() { Id = src.IdPerson }));
+                .ForMember(dest => dest.Person, opt => opt.MapFrom(src => CreateObject<Person>(src.IdPerson)));
 
             CreateMap<ContestantRoleRequest, ContestantRole>();
 
             CreateMap<TeamRequest, Team>()
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => new Competition() { Id = src.IdCompetition }))
-                .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => new RaceClass() { Id = src.IdRaceClass }));
+                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
+                .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<Race>(src.IdRaceClass)));
 
             CreateMap<TeamBoatRequest, TeamBoat>()
-                .ForMember(dest => dest.Team, opt => opt.MapFrom(src => new Team() { Id = src.IdTeam }))
-                .ForMember(dest => dest.Boat, opt => opt.MapFrom(src => new Boat() { Id = src.IdBoat }));
+                .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)))
+                .ForMember(dest => dest.Boat, opt => opt.MapFrom(src => CreateObject<Boat>(src.IdBoat)));
 
             CreateMap<TeamContestantRequest, TeamContestant>()
-                .ForMember(dest => dest.Contestant, opt => opt.MapFrom(src => new Contestant() { Id = src.IdContestant }))
-                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => new ContestantRole() { Id = src.IdContestantRole }));
-
+                .ForMember(dest => dest.Contestant, opt => opt.MapFrom(src => CreateObject<Contestant>(src.IdContestant)))
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => CreateObject<ContestantRole>(src.IdContestantRole)));
 
             #endregion
 
@@ -180,6 +184,10 @@ namespace RaceBoard.Service.Mappings
             CreateMap<BloodType, BloodTypeResponse>();
 
             CreateMap<MedicalInsurance, MedicalInsuranceResponse>();
+
+            CreateMap<Country, CountryResponse>();
+
+            CreateMap<Person, PersonResponse>();
 
             #endregion
         }
@@ -231,13 +239,15 @@ namespace RaceBoard.Service.Mappings
             }
         }
 
-
         #endregion
 
         #region Private Methods
 
-        private T CreateObject<T>(int? id)
+        private T CreateObject<T>(int? id) where T:class
         {
+            if (!id.HasValue)
+                return null;
+
             string typeFullName = typeof(T).AssemblyQualifiedName;
 
             Type type = Type.GetType(typeFullName);

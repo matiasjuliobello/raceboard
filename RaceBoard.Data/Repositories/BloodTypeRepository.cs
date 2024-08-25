@@ -26,7 +26,7 @@ namespace RaceBoard.Data.Repositories
 
         #endregion
 
-        #region IUserRepository implementation
+        #region IBloodTypeRepository implementation
 
         public PaginatedResult<BloodType> Get(BloodTypeSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
         {

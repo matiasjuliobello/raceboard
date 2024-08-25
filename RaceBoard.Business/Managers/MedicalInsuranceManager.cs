@@ -25,7 +25,7 @@ namespace RaceBoard.Business.Managers
 
             #endregion
 
-            #region IUserManager implementation
+            #region IMedicalInsuranceManager implementation
 
             public PaginatedResult<MedicalInsurance> Get(MedicalInsuranceSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
             {

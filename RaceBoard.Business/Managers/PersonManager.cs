@@ -4,6 +4,7 @@ using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Data;
 using RaceBoard.Translations.Interfaces;
 using RaceBoard.Domain;
+using RaceBoard.Common.Helpers.Pagination;
 
 namespace RaceBoard.Business.Managers
 {
@@ -25,6 +26,12 @@ namespace RaceBoard.Business.Managers
         #endregion
 
         #region IPersonManager implementation
+
+
+        public PaginatedResult<Person> Get(PersonSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        {
+            return _personRepository.Get(searchFilter, paginationFilter, sorting, context);
+        }
 
         public void Create(Person person, ITransactionalContext? context = null)
         {

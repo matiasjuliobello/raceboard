@@ -25,7 +25,7 @@ namespace RaceBoard.Business.Managers
 
         #endregion
 
-        #region IUserManager implementation
+        #region IBloodTypeManager implementation
 
         public PaginatedResult<BloodType> Get(BloodTypeSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
         {

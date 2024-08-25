@@ -26,7 +26,7 @@ namespace RaceBoard.Data.Repositories
 
         #endregion
 
-        #region IUserRepository implementation
+        #region IMedicalInsuranceRepository implementation
 
         public PaginatedResult<MedicalInsurance> Get(MedicalInsuranceSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
         {
