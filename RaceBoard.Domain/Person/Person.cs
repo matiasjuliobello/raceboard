@@ -8,6 +8,7 @@
         public DateTimeOffset BirthDate { get; set; }
         public string EmailAddress { get; set; }
         public string ContactPhone { get; set; }
+        public Country Country { get; set; }
         public BloodType BloodType { get; set; }
         public MedicalInsurance MedicalInsurance { get; set; }
     }

@@ -58,12 +58,13 @@ namespace RaceBoard.Data.Repositories
         private void CreatePerson(Person person, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [Person]
-                                ( IdBloodType, IdMedicalInsurance, FirstName, LastName, BirthDate, EmailAddress, ContactPhone )
+                                ( IdCountry, IdBloodType, IdMedicalInsurance, FirstName, LastName, BirthDate, EmailAddress, ContactPhone )
                             VALUES
-                                ( @idBloodType, @idMedicalInsurance, @firstname, @lastname, @birthDate, @emailAddress, @contactPhone )";
+                                ( @idCountry, @idBloodType, @idMedicalInsurance, @firstname, @lastname, @birthDate, @emailAddress, @contactPhone )";
 
             QueryBuilder.AddCommand(sql);
 
+            QueryBuilder.AddParameter("idCountry", person.Country.Id);
             QueryBuilder.AddParameter("idBloodType", person.BloodType.Id);
             QueryBuilder.AddParameter("idMedicalInsurance", person.MedicalInsurance.Id);
             QueryBuilder.AddParameter("firstname", person.Firstname);
@@ -80,6 +81,7 @@ namespace RaceBoard.Data.Repositories
         private void UpdatePerson(Person person, ITransactionalContext? context = null)
         {
             string sql = @" UPDATE [Person] SET
+                                IdCountry = @idCountry,
                                 IdBloodType = @idBloodType,
                                 IdMedicalInsurance = @idMedicalInsurance,
                                 Firstname = @firstname,
@@ -90,6 +92,7 @@ namespace RaceBoard.Data.Repositories
 
             QueryBuilder.AddCommand(sql);
 
+            QueryBuilder.AddParameter("idCountry", person.Country.Id);
             QueryBuilder.AddParameter("idBloodType", person.BloodType.Id);
             QueryBuilder.AddParameter("idMedicalInsurance", person.MedicalInsurance.Id);
             QueryBuilder.AddParameter("firstname", person.Firstname);

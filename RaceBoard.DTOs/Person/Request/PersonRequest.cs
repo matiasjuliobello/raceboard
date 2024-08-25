@@ -8,6 +8,7 @@
         public DateTimeOffset BirthDate { get; set; }
         public string EmailAddress { get; set; }
         public string ContactPhone { get; set; }
+        public int IdCountry { get; set; }
         public int IdBloodType { get; set; }
         public int IdMedicalInsurance { get; set; }
     }
