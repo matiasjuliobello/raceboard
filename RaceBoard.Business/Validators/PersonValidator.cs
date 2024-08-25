@@ -7,18 +7,18 @@ using RaceBoard.Data.Repositories.Interfaces;
 
 namespace RaceBoard.Business.Validators
 {
-    public class UserValidator : AbstractCustomValidator<User>
+    public class PersonValidator : AbstractCustomValidator<Person>
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IPersonRepository _personRepository;
 
-        public UserValidator
+        public PersonValidator
             (
                 ITranslator translator,
-                IUserRepository userRepository
+                IPersonRepository personRepository
             )
             : base(translator)
         {
-            _userRepository = userRepository;
+            _personRepository = personRepository;
 
             base.SetRules(this.AddRules);
         }
@@ -30,26 +30,27 @@ namespace RaceBoard.Business.Validators
                 .WithMessage(Translate("IdIsRequired"))
                 .When(x => Scenario == Scenario.Update);
 
-            RuleFor(x => x.Username)
+            RuleFor(x => x.Firstname)
                 .NotEmpty()
-                .WithMessage(Translate("UsernameIsRequired"))
+                .WithMessage(Translate("FirstnameIsRequired"))
                 .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
-            // TODO: validate email with Regular Expression
-            RuleFor(x => x.Email)
+            RuleFor(x => x.Lastname)
                 .NotEmpty()
-                .WithMessage(Translate("EmailIsRequired"))
+                .WithMessage(Translate("LastnameIsRequired"))
                 .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
-            RuleFor(x => x.IsActive)
-                .Must(x => x)
-                .WithMessage(Translate("IsActiveCannotBeFalseOnCreation"))
-                .When(x => Scenario == Scenario.Create);
+            RuleFor(x => x.BirthDate)
+                .NotEmpty()
+                .WithMessage(Translate("BirthDateIsRequired"))
+                .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
             RuleFor(x => x)
-                .Must(x => !_userRepository.ExistsDuplicate(x))
+                .Must(x => !_personRepository.ExistsDuplicate(x))
                 .WithMessage(Translate("DuplicateRecordExists"))
                 .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
         }
     }
 }
+
+

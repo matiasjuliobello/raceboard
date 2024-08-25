@@ -54,6 +54,28 @@ namespace RaceBoard.Data.Repositories
             base.CancelTransactionalContext(context);
         }
 
+        public bool Exists(int id, ITransactionalContext? context = null)
+        {
+            string existsQuery = base.GetExistsQuery("[Person]", "[Id] = @id");
+
+            QueryBuilder.AddCommand(existsQuery);
+            QueryBuilder.AddParameter("id", id);
+
+            return base.Execute<bool>(context);
+        }
+
+        public bool ExistsDuplicate(Person person, ITransactionalContext? context = null)
+        {
+            string existsQuery = base.GetExistsDuplicateQuery("[Person]", "[Firstname] = @firstname AND [Lastname] = @lastname", "Id", "@id");
+
+            QueryBuilder.AddCommand(existsQuery);
+            QueryBuilder.AddParameter("firstname", person.Firstname);
+            QueryBuilder.AddParameter("lastname", person.Lastname);
+            QueryBuilder.AddParameter("id", person.Id);
+
+            return base.Execute<bool>(context);
+        }
+
         public PaginatedResult<Person> Get(PersonSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
         {
             return this.GetPersons(searchFilter, paginationFilter, sorting, context);
@@ -74,6 +96,15 @@ namespace RaceBoard.Data.Repositories
             return base.Delete("[Person]", id, "Id", context);
         }
 
+        public void SetUserAssociation(Person person, ITransactionalContext? context = null)
+        {
+            if (person.User == null)
+                return;
+
+            this.RemovePersonUserAssociation(person, context);
+            this.SetPersonUserAssociation(person, context);
+        }
+
         #endregion
 
         #region Private Methods
@@ -87,6 +118,9 @@ namespace RaceBoard.Data.Repositories
                                 [Person].BirthDate [BirthDate],
                                 [Person].EmailAddress [EmailAddress],
                                 [Person].ContactPhone [ContactPhone],
+                                [User].Id [Id],
+                                [User].Username [Username],
+                                [User].Email [Email],
                                 [Country].Id [Id],
                                 [Country].Name [Name],
                                 [BloodType].Id [Id],
@@ -96,7 +130,9 @@ namespace RaceBoard.Data.Repositories
                             FROM [Person] [Person]
                             INNER JOIN [Country] [Country] ON [Country].Id = [Person].IdCountry
                             INNER JOIN [BloodType] [BloodType] ON [BloodType].Id = [Person].IdBloodType
-                            INNER JOIN [MedicalInsurance] [MedicalInsurance] ON [MedicalInsurance].Id = [Person].IdMedicalInsurance";
+                            INNER JOIN [MedicalInsurance] [MedicalInsurance] ON [MedicalInsurance].Id = [Person].IdMedicalInsurance
+                            LEFT JOIN [User_Person] [User_Person] ON [User_Person].IdPerson = [Person].Id                            
+                            LEFT JOIN [User] [User] ON [User].Id = [User_Person].IdUser";
 
             QueryBuilder.AddCommand(sql);
             
@@ -111,10 +147,11 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<Person, Country, BloodType, MedicalInsurance, Person>
+                        return reader.Read<Person, User, Country, BloodType, MedicalInsurance, Person>
                         (
-                            (person, country, bloodType, medicalInsurance) =>
+                            (person, user, country, bloodType, medicalInsurance) =>
                             {
+                                person.User = user;
                                 person.Country = country;
                                 person.BloodType = bloodType;
                                 person.MedicalInsurance = medicalInsurance;
@@ -123,7 +160,7 @@ namespace RaceBoard.Data.Repositories
 
                                 return person;
                             },
-                            splitOn: "Id, Id, Id, Id"
+                            splitOn: "Id, Id, Id, Id, Id"
                         ).AsList();
                     },
                     context
@@ -214,6 +251,28 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddCondition("Id = @id");
 
             base.ExecuteAndGetRowsAffected(context);
+        }
+
+        public void SetPersonUserAssociation(Person person, ITransactionalContext? context = null)
+        {
+            string sql = @" INSERT INTO [User_Person]
+                                ( IdUser, IdPerson )
+                            VALUES
+                                ( @idUser, @idPerson )";
+
+            QueryBuilder.AddCommand(sql);
+
+            QueryBuilder.AddParameter("idUser", person.User.Id);
+            QueryBuilder.AddParameter("idPerson", person.Id);
+
+            QueryBuilder.AddReturnLastInsertedId();
+
+            int id = base.Execute<int>(context);
+        }
+
+        public void RemovePersonUserAssociation(Person person, ITransactionalContext? context = null)
+        {
+            base.Delete("[User_Person]", person.Id, "IdPerson", context);
         }
 
         #endregion

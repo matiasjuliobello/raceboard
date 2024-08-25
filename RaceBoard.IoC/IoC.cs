@@ -52,7 +52,8 @@ namespace RaceBoard.IoC
             services.AddTransient<ICustomValidator<User>, UserValidator>();
             services.AddTransient<ICustomValidator<UserPassword>, UserPasswordValidator>();
             services.AddTransient<ICustomValidator<UserPasswordReset>, UserPasswordResetValidator>();
-            
+            services.AddTransient<ICustomValidator<Person>, PersonValidator>();
+
             #endregion
 
             #region Repositories

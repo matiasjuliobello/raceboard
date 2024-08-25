@@ -120,6 +120,7 @@ namespace RaceBoard.Service.Mappings
             CreateMap<MedicalInsuranceSearchFilterRequest, MedicalInsuranceSearchFilter>();
 
             CreateMap<PersonRequest, Person>()
+                .ForMember(dest => dest.User, opt => opt.MapFrom(src => CreateObject<User>(src.IdUser)))
                 .ForMember(dest => dest.Country, opt => opt.MapFrom(src => CreateObject<Country>(src.IdCountry)))
                 .ForMember(dest => dest.BloodType, opt => opt.MapFrom(src => CreateObject<BloodType>(src.IdBloodType)))
                 .ForMember(dest => dest.MedicalInsurance, opt => opt.MapFrom(src => CreateObject<MedicalInsurance>(src.IdMedicalInsurance)));
@@ -243,7 +244,7 @@ namespace RaceBoard.Service.Mappings
 
         #region Private Methods
 
-        private T CreateObject<T>(int? id) where T:class
+        private T? CreateObject<T>(int? id) where T : class
         {
             if (!id.HasValue)
                 return null;
@@ -253,6 +254,9 @@ namespace RaceBoard.Service.Mappings
             Type type = Type.GetType(typeFullName);
 
             dynamic instance = Activator.CreateInstance(type);
+
+            if (instance == null)
+                return null;
 
             if (id.HasValue)
                 instance.Id = id.Value;

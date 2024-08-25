@@ -1,10 +1,6 @@
-﻿using Dapper;
-using Microsoft.Extensions.Configuration;
-using RaceBoard.Common.Helpers.Interfaces;
-using RaceBoard.Common.Helpers.Pagination;
+﻿using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
-using RaceBoard.Data.Repositories.Base.Interfaces;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 
@@ -38,6 +34,42 @@ namespace RaceBoard.Data.Repositories
         #endregion
 
         #region IUserRepository implementation
+
+        public ITransactionalContext GetTransactionalContext(TransactionContextScope scope = TransactionContextScope.Internal)
+        {
+            return base.GetTransactionalContext(scope);
+        }
+
+        public void ConfirmTransactionalContext(ITransactionalContext context)
+        {
+            base.ConfirmTransactionalContext(context);
+        }
+
+        public void CancelTransactionalContext(ITransactionalContext context)
+        {
+            base.CancelTransactionalContext(context);
+        }
+
+        public bool Exists(int id, ITransactionalContext? context = null)
+        {
+            string existsQuery = base.GetExistsQuery("[User]", "[Id] = @id");
+
+            QueryBuilder.AddCommand(existsQuery);
+            QueryBuilder.AddParameter("id", id);
+
+            return base.Execute<bool>(context);
+        }
+
+        public bool ExistsDuplicate(User user, ITransactionalContext? context = null)
+        {
+            string existsQuery = base.GetExistsDuplicateQuery("[User]", "[Username] = @username", "Id", "@id");
+
+            QueryBuilder.AddCommand(existsQuery);
+            QueryBuilder.AddParameter("username", user.Username);
+            QueryBuilder.AddParameter("id", user.Id);
+
+            return base.Execute<bool>(context);
+        }
 
         public PaginatedResult<User> Get(UserSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
         {
@@ -92,27 +124,6 @@ namespace RaceBoard.Data.Repositories
             base.ExecuteAndGetRowsAffected(context);
         }
 
-        public bool Exists(int id, ITransactionalContext? context = null)
-        {
-            string existsQuery = base.GetExistsQuery("[User]", "[Id] = @id");
-
-            QueryBuilder.AddCommand(existsQuery);
-            QueryBuilder.AddParameter("id", id);
-
-            return base.Execute<bool>(context);
-        }
-
-        public bool ExistsDuplicate(User user, ITransactionalContext? context = null)
-        {
-            string existsQuery = base.GetExistsDuplicateQuery("[User]", "[Username] = @username", "Id", "@id");
-
-            QueryBuilder.AddCommand(existsQuery);
-            QueryBuilder.AddParameter("username", user.Username);
-            QueryBuilder.AddParameter("id", user.Id);
-
-            return base.Execute<bool>(context);
-        }
-
         #endregion
 
         #region Private Methods
@@ -123,7 +134,8 @@ namespace RaceBoard.Data.Repositories
                                 [User].Id [Id],
                                 [User].Username [Username],
                                 [User].Password [Password],
-                                [User].Email [Email]
+                                [User].Email [Email],
+                                [User].IsActive [IsActive]
                             FROM [User] [User]";
 
             QueryBuilder.AddCommand(sql);
@@ -160,19 +172,15 @@ namespace RaceBoard.Data.Repositories
         private void CreateUser(User user, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [User]
-                                ( Username, [Password], Firstname, Middlename, Lastname, Email, BirthDate, IsActive )
+                                ( Username, [Password], Email, IsActive )
                             VALUES
-                                ( @username, @password, @firstname, @middlename, @lastname, @email, @birthDate, @isActive )";
+                                ( @username, @password, @email, @isActive )";
 
             QueryBuilder.AddCommand(sql);
 
             QueryBuilder.AddParameter("username", user.Username);
             QueryBuilder.AddParameter("password", user.Password);
-            QueryBuilder.AddParameter("firstname", user.Firstname);
-            QueryBuilder.AddParameter("middlename", user.Middlename);
-            QueryBuilder.AddParameter("lastname", user.Lastname);
             QueryBuilder.AddParameter("email", user.Email);
-            QueryBuilder.AddParameter("birthDate", user.BirthDate.UtcDateTime.Date);
             QueryBuilder.AddParameter("isActive", user.IsActive);
 
             QueryBuilder.AddReturnLastInsertedId();
@@ -183,18 +191,10 @@ namespace RaceBoard.Data.Repositories
         private void UpdateUser(User user, ITransactionalContext? context = null)
         {
             string sql = @" UPDATE [User] SET
-                                Firstname = @firstname, 
-                                Middlename = @middlename,
-                                Lastname = @lastname,
-                                BirthDate = @birthDate,
                                 IsActive = @isActive";
 
             QueryBuilder.AddCommand(sql);
 
-            QueryBuilder.AddParameter("firstname", user.Firstname);
-            QueryBuilder.AddParameter("middlename", user.Middlename);
-            QueryBuilder.AddParameter("lastname", user.Lastname);
-            QueryBuilder.AddParameter("birthDate", user.BirthDate);
             QueryBuilder.AddParameter("isActive", user.IsActive);
 
             QueryBuilder.AddParameter("id", user.Id);
@@ -202,7 +202,6 @@ namespace RaceBoard.Data.Repositories
 
             base.ExecuteAndGetRowsAffected(context);
         }
-
 
         #endregion
     }
