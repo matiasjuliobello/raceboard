@@ -41,6 +41,8 @@ namespace RaceBoard.IoC
             services.AddScoped<IContestantManager, ContestantManager>();
             services.AddScoped<IContestantRoleManager, ContestantRoleManager>();
             services.AddScoped<ITeamManager, TeamManager>();
+            services.AddScoped<IBloodTypeManager, BloodTypeManager>();
+            services.AddScoped<IMedicalInsuranceManager, MedicalInsuranceManager>();
 
             #endregion
 
@@ -69,6 +71,8 @@ namespace RaceBoard.IoC
             services.AddScoped<IContestantRepository, ContestantRepository>();
             services.AddScoped<IContestantRoleRepository, ContestantRoleRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
+            services.AddScoped<IBloodTypeRepository, BloodTypeRepository>();
+            services.AddScoped<IMedicalInsuranceRepository, MedicalInsuranceRepository>();
 
             #endregion
 

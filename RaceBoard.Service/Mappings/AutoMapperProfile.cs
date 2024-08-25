@@ -32,6 +32,8 @@ using File = RaceBoard.Domain.File;
 using TimeZone = RaceBoard.Domain.TimeZone;
 using Action = RaceBoard.Domain.Action;
 using RaceBoard.DTOs.Team;
+using RaceBoard.DTOs.BloodType.Response;
+using RaceBoard.DTOs.MedicalInsurance.Response;
 
 namespace RaceBoard.Service.Mappings
 {
@@ -111,9 +113,9 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Class, opt => opt.MapFrom(src => new RaceClass() { Id = src.IdRaceClass }))
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => new Competition() { Id = src.IdCompetition }));
 
-            CreateMap<BloodTypeRequest, BloodType>();
+            CreateMap<BloodTypeSearchFilterRequest, BloodTypeSearchFilter>();
 
-            CreateMap<MedicalInsuranceRequest, MedicalInsurance>();
+            CreateMap<MedicalInsuranceSearchFilterRequest, MedicalInsuranceSearchFilter>();
 
             CreateMap<PersonRequest, Person>()
                 .ForMember(dest => dest.BloodType, opt => opt.MapFrom(src => new BloodType() { Id = src.IdBloodType }))
@@ -135,7 +137,6 @@ namespace RaceBoard.Service.Mappings
             CreateMap<TeamContestantRequest, TeamContestant>()
                 .ForMember(dest => dest.Contestant, opt => opt.MapFrom(src => new Contestant() { Id = src.IdContestant }))
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => new ContestantRole() { Id = src.IdContestantRole }));
-
 
 
             #endregion
@@ -175,6 +176,10 @@ namespace RaceBoard.Service.Mappings
             CreateMap<RolePermissions, RolePermissionsResponse>()
                 .ForMember(dest => dest.IdRole, opt => opt.MapFrom(src => src.Role.Id))
                 .ForMember(dest => dest.Permissions, opt => opt.MapFrom(src => src.Permissions));
+
+            CreateMap<BloodType, BloodTypeResponse>();
+
+            CreateMap<MedicalInsurance, MedicalInsuranceResponse>();
 
             #endregion
         }

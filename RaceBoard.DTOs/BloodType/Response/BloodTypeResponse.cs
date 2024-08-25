@@ -1,9 +1,8 @@
-﻿namespace RaceBoard.DTOs.BloodType.Request
+﻿namespace RaceBoard.DTOs.BloodType.Response
 {
-    public class BloodTypeRequest
+    public class BloodTypeResponse
     {
         public int Id { get; set; }
         public string Name { get; set; }
     }
 }
-

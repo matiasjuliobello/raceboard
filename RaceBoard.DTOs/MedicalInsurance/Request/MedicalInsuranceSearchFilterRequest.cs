@@ -1,9 +1,8 @@
 ﻿namespace RaceBoard.DTOs.MedicalInsurance.Request
 {
-    public class MedicalInsuranceRequest
+    public class MedicalInsuranceSearchFilterRequest
     {
-        public int Id { get; set; }
+        public int[] Ids { get; set; }
         public string Name { get; set; }
     }
 }
-
