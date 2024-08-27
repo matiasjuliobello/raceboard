@@ -16,7 +16,6 @@ namespace RaceBoard.Business.Managers
         private readonly IPersonRepository _personRepository;
         private readonly ICustomValidator<Person> _personValidator;
 
-
         #region Constructors
 
         public PersonManager
@@ -34,10 +33,21 @@ namespace RaceBoard.Business.Managers
 
         #region IPersonManager implementation
 
-
         public PaginatedResult<Person> Get(PersonSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
         {
             return _personRepository.Get(searchFilter, paginationFilter, sorting, context);
+        }
+
+        public Person Get(int id, ITransactionalContext? context = null)
+        {
+            var searchFilter = new PersonSearchFilter() { Ids = new int[] { id } };
+            var persons = this.Get(searchFilter: searchFilter, paginationFilter: null, sorting: null, context: context);
+
+            var person = persons.Results.FirstOrDefault();
+            if (person == null)
+                throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
+
+            return person;
         }
 
         public void Create(Person person, ITransactionalContext? context = null)
@@ -68,7 +78,7 @@ namespace RaceBoard.Business.Managers
         {
             _personValidator.SetTransactionalContext(context);
 
-            if (!_personValidator.IsValid(person, Scenario.Create))
+            if (!_personValidator.IsValid(person, Scenario.Update))
                 throw new FunctionalException(ErrorType.ValidationError, _personValidator.Errors);
 
             if (context == null)
@@ -91,19 +101,23 @@ namespace RaceBoard.Business.Managers
 
         public void Delete(int id, ITransactionalContext? context = null)
         {
-            //_personValidator.SetTransactionalContext(context);
-            //if (!_personValidator.IsValid(person, Scenario.Create))
-            //    throw new FunctionalException(ErrorType.ValidationError, _personValidator.Errors);
+            var person = this.Get(id, context);
+
+            _personValidator.SetTransactionalContext(context);
+
+            if (!_personValidator.IsValid(person, Scenario.Delete))
+                throw new FunctionalException(ErrorType.ValidationError, _personValidator.Errors);
 
             if (context == null)
                 context = _personRepository.GetTransactionalContext(TransactionContextScope.Internal);
 
             try
             {
-                _personRepository.Delete(id, context);
+                int affectedRecords = _personRepository.Delete(id, context);
+                if (affectedRecords == 0)
+                    throw new FunctionalException(ErrorType.ValidationError, base.Translate("DeleteFailed"));
 
                 _personRepository.ConfirmTransactionalContext(context);
-
             }
             catch (Exception)
             {

@@ -52,7 +52,7 @@ namespace RaceBoard.Business.Managers
         public void Update(ContestantRole contestantRole, ITransactionalContext? context = null)
         {
             //_contestantRoleValidator.SetTransactionalContext(context);
-            //if (!_contestantRoleValidator.IsValid(contestantRole, Scenario.Create))
+            //if (!_contestantRoleValidator.IsValid(contestantRole, Scenario.Update))
             //    throw new FunctionalException(ErrorType.ValidationError, _contestantRoleValidator.Errors);
 
             if (context == null)
@@ -75,7 +75,7 @@ namespace RaceBoard.Business.Managers
         public void Delete(int id, ITransactionalContext? context = null)
         {
             //_contestantRoleValidator.SetTransactionalContext(context);
-            //if (!_contestantRoleValidator.IsValid(contestantRole, Scenario.Create))
+            //if (!_contestantRoleValidator.IsValid(contestantRole, Scenario.Delete))
             //    throw new FunctionalException(ErrorType.ValidationError, _contestantRoleValidator.Errors);
 
             if (context == null)

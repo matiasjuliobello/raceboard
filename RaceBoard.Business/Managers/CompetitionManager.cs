@@ -54,7 +54,7 @@ namespace RaceBoard.Business.Managers
         public void Update(Competition competition, ITransactionalContext? context = null)
         {
             //_competitionValidator.SetTransactionalContext(context);
-            //if (!_competitionValidator.IsValid(competition, Scenario.Create))
+            //if (!_competitionValidator.IsValid(competition, Scenario.Update))
             //    throw new FunctionalException(ErrorType.ValidationError, _competitionValidator.Errors);
 
             if (context == null)
@@ -78,7 +78,7 @@ namespace RaceBoard.Business.Managers
         public void Delete(int id, ITransactionalContext? context = null)
         {
             //_competitionValidator.SetTransactionalContext(context);
-            //if (!_competitionValidator.IsValid(competition, Scenario.Create))
+            //if (!_competitionValidator.IsValid(competition, Scenario.Delete))
             //    throw new FunctionalException(ErrorType.ValidationError, _competitionValidator.Errors);
 
             if (context == null)

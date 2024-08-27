@@ -8,7 +8,6 @@ using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Data.Repositories.Interfaces;
-using RaceBoard.Data.Repositories.Base.Interfaces;
 using RaceBoard.Business.Validators.Interfaces;
 using RaceBoard.Business.Validators;
 using RaceBoard.Translations.Interfaces;
@@ -53,6 +52,7 @@ namespace RaceBoard.IoC
             services.AddTransient<ICustomValidator<UserPassword>, UserPasswordValidator>();
             services.AddTransient<ICustomValidator<UserPasswordReset>, UserPasswordResetValidator>();
             services.AddTransient<ICustomValidator<Person>, PersonValidator>();
+            services.AddTransient<ICustomValidator<Boat>, BoatValidator>();
 
             #endregion
 

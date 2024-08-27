@@ -52,7 +52,7 @@ namespace RaceBoard.Business.Managers
         public void Update(Organization organization, ITransactionalContext? context = null)
         {
             //_organizationValidator.SetTransactionalContext(context);
-            //if (!_organizationValidator.IsValid(organization, Scenario.Create))
+            //if (!_organizationValidator.IsValid(organization, Scenario.Update))
             //    throw new FunctionalException(ErrorType.ValidationError, _organizationValidator.Errors);
 
             if (context == null)
@@ -75,7 +75,7 @@ namespace RaceBoard.Business.Managers
         public void Delete(int id, ITransactionalContext? context = null)
         {
             //_organizationValidator.SetTransactionalContext(context);
-            //if (!_organizationValidator.IsValid(organization, Scenario.Create))
+            //if (!_organizationValidator.IsValid(organization, Scenario.Delete))
             //    throw new FunctionalException(ErrorType.ValidationError, _organizationValidator.Errors);
 
             if (context == null)

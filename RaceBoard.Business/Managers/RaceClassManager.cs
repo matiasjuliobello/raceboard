@@ -52,7 +52,7 @@ namespace RaceBoard.Business.Managers
         public void Update(RaceClass raceClass, ITransactionalContext? context = null)
         {
             //_raceClassValidator.SetTransactionalContext(context);
-            //if (!_raceClassValidator.IsValid(raceClass, Scenario.Create))
+            //if (!_raceClassValidator.IsValid(raceClass, Scenario.Update))
             //    throw new FunctionalException(ErrorType.ValidationError, _raceClassValidator.Errors);
 
             if (context == null)

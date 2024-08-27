@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using RaceBoard.Business.Managers.Interfaces;
+using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
+using RaceBoard.DTOs._Pagination.Request;
+using RaceBoard.DTOs._Pagination.Response;
 using RaceBoard.DTOs.Boat.Request;
+using RaceBoard.DTOs.Boat.Response;
 using RaceBoard.Service.Controllers.Abstract;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Translations.Interfaces;
@@ -26,6 +30,20 @@ namespace RaceBoard.Service.Controllers
             ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
         {
             _boatManager = boatManager;
+        }
+
+        [HttpGet()]
+        public ActionResult<PaginatedResultResponse<BoatResponse>> GetBoats([FromQuery] BoatSearchFilterRequest searchFilterRequest, [FromQuery] PaginationFilterRequest paginationFilterRequest, [FromQuery] SortingRequest sortingRequest)
+        {
+            var searchFilter = _mapper.Map<BoatSearchFilter>(searchFilterRequest);
+            var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
+            var sorting = _mapper.Map<Sorting>(sortingRequest);
+
+            var boats = _boatManager.Get(searchFilter, paginationFilter, sorting);
+
+            var response = _mapper.Map<PaginatedResultResponse<BoatResponse>>(boats);
+
+            return Ok(response);
         }
 
         [HttpPost()]

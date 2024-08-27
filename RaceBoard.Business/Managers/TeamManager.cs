@@ -51,7 +51,7 @@ namespace RaceBoard.Business.Managers
         public void Update(Team team, ITransactionalContext? context = null)
         {
             //_teamValidator.SetTransactionalContext(context);
-            //if (!_teamValidator.IsValid(team, Scenario.Create))
+            //if (!_teamValidator.IsValid(team, Scenario.Update))
             //    throw new FunctionalException(ErrorType.ValidationError, _teamValidator.Errors);
 
             if (context == null)

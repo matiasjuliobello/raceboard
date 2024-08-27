@@ -28,14 +28,15 @@ using RaceBoard.DTOs.ContestantRole.Request;
 using RaceBoard.DTOs.Person.Request;
 using RaceBoard.DTOs.BloodType.Request;
 using RaceBoard.DTOs.MedicalInsurance.Request;
-using File = RaceBoard.Domain.File;
-using TimeZone = RaceBoard.Domain.TimeZone;
-using Action = RaceBoard.Domain.Action;
 using RaceBoard.DTOs.Team;
 using RaceBoard.DTOs.BloodType.Response;
 using RaceBoard.DTOs.MedicalInsurance.Response;
 using RaceBoard.DTOs.Person.Response;
 using RaceBoard.DTOs.Country.Response;
+using RaceBoard.DTOs.Boat.Response;
+using File = RaceBoard.Domain.File;
+using TimeZone = RaceBoard.Domain.TimeZone;
+using Action = RaceBoard.Domain.Action;
 
 namespace RaceBoard.Service.Mappings
 {
@@ -108,6 +109,7 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => CreateObject<City>(src.IdCity)));
 
             CreateMap<BoatRequest, Boat>();
+            CreateMap<BoatSearchFilterRequest, BoatSearchFilter>();
 
             CreateMap<RaceClassRequest, RaceClass>();
 
@@ -189,6 +191,8 @@ namespace RaceBoard.Service.Mappings
             CreateMap<Country, CountryResponse>();
 
             CreateMap<Person, PersonResponse>();
+
+            CreateMap<Boat, BoatResponse>();
 
             #endregion
         }
