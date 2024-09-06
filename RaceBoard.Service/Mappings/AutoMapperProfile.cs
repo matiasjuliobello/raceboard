@@ -37,6 +37,10 @@ using RaceBoard.DTOs.Boat.Response;
 using File = RaceBoard.Domain.File;
 using TimeZone = RaceBoard.Domain.TimeZone;
 using Action = RaceBoard.Domain.Action;
+using RaceBoard.DTOs.Competition.Response;
+using RaceBoard.DTOs.City.Response;
+using RaceBoard.DTOs.Organization.Response;
+using RaceBoard.DTOs.Contestant.Response;
 
 namespace RaceBoard.Service.Mappings
 {
@@ -102,6 +106,10 @@ namespace RaceBoard.Service.Mappings
                     opt.MapFrom(s => s.IdsOrganization.ToList());
                 });
 
+            CreateMap<CompetitionSearchFilterRequest, CompetitionSearchFilter>()
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => CreateObject<City>(src.IdCity)))
+                .ForMember(dest => dest.Organizations, opt => opt.MapFrom(src => CreateObject<Organization>(src.IdsOrganization)));
+
             CreateMap<int, Organization>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src));
 
@@ -133,6 +141,9 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Person, opt => opt.MapFrom(src => CreateObject<Person>(src.IdPerson)));
 
             CreateMap<ContestantRoleRequest, ContestantRole>();
+
+            CreateMap<ContestantSearchFilterRequest, ContestantSearchFilter>()
+                .ForMember(dest => dest.Person, opt => opt.MapFrom(src => CreateObject<Person>(src.IdPerson)));
 
             CreateMap<TeamRequest, Team>()
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
@@ -184,15 +195,24 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.IdRole, opt => opt.MapFrom(src => src.Role.Id))
                 .ForMember(dest => dest.Permissions, opt => opt.MapFrom(src => src.Permissions));
 
+
+            CreateMap<Organization, OrganizationResponse>();
+
             CreateMap<BloodType, BloodTypeResponse>();
 
             CreateMap<MedicalInsurance, MedicalInsuranceResponse>();
 
             CreateMap<Country, CountryResponse>();
+            
+            CreateMap<City, CityResponse>();
 
             CreateMap<Person, PersonResponse>();
 
             CreateMap<Boat, BoatResponse>();
+
+            CreateMap<Competition, CompetitionResponse>();
+
+            CreateMap<Contestant, ContestantResponse>();
 
             #endregion
         }
@@ -266,6 +286,31 @@ namespace RaceBoard.Service.Mappings
                 instance.Id = id.Value;
 
             return (T)instance;
+        }
+
+        private List<T>? CreateObject<T>(int[]? ids) where T : class
+        {
+            if (ids == null || ids.Length == 0)
+                return null;
+
+            string typeFullName = typeof(T).AssemblyQualifiedName;
+
+            Type type = Type.GetType(typeFullName);
+
+            var instances = new List<T>();
+
+            foreach (var id in ids)
+            {
+                dynamic instance = Activator.CreateInstance(type);
+                if (instance == null)
+                    return null;
+
+                instance.Id = id;
+
+                instances.Add(instance);
+            }
+
+            return instances;
         }
 
         private byte[] GetContent(IFormFile src)

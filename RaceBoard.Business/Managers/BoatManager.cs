@@ -38,6 +38,19 @@ namespace RaceBoard.Business.Managers
             return _boatRepository.Get(searchFilter, paginationFilter, sorting, context);
         }
 
+        public Boat Get(int id, ITransactionalContext? context = null)
+        {
+            var searchFilter = new BoatSearchFilter() { Ids = new int[] { id } };
+
+            var boats = _boatRepository.Get(searchFilter: searchFilter, paginationFilter: null, sorting: null, context);
+
+            var boat = boats.Results.FirstOrDefault();
+            if (boat == null)
+                throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
+
+            return boat;
+        }
+
         public void Create(Boat boat, ITransactionalContext? context = null)
         {
             _boatValidator.SetTransactionalContext(context);
@@ -88,9 +101,12 @@ namespace RaceBoard.Business.Managers
 
         public void Delete(int id, ITransactionalContext? context = null)
         {
-            //_boatValidator.SetTransactionalContext(context);
-            //if (!_boatValidator.IsValid(boat, Scenario.Delete))
-            //    throw new FunctionalException(ErrorType.ValidationError, _boatValidator.Errors);
+            var boat = this.Get(id, context);
+
+            _boatValidator.SetTransactionalContext(context);
+            
+            if (!_boatValidator.IsValid(boat, Scenario.Delete))
+                throw new FunctionalException(ErrorType.ValidationError, _boatValidator.Errors);
 
             if (context == null)
                 context = _boatRepository.GetTransactionalContext(TransactionContextScope.Internal);

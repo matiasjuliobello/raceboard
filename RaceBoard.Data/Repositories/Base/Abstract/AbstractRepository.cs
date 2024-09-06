@@ -1,13 +1,12 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Data.SqlClient;
+using System.Data;
+using System.Text;
 using RaceBoard.Common.Exceptions;
 using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data.Constants;
 using RaceBoard.Data.Helpers.Interfaces;
 using static Dapper.SqlMapper;
-using System.Data.SqlClient;
-using System.Data;
-using System.Text;
 
 namespace RaceBoard.Data.Repositories.Base.Abstract
 {
@@ -18,11 +17,15 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
         private IDbConnection _connection;
         protected IQueryBuilder _queryBuilder;
 
-        //IHttpHeaderHelper httpHeaderHelper, ITenantResolver tenantResolver)
-        //{
-        //    _context = httpHeaderHelper.GetContext();
-        //    _connectionString = tenantResolver.GetTenantConnection(_context);
-        //    _currentUser = tenantResolver.GetCurrentUser(_context);
+        protected void __FixPaginationResults<T>(ref PaginatedResult<T> items, IEnumerable<T> results, IPaginationFilter paginationFilter)
+        {
+            items.Results = results;
+
+            if (paginationFilter.PageSize == 0)
+                paginationFilter.PageSize = 25;
+
+            items = new PaginatedResult<T>(results.Count(), paginationFilter, items.Results);
+        }
 
         public AbstractRepository(IContextResolver contextResolver, IQueryBuilder queryBuilder)
         {

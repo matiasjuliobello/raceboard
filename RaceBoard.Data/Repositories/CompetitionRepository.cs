@@ -1,17 +1,29 @@
-﻿using BCrypt.Net;
-using RaceBoard.Common.Enums;
-using RaceBoard.Common.Exceptions;
+﻿using Dapper;
+using RaceBoard.Common.Helpers.Interfaces;
+using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
-using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Text;
 
 namespace RaceBoard.Data.Repositories
 {
     public class CompetitionRepository : AbstractRepository, ICompetitionRepository
     {
         #region Private Members
+
+        private readonly Dictionary<string, string> _columnsMapping = new()
+        {
+            { "Id", "[Competition].Id" },
+            { "Name", "[Competition].Name" },
+            { "StartDate", "[Competition].StartDate" },
+            { "EndDate", "[Competition].EndDate" },
+            { "City.Id", "[City].Id" },
+            { "City.Name", "[City].Name" }
+        };
 
         #endregion
 
@@ -38,6 +50,34 @@ namespace RaceBoard.Data.Repositories
         public void CancelTransactionalContext(ITransactionalContext context)
         {
             base.CancelTransactionalContext(context);
+        }
+
+        public bool Exists(int id, ITransactionalContext? context = null)
+        {
+            string existsQuery = base.GetExistsQuery("[Competition]", "[Id] = @id");
+
+            QueryBuilder.AddCommand(existsQuery);
+            QueryBuilder.AddParameter("id", id);
+
+            return base.Execute<bool>(context);
+        }
+
+        public bool ExistsDuplicate(Competition competition, ITransactionalContext? context = null)
+        {
+            string existsQuery = base.GetExistsDuplicateQuery("[Competition]", "[Name] = @name AND IdCity = @idCity", "Id", "@id");
+
+            QueryBuilder.AddCommand(existsQuery);
+            QueryBuilder.AddParameter("name", competition.Name);
+            QueryBuilder.AddParameter("idCity", competition.City.Id);
+            QueryBuilder.AddParameter("idsOrganization", competition.Organizations.Select(x => x.Id));
+            QueryBuilder.AddParameter("id", competition.Id);
+
+            return base.Execute<bool>(context);
+        }
+
+        public PaginatedResult<Competition> Get(CompetitionSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        {
+            return this.GetCompetitions(searchFilter, paginationFilter, sorting, context);
         }
 
         public void Create(Competition competition, ITransactionalContext? context = null)
@@ -68,6 +108,87 @@ namespace RaceBoard.Data.Repositories
         #endregion
 
         #region Private Methods
+
+        private PaginatedResult<Competition> GetCompetitions(CompetitionSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        {
+            string sql = $@"SELECT
+                                [Competition].Id [Id],
+                                [Competition].Name [Name],
+                                [Competition].StartDate [StartDate],
+                                [Competition].EndDate [EndDate],
+                                [City].Id [Id],
+                                [City].Name [Name],
+                                [Organization].Id [Id],
+                                [Organization].Name [Name]
+                            FROM [Competition] [Competition]
+                            INNER JOIN [City] [City] ON [City].Id = [Competition].IdCity
+                            INNER JOIN [Competition_Organization] [Competition_Organization] ON [Competition_Organization].IdCompetition = [Competition].Id
+                            INNER JOIN [Organization] [Organization] ON [Organization].Id = Competition_Organization.IdOrganization";
+
+            QueryBuilder.AddCommand(sql);
+
+            ProcessSearchFilter(searchFilter);
+
+            QueryBuilder.AddSorting(sorting, _columnsMapping);
+            QueryBuilder.AddPagination(paginationFilter);
+
+            var competitions = new List<Competition>();
+
+            PaginatedResult<Competition> items = base.GetPaginatedResults<Competition>
+                (
+                    (reader) =>
+                    {
+                        return reader.Read<Competition, City, Organization, Competition>
+                        (
+                            (competition, city, organization) =>
+                            {
+                                var existingCompetition = competitions.FirstOrDefault(x => x.Id == competition.Id);
+                                if (existingCompetition == null)
+                                {
+                                    competitions.Add(competition);
+                                }
+                                competition = competitions.FirstOrDefault(x => x.Id == competition.Id);
+
+                                if (competition.Organizations == null)
+                                    competition.Organizations = new List<Organization>();
+
+                                competition.Organizations.Add(organization);
+
+                                competition.City = city;
+
+                                return competition;
+                            },
+                            splitOn: "Id, Id, Id"
+                        );
+                    },
+                    context
+                );
+
+            base.__FixPaginationResults(ref items, competitions, paginationFilter);
+
+            return items;
+        }
+
+        private void ProcessSearchFilter(CompetitionSearchFilter searchFilter)
+        {
+            if (searchFilter.Ids != null && searchFilter.Ids.Length > 0)
+            {
+                QueryBuilder.AddCondition($"[Competition].Id IN @ids");
+                QueryBuilder.AddParameter("ids", searchFilter.Ids);
+            }
+
+            if (!string.IsNullOrEmpty(searchFilter.Name))
+            {
+                QueryBuilder.AddCondition($"[Competition].Name LIKE {AddLikeWildcards("@name")}");
+                QueryBuilder.AddParameter("name", searchFilter.Name);
+            }
+
+            if (searchFilter.City != null && searchFilter.City.Id > 0)
+            {
+                QueryBuilder.AddCondition($"[Competition].IdCity = @idCity");
+                QueryBuilder.AddParameter("idCity", searchFilter.City.Id);
+            }
+        }
 
         private void CreateCompetition(Competition competition, ITransactionalContext? context = null)
         {

@@ -53,6 +53,8 @@ namespace RaceBoard.IoC
             services.AddTransient<ICustomValidator<UserPasswordReset>, UserPasswordResetValidator>();
             services.AddTransient<ICustomValidator<Person>, PersonValidator>();
             services.AddTransient<ICustomValidator<Boat>, BoatValidator>();
+            services.AddTransient<ICustomValidator<Competition>, CompetitionValidator>();
+            services.AddTransient<ICustomValidator<Contestant>, ContestantValidator>();
 
             #endregion
 
@@ -75,7 +77,6 @@ namespace RaceBoard.IoC
             services.AddScoped<ITeamRepository, TeamRepository>();
             services.AddScoped<IBloodTypeRepository, BloodTypeRepository>();
             services.AddScoped<IMedicalInsuranceRepository, MedicalInsuranceRepository>();
-            //services.AddScoped<ICountryRepository, CountryRepository>();
 
             #endregion
 
