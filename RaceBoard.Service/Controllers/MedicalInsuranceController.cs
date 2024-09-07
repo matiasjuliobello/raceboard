@@ -15,14 +15,14 @@ namespace RaceBoard.Service.Controllers
 {
     [Route("api/medical-insurances")]
     [ApiController]
-    public class MedicalInsuranceControllerController : AbstractController<MedicalInsuranceControllerController>
+    public class MedicalInsuranceController : AbstractController<MedicalInsuranceController>
     {
         private readonly IMedicalInsuranceManager _medicalInsuranceManager;
 
-        public MedicalInsuranceControllerController
+        public MedicalInsuranceController
             (
                 IMapper mapper,
-                ILogger<MedicalInsuranceControllerController> logger,
+                ILogger<MedicalInsuranceController> logger,
                 ITranslator translator,
                 IMedicalInsuranceManager medicalInsuranceManager,
                 ISessionHelper sessionHelper,

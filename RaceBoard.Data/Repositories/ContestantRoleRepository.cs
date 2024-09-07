@@ -1,4 +1,5 @@
-﻿using RaceBoard.Data.Helpers.Interfaces;
+﻿using RaceBoard.Common.Helpers.Pagination;
+using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
@@ -8,6 +9,12 @@ namespace RaceBoard.Data.Repositories
     public class ContestantRoleRepository : AbstractRepository, IContestantRoleRepository
     {
         #region Private Members
+
+        private readonly Dictionary<string, string> _columnsMapping = new()
+        {
+            { "Id", "[ContestantRole].Id" },
+            { "Name", "[ContestantRole].Name" }
+        };
 
         #endregion
 
@@ -21,69 +28,45 @@ namespace RaceBoard.Data.Repositories
 
         #region IContestantRoleRepository implementation
 
-        public ITransactionalContext GetTransactionalContext(TransactionContextScope scope = TransactionContextScope.Internal)
+        public PaginatedResult<ContestantRole> Get(ContestantRoleSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
         {
-            return base.GetTransactionalContext(scope);
-        }
-
-        public void ConfirmTransactionalContext(ITransactionalContext context)
-        {
-            base.ConfirmTransactionalContext(context);
-        }
-
-        public void CancelTransactionalContext(ITransactionalContext context)
-        {
-            base.CancelTransactionalContext(context);
-        }
-
-        public void Create(ContestantRole contestantRole, ITransactionalContext? context = null)
-        {
-            this.CreateContestantRole(contestantRole, context);
-        }
-
-        public void Update(ContestantRole contestantRole, ITransactionalContext? context = null)
-        {
-            this.UpdateContestantRole(contestantRole, context);
-        }
-
-        public int Delete(int id, ITransactionalContext? context = null)
-        {
-            return base.Delete("[ContestantRole]", id, "Id", context);
+            return this.GetContestantRoles(searchFilter, paginationFilter, sorting, context);
         }
 
         #endregion
 
         #region Private Methods
 
-        private void CreateContestantRole(ContestantRole contestantRole, ITransactionalContext? context = null)
+        private PaginatedResult<ContestantRole> GetContestantRoles(ContestantRoleSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
         {
-            string sql = @" INSERT INTO [ContestantRole]
-                                ( Name )
-                            VALUES
-                                ( @name )";
+            string sql = $@"SELECT
+                                [ContestantRole].Id [Id],
+                                [ContestantRole].Name [Name]
+                            FROM [ContestantRole] [ContestantRole]";
 
             QueryBuilder.AddCommand(sql);
 
-            QueryBuilder.AddParameter("name", contestantRole.Name);
+            ProcessSearchFilter(searchFilter);
 
-            QueryBuilder.AddReturnLastInsertedId();
+            QueryBuilder.AddSorting(sorting, _columnsMapping);
+            QueryBuilder.AddPagination(paginationFilter);
 
-            contestantRole.Id = base.Execute<int>(context);
+            return base.GetMultipleResultsWithPagination<ContestantRole>();
         }
 
-        private void UpdateContestantRole(ContestantRole contestantRole, ITransactionalContext? context = null)
+        private void ProcessSearchFilter(ContestantRoleSearchFilter searchFilter)
         {
-            string sql = @" UPDATE [ContestantRole] SET
-                                Name = @name";
+            if (searchFilter.Ids != null && searchFilter.Ids.Length > 0)
+            {
+                QueryBuilder.AddCondition($"[ContestantRole].Id IN @ids");
+                QueryBuilder.AddParameter("ids", searchFilter.Ids);
+            }
 
-            QueryBuilder.AddCommand(sql);
-
-            QueryBuilder.AddParameter("name", contestantRole.Name);
-
-            QueryBuilder.AddParameter("id", contestantRole.Id);
-            QueryBuilder.AddCondition("Id = @id");
-
-            base.ExecuteAndGetRowsAffected(context);
+            if (!string.IsNullOrEmpty(searchFilter.Name))
+            {
+                QueryBuilder.AddCondition($"[ContestantRole].Name LIKE {AddLikeWildcards("@name")}");
+                QueryBuilder.AddParameter("name", searchFilter.Name);
+            }
         }
 
         #endregion

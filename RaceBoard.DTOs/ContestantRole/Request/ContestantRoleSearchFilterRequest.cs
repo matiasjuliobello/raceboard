@@ -1,8 +1,8 @@
 ﻿namespace RaceBoard.DTOs.ContestantRole.Request
 {
-    public class ContestantRoleRequest
+    public class ContestantRoleSearchFilterRequest
     {
-        public int Id { get; set; }
+        public int[] Ids { get; set; }
         public string Name { get; set; }
     }
 }

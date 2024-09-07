@@ -5,43 +5,43 @@ using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
 using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
-using RaceBoard.DTOs.BloodType.Request;
-using RaceBoard.DTOs.BloodType.Response;
+using RaceBoard.DTOs.Flag.Request;
+using RaceBoard.DTOs.Flag.Response;
 using RaceBoard.Service.Controllers.Abstract;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Translations.Interfaces;
 
 namespace RaceBoard.Service.Controllers
 {
-    [Route("api/blood-types")]
+    [Route("api/flags")]
     [ApiController]
-    public class BloodTypeController : AbstractController<BloodTypeController>
+    public class FlagController : AbstractController<FlagController>
     {
-        private readonly IBloodTypeManager _bloodTypeManager;
+        private readonly IFlagManager _flagManager;
 
-        public BloodTypeController
+        public FlagController
             (
                 IMapper mapper,
-                ILogger<BloodTypeController> logger,
+                ILogger<FlagController> logger,
                 ITranslator translator,
-                IBloodTypeManager bloodTypeManager,
+                IFlagManager flagManager,
                 ISessionHelper sessionHelper,
                 IRequestContextHelper requestContextHelper
             ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
         {
-            _bloodTypeManager = bloodTypeManager;
+            _flagManager = flagManager;
         }
 
         [HttpGet()]
-        public ActionResult<List<BloodTypeResponse>> GetBloodTypes([FromQuery] BloodTypeSearchFilterRequest searchFilterRequest, [FromQuery] PaginationFilterRequest paginationFilterRequest, [FromQuery] SortingRequest sortingRequest)
+        public ActionResult<List<FlagResponse>> GetFlags([FromQuery] FlagSearchFilterRequest searchFilterRequest, [FromQuery] PaginationFilterRequest paginationFilterRequest, [FromQuery] SortingRequest sortingRequest)
         {
-            var searchFilter = _mapper.Map<BloodTypeSearchFilterRequest, BloodTypeSearchFilter>(searchFilterRequest);
+            var searchFilter = _mapper.Map<FlagSearchFilterRequest, FlagSearchFilter>(searchFilterRequest);
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
             var sorting = _mapper.Map<Sorting>(sortingRequest);
 
-            var bloodTypes = _bloodTypeManager.Get(searchFilter, paginationFilter, sorting);
+            var flags = _flagManager.Get(searchFilter, paginationFilter, sorting);
 
-            var response = _mapper.Map<PaginatedResultResponse<BloodTypeResponse>>(bloodTypes);
+            var response = _mapper.Map<PaginatedResultResponse<FlagResponse>>(flags);
 
             return Ok(response);
         }

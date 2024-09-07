@@ -41,6 +41,9 @@ using RaceBoard.DTOs.Competition.Response;
 using RaceBoard.DTOs.City.Response;
 using RaceBoard.DTOs.Organization.Response;
 using RaceBoard.DTOs.Contestant.Response;
+using RaceBoard.DTOs.ContestantRole.Response;
+using RaceBoard.DTOs.Flag.Request;
+using RaceBoard.DTOs.Flag.Response;
 
 namespace RaceBoard.Service.Mappings
 {
@@ -140,7 +143,7 @@ namespace RaceBoard.Service.Mappings
             CreateMap<ContestantRequest, Contestant>()
                 .ForMember(dest => dest.Person, opt => opt.MapFrom(src => CreateObject<Person>(src.IdPerson)));
 
-            CreateMap<ContestantRoleRequest, ContestantRole>();
+            CreateMap<ContestantRoleSearchFilterRequest, ContestantRoleSearchFilter>();
 
             CreateMap<ContestantSearchFilterRequest, ContestantSearchFilter>()
                 .ForMember(dest => dest.Person, opt => opt.MapFrom(src => CreateObject<Person>(src.IdPerson)));
@@ -156,6 +159,8 @@ namespace RaceBoard.Service.Mappings
             CreateMap<TeamContestantRequest, TeamContestant>()
                 .ForMember(dest => dest.Contestant, opt => opt.MapFrom(src => CreateObject<Contestant>(src.IdContestant)))
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => CreateObject<ContestantRole>(src.IdContestantRole)));
+
+            CreateMap<FlagSearchFilterRequest, FlagSearchFilter>();
 
             #endregion
 
@@ -195,7 +200,6 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.IdRole, opt => opt.MapFrom(src => src.Role.Id))
                 .ForMember(dest => dest.Permissions, opt => opt.MapFrom(src => src.Permissions));
 
-
             CreateMap<Organization, OrganizationResponse>();
 
             CreateMap<BloodType, BloodTypeResponse>();
@@ -213,6 +217,10 @@ namespace RaceBoard.Service.Mappings
             CreateMap<Competition, CompetitionResponse>();
 
             CreateMap<Contestant, ContestantResponse>();
+
+            CreateMap<ContestantRole, ContestantRoleResponse>();
+
+            CreateMap<Flag, FlagResponse>();
 
             #endregion
         }

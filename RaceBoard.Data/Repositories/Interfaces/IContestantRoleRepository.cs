@@ -1,15 +1,10 @@
-﻿using RaceBoard.Domain;
+﻿using RaceBoard.Common.Helpers.Pagination;
+using RaceBoard.Domain;
 
 namespace RaceBoard.Data.Repositories.Interfaces
 {
     public interface IContestantRoleRepository
     {
-        ITransactionalContext GetTransactionalContext(TransactionContextScope scope = TransactionContextScope.Internal);
-        void ConfirmTransactionalContext(ITransactionalContext context);
-        void CancelTransactionalContext(ITransactionalContext context);
-
-        void Create(ContestantRole contestantRole, ITransactionalContext? context = null);
-        void Update(ContestantRole contestantRole, ITransactionalContext? context = null);
-        int Delete(int id, ITransactionalContext? context = null);
+        PaginatedResult<ContestantRole> Get(ContestantRoleSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null);
     }
 }

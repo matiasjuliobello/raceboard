@@ -4,6 +4,9 @@ using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Data;
 using RaceBoard.Translations.Interfaces;
 using RaceBoard.Domain;
+using RaceBoard.Common.Enums;
+using RaceBoard.Common.Exceptions;
+using RaceBoard.Common.Helpers.Pagination;
 
 namespace RaceBoard.Business.Managers
 {
@@ -26,73 +29,22 @@ namespace RaceBoard.Business.Managers
 
         #region IContestantRoleManager implementation
 
-        public void Create(ContestantRole contestantRole, ITransactionalContext? context = null)
+        public PaginatedResult<ContestantRole> Get(ContestantRoleSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
         {
-            //_contestantRoleValidator.SetTransactionalContext(context);
-            //if (!_contestantRoleValidator.IsValid(contestantRole, Scenario.Create))
-            //    throw new FunctionalException(ErrorType.ValidationError, _contestantRoleValidator.Errors);
-
-            if (context == null)
-                context = _contestantRoleRepository.GetTransactionalContext(TransactionContextScope.Internal);
-
-            try
-            {
-                _contestantRoleRepository.Create(contestantRole, context);
-
-                _contestantRoleRepository.ConfirmTransactionalContext(context);
-
-            }
-            catch (Exception)
-            {
-                _contestantRoleRepository.CancelTransactionalContext(context);
-                throw;
-            }
+            return _contestantRoleRepository.Get(searchFilter, paginationFilter, sorting, context);
         }
 
-        public void Update(ContestantRole contestantRole, ITransactionalContext? context = null)
+        public ContestantRole Get(int id, ITransactionalContext? context = null)
         {
-            //_contestantRoleValidator.SetTransactionalContext(context);
-            //if (!_contestantRoleValidator.IsValid(contestantRole, Scenario.Update))
-            //    throw new FunctionalException(ErrorType.ValidationError, _contestantRoleValidator.Errors);
+            var searchFilter = new ContestantRoleSearchFilter() { Ids = new int[] { id } };
 
-            if (context == null)
-                context = _contestantRoleRepository.GetTransactionalContext(TransactionContextScope.Internal);
+            var contestantRoles = _contestantRoleRepository.Get(searchFilter: searchFilter, paginationFilter: null, sorting: null, context);
 
-            try
-            {
-                _contestantRoleRepository.Update(contestantRole, context);
+            var contestantRole = contestantRoles.Results.FirstOrDefault();
+            if (contestantRole == null)
+                throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
 
-                _contestantRoleRepository.ConfirmTransactionalContext(context);
-
-            }
-            catch (Exception)
-            {
-                _contestantRoleRepository.CancelTransactionalContext(context);
-                throw;
-            }
-        }
-
-        public void Delete(int id, ITransactionalContext? context = null)
-        {
-            //_contestantRoleValidator.SetTransactionalContext(context);
-            //if (!_contestantRoleValidator.IsValid(contestantRole, Scenario.Delete))
-            //    throw new FunctionalException(ErrorType.ValidationError, _contestantRoleValidator.Errors);
-
-            if (context == null)
-                context = _contestantRoleRepository.GetTransactionalContext(TransactionContextScope.Internal);
-
-            try
-            {
-                _contestantRoleRepository.Delete(id, context);
-
-                _contestantRoleRepository.ConfirmTransactionalContext(context);
-
-            }
-            catch (Exception)
-            {
-                _contestantRoleRepository.CancelTransactionalContext(context);
-                throw;
-            }
+            return contestantRole;
         }
 
         #endregion

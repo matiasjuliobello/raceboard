@@ -1,12 +1,12 @@
-﻿using RaceBoard.Data;
+﻿using RaceBoard.Common.Helpers.Pagination;
+using RaceBoard.Data;
 using RaceBoard.Domain;
 
 namespace RaceBoard.Business.Managers.Interfaces
 {
     public interface IContestantRoleManager
     {
-        void Create(ContestantRole contestantRole, ITransactionalContext? context = null);
-        void Update(ContestantRole contestantRole, ITransactionalContext? context = null);
-        void Delete(int id, ITransactionalContext? context = null);
+        PaginatedResult<ContestantRole> Get(ContestantRoleSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null);
+        ContestantRole Get(int id, ITransactionalContext? context = null);
     }
 }
