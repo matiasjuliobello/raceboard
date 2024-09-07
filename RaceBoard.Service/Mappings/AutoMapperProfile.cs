@@ -44,6 +44,8 @@ using RaceBoard.DTOs.Contestant.Response;
 using RaceBoard.DTOs.ContestantRole.Response;
 using RaceBoard.DTOs.Flag.Request;
 using RaceBoard.DTOs.Flag.Response;
+using RaceBoard.DTOs.Mast.Request;
+using RaceBoard.DTOs.Mast.Response;
 
 namespace RaceBoard.Service.Mappings
 {
@@ -162,6 +164,8 @@ namespace RaceBoard.Service.Mappings
 
             CreateMap<FlagSearchFilterRequest, FlagSearchFilter>();
 
+            CreateMap<MastSearchFilterRequest, MastSearchFilter>();
+
             #endregion
 
             #region Responses
@@ -215,12 +219,15 @@ namespace RaceBoard.Service.Mappings
             CreateMap<Boat, BoatResponse>();
 
             CreateMap<Competition, CompetitionResponse>();
+            CreateMap<Competition, CompetitionSimpleResponse>();
 
             CreateMap<Contestant, ContestantResponse>();
 
             CreateMap<ContestantRole, ContestantRoleResponse>();
 
             CreateMap<Flag, FlagResponse>();
+
+            CreateMap<Mast, MastResponse>();
 
             #endregion
         }
