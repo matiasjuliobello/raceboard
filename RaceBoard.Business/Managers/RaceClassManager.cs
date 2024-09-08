@@ -4,6 +4,8 @@ using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Data;
 using RaceBoard.Translations.Interfaces;
 using RaceBoard.Domain;
+using RaceBoard.Common.Helpers.Pagination;
+using RaceBoard.Data.Repositories;
 
 namespace RaceBoard.Business.Managers
 {
@@ -26,73 +28,9 @@ namespace RaceBoard.Business.Managers
 
         #region IRaceClassManager implementation
 
-        public void Create(RaceClass raceClass, ITransactionalContext? context = null)
+        public PaginatedResult<RaceClass> Get(RaceClassSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
         {
-            //_raceClassValidator.SetTransactionalContext(context);
-            //if (!_raceClassValidator.IsValid(raceClass, Scenario.Create))
-            //    throw new FunctionalException(ErrorType.ValidationError, _raceClassValidator.Errors);
-
-            if (context == null)
-                context = _raceClassRepository.GetTransactionalContext(TransactionContextScope.Internal);
-
-            try
-            {
-                _raceClassRepository.Create(raceClass, context);
-
-                _raceClassRepository.ConfirmTransactionalContext(context);
-
-            }
-            catch (Exception)
-            {
-                _raceClassRepository.CancelTransactionalContext(context);
-                throw;
-            }
-        }
-
-        public void Update(RaceClass raceClass, ITransactionalContext? context = null)
-        {
-            //_raceClassValidator.SetTransactionalContext(context);
-            //if (!_raceClassValidator.IsValid(raceClass, Scenario.Update))
-            //    throw new FunctionalException(ErrorType.ValidationError, _raceClassValidator.Errors);
-
-            if (context == null)
-                context = _raceClassRepository.GetTransactionalContext(TransactionContextScope.Internal);
-
-            try
-            {
-                _raceClassRepository.Update(raceClass, context);
-
-                _raceClassRepository.ConfirmTransactionalContext(context);
-
-            }
-            catch (Exception)
-            {
-                _raceClassRepository.CancelTransactionalContext(context);
-                throw;
-            }
-        }
-
-        public void Delete(int id, ITransactionalContext? context = null)
-        {
-            //_raceClassValidator.SetTransactionalContext(context);
-            //if (!_raceClassValidator.IsValid(raceClass, Scenario.Create))
-            //    throw new FunctionalException(ErrorType.ValidationError, _raceClassValidator.Errors);
-
-            if (context == null)
-                context = _raceClassRepository.GetTransactionalContext(TransactionContextScope.Internal);
-
-            try
-            {
-                _raceClassRepository.Delete(id, context);
-
-                _raceClassRepository.ConfirmTransactionalContext(context);
-
-            }
-            catch (Exception)
-            {
-                _raceClassRepository.CancelTransactionalContext(context);
-                throw;
-            }
+            return _raceClassRepository.Get(searchFilter, paginationFilter, sorting, context);
         }
 
         #endregion

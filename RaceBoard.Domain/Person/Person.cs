@@ -1,8 +1,7 @@
 ﻿namespace RaceBoard.Domain
 {
-    public class Person
+    public class Person : AbstractEntity
     {
-        public int Id { get; set; }
         public User User { get; set; }
         public Country Country { get; set; }
         public BloodType BloodType { get; set; }

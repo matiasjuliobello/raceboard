@@ -28,6 +28,16 @@ namespace RaceBoard.Data.Repositories
 
         #region IFlagRepository implementation
 
+        public bool Exists(int id, ITransactionalContext? context = null)
+        {
+            string existsQuery = base.GetExistsQuery("[Flag]", "[Id] = @id");
+
+            QueryBuilder.AddCommand(existsQuery);
+            QueryBuilder.AddParameter("id", id);
+
+            return base.Execute<bool>(context);
+        }
+
         public PaginatedResult<Flag> Get(FlagSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
         {
             return this.GetFlags(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);

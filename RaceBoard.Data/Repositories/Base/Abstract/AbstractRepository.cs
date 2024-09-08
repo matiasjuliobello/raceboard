@@ -7,6 +7,7 @@ using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data.Constants;
 using RaceBoard.Data.Helpers.Interfaces;
 using static Dapper.SqlMapper;
+using RaceBoard.Domain;
 
 namespace RaceBoard.Data.Repositories.Base.Abstract
 {
@@ -139,7 +140,7 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
 
         #endregion
 
-        #region Sql Bits
+        #region Sql
 
         protected string GetInsertedId(string identityType = "INT")
         {
@@ -256,6 +257,24 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
             string end = endsWith ? $"+ {wildcard}" : "";
 
             return $"{start} {value} {end}";
+        }
+
+        protected void AddEqualsToIdCondition(AbstractEntity? entity, string tableName, string columnName)
+        {
+            if (entity != null && entity.Id > 0)
+            {
+                QueryBuilder.AddCondition($"{tableName}.{columnName} = @{columnName}");
+                QueryBuilder.AddParameter(columnName, entity.Id);
+            }
+        }
+
+        protected void AddEqualsToBooleanCondition(bool? value, string tableName, string columnName)
+        {
+            if (value != null)
+            {
+                QueryBuilder.AddCondition($"{tableName}.{columnName} = @{columnName}");
+                QueryBuilder.AddParameter(columnName, value.Value);
+            }
         }
 
         #endregion

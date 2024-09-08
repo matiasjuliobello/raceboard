@@ -46,6 +46,9 @@ using RaceBoard.DTOs.Flag.Request;
 using RaceBoard.DTOs.Flag.Response;
 using RaceBoard.DTOs.Mast.Request;
 using RaceBoard.DTOs.Mast.Response;
+using RaceBoard.DTOs.RaceCategory.Request;
+using RaceBoard.DTOs.RaceCategory.Response;
+using RaceBoard.DTOs.RaceClass.Response;
 
 namespace RaceBoard.Service.Mappings
 {
@@ -124,11 +127,17 @@ namespace RaceBoard.Service.Mappings
             CreateMap<BoatRequest, Boat>();
             CreateMap<BoatSearchFilterRequest, BoatSearchFilter>();
 
-            CreateMap<RaceClassRequest, RaceClass>();
+            CreateMap<RaceCategoryRequest, RaceCategory>();
+            CreateMap<RaceCategorySearchFilterRequest, RaceCategorySearchFilter>();
+
+            CreateMap<RaceClassRequest, RaceClass>()
+                .ForMember(dest => dest.RaceCategory, opt => opt.MapFrom(src => CreateObject<City>(src.IdRaceCategory)));
+            CreateMap<RaceClassSearchFilterRequest, RaceClassSearchFilter>();
 
             CreateMap<RaceRequest, Race>()
-                .ForMember(dest => dest.Class, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)))
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)));
+                .ForMember(dest => dest.RaceClass, opt => opt.MapFrom<RaceClass>(src => CreateObject<RaceClass>(src.IdRaceClass)))
+                .ForMember(dest => dest.Competition, opt => opt.MapFrom<Competition>(src => CreateObject<Competition>(src.IdCompetition)));
+            CreateMap<RaceSearchFilterRequest, RaceSearchFilter>();
 
             CreateMap<BloodTypeSearchFilterRequest, BloodTypeSearchFilter>();
 
@@ -165,6 +174,16 @@ namespace RaceBoard.Service.Mappings
             CreateMap<FlagSearchFilterRequest, FlagSearchFilter>();
 
             CreateMap<MastSearchFilterRequest, MastSearchFilter>();
+
+            CreateMap<MastFlagRequest, MastFlag>()
+                .ForMember(dest => dest.Mast, opt => opt.MapFrom(src => CreateObject<Mast>(src.IdMast)))
+                .ForMember(dest => dest.Flag, opt => opt.MapFrom(src => CreateObject<Flag>(src.IdFlag)))
+                .ForMember(dest => dest.Person, opt => opt.MapFrom(src => CreateObject<Person>(src.IdPerson)));
+
+            CreateMap<MastFlagSearchFilterRequest, MastFlagSearchFilter>()
+                .ForMember(dest => dest.Mast, opt => opt.MapFrom(src => CreateObject<Mast>(src.IdMast)))
+                .ForMember(dest => dest.Flag, opt => opt.MapFrom(src => CreateObject<Flag>(src.IdFlag)))
+                .ForMember(dest => dest.Person, opt => opt.MapFrom(src => CreateObject<Person>(src.IdPerson)));
 
             #endregion
 
@@ -211,10 +230,11 @@ namespace RaceBoard.Service.Mappings
             CreateMap<MedicalInsurance, MedicalInsuranceResponse>();
 
             CreateMap<Country, CountryResponse>();
-            
+
             CreateMap<City, CityResponse>();
 
             CreateMap<Person, PersonResponse>();
+            CreateMap<Person, PersonSimpleResponse>();
 
             CreateMap<Boat, BoatResponse>();
 
@@ -228,6 +248,12 @@ namespace RaceBoard.Service.Mappings
             CreateMap<Flag, FlagResponse>();
 
             CreateMap<Mast, MastResponse>();
+
+            CreateMap<MastFlag, MastFlagResponse>();
+
+            CreateMap<RaceCategory, RaceCategoryResponse>();
+
+            CreateMap<RaceClass, RaceClassResponse>();
 
             #endregion
         }

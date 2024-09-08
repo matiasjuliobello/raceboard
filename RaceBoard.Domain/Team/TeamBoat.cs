@@ -1,8 +1,7 @@
 ﻿namespace RaceBoard.Domain
 {
-    public class TeamBoat
+    public class TeamBoat : AbstractEntity
     {
-        public int Id { get; set; }
         public Team Team { get; set; }
         public Boat Boat { get; set; }
     }

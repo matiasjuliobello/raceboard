@@ -1,4 +1,6 @@
-﻿using RaceBoard.Data;
+﻿using RaceBoard.Common.Enums;
+using RaceBoard.Common.Exceptions;
+using RaceBoard.Domain;
 using RaceBoard.Translations.Interfaces;
 
 namespace RaceBoard.Business.Managers.Abstract
@@ -20,5 +22,10 @@ namespace RaceBoard.Business.Managers.Abstract
             return _translator.Get(text, arguments);
         }
 
+        public void ValidateRecordNotFound(object? value)
+        {
+            if (value == null)
+                throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
+        }
     }
 }

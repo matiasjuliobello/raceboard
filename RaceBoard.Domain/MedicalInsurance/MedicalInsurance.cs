@@ -1,8 +1,7 @@
 ﻿namespace RaceBoard.Domain
 {
-    public class MedicalInsurance
+    public class MedicalInsurance : AbstractEntity
     {
-        public int Id { get; set; }
         public string Name { get; set; }
     }
 }

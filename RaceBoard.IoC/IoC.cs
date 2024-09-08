@@ -35,6 +35,7 @@ namespace RaceBoard.IoC
             services.AddScoped<IOrganizationManager, OrganizationManager>();
             services.AddScoped<IBoatManager, BoatManager>();
             services.AddScoped<IRaceClassManager, RaceClassManager>();
+            services.AddScoped<IRaceCategoryManager, RaceCategoryManager>();
             services.AddScoped<IRaceManager, RaceManager>();
             services.AddScoped<IPersonManager, PersonManager>();
             services.AddScoped<IContestantManager, ContestantManager>();
@@ -57,6 +58,8 @@ namespace RaceBoard.IoC
             services.AddTransient<ICustomValidator<Boat>, BoatValidator>();
             services.AddTransient<ICustomValidator<Competition>, CompetitionValidator>();
             services.AddTransient<ICustomValidator<Contestant>, ContestantValidator>();
+            services.AddTransient<ICustomValidator<Mast>, MastValidator>();
+            services.AddTransient<ICustomValidator<MastFlag>, MastFlagValidator>();
 
             #endregion
 
@@ -72,6 +75,7 @@ namespace RaceBoard.IoC
             services.AddScoped<IOrganizationRepository, OrganizationRepository>();
             services.AddScoped<IBoatRepository, BoatRepository>();
             services.AddScoped<IRaceClassRepository, RaceClassRepository>();
+            services.AddScoped<IRaceCategoryRepository, RaceCategoryRepository>();
             services.AddScoped<IRaceRepository, RaceRepository>();
             services.AddScoped<IPersonRepository, PersonRepository>();
             services.AddScoped<IContestantRepository, ContestantRepository>();
@@ -81,6 +85,7 @@ namespace RaceBoard.IoC
             services.AddScoped<IMedicalInsuranceRepository, MedicalInsuranceRepository>();
             services.AddScoped<IFlagRepository, FlagRepository>();
             services.AddScoped<IMastRepository, MastRepository>();
+            services.AddScoped<IMastFlagRepository, MastFlagRepository>();
 
             #endregion
 

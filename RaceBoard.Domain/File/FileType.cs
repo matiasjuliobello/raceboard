@@ -1,8 +1,7 @@
 ﻿namespace RaceBoard.Domain
 {
-    public class FileType
+    public class FileType : AbstractEntity
     {
-        public int Id { get; set; }
         public string Name { get; set; }
     }
 }

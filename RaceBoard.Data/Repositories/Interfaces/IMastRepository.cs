@@ -5,6 +5,14 @@ namespace RaceBoard.Data.Repositories.Interfaces
 {
     public interface IMastRepository
     {
-        public PaginatedResult<Mast> Get(MastSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null);
+        ITransactionalContext GetTransactionalContext(TransactionContextScope scope = TransactionContextScope.Internal);
+        void ConfirmTransactionalContext(ITransactionalContext context);
+        void CancelTransactionalContext(ITransactionalContext context);
+
+        bool Exists(int id, ITransactionalContext? context = null);
+        bool ExistsDuplicate(Mast mast, ITransactionalContext? context = null);
+
+        PaginatedResult<Mast> Get(MastSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null);
+        void Create(Mast mast, ITransactionalContext? context = null);
     }
 }

@@ -64,7 +64,7 @@ namespace RaceBoard.Data.Repositories
 
             QueryBuilder.AddCommand(sql);
 
-            QueryBuilder.AddParameter("idRaceClass", race.Class.Id);
+            QueryBuilder.AddParameter("idRaceClass", race.RaceClass.Id);
             QueryBuilder.AddParameter("idCompetition", race.Competition.Id);
 
             QueryBuilder.AddReturnLastInsertedId();
@@ -80,7 +80,7 @@ namespace RaceBoard.Data.Repositories
 
             QueryBuilder.AddCommand(sql);
 
-            QueryBuilder.AddParameter("idRaceClass", race.Class.Id);
+            QueryBuilder.AddParameter("idRaceClass", race.RaceClass.Id);
             QueryBuilder.AddParameter("idCompetition", race.Competition.Id);
 
             QueryBuilder.AddParameter("id", race.Id);

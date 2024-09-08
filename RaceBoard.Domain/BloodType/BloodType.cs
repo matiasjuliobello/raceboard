@@ -1,8 +1,7 @@
 ﻿namespace RaceBoard.Domain
 {
-    public class BloodType
+    public class BloodType : AbstractEntity
     {
-        public int Id { get; set; }
         public string Name { get; set; }
     }
 }

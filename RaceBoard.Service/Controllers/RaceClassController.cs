@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using RaceBoard.Business.Managers.Interfaces;
+using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
+using RaceBoard.DTOs._Pagination.Request;
+using RaceBoard.DTOs._Pagination.Response;
 using RaceBoard.DTOs.RaceClass.Request;
+using RaceBoard.DTOs.RaceClass.Response;
 using RaceBoard.Service.Controllers.Abstract;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Translations.Interfaces;
@@ -13,47 +17,33 @@ namespace RaceBoard.Service.Controllers
     [ApiController]
     public class RaceClassController : AbstractController<RaceClassController>
     {
-        private readonly IRaceClassManager _organizationManager;
+        private readonly IRaceClassManager _raceClassManager;
 
         public RaceClassController
             (
                 IMapper mapper,
                 ILogger<RaceClassController> logger,
                 ITranslator translator,
-                IRaceClassManager organizationManager,
+                IRaceClassManager raceClassManager,
                 ISessionHelper sessionHelper,
                 IRequestContextHelper requestContextHelper
             ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
         {
-            _organizationManager = organizationManager;
+            _raceClassManager = raceClassManager;
         }
 
-        [HttpPost()]
-        public ActionResult<int> CreateRaceClass(RaceClassRequest organizationRequest)
+        [HttpGet()]
+        public ActionResult<List<RaceClassResponse>> GetRaceClasses([FromQuery] RaceClassSearchFilterRequest searchFilterRequest, [FromQuery] PaginationFilterRequest paginationFilterRequest, [FromQuery] SortingRequest sortingRequest)
         {
-            var organization = _mapper.Map<RaceClass>(organizationRequest);
+            var searchFilter = _mapper.Map<RaceClassSearchFilterRequest, RaceClassSearchFilter>(searchFilterRequest);
+            var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
+            var sorting = _mapper.Map<Sorting>(sortingRequest);
 
-            _organizationManager.Create(organization);
+            var raceClasses = _raceClassManager.Get(searchFilter, paginationFilter, sorting);
 
-            return Ok(organization.Id);
-        }
+            var response = _mapper.Map<PaginatedResultResponse<RaceClassResponse>>(raceClasses);
 
-        [HttpPut()]
-        public ActionResult UpdateRaceClass(RaceClassRequest organizationRequest)
-        {
-            var organization = _mapper.Map<RaceClass>(organizationRequest);
-
-            _organizationManager.Update(organization);
-
-            return Ok();
-        }
-
-        [HttpDelete("id")]
-        public ActionResult DeleteRaceClass(int id)
-        {
-            _organizationManager.Delete(id);
-
-            return Ok();
+            return Ok(response);
         }
 
         #region Private Methods

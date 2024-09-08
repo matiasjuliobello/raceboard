@@ -1,8 +1,7 @@
 ﻿namespace RaceBoard.Domain
 {
-    public class UserPasswordReset
+    public class UserPasswordReset : AbstractEntity
     {
-        public int Id { get; set; }
         public User User { get; set; }
         public string Token { get; set; }
         public DateTimeOffset RequestDate { get; set; }

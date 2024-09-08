@@ -1,8 +1,7 @@
 ﻿namespace RaceBoard.Domain
 {
-    public class Country
+    public class Country : AbstractEntity
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string IsoCode { get; set; }
     }

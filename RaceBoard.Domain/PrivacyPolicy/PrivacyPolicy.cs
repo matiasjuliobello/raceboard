@@ -1,8 +1,7 @@
 ﻿namespace RaceBoard.Domain
 {
-    public class PrivacyPolicy
+    public class PrivacyPolicy : AbstractEntity
     {
-        public int Id { get; set; }
         public int VersionNumber { get; set; }
         public string Name { get; set; }
         public string Content { get; set; }

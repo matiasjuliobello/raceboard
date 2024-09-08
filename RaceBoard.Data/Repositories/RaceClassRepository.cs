@@ -1,4 +1,6 @@
-﻿using RaceBoard.Data.Helpers.Interfaces;
+﻿using Dapper;
+using RaceBoard.Common.Helpers.Pagination;
+using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
@@ -8,6 +10,14 @@ namespace RaceBoard.Data.Repositories
     public class RaceClassRepository : AbstractRepository, IRaceClassRepository
     {
         #region Private Members
+
+        private readonly Dictionary<string, string> _columnsMapping = new()
+        {
+            { "Id", "[RaceClass].Id" },
+            { "Name", "[RaceClass].Name"},
+            { "[RaceCategory].Id", "[RaceCategory].Id" },
+            { "[RaceCategory].Name", "[RaceCategory].Name"}
+        };
 
         #endregion
 
@@ -21,72 +31,77 @@ namespace RaceBoard.Data.Repositories
 
         #region IRaceClassRepository implementation
 
-        public ITransactionalContext GetTransactionalContext(TransactionContextScope scope = TransactionContextScope.Internal)
+        public PaginatedResult<RaceClass> Get(RaceClassSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
         {
-            return base.GetTransactionalContext(scope);
-        }
-
-        public void ConfirmTransactionalContext(ITransactionalContext context)
-        {
-            base.ConfirmTransactionalContext(context);
-        }
-
-        public void CancelTransactionalContext(ITransactionalContext context)
-        {
-            base.CancelTransactionalContext(context);
-        }
-
-        public void Create(RaceClass raceClass, ITransactionalContext? context = null)
-        {
-            this.CreateRaceClass(raceClass, context);
-        }
-
-        public void Update(RaceClass raceClass, ITransactionalContext? context = null)
-        {
-            this.UpdateRaceClass(raceClass, context);
-        }
-
-        public int Delete(int id, ITransactionalContext? context = null)
-        {
-            return base.Delete("[RaceClass]", id, "Id", context);
+            return this.GetRaceCategories(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
         }
 
         #endregion
 
         #region Private Methods
 
-        private void CreateRaceClass(RaceClass raceClass, ITransactionalContext? context = null)
+        private PaginatedResult<RaceClass> GetRaceCategories(RaceClassSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
         {
-            string sql = @" INSERT INTO [RaceClass]
-                                ( Name, Description )
-                            VALUES
-                                ( @name, @description )";
+            string sql = $@"SELECT
+                                [RaceClass].Id [Id],
+                                [RaceClass].Name [Name],
+                                [RaceCategory].Id [Id],
+                                [RaceCategory].Name [Name]
+                            FROM [RaceClass] [RaceClass]
+                            INNER JOIN [RaceCategory] [RaceCategory] ON [RaceCategory].Id = [RaceClass].IdRaceCategory";
 
             QueryBuilder.AddCommand(sql);
+            ProcessSearchFilter(searchFilter);
 
-            QueryBuilder.AddParameter("name", raceClass.Name);
-            QueryBuilder.AddParameter("description", raceClass.Description);
+            QueryBuilder.AddSorting(sorting, _columnsMapping);
+            QueryBuilder.AddPagination(paginationFilter);
 
-            QueryBuilder.AddReturnLastInsertedId();
+            var raceClasses = new List<RaceClass>();
 
-            raceClass.Id = base.Execute<int>(context);
+            PaginatedResult<RaceClass> items = base.GetPaginatedResults<RaceClass>
+                (
+                    (reader) =>
+                    {
+                        return reader.Read<RaceClass, RaceCategory, RaceClass>
+                        (
+                            (raceClass, raceCategory) =>
+                            {
+                                raceClass.RaceCategory = raceCategory;
+
+                                raceClasses.Add(raceClass);
+
+                                return raceClass;
+                            },
+                            splitOn: "Id, Id"
+                        ).AsList();
+                    },
+                    context
+                );
+
+            items.Results = raceClasses;
+
+            return items;
         }
 
-        private void UpdateRaceClass(RaceClass raceClass, ITransactionalContext? context = null)
+        private void ProcessSearchFilter(RaceClassSearchFilter searchFilter)
         {
-            string sql = @" UPDATE [RaceClass] SET
-                                Name = @name,
-                                Description = @description";
+            if (searchFilter.Ids != null && searchFilter.Ids.Length > 0)
+            {
+                QueryBuilder.AddCondition($"[RaceClass].Id IN @ids");
+                QueryBuilder.AddParameter("ids", searchFilter.Ids);
+            }
 
-            QueryBuilder.AddCommand(sql);
+            if (searchFilter.RaceCategory != null && searchFilter.RaceCategory.Id > 0)
+            {
+                QueryBuilder.AddCondition($"[RaceClass].IdRaceCategory = @idRaceCategory");
+                QueryBuilder.AddParameter("idRaceCategory", searchFilter.RaceCategory.Id);
+            }
 
-            QueryBuilder.AddParameter("name", raceClass.Name);
-            QueryBuilder.AddParameter("description", raceClass.Description);
-
-            QueryBuilder.AddParameter("id", raceClass.Id);
-            QueryBuilder.AddCondition("Id = @id");
-
-            base.ExecuteAndGetRowsAffected(context);
+            if (!string.IsNullOrEmpty(searchFilter.Name))
+            {
+                QueryBuilder.AddCondition($"[RaceClass].Name LIKE {AddLikeWildcards("@name")}");
+                QueryBuilder.AddParameter("name", searchFilter.Name);
+            }
         }
 
         #endregion
