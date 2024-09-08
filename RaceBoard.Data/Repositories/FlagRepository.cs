@@ -66,8 +66,8 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(FlagSearchFilter searchFilter)
         {
-            base.AddFilterCriteria(ConditionType.In, "Flag", "Id", searchFilter.Ids);
-            base.AddFilterCriteria(ConditionType.Like, "Flag", "Name", searchFilter.Name);
+            base.AddFilterCriteria(ConditionType.In, "Flag", "Id", "ids", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Like, "Flag", "Name", "name", searchFilter.Name);
         }
 
         #endregion

@@ -1,7 +1,8 @@
 ﻿namespace RaceBoard.Domain
 {
-    public class IdentificationType : AbstractEntity
+    public class IdentificationType
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
     }

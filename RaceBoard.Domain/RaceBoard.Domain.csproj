@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="_Abstract\**" />
+    <EmbeddedResource Remove="_Abstract\**" />
+    <None Remove="_Abstract\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\RaceBoard.Common\RaceBoard.Common.csproj" />
   </ItemGroup>
 

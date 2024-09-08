@@ -125,8 +125,8 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(MastSearchFilter searchFilter)
         {
-            base.AddFilterCriteria(ConditionType.In, "Mast", "Id", searchFilter.Ids);
-            base.AddFilterCriteria(ConditionType.Equal, "Mast", "IdCompetition", searchFilter.Competition?.Id);
+            base.AddFilterCriteria(ConditionType.In, "Mast", "Id", "ids", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Equal, "Mast", "IdCompetition", "idCompetition", searchFilter.Competition?.Id);
         }
 
         private void CreateMast(Mast mast, ITransactionalContext? context = null)

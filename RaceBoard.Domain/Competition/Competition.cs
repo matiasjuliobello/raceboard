@@ -1,7 +1,8 @@
 ﻿namespace RaceBoard.Domain
 {
-    public class Competition : AbstractEntity
+    public class Competition
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public City City { get; set; }
         public List<Organization> Organizations { get; set; }

@@ -85,9 +85,9 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(RaceClassSearchFilter searchFilter)
         {
-            base.AddFilterCriteria(ConditionType.In, "RaceClass", "Id", searchFilter.Ids);
-            base.AddFilterCriteria(ConditionType.Equal, "RaceClass", "IdRaceCategory", searchFilter.RaceCategory?.Id);
-            base.AddFilterCriteria(ConditionType.Like, "RaceClass", "Name", searchFilter.Name);
+            base.AddFilterCriteria(ConditionType.In, "RaceClass", "Id", "id", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Equal, "RaceClass", "IdRaceCategory", "idRaceCategory", searchFilter.RaceCategory?.Id);
+            base.AddFilterCriteria(ConditionType.Like, "RaceClass", "Name", "name", searchFilter.Name);
         }
 
         #endregion

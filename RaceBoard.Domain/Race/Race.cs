@@ -1,6 +1,6 @@
 ﻿namespace RaceBoard.Domain
 {
-    public class Race : AbstractEntity
+    public class Race
     {
         public int Id { get; set; }
         public RaceClass RaceClass { get; set; }

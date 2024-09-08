@@ -56,8 +56,8 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(ContestantRoleSearchFilter searchFilter)
         {
-            base.AddFilterCriteria(ConditionType.In, "ContestantRole", "Id", searchFilter.Ids);
-            base.AddFilterCriteria(ConditionType.Like, "ContestantRole", "Name", searchFilter.Name);
+            base.AddFilterCriteria(ConditionType.In, "ContestantRole", "Id", "ids", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Like, "ContestantRole", "Name", "name", searchFilter.Name);
         }
 
         #endregion

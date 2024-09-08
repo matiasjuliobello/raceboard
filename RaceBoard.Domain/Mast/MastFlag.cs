@@ -1,7 +1,8 @@
 ﻿namespace RaceBoard.Domain
 {
-    public class MastFlag : AbstractEntity
+    public class MastFlag
     {
+        public int Id { get; set; }
         public Mast Mast { get; set; }
         public Flag Flag { get; set; }
         public Person Person { get; set; }

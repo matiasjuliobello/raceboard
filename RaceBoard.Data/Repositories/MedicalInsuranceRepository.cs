@@ -56,8 +56,8 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(MedicalInsuranceSearchFilter searchFilter)
         {
-            base.AddFilterCriteria(ConditionType.In, "MedicalInsurance", "Id", searchFilter.Ids);
-            base.AddFilterCriteria(ConditionType.Equal, "MedicalInsurance", "Name", searchFilter.Name);
+            base.AddFilterCriteria(ConditionType.In, "MedicalInsurance", "Id", "ids", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Equal, "MedicalInsurance", "Name", "name", searchFilter.Name);
         }
 
         #endregion

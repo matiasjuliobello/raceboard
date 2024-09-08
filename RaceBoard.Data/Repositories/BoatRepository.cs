@@ -148,11 +148,11 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(BoatSearchFilter searchFilter)
         {
-            base.AddFilterCriteria(ConditionType.In, "[Boat]", "Id", searchFilter.Ids);
-            base.AddFilterCriteria(ConditionType.Equal, "[RaceClass]", "Id", searchFilter.RaceClass?.Id);
-            base.AddFilterCriteria(ConditionType.Equal, "[RaceCategory]", "Id", searchFilter.RaceCategory);
-            base.AddFilterCriteria(ConditionType.Like, "[Boat]", "Name", searchFilter.Name);
-            base.AddFilterCriteria(ConditionType.Like, "[Boat]", "SailNumber", searchFilter.SailNumber);
+            base.AddFilterCriteria(ConditionType.In, "[Boat]", "Id", "ids", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Equal, "[RaceClass]", "Id", "idRaceClass", searchFilter.RaceClass?.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "[RaceCategory]", "IdRaceCategory", "idRaceCategory", searchFilter.RaceCategory?.Id);
+            base.AddFilterCriteria(ConditionType.Like, "[Boat]", "Name", "name", searchFilter.Name);
+            base.AddFilterCriteria(ConditionType.Like, "[Boat]", "SailNumber", "sailNumber", searchFilter.SailNumber);
         }
 
         private void CreateBoat(Boat boat, ITransactionalContext? context = null)

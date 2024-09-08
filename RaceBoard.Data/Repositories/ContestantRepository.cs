@@ -137,8 +137,8 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(ContestantSearchFilter searchFilter)
         {
-            base.AddFilterCriteria(ConditionType.In, "Contestant", "Id", searchFilter.Ids);
-            base.AddFilterCriteria(ConditionType.Equal, "Person", "Id", searchFilter.Person?.Id);
+            base.AddFilterCriteria(ConditionType.In, "Contestant", "Id", "ids", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Equal, "Person", "Id", "idPerson", searchFilter.Person?.Id);
         }
 
         private void CreateContestant(Contestant contestant, ITransactionalContext? context = null)

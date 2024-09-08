@@ -176,10 +176,10 @@ namespace RaceBoard.Data.Repositories
             if (searchFilter == null)
                 return;
 
-            base.AddFilterCriteria(ConditionType.In, "Person", "Id", searchFilter.Ids);
-            base.AddFilterCriteria(ConditionType.Like, "Person", "Firstname", searchFilter.Firstname);
-            base.AddFilterCriteria(ConditionType.Like, "Person", "Lastname", searchFilter.Lastname);
-            base.AddFilterCriteria(ConditionType.Equal, "Person", "EmailAddress", searchFilter.EmailAddress);
+            base.AddFilterCriteria(ConditionType.In, "Person", "Id", "ids", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Like, "Person", "Firstname", "firstName", searchFilter.Firstname);
+            base.AddFilterCriteria(ConditionType.Like, "Person", "Lastname", "lastName", searchFilter.Lastname);
+            base.AddFilterCriteria(ConditionType.Equal, "Person", "EmailAddress", "emailAddress", searchFilter.EmailAddress);
         }
 
         private void CreatePerson(Person person, ITransactionalContext? context = null)

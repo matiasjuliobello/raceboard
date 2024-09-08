@@ -56,8 +56,8 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(BloodTypeSearchFilter searchFilter)
         {
-            base.AddFilterCriteria(ConditionType.In, "BloodType", "Id", searchFilter.Ids);
-            base.AddFilterCriteria(ConditionType.Like, "BloodType", "Name", searchFilter.Name);
+            base.AddFilterCriteria(ConditionType.In, "BloodType", "Id", "id", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Like, "BloodType", "Name", "name", searchFilter.Name);
         }
 
         #endregion

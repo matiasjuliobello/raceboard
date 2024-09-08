@@ -1,7 +1,8 @@
 ﻿namespace RaceBoard.Domain
 {
-    public class PasswordPolicy : AbstractEntity
+    public class PasswordPolicy
     {
+        public int Id { get; set; }
         public int VersionNumber { get; set; }
         public DateTimeOffset CreationDate { get; set; }
         public int MinLowercaseChars { get; set; }

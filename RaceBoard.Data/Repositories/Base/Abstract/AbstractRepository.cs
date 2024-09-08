@@ -1,12 +1,12 @@
 ﻿using System.Data.SqlClient;
 using System.Data;
 using System.Text;
+using static Dapper.SqlMapper;
 using RaceBoard.Common.Exceptions;
 using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data.Constants;
 using RaceBoard.Data.Helpers.Interfaces;
-using static Dapper.SqlMapper;
 using RaceBoard.Domain;
 
 namespace RaceBoard.Data.Repositories.Base.Abstract
@@ -25,7 +25,11 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
             Like = 3,
             NotLike = 4,
             In = 5,
-            NotIn = 6
+            NotIn = 6,
+            GreaterThan = 7,
+            GreaterOrEqualThan = 8,
+            LessThan = 9,
+            LessOrEqualThan = 10
         }
 
         protected void __FixPaginationResults<T>(ref PaginatedResult<T> items, IEnumerable<T> results, IPaginationFilter paginationFilter)
@@ -43,11 +47,6 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
             _connectionString = contextResolver.GetDatabaseConnection();
 
             _queryBuilder = queryBuilder;
-        }
-
-        public string ConnectionString
-        {
-            get { return _connectionString; }
         }
 
         public IQueryBuilder QueryBuilder
@@ -151,11 +150,6 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
         #endregion
 
         #region Sql
-
-        protected string GetInsertedId(string identityType = "INT")
-        {
-            return $" (SELECT CAST(SCOPE_IDENTITY() AS {identityType})) ";
-        }
 
         protected string GetIsGreaterOrEqualThanToday(string startDateColumn, string endDateColumn, string? dateToCompareParameterName = null)
         {
@@ -269,35 +263,47 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
             return $"{start} {value} {end}";
         }
 
-        protected void AddFilterCriteria<T>(ConditionType conditionType, string tableName, string columnName, T value)
+        protected void AddFilterCriteria<T>(ConditionType conditionType, string tableName, string columnName, string parameterName, T? value)
         {
             switch (conditionType)
             {
                 case ConditionType.Equal:
-                    if (value != null && value.GetType().BaseType == typeof(AbstractEntity))
-                    {
-                        AddEqualsToIdCondition(value as AbstractEntity, tableName, columnName);
-                    }
                     if (value != null && value.GetType() == typeof(bool))
                     {
-                        AddEqualsToBooleanCondition(value as bool?, tableName, columnName);
+                        AddEqualsToBooleanCondition(value as bool?, tableName, columnName, parameterName);
                     }
                     if (value != null && value.GetType() == typeof(int))
                     {
-                        AddEqualsToIntegerCondition(Convert.ToInt32(value), tableName, columnName);
+                        AddEqualsToIntegerCondition(Convert.ToInt32(value), tableName, columnName, parameterName);
+                    }
+                    if (value != null && value.GetType() == typeof(decimal))
+                    {
+                        AddEqualsToDecimalCondition(Convert.ToDecimal(value), tableName, columnName, parameterName);
                     }
                     break;
 
                 case ConditionType.Like:
-                    AddLikeCondition(value as string, tableName, columnName);
+                    AddLikeCondition(value as string, tableName, columnName, parameterName);
                     break;
 
                 case ConditionType.In:
-                    AddWhereInCondition(value as int[], tableName, columnName);
+                    AddWhereInCondition(value as IEnumerable<int>, tableName, columnName, parameterName);
+                    break;
+
+                case ConditionType.LessThan:
+                    AddComparisonCondition(value, tableName, columnName, "<", parameterName);
+                    break;
+                case ConditionType.LessOrEqualThan:
+                    AddComparisonCondition(value, tableName, columnName, "<=", parameterName);
+                    break;
+                case ConditionType.GreaterThan:
+                    AddComparisonCondition(value, tableName, columnName, ">", parameterName);
+                    break;
+                case ConditionType.GreaterOrEqualThan:
+                    AddComparisonCondition(value, tableName, columnName, ">=", parameterName);
                     break;
             }
         }
-
 
         #endregion
 
@@ -529,50 +535,57 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
 
         #region Query Building
 
-        private void AddWhereInCondition(int[] values, string tableName, string columnName)
+        private void AddWhereInCondition(IEnumerable<int> values, string tableName, string columnName, string parameterName)
         {
-            if (values != null && values.Length > 0)
+            if (values != null && values.Count() > 0)
             {
-                QueryBuilder.AddCondition($"{tableName}.{columnName} IN @{columnName}");
-                QueryBuilder.AddParameter(columnName, values);
+                QueryBuilder.AddCondition($"{tableName}.{columnName} IN @{parameterName}");
+                QueryBuilder.AddParameter(parameterName, values);
             }
         }
-        private void AddEqualsToIntegerCondition(int? value, string tableName, string columnName)
+        private void AddEqualsToIntegerCondition(int? value, string tableName, string columnName, string parameterName)
         {
             if (value != null && value > 0)
             {
-                QueryBuilder.AddCondition($"{tableName}.{columnName} = @{columnName}");
-                QueryBuilder.AddParameter(columnName, value);
+                QueryBuilder.AddCondition($"{tableName}.{columnName} = @{parameterName}");
+                QueryBuilder.AddParameter(parameterName, value);
             }
         }
-        private void AddEqualsToIdCondition(AbstractEntity? entity, string tableName, string columnName)
+        private void AddEqualsToDecimalCondition(decimal? value, string tableName, string columnName, string parameterName)
         {
-            if (entity != null && entity.Id > 0)
+            if (value != null && value > 0)
             {
-                QueryBuilder.AddCondition($"{tableName}.{columnName} = @{columnName}");
-                QueryBuilder.AddParameter(columnName, entity.Id);
+                QueryBuilder.AddCondition($"{tableName}.{columnName} = @{parameterName}");
+                QueryBuilder.AddParameter(parameterName, value);
             }
         }
-        private void AddEqualsToBooleanCondition(bool? value, string tableName, string columnName)
+        private void AddEqualsToBooleanCondition(bool? value, string tableName, string columnName, string parameterName)
         {
             if (value != null)
             {
-                QueryBuilder.AddCondition($"{tableName}.{columnName} = @{columnName}");
-                QueryBuilder.AddParameter(columnName, value.Value);
+                QueryBuilder.AddCondition($"{tableName}.{columnName} = @{parameterName}");
+                QueryBuilder.AddParameter(parameterName, value.Value);
             }
         }
-        private void AddLikeCondition(string? value, string tableName, string columnName)
+        private void AddLikeCondition(string? value, string tableName, string columnName, string parameterName)
         {
             if (!string.IsNullOrEmpty(value))
             {
-                QueryBuilder.AddCondition($"{tableName}.{columnName} LIKE {AddLikeWildcards($"@{columnName}")}");
-                QueryBuilder.AddParameter(columnName, value);
+                QueryBuilder.AddCondition($"{tableName}.{columnName} LIKE {AddLikeWildcards($"@{parameterName}")}");
+                QueryBuilder.AddParameter(parameterName, value);
+            }
+        }
+        private void AddComparisonCondition<T>(T? value, string tableName, string columnName, string operatorSymbol, string parameterName)
+        {
+            if (value != null)
+            {
+                QueryBuilder.AddCondition($"{tableName}.{columnName} {operatorSymbol} @{parameterName}");
+                QueryBuilder.AddParameter(parameterName, value);
             }
         }
 
         #endregion
 
         #endregion
-
     }
 }
