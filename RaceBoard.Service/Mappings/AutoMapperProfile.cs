@@ -177,7 +177,8 @@ namespace RaceBoard.Service.Mappings
 
             CreateMap<FlagSearchFilterRequest, FlagSearchFilter>();
 
-            CreateMap<MastSearchFilterRequest, MastSearchFilter>();
+            CreateMap<MastSearchFilterRequest, MastSearchFilter>()
+                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)));
 
             CreateMap<MastFlagRequest, MastFlag>()
                 .ForMember(dest => dest.Mast, opt => opt.MapFrom(src => CreateObject<Mast>(src.IdMast)))

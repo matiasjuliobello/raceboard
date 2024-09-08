@@ -148,35 +148,11 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(BoatSearchFilter searchFilter)
         {
-            if (searchFilter.Ids != null && searchFilter.Ids.Length > 0)
-            {
-                QueryBuilder.AddCondition($"[Boat].Id IN @ids");
-                QueryBuilder.AddParameter("ids", searchFilter.Ids);
-            }
-
-            if (searchFilter.RaceClass != null && searchFilter.RaceClass.Id > 0)
-            {
-                QueryBuilder.AddCondition($"[RaceClass].Id = @idRaceClass");
-                QueryBuilder.AddParameter("idRaceClass", searchFilter.RaceClass.Id);
-            }
-
-            if (searchFilter.RaceCategory != null && searchFilter.RaceCategory.Id > 0)
-            {
-                QueryBuilder.AddCondition($"[RaceCategory].Id = @idRaceCategory");
-                QueryBuilder.AddParameter("idRaceCategory", searchFilter.RaceCategory.Id);
-            }
-
-            if (!string.IsNullOrEmpty(searchFilter.Name))
-            {
-                QueryBuilder.AddCondition($"[Boat].Name LIKE {AddLikeWildcards("@name")}");
-                QueryBuilder.AddParameter("name", searchFilter.Name);
-            }
-
-            if (!string.IsNullOrEmpty(searchFilter.SailNumber))
-            {
-                QueryBuilder.AddCondition($"[Boat].SailNumber LIKE {AddLikeWildcards("@sailNumber")}");
-                QueryBuilder.AddParameter("sailNumber", searchFilter.SailNumber);
-            }
+            base.AddFilterCriteria(ConditionType.In, "[Boat]", "Id", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Equal, "[RaceClass]", "Id", searchFilter.RaceClass?.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "[RaceCategory]", "Id", searchFilter.RaceCategory);
+            base.AddFilterCriteria(ConditionType.Like, "[Boat]", "Name", searchFilter.Name);
+            base.AddFilterCriteria(ConditionType.Like, "[Boat]", "SailNumber", searchFilter.SailNumber);
         }
 
         private void CreateBoat(Boat boat, ITransactionalContext? context = null)

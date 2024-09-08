@@ -1,10 +1,8 @@
 ﻿using RaceBoard.Data.Helpers.Interfaces;
-using RaceBoard.Data.Repositories.Base.Interfaces;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 using TimeZone = RaceBoard.Domain.TimeZone;
 using RaceBoard.Data.Repositories.Base.Abstract;
-using Microsoft.Extensions.Configuration;
 
 namespace RaceBoard.Data.Repositories
 {
@@ -149,23 +147,9 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(UserSettingsSearchFilter searchFilter)
         {
-            if (searchFilter.Id.HasValue)
-            {
-                QueryBuilder.AddCondition("[UserSettings].Id = @id");
-                QueryBuilder.AddParameter("id", searchFilter.Id.Value);
-            }
-
-            if (searchFilter.IdsUser != null)
-            {
-                QueryBuilder.AddCondition("[UserSettings].IdUser IN @idsUser");
-                QueryBuilder.AddParameter("idsUser", searchFilter.IdsUser);
-            }
-
-            if (!string.IsNullOrEmpty(searchFilter.Username))
-            {
-                QueryBuilder.AddCondition("[User].Username = @username");
-                QueryBuilder.AddParameter("username", searchFilter.Username);
-            }
+            base.AddFilterCriteria(ConditionType.Equal, "UserSettings", "Id", searchFilter.Id);
+            base.AddFilterCriteria(ConditionType.In, "UserSettings", "IdUser", searchFilter.IdsUser);
+            base.AddFilterCriteria(ConditionType.Equal, "User", "Username", searchFilter.Username);
         }
 
         #endregion

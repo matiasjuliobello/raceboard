@@ -1,11 +1,9 @@
 ﻿using Dapper;
 using RaceBoard.Data.Helpers.Interfaces;
-using RaceBoard.Data.Repositories.Base.Interfaces;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 using SqlBoolean = RaceBoard.Data.Constants.SqlBoolean;
 using RaceBoard.Data.Repositories.Base.Abstract;
-using Microsoft.Extensions.Configuration;
 
 namespace RaceBoard.Data.Repositories
 {

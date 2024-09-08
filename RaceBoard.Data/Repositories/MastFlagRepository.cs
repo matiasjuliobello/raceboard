@@ -152,17 +152,11 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(MastFlagSearchFilter searchFilter)
         {
-            if (searchFilter.Ids != null && searchFilter.Ids.Length > 0)
-            {
-                QueryBuilder.AddCondition($"[Mast_Flag].Id IN @ids");
-                QueryBuilder.AddParameter("ids", searchFilter.Ids);
-            }
-
-            AddEqualsToIdCondition(searchFilter.Mast, "[Mast_Flag]", "IdMast");
-            AddEqualsToIdCondition(searchFilter.Flag, "[Mast_Flag]", "IdFlag");
-            AddEqualsToIdCondition(searchFilter.Person, "[Mast_Flag]", "IdPerson");
-
-            AddEqualsToBooleanCondition(searchFilter.IsActive, "[Mast_Flag]", "IsActive");
+            base.AddFilterCriteria(ConditionType.In, "Mast_Flag", "Id", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IdMast", searchFilter.Mast);
+            base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IdFlag", searchFilter.Flag);
+            base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IdPerson", searchFilter.Person);
+            base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IsActive", searchFilter.IsActive);
         }
 
         private void CreateMastFlag(MastFlag mastFlag, ITransactionalContext? context = null)

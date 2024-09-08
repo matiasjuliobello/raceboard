@@ -66,17 +66,8 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(FlagSearchFilter searchFilter)
         {
-            if (searchFilter.Ids != null && searchFilter.Ids.Length > 0)
-            {
-                QueryBuilder.AddCondition($"[Flag].Id IN @ids");
-                QueryBuilder.AddParameter("ids", searchFilter.Ids);
-            }
-
-            if (!string.IsNullOrEmpty(searchFilter.Name))
-            {
-                QueryBuilder.AddCondition($"[Flag].Name LIKE {AddLikeWildcards("@name")}");
-                QueryBuilder.AddParameter("name", searchFilter.Name);
-            }
+            base.AddFilterCriteria(ConditionType.In, "Flag", "Id", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Like, "Flag", "Name", searchFilter.Name);
         }
 
         #endregion

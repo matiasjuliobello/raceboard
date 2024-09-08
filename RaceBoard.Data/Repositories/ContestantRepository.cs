@@ -137,17 +137,8 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(ContestantSearchFilter searchFilter)
         {
-            if (searchFilter.Ids != null && searchFilter.Ids.Length > 0)
-            {
-                QueryBuilder.AddCondition($"[Contestant].Id IN @ids");
-                QueryBuilder.AddParameter("ids", searchFilter.Ids);
-            }
-
-            if (searchFilter.Person != null && searchFilter.Person.Id > 0)
-            {
-                QueryBuilder.AddCondition($"[Person].Id = @idPerson");
-                QueryBuilder.AddParameter("idPerson", searchFilter.Person.Id);
-            }
+            base.AddFilterCriteria(ConditionType.In, "Contestant", "Id", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Equal, "Person", "Id", searchFilter.Person?.Id);
         }
 
         private void CreateContestant(Contestant contestant, ITransactionalContext? context = null)

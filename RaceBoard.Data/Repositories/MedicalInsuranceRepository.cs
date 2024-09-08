@@ -56,17 +56,8 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(MedicalInsuranceSearchFilter searchFilter)
         {
-            if (searchFilter.Ids != null && searchFilter.Ids.Length > 0)
-            {
-                QueryBuilder.AddCondition($"[MedicalInsurance].Id IN @ids");
-                QueryBuilder.AddParameter("ids", searchFilter.Ids);
-            }
-
-            if (!string.IsNullOrEmpty(searchFilter.Name))
-            {
-                QueryBuilder.AddCondition($"[MedicalInsurance].Name LIKE {AddLikeWildcards("@name")}");
-                QueryBuilder.AddParameter("name", searchFilter.Name);
-            }
+            base.AddFilterCriteria(ConditionType.In, "MedicalInsurance", "Id", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Equal, "MedicalInsurance", "Name", searchFilter.Name);
         }
 
         #endregion

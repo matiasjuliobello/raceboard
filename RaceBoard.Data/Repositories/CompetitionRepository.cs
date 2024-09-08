@@ -171,23 +171,9 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(CompetitionSearchFilter searchFilter)
         {
-            if (searchFilter.Ids != null && searchFilter.Ids.Length > 0)
-            {
-                QueryBuilder.AddCondition($"[Competition].Id IN @ids");
-                QueryBuilder.AddParameter("ids", searchFilter.Ids);
-            }
-
-            if (!string.IsNullOrEmpty(searchFilter.Name))
-            {
-                QueryBuilder.AddCondition($"[Competition].Name LIKE {AddLikeWildcards("@name")}");
-                QueryBuilder.AddParameter("name", searchFilter.Name);
-            }
-
-            if (searchFilter.City != null && searchFilter.City.Id > 0)
-            {
-                QueryBuilder.AddCondition($"[Competition].IdCity = @idCity");
-                QueryBuilder.AddParameter("idCity", searchFilter.City.Id);
-            }
+            base.AddFilterCriteria(ConditionType.In, "Competition", "Id", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Equal, "Competition", "IdCity", searchFilter.City?.Id);
+            base.AddFilterCriteria(ConditionType.Like, "Competition", "Name", searchFilter.Name);
         }
 
         private void CreateCompetition(Competition competition, ITransactionalContext? context = null)

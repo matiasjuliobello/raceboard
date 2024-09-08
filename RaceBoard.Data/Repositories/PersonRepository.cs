@@ -176,29 +176,10 @@ namespace RaceBoard.Data.Repositories
             if (searchFilter == null)
                 return;
 
-            if (searchFilter.Ids.Length > 0)
-            {
-                QueryBuilder.AddCondition($"[Person].Id IN @ids");
-                QueryBuilder.AddParameter("ids", searchFilter.Ids);
-            }
-
-            if (!string.IsNullOrEmpty(searchFilter.Firstname))
-            {
-                QueryBuilder.AddCondition($"[Person].Firstname LIKE {AddLikeWildcards("@firstName")}");
-                QueryBuilder.AddParameter("firstName", searchFilter.Firstname);
-            }
-
-            if (!string.IsNullOrEmpty(searchFilter.Lastname))
-            {
-                QueryBuilder.AddCondition($"[Person].Lastname LIKE {AddLikeWildcards("@lastName")}");
-                QueryBuilder.AddParameter("lastName", searchFilter.Lastname);
-            }
-
-            if (!string.IsNullOrEmpty(searchFilter.EmailAddress))
-            {
-                QueryBuilder.AddCondition($"[Person].EmailAddress = @emailAddress");
-                QueryBuilder.AddParameter("emailAddress", searchFilter.EmailAddress);
-            }
+            base.AddFilterCriteria(ConditionType.In, "Person", "Id", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Like, "Person", "Firstname", searchFilter.Firstname);
+            base.AddFilterCriteria(ConditionType.Like, "Person", "Lastname", searchFilter.Lastname);
+            base.AddFilterCriteria(ConditionType.Equal, "Person", "EmailAddress", searchFilter.EmailAddress);
         }
 
         private void CreatePerson(Person person, ITransactionalContext? context = null)

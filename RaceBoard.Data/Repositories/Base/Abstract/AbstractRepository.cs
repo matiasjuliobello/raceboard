@@ -18,6 +18,16 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
         private IDbConnection _connection;
         protected IQueryBuilder _queryBuilder;
 
+        protected enum ConditionType
+        {
+            Equal = 1,
+            NotEqual = 2,
+            Like = 3,
+            NotLike = 4,
+            In = 5,
+            NotIn = 6
+        }
+
         protected void __FixPaginationResults<T>(ref PaginatedResult<T> items, IEnumerable<T> results, IPaginationFilter paginationFilter)
         {
             items.Results = results;
@@ -259,7 +269,53 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
             return $"{start} {value} {end}";
         }
 
-        protected void AddEqualsToIdCondition(AbstractEntity? entity, string tableName, string columnName)
+        protected void AddFilterCriteria<T>(ConditionType conditionType, string tableName, string columnName, T value)
+        {
+            switch (conditionType)
+            {
+                case ConditionType.Equal:
+                    if (value != null && value.GetType().BaseType == typeof(AbstractEntity))
+                    {
+                        AddEqualsToIdCondition(value as AbstractEntity, tableName, columnName);
+                    }
+                    if (value != null && value.GetType() == typeof(bool))
+                    {
+                        AddEqualsToBooleanCondition(value as bool?, tableName, columnName);
+                    }
+                    if (value != null && value.GetType() == typeof(int))
+                    {
+                        AddEqualsToIntegerCondition(Convert.ToInt32(value), tableName, columnName);
+                    }
+                    break;
+
+                case ConditionType.Like:
+                    AddLikeCondition(value as string, tableName, columnName);
+                    break;
+
+                case ConditionType.In:
+                    AddWhereInCondition(value as int[], tableName, columnName);
+                    break;
+            }
+        }
+
+        private void AddWhereInCondition(int[] values, string tableName, string columnName)
+        {
+            if (values != null && values.Length > 0)
+            {
+                QueryBuilder.AddCondition($"{tableName}.{columnName} IN @{columnName}");
+                QueryBuilder.AddParameter(columnName, values);
+            }
+        }
+
+        private void AddEqualsToIntegerCondition(int? value, string tableName, string columnName)
+        {
+            if (value != null && value > 0)
+            {
+                QueryBuilder.AddCondition($"{tableName}.{columnName} = @{columnName}");
+                QueryBuilder.AddParameter(columnName, value);
+            }
+        }
+        private void AddEqualsToIdCondition(AbstractEntity? entity, string tableName, string columnName)
         {
             if (entity != null && entity.Id > 0)
             {
@@ -268,12 +324,21 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
             }
         }
 
-        protected void AddEqualsToBooleanCondition(bool? value, string tableName, string columnName)
+        private void AddEqualsToBooleanCondition(bool? value, string tableName, string columnName)
         {
             if (value != null)
             {
                 QueryBuilder.AddCondition($"{tableName}.{columnName} = @{columnName}");
                 QueryBuilder.AddParameter(columnName, value.Value);
+            }
+        }
+
+        private void AddLikeCondition(string? value, string tableName, string columnName)
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                QueryBuilder.AddCondition($"{tableName}.{columnName} LIKE {AddLikeWildcards($"@{columnName}")}");
+                QueryBuilder.AddParameter(columnName, value);
             }
         }
 
