@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using RaceBoard.Common;
-using RaceBoard.Common.Enums;
-using RaceBoard.Common.Exceptions;
 using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Domain;
 
@@ -24,7 +22,7 @@ namespace RaceBoard.Data.Helpers
 
         #endregion
 
-        #region ITenantResolver implementation
+        #region IContextResolver implementation
 
         public string GetDatabaseConnection()
         {

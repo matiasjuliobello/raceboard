@@ -298,49 +298,6 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
             }
         }
 
-        private void AddWhereInCondition(int[] values, string tableName, string columnName)
-        {
-            if (values != null && values.Length > 0)
-            {
-                QueryBuilder.AddCondition($"{tableName}.{columnName} IN @{columnName}");
-                QueryBuilder.AddParameter(columnName, values);
-            }
-        }
-
-        private void AddEqualsToIntegerCondition(int? value, string tableName, string columnName)
-        {
-            if (value != null && value > 0)
-            {
-                QueryBuilder.AddCondition($"{tableName}.{columnName} = @{columnName}");
-                QueryBuilder.AddParameter(columnName, value);
-            }
-        }
-        private void AddEqualsToIdCondition(AbstractEntity? entity, string tableName, string columnName)
-        {
-            if (entity != null && entity.Id > 0)
-            {
-                QueryBuilder.AddCondition($"{tableName}.{columnName} = @{columnName}");
-                QueryBuilder.AddParameter(columnName, entity.Id);
-            }
-        }
-
-        private void AddEqualsToBooleanCondition(bool? value, string tableName, string columnName)
-        {
-            if (value != null)
-            {
-                QueryBuilder.AddCondition($"{tableName}.{columnName} = @{columnName}");
-                QueryBuilder.AddParameter(columnName, value.Value);
-            }
-        }
-
-        private void AddLikeCondition(string? value, string tableName, string columnName)
-        {
-            if (!string.IsNullOrEmpty(value))
-            {
-                QueryBuilder.AddCondition($"{tableName}.{columnName} LIKE {AddLikeWildcards($"@{columnName}")}");
-                QueryBuilder.AddParameter(columnName, value);
-            }
-        }
 
         #endregion
 
@@ -438,6 +395,7 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
 
             return result;
         }
+        
         private void SafeExecute(Action<Action<GridReader>, IDbConnection, IDbTransaction?, int?> executionCommand, Action<GridReader> onReaderExecution, ITransactionalContext? context = null, int? timeout = _DEFAULT_TIMEOUT)
         {
             IDbConnection connection = null;
@@ -513,6 +471,7 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
                     commandTimeout: timeout
                 );
         }
+        
         private PaginatedResult<T> GetPaginatedResults<T>(Func<GridReader, IEnumerable<T>> mappingFunction, IDbConnection connection, IDbTransaction? transaction = null, int? timeout = null)
         {
             string query = _queryBuilder.Build();
@@ -528,6 +487,7 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
                 return CreatePaginatedResult(results, totalRecords, paginationFilter);
             }
         }
+        
         private PaginatedResult<T> GetPaginatedResultsWithoutMappingFunction<T>(IDbConnection connection, IDbTransaction? transaction = null, int? timeout = null)
         {
             string query = _queryBuilder.Build();
@@ -543,8 +503,8 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
                 return CreatePaginatedResult(results, totalRecords, paginationFilter);
             }
         }
-
-        protected PaginatedResult<T> CreatePaginatedResult<T>(IEnumerable<T> items, int totalRecords, IPaginationFilter paginationFilter)
+        
+        private PaginatedResult<T> CreatePaginatedResult<T>(IEnumerable<T> items, int totalRecords, IPaginationFilter paginationFilter)
         {
             return new PaginatedResult<T>(totalRecords, paginationFilter, items);
         }
@@ -563,6 +523,51 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
                 );
 
             action.Invoke(reader);
+        }
+
+        #endregion
+
+        #region Query Building
+
+        private void AddWhereInCondition(int[] values, string tableName, string columnName)
+        {
+            if (values != null && values.Length > 0)
+            {
+                QueryBuilder.AddCondition($"{tableName}.{columnName} IN @{columnName}");
+                QueryBuilder.AddParameter(columnName, values);
+            }
+        }
+        private void AddEqualsToIntegerCondition(int? value, string tableName, string columnName)
+        {
+            if (value != null && value > 0)
+            {
+                QueryBuilder.AddCondition($"{tableName}.{columnName} = @{columnName}");
+                QueryBuilder.AddParameter(columnName, value);
+            }
+        }
+        private void AddEqualsToIdCondition(AbstractEntity? entity, string tableName, string columnName)
+        {
+            if (entity != null && entity.Id > 0)
+            {
+                QueryBuilder.AddCondition($"{tableName}.{columnName} = @{columnName}");
+                QueryBuilder.AddParameter(columnName, entity.Id);
+            }
+        }
+        private void AddEqualsToBooleanCondition(bool? value, string tableName, string columnName)
+        {
+            if (value != null)
+            {
+                QueryBuilder.AddCondition($"{tableName}.{columnName} = @{columnName}");
+                QueryBuilder.AddParameter(columnName, value.Value);
+            }
+        }
+        private void AddLikeCondition(string? value, string tableName, string columnName)
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                QueryBuilder.AddCondition($"{tableName}.{columnName} LIKE {AddLikeWildcards($"@{columnName}")}");
+                QueryBuilder.AddParameter(columnName, value);
+            }
         }
 
         #endregion
