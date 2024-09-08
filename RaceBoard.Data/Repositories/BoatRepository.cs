@@ -1,4 +1,5 @@
-﻿using RaceBoard.Common.Helpers.Pagination;
+﻿using Dapper;
+using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
@@ -14,7 +15,11 @@ namespace RaceBoard.Data.Repositories
         {
             { "Id", "[Boat].Id" },
             { "Name", "[Boat].Name" },
-            { "SailNumber", "[Boat].SailNumber"}
+            { "SailNumber", "[Boat].SailNumber"},
+            { "RaceClass.Id", "[RaceClass].Id" },
+            { "RaceClass.Name", "[RaceClass].Name" },
+            { "RaceCategory.Id", "[RaceCategory].Id" },
+            { "RaceCategory.Name", "[RaceCategory].Name" }
         };
 
         #endregion
@@ -56,10 +61,13 @@ namespace RaceBoard.Data.Repositories
 
         public bool ExistsDuplicate(Boat boat, ITransactionalContext? context = null)
         {
-            string existsQuery = base.GetExistsDuplicateQuery("[Boat]", "[SailNumber] = @sailNumber", "Id", "@id");
+            string condition = "[SailNumber] = @sailNumber AND [IdRaceClass] = @idRaceClass";
+
+            string existsQuery = base.GetExistsDuplicateQuery("[Boat]", condition, "Id", "@id");
 
             QueryBuilder.AddCommand(existsQuery);
             QueryBuilder.AddParameter("sailNumber", boat.SailNumber);
+            QueryBuilder.AddParameter("idRaceClass", boat.RaceClass.Id);
             QueryBuilder.AddParameter("id", boat.Id);
 
             return base.Execute<bool>(context);
@@ -94,8 +102,14 @@ namespace RaceBoard.Data.Repositories
             string sql = $@"SELECT
                                 [Boat].Id [Id],
                                 [Boat].Name [Name],
-                                [Boat].SailNumber [SailNumber]
-                            FROM [Boat] [Boat]";
+                                [Boat].SailNumber [SailNumber],
+                                [RaceClass].Id [Id],
+                                [RaceClass].Name [Name],
+                                [RaceCategory].Id [Id],
+                                [RaceCategory].Name [Name]
+                            FROM [Boat] [Boat]
+                            INNER JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Boat].IdRaceClass
+                            INNER JOIN [RaceCategory] [RaceCategory] ON [RaceCategory].Id = [RaceClass].IdRaceCategory";
 
             QueryBuilder.AddCommand(sql);
 
@@ -104,7 +118,32 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddSorting(sorting, _columnsMapping);
             QueryBuilder.AddPagination(paginationFilter);
 
-            return base.GetMultipleResultsWithPagination<Boat>(context);
+            var boats = new List<Boat>();
+
+            PaginatedResult<Boat> items = base.GetPaginatedResults<Boat>
+                (
+                    (reader) =>
+                    {
+                        return reader.Read<Boat, RaceClass, RaceCategory, Boat>
+                        (
+                            (boat, raceClass, raceCategory) =>
+                            {
+                                raceClass.RaceCategory = raceCategory;
+                                boat.RaceClass = raceClass;
+
+                                boats.Add(boat);
+
+                                return boat;
+                            },
+                            splitOn: "Id, Id, Id"
+                        ).AsList();
+                    },
+                    context
+                );
+
+            items.Results = boats;
+
+            return items;
         }
 
         private void ProcessSearchFilter(BoatSearchFilter searchFilter)
@@ -113,6 +152,18 @@ namespace RaceBoard.Data.Repositories
             {
                 QueryBuilder.AddCondition($"[Boat].Id IN @ids");
                 QueryBuilder.AddParameter("ids", searchFilter.Ids);
+            }
+
+            if (searchFilter.RaceClass != null && searchFilter.RaceClass.Id > 0)
+            {
+                QueryBuilder.AddCondition($"[RaceClass].Id = @idRaceClass");
+                QueryBuilder.AddParameter("idRaceClass", searchFilter.RaceClass.Id);
+            }
+
+            if (searchFilter.RaceCategory != null && searchFilter.RaceCategory.Id > 0)
+            {
+                QueryBuilder.AddCondition($"[RaceCategory].Id = @idRaceCategory");
+                QueryBuilder.AddParameter("idRaceCategory", searchFilter.RaceCategory.Id);
             }
 
             if (!string.IsNullOrEmpty(searchFilter.Name))
@@ -131,12 +182,13 @@ namespace RaceBoard.Data.Repositories
         private void CreateBoat(Boat boat, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [Boat]
-                                ( Name, SailNumber )
+                                ( IdRaceClass, Name, SailNumber )
                             VALUES
-                                ( @name, @sailNumber )";
+                                ( @idRaceClass, @name, @sailNumber )";
 
             QueryBuilder.AddCommand(sql);
 
+            QueryBuilder.AddParameter("idRaceClass", boat.RaceClass.Id);
             QueryBuilder.AddParameter("name", boat.Name);
             QueryBuilder.AddParameter("sailNumber", boat.SailNumber);
 

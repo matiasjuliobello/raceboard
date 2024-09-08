@@ -124,8 +124,12 @@ namespace RaceBoard.Service.Mappings
             CreateMap<OrganizationRequest, Organization>()
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => CreateObject<City>(src.IdCity)));
 
-            CreateMap<BoatRequest, Boat>();
-            CreateMap<BoatSearchFilterRequest, BoatSearchFilter>();
+            CreateMap<BoatRequest, Boat>()
+                .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
+
+            CreateMap<BoatSearchFilterRequest, BoatSearchFilter>()
+                .ForMember(dest => dest.RaceCategory, opt => opt.MapFrom(src => CreateObject<RaceCategory>(src.IdRaceCategory)))
+                .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
 
             CreateMap<RaceCategoryRequest, RaceCategory>();
             CreateMap<RaceCategorySearchFilterRequest, RaceCategorySearchFilter>();

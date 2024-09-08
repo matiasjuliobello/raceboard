@@ -3,8 +3,8 @@
     public class BoatRequest
     {
         public int Id { get; set; }
+        public int IdRaceClass { get; set; }
         public string Name { get; set; }
         public string SailNumber { get; set; }
-
     }
 }
