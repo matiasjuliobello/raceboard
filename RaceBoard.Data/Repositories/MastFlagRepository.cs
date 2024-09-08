@@ -188,21 +188,18 @@ namespace RaceBoard.Data.Repositories
 
         private void UpdateMastFlag(MastFlag mastFlag, ITransactionalContext? context = null)
         {
-            string sql = @" UPDATE [Mast_Flag] SET
-                                ( RaisingMoment, LoweringMoment, IsActive )
-                            VALUES
-                                ( @raisingMoment, @loweringMoment, @isActive )";
+            string sql = @" UPDATE [Mast_Flag]
+                            SET
+                                LoweringMoment = @loweringMoment, 
+                                IsActive = @isActive";
 
             QueryBuilder.AddCommand(sql);
 
-            QueryBuilder.AddParameter("raisingMoment", mastFlag.RaisingMoment);
             QueryBuilder.AddParameter("loweringMoment", mastFlag.LoweringMoment);
             QueryBuilder.AddParameter("isActive", mastFlag.IsActive);
             QueryBuilder.AddParameter("id", mastFlag.Id);
 
             QueryBuilder.AddCondition("Id = @id");
-
-            QueryBuilder.AddReturnLastInsertedId();
 
             mastFlag.Id = base.Execute<int>(context);
         }
