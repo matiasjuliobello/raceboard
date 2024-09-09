@@ -46,7 +46,7 @@ namespace RaceBoard.Business.Validators
                 .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
             RuleFor(x => x)
-                .Must(x => !_personRepository.ExistsDuplicate(x))
+                .Must(x => !_personRepository.ExistsDuplicate(x, base.TransactionalContext))
                 .WithMessage(Translate("DuplicateRecordExists"))
                 .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
         }

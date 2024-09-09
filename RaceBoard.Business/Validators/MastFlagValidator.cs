@@ -65,12 +65,12 @@ namespace RaceBoard.Business.Validators
                 .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
             RuleFor(x => x.Person.Id)
-                .Must(x => _personRepository.Exists(x))
+                .Must(x => _personRepository.Exists(x, base.TransactionalContext))
                 .WithMessage(Translate("IdPersonIsNotValid"))
                 .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
             RuleFor(x => x)
-                .Must(x => !_mastFlagRepository.ExistsDuplicate(x))
+                .Must(x => !_mastFlagRepository.ExistsDuplicate(x, base.TransactionalContext))
                 .WithMessage(Translate("DuplicateRecordExists"))
                 .When(x => Scenario == Scenario.Create);
 
