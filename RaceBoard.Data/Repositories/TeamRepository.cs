@@ -1,4 +1,6 @@
-﻿using RaceBoard.Data.Helpers.Interfaces;
+﻿using Dapper;
+using RaceBoard.Common.Helpers.Pagination;
+using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
@@ -8,6 +10,18 @@ namespace RaceBoard.Data.Repositories
     public class TeamRepository : AbstractRepository, ITeamRepository
     {
         #region Private Members
+
+        private readonly Dictionary<string, string> _columnsMapping = new()
+        {
+            { "Id", "[Team].Id" },
+            { "Name", "[Team].Name" },
+            { "RaceClass.Id", "[RaceClass].Id" },
+            { "RaceClass.Name", "[RaceClass].Name"},
+            { "Competition.Id", "[Competition].Id" },
+            { "Competition.Name", "[Competition].Name"},
+            { "Competition.StartDate", "[Competition].StartDate"},
+            { "Competition.EndDate", "[Competition].EndDate"}
+        };
 
         #endregion
 
@@ -34,6 +48,11 @@ namespace RaceBoard.Data.Repositories
         public void CancelTransactionalContext(ITransactionalContext context)
         {
             base.CancelTransactionalContext(context);
+        }
+
+        public PaginatedResult<Team> Get(TeamSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        {
+            return this.GetTeams(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
         }
 
         public void Create(Team team, ITransactionalContext? context = null)
@@ -64,6 +83,64 @@ namespace RaceBoard.Data.Repositories
         #endregion
 
         #region Private Methods
+
+        private PaginatedResult<Team> GetTeams(TeamSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        {
+            string sql = $@"SELECT
+                                [Team].Id [Id],
+                                [Team].Name [Name],
+                                [RaceClass].Id [Id],
+                                [RaceClass].Name [Name],
+                                [Competition].Id [Id],
+                                [Competition].Name [Name],
+                                [Competition].StartDate [StartDate],
+                                [Competition].EndDate [EndDate]
+                            FROM [Team] [Team]
+                            INNER JOIN [Competition] [Competition] ON [Competition].Id = [Team].IdCompetition
+                            INNER JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Team].IdRaceClass";
+
+            QueryBuilder.AddCommand(sql);
+
+            ProcessSearchFilter(searchFilter);
+
+            QueryBuilder.AddSorting(sorting, _columnsMapping);
+            QueryBuilder.AddPagination(paginationFilter);
+
+            var teams = new List<Team>();
+
+            PaginatedResult<Team> items = base.GetPaginatedResults<Team>
+                (
+                    (reader) =>
+                    {
+                        return reader.Read<Team, RaceClass, Competition, Team>
+                        (
+                            (team, raceClass, competition) =>
+                            {
+                                team.RaceClass = raceClass;
+                                team.Competition = competition;
+
+                                teams.Add(team);
+
+                                return team;
+                            },
+                            splitOn: "Id, Id, Id"
+                        ).AsList();
+                    },
+                    context
+                );
+
+            items.Results = teams;
+
+            return items;
+        }
+
+        private void ProcessSearchFilter(TeamSearchFilter searchFilter)
+        {
+            base.AddFilterCriteria(ConditionType.In, "Team", "Id", "ids", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Like, "Team", "Name", "name", searchFilter.Name);
+            base.AddFilterCriteria(ConditionType.Equal, "Competition", "Id", "idCompetition", searchFilter.Competition?.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "RaceClass", "Id", "idRaceClass", searchFilter.RaceClass?.Id);
+        }
 
         private void CreateTeam(Team team, ITransactionalContext? context = null)
         {

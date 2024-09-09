@@ -28,7 +28,6 @@ using RaceBoard.DTOs.ContestantRole.Request;
 using RaceBoard.DTOs.Person.Request;
 using RaceBoard.DTOs.BloodType.Request;
 using RaceBoard.DTOs.MedicalInsurance.Request;
-using RaceBoard.DTOs.Team;
 using RaceBoard.DTOs.BloodType.Response;
 using RaceBoard.DTOs.MedicalInsurance.Response;
 using RaceBoard.DTOs.Person.Response;
@@ -50,6 +49,8 @@ using RaceBoard.DTOs.RaceCategory.Request;
 using RaceBoard.DTOs.RaceCategory.Response;
 using RaceBoard.DTOs.RaceClass.Response;
 using RaceBoard.DTOs.Race.Response;
+using RaceBoard.DTOs.Team.Request;
+using RaceBoard.DTOs.Team.Response;
 
 namespace RaceBoard.Service.Mappings
 {
@@ -170,7 +171,11 @@ namespace RaceBoard.Service.Mappings
 
             CreateMap<TeamRequest, Team>()
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
-                .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<Race>(src.IdRaceClass)));
+                .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
+
+            CreateMap<TeamSearchFilterRequest, TeamSearchFilter>()
+                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
+                .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
 
             CreateMap<TeamBoatRequest, TeamBoat>()
                 .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)))
@@ -266,6 +271,8 @@ namespace RaceBoard.Service.Mappings
             CreateMap<RaceClass, RaceClassResponse>();
 
             CreateMap<Race, RaceResponse>();
+
+            CreateMap<Team, TeamResponse>();
 
             #endregion
         }

@@ -1,4 +1,4 @@
-﻿namespace RaceBoard.DTOs.Team
+﻿namespace RaceBoard.DTOs.Team.Request
 {
     public class TeamContestantsRequest
     {
