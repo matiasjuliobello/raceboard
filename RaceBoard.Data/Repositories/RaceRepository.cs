@@ -1,4 +1,6 @@
-﻿using RaceBoard.Data.Helpers.Interfaces;
+﻿using Dapper;
+using RaceBoard.Common.Helpers.Pagination;
+using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
@@ -8,6 +10,17 @@ namespace RaceBoard.Data.Repositories
     public class RaceRepository : AbstractRepository, IRaceRepository
     {
         #region Private Members
+
+        private readonly Dictionary<string, string> _columnsMapping = new()
+        {
+            { "Id", "[Race].Id" },
+            { "RaceClass.Id", "[RaceClass].Id" },
+            { "RaceClass.Name", "[RaceClass].Name"},
+            { "Competition.Id", "[Competition].Id" },
+            { "Competition.Name", "[Competition].Name"},
+            { "Competition.StartDate", "[Competition].StartDate"},
+            { "Competition.EndDate", "[Competition].EndDate"}
+        };
 
         #endregion
 
@@ -36,6 +49,11 @@ namespace RaceBoard.Data.Repositories
             base.CancelTransactionalContext(context);
         }
 
+        public PaginatedResult<Race> Get(RaceSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        {
+            return this.GetRaces(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
+        }
+
         public void Create(Race race, ITransactionalContext? context = null)
         {
             this.CreateRace(race, context);
@@ -54,6 +72,62 @@ namespace RaceBoard.Data.Repositories
         #endregion
 
         #region Private Methods
+
+        private PaginatedResult<Race> GetRaces(RaceSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        {
+            string sql = $@"SELECT
+                                [Race].Id [Id],
+                                [RaceClass].Id [Id],
+                                [RaceClass].Name [Name],
+                                [Competition].Id [Id],
+                                [Competition].Name [Name],
+                                [Competition].StartDate [StartDate],
+                                [Competition].EndDate [EndDate]
+                            FROM [Race] [Race]
+                            INNER JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Race].IdRaceClass
+                            INNER JOIN [Competition] [Competition] ON [Competition].Id = [Race].IdCompetition";
+
+            QueryBuilder.AddCommand(sql);
+
+            ProcessSearchFilter(searchFilter);
+
+            QueryBuilder.AddSorting(sorting, _columnsMapping);
+            QueryBuilder.AddPagination(paginationFilter);
+
+            var races = new List<Race>();
+
+            PaginatedResult<Race> items = base.GetPaginatedResults<Race>
+                (
+                    (reader) =>
+                    {
+                        return reader.Read<Race, RaceClass, Competition, Race>
+                        (
+                            (race, raceClass, competition) =>
+                            {
+                                race.RaceClass = raceClass;
+                                race.Competition = competition;
+
+                                races.Add(race);
+
+                                return race;
+                            },
+                            splitOn: "Id, Id, Id"
+                        ).AsList();
+                    },
+                    context
+                );
+
+            items.Results = races;
+
+            return items;
+        }
+
+        private void ProcessSearchFilter(RaceSearchFilter searchFilter)
+        {
+            base.AddFilterCriteria(ConditionType.In, "Race", "Id", "ids", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Equal, "Competition", "Id", "idCompetition", searchFilter.Competition?.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "RaceClass", "Id", "idRaceClass", searchFilter.RaceClass?.Id);
+        }
 
         private void CreateRace(Race race, ITransactionalContext? context = null)
         {

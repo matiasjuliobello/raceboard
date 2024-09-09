@@ -1,4 +1,6 @@
-﻿using RaceBoard.Data.Helpers.Interfaces;
+﻿using Dapper;
+using RaceBoard.Common.Helpers.Pagination;
+using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
@@ -8,6 +10,14 @@ namespace RaceBoard.Data.Repositories
     public class OrganizationRepository : AbstractRepository, IOrganizationRepository
     {
         #region Private Members
+
+        private readonly Dictionary<string, string> _columnsMapping = new()
+        {
+            { "Id", "[Organization].Id" },
+            { "Name", "[Organization].Name" },
+            { "City.Id", "[City].Id" },
+            { "City.Name", "[City].Name"}
+        };
 
         #endregion
 
@@ -36,6 +46,11 @@ namespace RaceBoard.Data.Repositories
             base.CancelTransactionalContext(context);
         }
 
+        public PaginatedResult<Organization> Get(OrganizationSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        {
+            return this.GetOrganizations(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
+        }
+
         public void Create(Organization organization, ITransactionalContext? context = null)
         {
             this.CreateOrganization(organization, context);
@@ -54,6 +69,57 @@ namespace RaceBoard.Data.Repositories
         #endregion
 
         #region Private Methods
+
+        private PaginatedResult<Organization> GetOrganizations(OrganizationSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        {
+            string sql = $@"SELECT
+                                [Organization].Id [Id],
+                                [Organization].Name [Name],
+                                [City].Id [Id],
+                                [City].Name [Name]
+                            FROM [Organization] [Organization]
+                            INNER JOIN [City] [City] ON [City].Id = [Organization].IdCity";
+
+            QueryBuilder.AddCommand(sql);
+
+            ProcessSearchFilter(searchFilter);
+
+            QueryBuilder.AddSorting(sorting, _columnsMapping);
+            QueryBuilder.AddPagination(paginationFilter);
+
+            var organizations = new List<Organization>();
+
+            PaginatedResult<Organization> items = base.GetPaginatedResults<Organization>
+                (
+                    (reader) =>
+                    {
+                        return reader.Read<Organization, City, Organization>
+                        (
+                            (organization, city) =>
+                            {
+                                organization.City = city;
+
+                                organizations.Add(organization);
+
+                                return organization;
+                            },
+                            splitOn: "Id, Id"
+                        ).AsList();
+                    },
+                    context
+                );
+
+            items.Results = organizations;
+
+            return items;
+        }
+
+        private void ProcessSearchFilter(OrganizationSearchFilter searchFilter)
+        {
+            base.AddFilterCriteria(ConditionType.In, "Organization", "Id", "ids", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Like, "Organization", "Name", "name", searchFilter.Name);
+            base.AddFilterCriteria(ConditionType.Equal, "City", "Id", "idCity", searchFilter.City?.Id);
+        }
 
         private void CreateOrganization(Organization organization, ITransactionalContext? context = null)
         {

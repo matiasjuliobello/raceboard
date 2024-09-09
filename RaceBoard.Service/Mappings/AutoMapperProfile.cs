@@ -49,6 +49,7 @@ using RaceBoard.DTOs.Mast.Response;
 using RaceBoard.DTOs.RaceCategory.Request;
 using RaceBoard.DTOs.RaceCategory.Response;
 using RaceBoard.DTOs.RaceClass.Response;
+using RaceBoard.DTOs.Race.Response;
 
 namespace RaceBoard.Service.Mappings
 {
@@ -123,6 +124,8 @@ namespace RaceBoard.Service.Mappings
 
             CreateMap<OrganizationRequest, Organization>()
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => CreateObject<City>(src.IdCity)));
+            CreateMap<OrganizationSearchFilterRequest, OrganizationSearchFilter>()
+                .ForMember(dest => dest.City, opt => opt.MapFrom(src => CreateObject<City>(src.IdCity)));
 
             CreateMap<BoatRequest, Boat>()
                 .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
@@ -139,9 +142,11 @@ namespace RaceBoard.Service.Mappings
             CreateMap<RaceClassSearchFilterRequest, RaceClassSearchFilter>();
 
             CreateMap<RaceRequest, Race>()
-                .ForMember(dest => dest.RaceClass, opt => opt.MapFrom<RaceClass>(src => CreateObject<RaceClass>(src.IdRaceClass)))
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom<Competition>(src => CreateObject<Competition>(src.IdCompetition)));
-            CreateMap<RaceSearchFilterRequest, RaceSearchFilter>();
+                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
+                .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
+            CreateMap<RaceSearchFilterRequest, RaceSearchFilter>()
+                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
+                .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
 
             CreateMap<BloodTypeSearchFilterRequest, BloodTypeSearchFilter>();
 
@@ -259,6 +264,8 @@ namespace RaceBoard.Service.Mappings
             CreateMap<RaceCategory, RaceCategoryResponse>();
 
             CreateMap<RaceClass, RaceClassResponse>();
+
+            CreateMap<Race, RaceResponse>();
 
             #endregion
         }

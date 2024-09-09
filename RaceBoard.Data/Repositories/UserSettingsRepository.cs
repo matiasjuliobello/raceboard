@@ -45,7 +45,9 @@ namespace RaceBoard.Data.Repositories
         public void Create(UserSettings userSettings, ITransactionalContext? context = null)
         {
             string sql = $@"INSERT INTO [UserSettings]
-                            ( IdUser, IdCulture, IdLanguage, IdTimeZone )
+                            ( 
+                                IdUser, IdCulture, IdLanguage, IdTimeZone
+                            )
                             VALUES
                             (
                                 @idUser,
