@@ -4,7 +4,6 @@ using RaceBoard.Domain;
 using RaceBoard.Translations.Interfaces;
 using RaceBoard.Common.Enums;
 using RaceBoard.Data.Repositories.Interfaces;
-using RaceBoard.Data.Repositories;
 using RaceBoard.Common.Helpers.Interfaces;
 
 namespace RaceBoard.Business.Validators
@@ -88,7 +87,6 @@ namespace RaceBoard.Business.Validators
                 .Must(x => x.LoweringMoment > x.RaisingMoment)
                 .WithMessage(Translate("LoweringMomentMustOccurAfterRaisingMoment"))
                 .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
-
         }
     }
 }
