@@ -6,7 +6,7 @@ namespace RaceBoard.Business.Managers.Interfaces
 {
     public interface IUserManager
     {
-        PaginatedResult<User> Get(UserSearchFilter userSearchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null);
+        PaginatedResult<User> Get(UserSearchFilter userSearchFilter, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
         User GetById(int id, ITransactionalContext? context = null);
         User GetByUsername(string username, ITransactionalContext? context = null);
         User GetByEmailAddress(string emailAddress, ITransactionalContext? context = null);

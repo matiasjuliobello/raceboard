@@ -2,9 +2,9 @@
 {
     public class TeamSearchFilter
     {
-        public int[] Ids { get; set; }
-        public string Name { get; set; }
-        public Competition Competition { get; set; }
-        public RaceClass RaceClass { get; set; }
+        public int[]? Ids { get; set; }
+        public string? Name { get; set; }
+        public Competition? Competition { get; set; }
+        public RaceClass? RaceClass { get; set; }
     }
 }

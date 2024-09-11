@@ -52,12 +52,7 @@ namespace RaceBoard.Data.Repositories
 
         public bool Exists(int id, ITransactionalContext? context = null)
         {
-            string existsQuery = base.GetExistsQuery("[User]", "[Id] = @id");
-
-            QueryBuilder.AddCommand(existsQuery);
-            QueryBuilder.AddParameter("id", id);
-
-            return base.Execute<bool>(context);
+            return base.Exists(id, "User", "Id", context);
         }
 
         public bool ExistsDuplicate(User user, ITransactionalContext? context = null)
@@ -71,7 +66,7 @@ namespace RaceBoard.Data.Repositories
             return base.Execute<bool>(context);
         }
 
-        public PaginatedResult<User> Get(UserSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<User> Get(UserSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return this.GetUsers(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
         }
@@ -128,7 +123,7 @@ namespace RaceBoard.Data.Repositories
 
         #region Private Methods
 
-        private PaginatedResult<User> GetUsers(UserSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        private PaginatedResult<User> GetUsers(UserSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             string sql = $@"SELECT
                                 [User].Id [Id],
@@ -148,7 +143,7 @@ namespace RaceBoard.Data.Repositories
             return base.GetMultipleResultsWithPagination<User>(context);
         }
 
-        private void ProcessSearchFilter(UserSearchFilter searchFilter)
+        private void ProcessSearchFilter(UserSearchFilter? searchFilter = null)
         {
             if (searchFilter.Ids != null && searchFilter.Ids.Length > 0)
             {

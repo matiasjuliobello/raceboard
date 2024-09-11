@@ -27,7 +27,7 @@ namespace RaceBoard.Business.Managers
 
         #region IBloodTypeManager implementation
 
-        public PaginatedResult<BloodType> Get(BloodTypeSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<BloodType> Get(BloodTypeSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return _bloodTypeRepository.Get(searchFilter, paginationFilter, sorting, context);
         }

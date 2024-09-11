@@ -51,7 +51,7 @@ namespace RaceBoard.Business.Managers
 
         #region IUserManager implementation
 
-        public PaginatedResult<User> Get(UserSearchFilter userSearchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<User> Get(UserSearchFilter userSearchFilter, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return _userRepository.Get(userSearchFilter, paginationFilter, sorting, context);
         }

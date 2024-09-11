@@ -5,7 +5,6 @@ using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
 using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
-using RaceBoard.DTOs.Contestant.Request;
 using RaceBoard.DTOs.ContestantRole.Request;
 using RaceBoard.DTOs.ContestantRole.Response;
 using RaceBoard.Service.Controllers.Abstract;
@@ -34,15 +33,15 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpGet()]
-        public ActionResult<PaginatedResultResponse<ContestantRoleResponse>> GetContestantRoles([FromQuery] ContestantRoleSearchFilterRequest searchFilterRequest, [FromQuery] PaginationFilterRequest paginationFilterRequest, [FromQuery] SortingRequest sortingRequest)
+        public ActionResult<PaginatedResultResponse<ContestantRoleResponse>> Get([FromQuery] ContestantRoleSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<ContestantRoleSearchFilter>(searchFilterRequest);
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
             var sorting = _mapper.Map<Sorting>(sortingRequest);
 
-            var contestantRoles = _contestantRoleManager.Get(searchFilter, paginationFilter, sorting);
+            var data = _contestantRoleManager.Get(searchFilter, paginationFilter, sorting);
 
-            var response = _mapper.Map<PaginatedResultResponse<ContestantRoleResponse>>(contestantRoles);
+            var response = _mapper.Map<PaginatedResultResponse<ContestantRoleResponse>>(data);
 
             return Ok(response);
         }

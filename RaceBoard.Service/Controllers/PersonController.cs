@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using RaceBoard.Business.Managers;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
@@ -7,6 +8,7 @@ using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
 using RaceBoard.DTOs.Person.Request;
 using RaceBoard.DTOs.Person.Response;
+using RaceBoard.DTOs.Race.Response;
 using RaceBoard.Service.Controllers.Abstract;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Translations.Interfaces;
@@ -33,21 +35,31 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpGet()]
-        public ActionResult<PaginatedResultResponse<PersonResponse>> GetPersons([FromQuery] PersonSearchFilterRequest searchFilterRequest, [FromQuery] PaginationFilterRequest paginationFilterRequest, [FromQuery] SortingRequest sortingRequest)
+        public ActionResult<PaginatedResultResponse<PersonResponse>> Get([FromQuery] PersonSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<PersonSearchFilter>(searchFilterRequest);
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
             var sorting = _mapper.Map<Sorting>(sortingRequest);
 
-            var persons = _personManager.Get(searchFilter, paginationFilter, sorting);
+            var data = _personManager.Get(searchFilter, paginationFilter, sorting);
 
-            var response = _mapper.Map<PaginatedResultResponse<PersonResponse>>(persons);
+            var response = _mapper.Map<PaginatedResultResponse<PersonResponse>>(data);
+
+            return Ok(response);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<PersonResponse> Get([FromRoute] int id)
+        {
+            var data = _personManager.Get(id);
+
+            var response = _mapper.Map<PersonResponse>(data);
 
             return Ok(response);
         }
 
         [HttpPost()]
-        public ActionResult<int> CreatePerson(PersonRequest personRequest)
+        public ActionResult<int> Create(PersonRequest personRequest)
         {
             var person = _mapper.Map<Person>(personRequest);
 
@@ -57,7 +69,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpPut()]
-        public ActionResult UpdatePerson(PersonRequest personRequest)
+        public ActionResult Update(PersonRequest personRequest)
         {
             var person = _mapper.Map<Person>(personRequest);
 
@@ -67,7 +79,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpDelete("id")]
-        public ActionResult DeletePerson(int id)
+        public ActionResult Delete(int id)
         {
             _personManager.Delete(id);
 

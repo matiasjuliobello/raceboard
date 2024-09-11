@@ -37,21 +37,21 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpGet()]
-        public ActionResult<List<UserResponse>> GetUsers([FromQuery] UserSearchFilterRequest userSearchFilterRequest, [FromQuery] PaginationFilterRequest paginationFilterRequest, [FromQuery] SortingRequest sortingRequest)
+        public ActionResult<List<UserResponse>> Get([FromQuery] UserSearchFilterRequest userSearchFilterRequest, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<UserSearchFilterRequest, UserSearchFilter>(userSearchFilterRequest);
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
             var sorting = _mapper.Map<Sorting>(sortingRequest);
 
-            var users = _userManager.Get(searchFilter, paginationFilter, sorting);
+            var data = _userManager.Get(searchFilter, paginationFilter, sorting);
 
-            var response = _mapper.Map<PaginatedResultResponse<UserResponse>>(users);
+            var response = _mapper.Map<PaginatedResultResponse<UserResponse>>(data);
 
             return Ok(response);
         }
 
         [HttpPost()]
-        public ActionResult<int> CreateUser(UserRequest userRequest)
+        public ActionResult<int> Create(UserRequest userRequest)
         {
             var user = _mapper.Map<User>(userRequest);
 
@@ -61,7 +61,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpPut()]
-        public ActionResult UpdateUser(UserRequest userRequest)
+        public ActionResult Update(UserRequest userRequest)
         {
             var user = _mapper.Map<User>(userRequest);
 
@@ -71,7 +71,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpDelete("id")]
-        public ActionResult DeleteUser(int id)
+        public ActionResult Delete(int id)
         {
             var user = _userManager.Delete(id);
 

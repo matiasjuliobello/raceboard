@@ -33,15 +33,15 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpGet()]
-        public ActionResult<List<MedicalInsuranceResponse>> GetMedicalInsurances([FromQuery] MedicalInsuranceSearchFilterRequest searchFilterRequest, [FromQuery] PaginationFilterRequest paginationFilterRequest, [FromQuery] SortingRequest sortingRequest)
+        public ActionResult<List<MedicalInsuranceResponse>> Get([FromQuery] MedicalInsuranceSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<MedicalInsuranceSearchFilterRequest, MedicalInsuranceSearchFilter>(searchFilterRequest);
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
             var sorting = _mapper.Map<Sorting>(sortingRequest);
 
-            var medicalInsurances = _medicalInsuranceManager.Get(searchFilter, paginationFilter, sorting);
+            var data = _medicalInsuranceManager.Get(searchFilter, paginationFilter, sorting);
 
-            var response = _mapper.Map<PaginatedResultResponse<MedicalInsuranceResponse>>(medicalInsurances);
+            var response = _mapper.Map<PaginatedResultResponse<MedicalInsuranceResponse>>(data);
 
             return Ok(response);
         }

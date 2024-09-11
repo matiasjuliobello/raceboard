@@ -147,7 +147,7 @@ namespace RaceBoard.Data.Repositories
             return userSettingsList;
         }
 
-        private void ProcessSearchFilter(UserSettingsSearchFilter searchFilter)
+        private void ProcessSearchFilter(UserSettingsSearchFilter? searchFilter = null)
         {
             base.AddFilterCriteria(ConditionType.Equal, "UserSettings", "Id", "ids", searchFilter.Id);
             base.AddFilterCriteria(ConditionType.In, "UserSettings", "IdUser", "idUser", searchFilter.IdsUser);

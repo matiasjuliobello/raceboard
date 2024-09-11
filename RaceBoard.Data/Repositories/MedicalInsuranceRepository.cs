@@ -28,7 +28,7 @@ namespace RaceBoard.Data.Repositories
 
         #region IMedicalInsuranceRepository implementation
 
-        public PaginatedResult<MedicalInsurance> Get(MedicalInsuranceSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<MedicalInsurance> Get(MedicalInsuranceSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return this.GetMedicalInsurances(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
         }
@@ -37,7 +37,7 @@ namespace RaceBoard.Data.Repositories
 
         #region Private Methods
 
-        private PaginatedResult<MedicalInsurance> GetMedicalInsurances(MedicalInsuranceSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        private PaginatedResult<MedicalInsurance> GetMedicalInsurances(MedicalInsuranceSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             string sql = $@"SELECT
                                 [MedicalInsurance].Id [Id],
@@ -54,7 +54,7 @@ namespace RaceBoard.Data.Repositories
             return base.GetMultipleResultsWithPagination<MedicalInsurance>(context);
         }
 
-        private void ProcessSearchFilter(MedicalInsuranceSearchFilter searchFilter)
+        private void ProcessSearchFilter(MedicalInsuranceSearchFilter? searchFilter = null)
         {
             base.AddFilterCriteria(ConditionType.In, "MedicalInsurance", "Id", "ids", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Equal, "MedicalInsurance", "Name", "name", searchFilter.Name);

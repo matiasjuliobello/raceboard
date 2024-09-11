@@ -6,6 +6,6 @@ namespace RaceBoard.Business.Managers.Interfaces
 {
     public interface IBloodTypeManager
     {
-        PaginatedResult<BloodType> Get(BloodTypeSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null);        
+        PaginatedResult<BloodType> Get(BloodTypeSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);        
     }
 }

@@ -28,7 +28,7 @@ namespace RaceBoard.Data.Repositories
 
         #region IRaceCategoryRepository implementation
 
-        public PaginatedResult<RaceCategory> Get(RaceCategorySearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<RaceCategory> Get(RaceCategorySearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return this.GetRaceCategories(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
         }
@@ -37,7 +37,7 @@ namespace RaceBoard.Data.Repositories
 
         #region Private Methods
 
-        private PaginatedResult<RaceCategory> GetRaceCategories(RaceCategorySearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        private PaginatedResult<RaceCategory> GetRaceCategories(RaceCategorySearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             string sql = $@"SELECT
                                 [RaceCategory].Id [Id],
@@ -53,7 +53,7 @@ namespace RaceBoard.Data.Repositories
             return base.GetMultipleResultsWithPagination<RaceCategory>(context);
         }
 
-        private void ProcessSearchFilter(RaceCategorySearchFilter searchFilter)
+        private void ProcessSearchFilter(RaceCategorySearchFilter? searchFilter = null)
         {
             base.AddFilterCriteria(ConditionType.In, "RaceCategory", "Id", "ids", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Like, "RaceCategory", "Name", "name", searchFilter.Name);

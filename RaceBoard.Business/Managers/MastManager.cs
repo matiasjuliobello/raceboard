@@ -39,7 +39,7 @@ namespace RaceBoard.Business.Managers
 
         #region IMastManager implementation
 
-        public PaginatedResult<Mast> Get(MastSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<Mast> Get(MastSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return _mastRepository.Get(searchFilter, paginationFilter, sorting, context);
         }
@@ -81,7 +81,7 @@ namespace RaceBoard.Business.Managers
             }
         }
 
-        public PaginatedResult<MastFlag> GetFlags(MastFlagSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<MastFlag> GetFlags(MastFlagSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return _mastFlagRepository.Get(searchFilter, paginationFilter, sorting, context);
         }

@@ -8,6 +8,7 @@ using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
 using RaceBoard.DTOs.Race.Request;
 using RaceBoard.DTOs.Race.Response;
+using RaceBoard.DTOs.Team.Response;
 using RaceBoard.Service.Controllers.Abstract;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Translations.Interfaces;
@@ -34,7 +35,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpGet()]
-        public ActionResult<List<RaceResponse>> GetRaces([FromQuery] RaceSearchFilterRequest searchFilterRequest, [FromQuery] PaginationFilterRequest paginationFilterRequest, [FromQuery] SortingRequest sortingRequest)
+        public ActionResult<List<RaceResponse>> Get([FromQuery] RaceSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<RaceSearchFilterRequest, RaceSearchFilter>(searchFilterRequest);
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
@@ -47,8 +48,18 @@ namespace RaceBoard.Service.Controllers
             return Ok(response);
         }
 
+        [HttpGet("{id}")]
+        public ActionResult<RaceResponse> Get([FromRoute] int id)
+        {
+            var data = _raceManager.Get(id);
+
+            var response = _mapper.Map<RaceResponse>(data);
+
+            return Ok(response);
+        }
+
         [HttpPost()]
-        public ActionResult<int> CreateRace(RaceRequest raceRequest)
+        public ActionResult<int> Create(RaceRequest raceRequest)
         {
             var race = _mapper.Map<Race>(raceRequest);
 
@@ -58,7 +69,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpPut()]
-        public ActionResult UpdateRace(RaceRequest raceRequest)
+        public ActionResult Update(RaceRequest raceRequest)
         {
             var race = _mapper.Map<Race>(raceRequest);
 
@@ -68,7 +79,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpDelete("id")]
-        public ActionResult DeleteRace(int id)
+        public ActionResult Delete(int id)
         {
             _raceManager.Delete(id);
 

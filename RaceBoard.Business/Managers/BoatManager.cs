@@ -33,7 +33,7 @@ namespace RaceBoard.Business.Managers
 
         #region IBoatManager implementation
 
-        public PaginatedResult<Boat> Get(BoatSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<Boat> Get(BoatSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return _boatRepository.Get(searchFilter, paginationFilter, sorting, context);
         }

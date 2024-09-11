@@ -28,7 +28,7 @@ namespace RaceBoard.Data.Repositories
 
         #region IContestantRoleRepository implementation
 
-        public PaginatedResult<ContestantRole> Get(ContestantRoleSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<ContestantRole> Get(ContestantRoleSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return this.GetContestantRoles(searchFilter, paginationFilter, sorting, context);
         }
@@ -37,7 +37,7 @@ namespace RaceBoard.Data.Repositories
 
         #region Private Methods
 
-        private PaginatedResult<ContestantRole> GetContestantRoles(ContestantRoleSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        private PaginatedResult<ContestantRole> GetContestantRoles(ContestantRoleSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             string sql = $@"SELECT
                                 [ContestantRole].Id [Id],
@@ -54,7 +54,7 @@ namespace RaceBoard.Data.Repositories
             return base.GetMultipleResultsWithPagination<ContestantRole>();
         }
 
-        private void ProcessSearchFilter(ContestantRoleSearchFilter searchFilter)
+        private void ProcessSearchFilter(ContestantRoleSearchFilter? searchFilter = null)
         {
             base.AddFilterCriteria(ConditionType.In, "ContestantRole", "Id", "ids", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Like, "ContestantRole", "Name", "name", searchFilter.Name);

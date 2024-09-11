@@ -33,17 +33,14 @@ namespace RaceBoard.Business.Managers
 
         #region IPersonManager implementation
 
-        public PaginatedResult<Person> Get(PersonSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<Person> Get(PersonSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return _personRepository.Get(searchFilter, paginationFilter, sorting, context);
         }
 
         public Person Get(int id, ITransactionalContext? context = null)
         {
-            var searchFilter = new PersonSearchFilter() { Ids = new int[] { id } };
-            var persons = this.Get(searchFilter: searchFilter, paginationFilter: null, sorting: null, context: context);
-
-            var person = persons.Results.FirstOrDefault();
+            var person = _personRepository.Get(id, context);
             if (person == null)
                 throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
 

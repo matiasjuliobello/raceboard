@@ -38,9 +38,10 @@ namespace RaceBoard.IoC
             services.AddScoped<IRaceCategoryManager, RaceCategoryManager>();
             services.AddScoped<IRaceManager, RaceManager>();
             services.AddScoped<IPersonManager, PersonManager>();
-            services.AddScoped<IContestantManager, ContestantManager>();
             services.AddScoped<IContestantRoleManager, ContestantRoleManager>();
             services.AddScoped<ITeamManager, TeamManager>();
+            services.AddScoped<ITeamBoatManager, TeamBoatManager>();
+            services.AddScoped<ITeamContestantManager, TeamContestantManager>();
             services.AddScoped<IBloodTypeManager, BloodTypeManager>();
             services.AddScoped<IMedicalInsuranceManager, MedicalInsuranceManager>();
             //services.AddScoped<ICountryManager, CountryManager>();
@@ -57,9 +58,13 @@ namespace RaceBoard.IoC
             services.AddTransient<ICustomValidator<Person>, PersonValidator>();
             services.AddTransient<ICustomValidator<Boat>, BoatValidator>();
             services.AddTransient<ICustomValidator<Competition>, CompetitionValidator>();
-            services.AddTransient<ICustomValidator<Contestant>, ContestantValidator>();
             services.AddTransient<ICustomValidator<Mast>, MastValidator>();
             services.AddTransient<ICustomValidator<MastFlag>, MastFlagValidator>();
+            services.AddTransient<ICustomValidator<Organization>, OrganizationValidator>();
+            services.AddTransient<ICustomValidator<Race>, RaceValidator>();
+            services.AddTransient<ICustomValidator<Team>, TeamValidator>();
+            services.AddTransient<ICustomValidator<TeamBoat>, TeamBoatValidator>();
+            services.AddTransient<ICustomValidator<TeamContestant>, TeamContestantValidator>();
 
             #endregion
 
@@ -78,9 +83,10 @@ namespace RaceBoard.IoC
             services.AddScoped<IRaceCategoryRepository, RaceCategoryRepository>();
             services.AddScoped<IRaceRepository, RaceRepository>();
             services.AddScoped<IPersonRepository, PersonRepository>();
-            services.AddScoped<IContestantRepository, ContestantRepository>();
             services.AddScoped<IContestantRoleRepository, ContestantRoleRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
+            services.AddScoped<ITeamBoatRepository, TeamBoatRepository>();
+            services.AddScoped<ITeamContestantRepository, TeamContestantRepository>();
             services.AddScoped<IBloodTypeRepository, BloodTypeRepository>();
             services.AddScoped<IMedicalInsuranceRepository, MedicalInsuranceRepository>();
             services.AddScoped<IFlagRepository, FlagRepository>();

@@ -41,7 +41,7 @@ namespace RaceBoard.Service.Controllers
         #region Public Methods
 
         [HttpGet("{id}/settings")]
-        public ActionResult<UserSettingsResponse> GetUserSettings(int id)
+        public ActionResult<UserSettingsResponse> Get(int id)
         {
             var userSettings = _userSettingsManager.Get(id);
 
@@ -51,29 +51,29 @@ namespace RaceBoard.Service.Controllers
         }        
 
         [HttpPost("settings")]
-        public ActionResult CreateUserSettings(UserSettingsRequest userSettingsRequest)
+        public ActionResult Create(UserSettingsRequest userSettingsRequest)
         {
-            var userSettings = _mapper.Map<UserSettings>(userSettingsRequest);
+            var data = _mapper.Map<UserSettings>(userSettingsRequest);
 
-            _userSettingsManager.Create(userSettings);
+            _userSettingsManager.Create(data);
 
-            return Ok(userSettings.Id);
+            return Ok(data.Id);
         }
 
         [HttpPut("settings")]
-        public ActionResult UpdateUserSettings(UserSettingsRequest userSettingsRequest)
+        public ActionResult Update(UserSettingsRequest userSettingsRequest)
         {
-            var userSettings = _mapper.Map<UserSettings>(userSettingsRequest);
+            var data = _mapper.Map<UserSettings>(userSettingsRequest);
 
-            _userSettingsManager.Update(userSettings);
+            _userSettingsManager.Update(data);
 
             return Ok();
         }
 
         [HttpDelete("settings/{id}")]
-        public ActionResult DeleteUserSettings(int id)
+        public ActionResult Delete(int id)
         {
-            var userSettings = _userSettingsManager.Delete(id);
+            var data = _userSettingsManager.Delete(id);
 
             return Ok();
         }

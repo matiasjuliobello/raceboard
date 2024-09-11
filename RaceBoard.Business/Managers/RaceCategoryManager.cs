@@ -28,7 +28,7 @@ namespace RaceBoard.Business.Managers
 
         #region IRaceCategoryManager implementation
 
-        public PaginatedResult<RaceCategory> Get(RaceCategorySearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<RaceCategory> Get(RaceCategorySearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return _raceCategoryRepository.Get(searchFilter, paginationFilter, sorting, context);
         }

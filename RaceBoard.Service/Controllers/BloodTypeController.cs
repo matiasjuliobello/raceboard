@@ -33,15 +33,15 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpGet()]
-        public ActionResult<List<BloodTypeResponse>> GetBloodTypes([FromQuery] BloodTypeSearchFilterRequest searchFilterRequest, [FromQuery] PaginationFilterRequest paginationFilterRequest, [FromQuery] SortingRequest sortingRequest)
+        public ActionResult<List<BloodTypeResponse>> Get([FromQuery] BloodTypeSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<BloodTypeSearchFilterRequest, BloodTypeSearchFilter>(searchFilterRequest);
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
             var sorting = _mapper.Map<Sorting>(sortingRequest);
 
-            var bloodTypes = _bloodTypeManager.Get(searchFilter, paginationFilter, sorting);
+            var data = _bloodTypeManager.Get(searchFilter, paginationFilter, sorting);
 
-            var response = _mapper.Map<PaginatedResultResponse<BloodTypeResponse>>(bloodTypes);
+            var response = _mapper.Map<PaginatedResultResponse<BloodTypeResponse>>(data);
 
             return Ok(response);
         }

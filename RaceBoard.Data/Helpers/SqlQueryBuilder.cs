@@ -101,7 +101,7 @@ namespace RaceBoard.Data.Helpers
             _sorting.AddRange(mappedFields);
         }
 
-        public void AddPagination(IPaginationFilter paginationFilter)
+        public void AddPagination(IPaginationFilter? paginationFilter)
         {
             if (paginationFilter == null || (paginationFilter.PageNumber == 0 && paginationFilter.PageSize == 0))
                 paginationFilter = new PaginationFilter(disablePagination: true);

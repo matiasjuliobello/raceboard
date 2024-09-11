@@ -12,7 +12,7 @@ namespace RaceBoard.Data.Helpers.Interfaces
         void AddSorting(string sorting);
         void AddSorting(IEnumerable<string> sorting);
         void AddSorting(Sorting sorting, Dictionary<string, string> fieldsMappings);
-        void AddPagination(IPaginationFilter paginationFilter);
+        void AddPagination(IPaginationFilter? paginationFilter);
         IPaginationFilter GetPaginationFilter();
         void AddReturnLastInsertedId();
         string Build();

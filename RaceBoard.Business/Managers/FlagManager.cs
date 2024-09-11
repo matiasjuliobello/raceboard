@@ -27,7 +27,7 @@ namespace RaceBoard.Business.Managers
 
         #region IFlagManager implementation
 
-        public PaginatedResult<Flag> Get(FlagSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<Flag> Get(FlagSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return _flagRepository.Get(searchFilter, paginationFilter, sorting, context);
         }

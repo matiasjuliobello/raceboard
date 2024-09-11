@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using RaceBoard.Business.Managers;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
@@ -34,65 +33,53 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpGet()]
-        public ActionResult<PaginatedResultResponse<TeamResponse>> GetTeams([FromQuery] TeamSearchFilterRequest searchFilterRequest, [FromQuery] PaginationFilterRequest paginationFilterRequest, [FromQuery] SortingRequest sortingRequest)
+        public ActionResult<PaginatedResultResponse<TeamResponse>> Get([FromQuery] TeamSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<TeamSearchFilter>(searchFilterRequest);
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
             var sorting = _mapper.Map<Sorting>(sortingRequest);
 
-            var teams = _teamManager.Get(searchFilter, paginationFilter, sorting);
+            var data = _teamManager.Get(searchFilter, paginationFilter, sorting);
 
-            var response = _mapper.Map<PaginatedResultResponse<TeamResponse>>(teams);
+            var response = _mapper.Map<PaginatedResultResponse<TeamResponse>>(data);
+
+            return Ok(response);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<TeamResponse> Get([FromRoute] int id)
+        {
+            var data = _teamManager.Get(id);
+
+            var response = _mapper.Map<TeamResponse>(data);
 
             return Ok(response);
         }
 
         [HttpPost()]
-        public ActionResult<int> CreateTeam(TeamRequest teamRequest)
+        public ActionResult<int> Create(TeamRequest teamRequest)
         {
-            var team = _mapper.Map<Team>(teamRequest);
+            var data = _mapper.Map<Team>(teamRequest);
 
-            _teamManager.Create(team);
+            _teamManager.Create(data);
 
-            return Ok(team.Id);
+            return Ok(data.Id);
         }
 
         [HttpPut()]
-        public ActionResult UpdateTeam(TeamRequest teamRequest)
+        public ActionResult Update(TeamRequest teamRequest)
         {
-            var team = _mapper.Map<Team>(teamRequest);
+            var data = _mapper.Map<Team>(teamRequest);
 
-            _teamManager.Update(team);
+            _teamManager.Update(data);
 
             return Ok();
         }
 
         [HttpDelete("id")]
-        public ActionResult DeleteTeam(int id)
+        public ActionResult Delete(int id)
         {
             _teamManager.Delete(id);
-
-            return Ok();
-        }
-
-        [HttpPost("boats")]
-        public ActionResult SetTeamBoat([FromBody] TeamBoatRequest teamBoatRequest)
-        {
-            var teamBoat = _mapper.Map<TeamBoat>(teamBoatRequest);
-
-            _teamManager.SetBoat(teamBoat);
-
-            return Ok();
-        }
-
-        [HttpPost("contestants")]
-        public ActionResult SetTeamContestants([FromBody] TeamContestantsRequest teamContestantsRequest)
-        {
-            var teamContestants = _mapper.Map<List<TeamContestant>>(teamContestantsRequest.Contestants);
-
-            teamContestants.ForEach(x => x.Team = new Team() { Id = teamContestantsRequest.IdTeam });
-
-            _teamManager.SetContestants(teamContestants);
 
             return Ok();
         }

@@ -6,6 +6,6 @@ namespace RaceBoard.Business.Managers.Interfaces
 {
     public interface IMedicalInsuranceManager
     {
-        PaginatedResult<MedicalInsurance> Get(MedicalInsuranceSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null);
+        PaginatedResult<MedicalInsurance> Get(MedicalInsuranceSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
     }
 }

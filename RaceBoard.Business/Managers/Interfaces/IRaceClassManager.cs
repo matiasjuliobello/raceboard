@@ -6,6 +6,6 @@ namespace RaceBoard.Business.Managers.Interfaces
 {
     public interface IRaceClassManager
     {
-        PaginatedResult<RaceClass> Get(RaceClassSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null);
+        PaginatedResult<RaceClass> Get(RaceClassSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
     }
 }

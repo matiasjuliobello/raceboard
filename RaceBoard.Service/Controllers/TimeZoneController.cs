@@ -30,11 +30,11 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpGet()]
-        public ActionResult<List<TimeZoneResponse>> GetTimeZones()
+        public ActionResult<List<TimeZoneResponse>> Get()
         {
-            var projectTypes = _timeZoneManager.Get();
+            var data = _timeZoneManager.Get();
 
-            var response = _mapper.Map<List<TimeZone>, List<TimeZoneResponse>>(projectTypes);
+            var response = _mapper.Map<List<TimeZone>, List<TimeZoneResponse>>(data);
 
             return Ok(response);
         }

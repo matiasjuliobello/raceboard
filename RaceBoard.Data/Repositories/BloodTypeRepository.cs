@@ -28,7 +28,7 @@ namespace RaceBoard.Data.Repositories
 
         #region IBloodTypeRepository implementation
 
-        public PaginatedResult<BloodType> Get(BloodTypeSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<BloodType> Get(BloodTypeSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return this.GetBloodTypes(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
         }
@@ -37,7 +37,7 @@ namespace RaceBoard.Data.Repositories
 
         #region Private Methods
 
-        private PaginatedResult<BloodType> GetBloodTypes(BloodTypeSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        private PaginatedResult<BloodType> GetBloodTypes(BloodTypeSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             string sql = $@"SELECT
                                 [BloodType].Id [Id],
@@ -54,7 +54,7 @@ namespace RaceBoard.Data.Repositories
             return base.GetMultipleResultsWithPagination<BloodType>(context);
         }
 
-        private void ProcessSearchFilter(BloodTypeSearchFilter searchFilter)
+        private void ProcessSearchFilter(BloodTypeSearchFilter? searchFilter = null)
         {
             base.AddFilterCriteria(ConditionType.In, "BloodType", "Id", "id", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Like, "BloodType", "Name", "name", searchFilter.Name);

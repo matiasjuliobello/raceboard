@@ -33,7 +33,7 @@ namespace RaceBoard.Business.Managers
 
         #region ICompetitionManager implementation
 
-        public PaginatedResult<Competition> Get(CompetitionSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<Competition> Get(CompetitionSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return _competitionRepository.Get(searchFilter, paginationFilter, sorting, context);
         }

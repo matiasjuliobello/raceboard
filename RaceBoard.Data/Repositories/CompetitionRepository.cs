@@ -54,12 +54,7 @@ namespace RaceBoard.Data.Repositories
 
         public bool Exists(int id, ITransactionalContext? context = null)
         {
-            string existsQuery = base.GetExistsQuery("[Competition]", "[Id] = @id");
-
-            QueryBuilder.AddCommand(existsQuery);
-            QueryBuilder.AddParameter("id", id);
-
-            return base.Execute<bool>(context);
+            return base.Exists(id, "Competition", "Id", context);
         }
 
         public bool ExistsDuplicate(Competition competition, ITransactionalContext? context = null)
@@ -75,7 +70,7 @@ namespace RaceBoard.Data.Repositories
             return base.Execute<bool>(context);
         }
 
-        public PaginatedResult<Competition> Get(CompetitionSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<Competition> Get(CompetitionSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return this.GetCompetitions(searchFilter, paginationFilter, sorting, context);
         }
@@ -109,7 +104,7 @@ namespace RaceBoard.Data.Repositories
 
         #region Private Methods
 
-        private PaginatedResult<Competition> GetCompetitions(CompetitionSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        private PaginatedResult<Competition> GetCompetitions(CompetitionSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             string sql = $@"SELECT
                                 [Competition].Id [Id],
@@ -169,7 +164,7 @@ namespace RaceBoard.Data.Repositories
             return items;
         }
 
-        private void ProcessSearchFilter(CompetitionSearchFilter searchFilter)
+        private void ProcessSearchFilter(CompetitionSearchFilter? searchFilter = null)
         {
             base.AddFilterCriteria(ConditionType.In, "Competition", "Id", "id", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Equal, "Competition", "IdCity", "idCity", searchFilter.City?.Id);

@@ -7,18 +7,18 @@ using RaceBoard.Data.Repositories.Interfaces;
 
 namespace RaceBoard.Business.Validators
 {
-    public class ContestantValidator : AbstractCustomValidator<Contestant>
+    public class TeamContestantValidator : AbstractCustomValidator<TeamContestant>
     {
-        private readonly IContestantRepository _contestantRepository;
+        private readonly ITeamContestantRepository _teamContestantRepository;
 
-        public ContestantValidator
+        public TeamContestantValidator
             (
                 ITranslator translator,
-                IContestantRepository contestantRepository
+                ITeamContestantRepository teamContestantRepository
             )
             : base(translator)
         {
-            _contestantRepository = contestantRepository;
+            _teamContestantRepository = teamContestantRepository;
 
             base.SetRules(this.AddRules);
         }
@@ -30,15 +30,12 @@ namespace RaceBoard.Business.Validators
                 .WithMessage(Translate("IdIsRequired"))
                 .When(x => Scenario == Scenario.Update);
 
-            RuleFor(x => x.Person.Id)
-                .NotEmpty()
-                .WithMessage(Translate("PersonIsRequired"))
-                .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
-
             RuleFor(x => x)
-                .Must(x => !_contestantRepository.ExistsDuplicate(x, base.TransactionalContext))
+                .Must(x => !_teamContestantRepository.ExistsDuplicate(x, base.TransactionalContext))
                 .WithMessage(Translate("DuplicateRecordExists"))
                 .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
         }
     }
 }
+
+

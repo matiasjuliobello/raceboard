@@ -6,6 +6,7 @@ using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
 using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
+using RaceBoard.DTOs.Flag.Response;
 using RaceBoard.DTOs.Mast.Request;
 using RaceBoard.DTOs.Mast.Request;
 using RaceBoard.DTOs.Mast.Response;
@@ -35,21 +36,31 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpGet()]
-        public ActionResult<List<MastResponse>> GetMasts([FromQuery] MastSearchFilterRequest searchFilterRequest, [FromQuery] PaginationFilterRequest paginationFilterRequest, [FromQuery] SortingRequest sortingRequest)
+        public ActionResult<List<MastResponse>> Get([FromQuery] MastSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<MastSearchFilterRequest, MastSearchFilter>(searchFilterRequest);
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
             var sorting = _mapper.Map<Sorting>(sortingRequest);
 
-            var masts = _mastManager.Get(searchFilter, paginationFilter, sorting);
+            var data = _mastManager.Get(searchFilter, paginationFilter, sorting);
 
-            var response = _mapper.Map<PaginatedResultResponse<MastResponse>>(masts);
+            var response = _mapper.Map<PaginatedResultResponse<MastResponse>>(data);
+
+            return Ok(response);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<MastResponse> Get([FromRoute] int id)
+        {
+            var data = _mastManager.Get(id);
+
+            var response = _mapper.Map<MastResponse>(data);
 
             return Ok(response);
         }
 
         [HttpPost()]
-        public ActionResult<int> CreateMast(MastRequest mastRequest)
+        public ActionResult<int> Create(MastRequest mastRequest)
         {
             var mast = _mapper.Map<Mast>(mastRequest);
 
@@ -59,7 +70,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpGet("flags")]
-        public ActionResult<List<MastFlagResponse>> GetMastFlags([FromQuery] MastFlagSearchFilterRequest searchFilterRequest, [FromQuery] PaginationFilterRequest paginationFilterRequest, [FromQuery] SortingRequest sortingRequest)
+        public ActionResult<List<MastFlagResponse>> GetMastFlags([FromQuery] MastFlagSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<MastFlagSearchFilter>(searchFilterRequest);
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);

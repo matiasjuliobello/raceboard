@@ -2,7 +2,7 @@
 {
     public class MastSearchFilterRequest
     {
-        public int[] Ids { get; set; }
-        public int IdCompetition { get; set; }
+        public int[]? Ids { get; set; }
+        public int? IdCompetition { get; set; }
     }
 }

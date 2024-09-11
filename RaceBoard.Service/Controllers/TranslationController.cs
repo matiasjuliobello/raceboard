@@ -29,13 +29,13 @@ namespace RaceBoard.Service.Controllers
 
         [HttpGet()]
         [AllowAnonymous]
-        public ActionResult<List<TranslationResponse>> GetTranslations()
+        public ActionResult<List<TranslationResponse>> Get()
         {
             string language = "es-AR";
 
-            var translations = _translationProvider.Get(language);
+            var data = _translationProvider.Get(language);
 
-            var response = _mapper.Map<List<TranslationResponse>>(translations);
+            var response = _mapper.Map<List<TranslationResponse>>(data);
 
             return Ok(response);
         }

@@ -12,7 +12,7 @@ namespace RaceBoard.Data.Repositories.Interfaces
         bool Exists(int id, ITransactionalContext? context = null);
         bool ExistsDuplicate(MastFlag mastFlag, ITransactionalContext? context = null);
 
-        PaginatedResult<MastFlag> Get(MastFlagSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null);
+        PaginatedResult<MastFlag> Get(MastFlagSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
         void Create(MastFlag mastFlag, ITransactionalContext? context = null);
         void Update(MastFlag mastFlag, ITransactionalContext? context = null);
     }

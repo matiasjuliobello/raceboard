@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using RaceBoard.Business.Managers;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
 using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
+using RaceBoard.DTOs.Boat.Response;
 using RaceBoard.DTOs.Flag.Request;
 using RaceBoard.DTOs.Flag.Response;
 using RaceBoard.Service.Controllers.Abstract;
@@ -33,15 +35,15 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpGet()]
-        public ActionResult<List<FlagResponse>> GetFlags([FromQuery] FlagSearchFilterRequest searchFilterRequest, [FromQuery] PaginationFilterRequest paginationFilterRequest, [FromQuery] SortingRequest sortingRequest)
+        public ActionResult<List<FlagResponse>> Get([FromQuery] FlagSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<FlagSearchFilterRequest, FlagSearchFilter>(searchFilterRequest);
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
             var sorting = _mapper.Map<Sorting>(sortingRequest);
 
-            var flags = _flagManager.Get(searchFilter, paginationFilter, sorting);
+            var data = _flagManager.Get(searchFilter, paginationFilter, sorting);
 
-            var response = _mapper.Map<PaginatedResultResponse<FlagResponse>>(flags);
+            var response = _mapper.Map<PaginatedResultResponse<FlagResponse>>(data);
 
             return Ok(response);
         }

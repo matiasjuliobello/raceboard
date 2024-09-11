@@ -31,7 +31,7 @@ namespace RaceBoard.Data.Repositories
 
         #region IRaceClassRepository implementation
 
-        public PaginatedResult<RaceClass> Get(RaceClassSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<RaceClass> Get(RaceClassSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return this.GetRaceCategories(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
         }
@@ -40,7 +40,7 @@ namespace RaceBoard.Data.Repositories
 
         #region Private Methods
 
-        private PaginatedResult<RaceClass> GetRaceCategories(RaceClassSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        private PaginatedResult<RaceClass> GetRaceCategories(RaceClassSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             string sql = $@"SELECT
                                 [RaceClass].Id [Id],
@@ -83,7 +83,7 @@ namespace RaceBoard.Data.Repositories
             return items;
         }
 
-        private void ProcessSearchFilter(RaceClassSearchFilter searchFilter)
+        private void ProcessSearchFilter(RaceClassSearchFilter? searchFilter = null)
         {
             base.AddFilterCriteria(ConditionType.In, "RaceClass", "Id", "id", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Equal, "RaceClass", "IdRaceCategory", "idRaceCategory", searchFilter.RaceCategory?.Id);

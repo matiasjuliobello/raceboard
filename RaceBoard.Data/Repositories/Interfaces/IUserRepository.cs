@@ -12,7 +12,7 @@ namespace RaceBoard.Data.Repositories.Interfaces
         bool Exists(int id, ITransactionalContext? context = null);
         bool ExistsDuplicate(User user, ITransactionalContext? context = null);
 
-        PaginatedResult<User> Get(UserSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null);
+        PaginatedResult<User> Get(UserSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
         User GetById(int id, ITransactionalContext? context = null);
         User GetByUsername(string username, ITransactionalContext? context = null);
         User GetByEmailAddress(string emailAddress, ITransactionalContext? context = null);

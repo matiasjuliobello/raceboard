@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using RaceBoard.Business.Managers;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
@@ -7,6 +8,7 @@ using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
 using RaceBoard.DTOs.Boat.Request;
 using RaceBoard.DTOs.Boat.Response;
+using RaceBoard.DTOs.Race.Response;
 using RaceBoard.Service.Controllers.Abstract;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Translations.Interfaces;
@@ -33,7 +35,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpGet()]
-        public ActionResult<PaginatedResultResponse<BoatResponse>> GetBoats([FromQuery] BoatSearchFilterRequest searchFilterRequest, [FromQuery] PaginationFilterRequest paginationFilterRequest, [FromQuery] SortingRequest sortingRequest)
+        public ActionResult<PaginatedResultResponse<BoatResponse>> Get([FromQuery] BoatSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<BoatSearchFilter>(searchFilterRequest);
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
@@ -46,8 +48,18 @@ namespace RaceBoard.Service.Controllers
             return Ok(response);
         }
 
+        [HttpGet("{id}")]
+        public ActionResult<BoatResponse> Get([FromRoute] int id)
+        {
+            var data = _boatManager.Get(id);
+
+            var response = _mapper.Map<BoatResponse>(data);
+
+            return Ok(response);
+        }
+
         [HttpPost()]
-        public ActionResult<int> CreateBoat(BoatRequest boatRequest)
+        public ActionResult<int> Create(BoatRequest boatRequest)
         {
             var boat = _mapper.Map<Boat>(boatRequest);
 
@@ -57,7 +69,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpPut()]
-        public ActionResult UpdateBoat(BoatRequest boatRequest)
+        public ActionResult Update(BoatRequest boatRequest)
         {
             var boat = _mapper.Map<Boat>(boatRequest);
 
@@ -67,7 +79,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpDelete("id")]
-        public ActionResult DeleteBoat(int id)
+        public ActionResult Delete(int id)
         {
             _boatManager.Delete(id);
 

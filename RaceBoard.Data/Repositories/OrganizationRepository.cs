@@ -46,9 +46,16 @@ namespace RaceBoard.Data.Repositories
             base.CancelTransactionalContext(context);
         }
 
-        public PaginatedResult<Organization> Get(OrganizationSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<Organization> Get(OrganizationSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return this.GetOrganizations(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
+        }
+
+        public Organization? Get(int id, ITransactionalContext? context = null)
+        {
+            var searchFilter = new OrganizationSearchFilter() { Ids = new int[] { id } };
+
+            return this.GetOrganizations(searchFilter: searchFilter, paginationFilter: null, sorting: null, context: context).Results.FirstOrDefault();
         }
 
         public void Create(Organization organization, ITransactionalContext? context = null)
@@ -70,7 +77,7 @@ namespace RaceBoard.Data.Repositories
 
         #region Private Methods
 
-        private PaginatedResult<Organization> GetOrganizations(OrganizationSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        private PaginatedResult<Organization> GetOrganizations(OrganizationSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             string sql = $@"SELECT
                                 [Organization].Id [Id],
@@ -114,8 +121,11 @@ namespace RaceBoard.Data.Repositories
             return items;
         }
 
-        private void ProcessSearchFilter(OrganizationSearchFilter searchFilter)
+        private void ProcessSearchFilter(OrganizationSearchFilter? searchFilter = null)
         {
+            if (searchFilter == null)
+                return;
+
             base.AddFilterCriteria(ConditionType.In, "Organization", "Id", "ids", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Like, "Organization", "Name", "name", searchFilter.Name);
             base.AddFilterCriteria(ConditionType.Equal, "City", "Id", "idCity", searchFilter.City?.Id);

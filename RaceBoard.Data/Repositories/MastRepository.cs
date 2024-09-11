@@ -48,12 +48,7 @@ namespace RaceBoard.Data.Repositories
 
         public bool Exists(int id, ITransactionalContext? context = null)
         {
-            string existsQuery = base.GetExistsQuery("[Mast]", "[Id] = @id");
-
-            QueryBuilder.AddCommand(existsQuery);
-            QueryBuilder.AddParameter("id", id);
-
-            return base.Execute<bool>(context);
+            return base.Exists(id, "Mast", "Id", context);
         }
 
         public bool ExistsDuplicate(Mast mast, ITransactionalContext? context = null)
@@ -66,7 +61,7 @@ namespace RaceBoard.Data.Repositories
             return base.Execute<bool>(context);
         }
 
-        public PaginatedResult<Mast> Get(MastSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<Mast> Get(MastSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return this.GetMasts(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
         }
@@ -80,7 +75,7 @@ namespace RaceBoard.Data.Repositories
 
         #region Private Methods
 
-        private PaginatedResult<Mast> GetMasts(MastSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        private PaginatedResult<Mast> GetMasts(MastSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             string sql = $@"SELECT
                                 [Mast].Id [Id],
@@ -123,7 +118,7 @@ namespace RaceBoard.Data.Repositories
             return items;
         }
 
-        private void ProcessSearchFilter(MastSearchFilter searchFilter)
+        private void ProcessSearchFilter(MastSearchFilter? searchFilter = null)
         {
             base.AddFilterCriteria(ConditionType.In, "Mast", "Id", "ids", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Equal, "Mast", "IdCompetition", "idCompetition", searchFilter.Competition?.Id);

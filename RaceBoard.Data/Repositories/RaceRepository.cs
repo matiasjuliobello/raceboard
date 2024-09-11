@@ -49,9 +49,16 @@ namespace RaceBoard.Data.Repositories
             base.CancelTransactionalContext(context);
         }
 
-        public PaginatedResult<Race> Get(RaceSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<Race> Get(RaceSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return this.GetRaces(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
+        }
+
+        public Race? Get(int id, ITransactionalContext? context = null)
+        {
+            var searchFilter = new RaceSearchFilter() { Ids = new int[] { id } };
+
+            return this.GetRaces(searchFilter: searchFilter, paginationFilter: null, sorting: null, context: context).Results.FirstOrDefault();
         }
 
         public void Create(Race race, ITransactionalContext? context = null)
@@ -73,7 +80,7 @@ namespace RaceBoard.Data.Repositories
 
         #region Private Methods
 
-        private PaginatedResult<Race> GetRaces(RaceSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        private PaginatedResult<Race> GetRaces(RaceSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             string sql = $@"SELECT
                                 [Race].Id [Id],
@@ -122,8 +129,11 @@ namespace RaceBoard.Data.Repositories
             return items;
         }
 
-        private void ProcessSearchFilter(RaceSearchFilter searchFilter)
+        private void ProcessSearchFilter(RaceSearchFilter? searchFilter = null)
         {
+            if (searchFilter == null)
+                return;
+
             base.AddFilterCriteria(ConditionType.In, "Race", "Id", "ids", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Equal, "Competition", "Id", "idCompetition", searchFilter.Competition?.Id);
             base.AddFilterCriteria(ConditionType.Equal, "RaceClass", "Id", "idRaceClass", searchFilter.RaceClass?.Id);

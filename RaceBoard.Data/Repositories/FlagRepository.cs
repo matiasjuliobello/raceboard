@@ -30,15 +30,10 @@ namespace RaceBoard.Data.Repositories
 
         public bool Exists(int id, ITransactionalContext? context = null)
         {
-            string existsQuery = base.GetExistsQuery("[Flag]", "[Id] = @id");
-
-            QueryBuilder.AddCommand(existsQuery);
-            QueryBuilder.AddParameter("id", id);
-
-            return base.Execute<bool>(context);
+            return base.Exists(id, "Flag", "Id", context);
         }
 
-        public PaginatedResult<Flag> Get(FlagSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<Flag> Get(FlagSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return this.GetFlags(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
         }
@@ -47,7 +42,7 @@ namespace RaceBoard.Data.Repositories
 
         #region Private Methods
 
-        private PaginatedResult<Flag> GetFlags(FlagSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        private PaginatedResult<Flag> GetFlags(FlagSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             string sql = $@"SELECT
                                 [Flag].Id [Id],
@@ -64,7 +59,7 @@ namespace RaceBoard.Data.Repositories
             return base.GetMultipleResultsWithPagination<Flag>(context);
         }
 
-        private void ProcessSearchFilter(FlagSearchFilter searchFilter)
+        private void ProcessSearchFilter(FlagSearchFilter? searchFilter = null)
         {
             base.AddFilterCriteria(ConditionType.In, "Flag", "Id", "ids", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Like, "Flag", "Name", "name", searchFilter.Name);

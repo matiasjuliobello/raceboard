@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public Team Team {  get; set; }
-        public Contestant Contestant { get; set; }
+        public Person Contestant { get; set; }
         public ContestantRole Role { get; set; }
     }
 }

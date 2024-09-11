@@ -29,7 +29,7 @@ namespace RaceBoard.Business.Managers
 
         #region IContestantRoleManager implementation
 
-        public PaginatedResult<ContestantRole> Get(ContestantRoleSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<ContestantRole> Get(ContestantRoleSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return _contestantRoleRepository.Get(searchFilter, paginationFilter, sorting, context);
         }

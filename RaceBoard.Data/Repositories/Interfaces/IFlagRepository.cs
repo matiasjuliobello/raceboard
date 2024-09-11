@@ -7,6 +7,6 @@ namespace RaceBoard.Data.Repositories.Interfaces
     {
         bool Exists(int id, ITransactionalContext? context = null);
 
-        public PaginatedResult<Flag> Get(FlagSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null);
+        public PaginatedResult<Flag> Get(FlagSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
     }
 }

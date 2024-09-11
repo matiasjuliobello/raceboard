@@ -33,15 +33,15 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpGet()]
-        public ActionResult<List<RaceCategoryResponse>> GetRaceCategoryes([FromQuery] RaceCategorySearchFilterRequest searchFilterRequest, [FromQuery] PaginationFilterRequest paginationFilterRequest, [FromQuery] SortingRequest sortingRequest)
+        public ActionResult<List<RaceCategoryResponse>> Get([FromQuery] RaceCategorySearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<RaceCategorySearchFilterRequest, RaceCategorySearchFilter>(searchFilterRequest);
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
             var sorting = _mapper.Map<Sorting>(sortingRequest);
 
-            var raceCategories = _raceCategoryManager.Get(searchFilter, paginationFilter, sorting);
+            var data = _raceCategoryManager.Get(searchFilter, paginationFilter, sorting);
 
-            var response = _mapper.Map<PaginatedResultResponse<RaceCategoryResponse>>(raceCategories);
+            var response = _mapper.Map<PaginatedResultResponse<RaceCategoryResponse>>(data);
 
             return Ok(response);
         }

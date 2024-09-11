@@ -50,9 +50,35 @@ namespace RaceBoard.Data.Repositories
             base.CancelTransactionalContext(context);
         }
 
-        public PaginatedResult<Team> Get(TeamSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public bool Exists(int id, ITransactionalContext? context = null)
+        {
+            return base.Exists(id, "Team", "Id", context);
+        }
+
+        public bool ExistsDuplicate(Team team, ITransactionalContext? context = null)
+        {
+            string condition = "[Name] = @name AND [IdCompetition] = @idCompetition AND [IdRaceClass] = @idRaceClass";
+
+            string existsQuery = base.GetExistsDuplicateQuery("[Team]", condition, "Id", "@id");
+
+            QueryBuilder.AddCommand(existsQuery);
+            QueryBuilder.AddParameter("name", team.Name);
+            QueryBuilder.AddParameter("idCompetition", team.Competition.Id);
+            QueryBuilder.AddParameter("idRaceClass", team.RaceClass.Id);
+            QueryBuilder.AddParameter("id", team.Id);
+
+            return base.Execute<bool>(context);
+        }
+
+        public PaginatedResult<Team> Get(TeamSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return this.GetTeams(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
+        }
+        public Team? Get(int id, ITransactionalContext? context = null)
+        {
+            var searchFilter = new TeamSearchFilter() { Ids = new int[] { id } };
+
+            return this.GetTeams(searchFilter: searchFilter, paginationFilter: null, sorting: null, context: context).Results.FirstOrDefault();
         }
 
         public void Create(Team team, ITransactionalContext? context = null)
@@ -65,26 +91,16 @@ namespace RaceBoard.Data.Repositories
             this.UpdateTeam(team, context);
         }
 
-        public int Delete(int id, ITransactionalContext? context = null)
+        public int Delete(Team team, ITransactionalContext? context = null)
         {
-            return base.Delete("[Team]", id, "Id", context);
-        }
-
-        public void SetBoat(TeamBoat teamBoat, ITransactionalContext? context = null)
-        {
-            this.SetTeamBoat(teamBoat, context);
-        }
-
-        public void SetContestants(List<TeamContestant> teamContestants, ITransactionalContext? context = null)
-        {
-            this.SetTeamContestants(teamContestants, context);
+            return this.DeleteTeam(team, context);
         }
 
         #endregion
 
         #region Private Methods
 
-        private PaginatedResult<Team> GetTeams(TeamSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        private PaginatedResult<Team> GetTeams(TeamSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             string sql = $@"SELECT
                                 [Team].Id [Id],
@@ -134,7 +150,7 @@ namespace RaceBoard.Data.Repositories
             return items;
         }
 
-        private void ProcessSearchFilter(TeamSearchFilter searchFilter)
+        private void ProcessSearchFilter(TeamSearchFilter? searchFilter = null)
         {
             base.AddFilterCriteria(ConditionType.In, "Team", "Id", "ids", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Like, "Team", "Name", "name", searchFilter.Name);
@@ -179,61 +195,9 @@ namespace RaceBoard.Data.Repositories
             base.ExecuteAndGetRowsAffected(context);
         }
 
-        private void SetTeamBoat(TeamBoat teamBoat, ITransactionalContext? context = null)
+        private int DeleteTeam(Team team, ITransactionalContext? context = null)
         {
-            int affectedRecords = this.DeleteTeamBoat(teamBoat.Team.Id, context);
-
-            string sql = @" INSERT INTO [Team_Boat]
-                            ( IdTeam, IdBoat )
-                        VALUES
-                            ( @idTeam, @idBoat )";
-
-            QueryBuilder.AddCommand(sql);
-
-            QueryBuilder.AddParameter("idTeam", teamBoat.Team.Id);
-            QueryBuilder.AddParameter("idBoat", teamBoat.Boat.Id);
-
-            QueryBuilder.AddReturnLastInsertedId();
-
-            base.Execute<int>(context);
-    }
-
-        private int DeleteTeamBoat(int idTeam, ITransactionalContext? context = null)
-        {
-            return base.Delete("[Team_Boat]", idTeam, "IdTeam", context);
-        }
-
-        private void SetTeamContestants(List<TeamContestant> teamContestants, ITransactionalContext? context = null)
-        {
-            if (teamContestants == null)
-                return;
-
-            int idTeam = teamContestants.First().Team.Id;
-
-            int affectedRecords = this.DeleteTeamContestants(idTeam, context);
-
-            foreach (var teamContestant in teamContestants)
-            {
-                string sql = @" INSERT INTO [Team_Contestant]
-                                    ( IdTeam, IdContestant, IdContestantRole )
-                                VALUES
-                                    ( @idTeam, @idContestant, @idContestantRole )";
-
-                QueryBuilder.AddCommand(sql);
-
-                QueryBuilder.AddParameter("idTeam", idTeam);
-                QueryBuilder.AddParameter("idContestant", teamContestant.Contestant.Id);
-                QueryBuilder.AddParameter("idContestantRole", teamContestant.Role.Id);
-
-                QueryBuilder.AddReturnLastInsertedId();
-
-                base.Execute<int>(context);
-            }
-        }
-
-        private int DeleteTeamContestants(int idTeam, ITransactionalContext? context = null)
-        {
-            return base.Delete("[Team_Contestant]", idTeam, "IdTeam", context);
+            return base.Delete("[Team]", team.Id, "Id", context);
         }
 
         #endregion

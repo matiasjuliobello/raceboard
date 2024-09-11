@@ -5,38 +5,54 @@ using RaceBoard.Data;
 using RaceBoard.Translations.Interfaces;
 using RaceBoard.Domain;
 using RaceBoard.Common.Helpers.Pagination;
+using RaceBoard.Common.Enums;
+using RaceBoard.Common.Exceptions;
+using RaceBoard.Business.Validators.Interfaces;
 
 namespace RaceBoard.Business.Managers
 {
     public class RaceManager : AbstractManager, IRaceManager
     {
         private readonly IRaceRepository _raceRepository;
+        private readonly ICustomValidator<Race> _raceValidator;
 
         #region Constructors
 
         public RaceManager
             (
-                IRaceRepository raceRepository,
+                IRaceRepository repository,
+                ICustomValidator<Race> validator,
                 ITranslator translator
             ) : base(translator)
         {
-            _raceRepository = raceRepository;
+            _raceRepository = repository;
+            _raceValidator = validator;
         }
 
         #endregion
 
         #region IRaceManager implementation
 
-        public PaginatedResult<Race> Get(RaceSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<Race> Get(RaceSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return _raceRepository.Get(searchFilter, paginationFilter, sorting, context);
         }
 
+        public Race Get(int id, ITransactionalContext? context = null)
+        {
+            var race = _raceRepository.Get(id, context);
+            if (race == null)
+                throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
+
+            return race;
+        }
+
         public void Create(Race race, ITransactionalContext? context = null)
         {
-            //_raceValidator.SetTransactionalContext(context);
-            //if (!_raceValidator.IsValid(race, Scenario.Create))
-            //    throw new FunctionalException(ErrorType.ValidationError, _raceValidator.Errors);
+            _raceValidator.SetTransactionalContext(context);
+
+            if (!_raceValidator.IsValid(race, Scenario.Create))
+                throw new FunctionalException(ErrorType.ValidationError, _raceValidator.Errors);
 
             if (context == null)
                 context = _raceRepository.GetTransactionalContext(TransactionContextScope.Internal);
@@ -46,7 +62,6 @@ namespace RaceBoard.Business.Managers
                 _raceRepository.Create(race, context);
 
                 _raceRepository.ConfirmTransactionalContext(context);
-
             }
             catch (Exception)
             {
@@ -57,9 +72,10 @@ namespace RaceBoard.Business.Managers
 
         public void Update(Race race, ITransactionalContext? context = null)
         {
-            //_raceValidator.SetTransactionalContext(context);
-            //if (!_raceValidator.IsValid(race, Scenario.Update))
-            //    throw new FunctionalException(ErrorType.ValidationError, _raceValidator.Errors);
+            _raceValidator.SetTransactionalContext(context);
+
+            if (!_raceValidator.IsValid(race, Scenario.Update))
+                throw new FunctionalException(ErrorType.ValidationError, _raceValidator.Errors);
 
             if (context == null)
                 context = _raceRepository.GetTransactionalContext(TransactionContextScope.Internal);
@@ -69,7 +85,6 @@ namespace RaceBoard.Business.Managers
                 _raceRepository.Update(race, context);
 
                 _raceRepository.ConfirmTransactionalContext(context);
-
             }
             catch (Exception)
             {
@@ -80,9 +95,12 @@ namespace RaceBoard.Business.Managers
 
         public void Delete(int id, ITransactionalContext? context = null)
         {
-            //_raceValidator.SetTransactionalContext(context);
-            //if (!_raceValidator.IsValid(race, Scenario.Create))
-            //    throw new FunctionalException(ErrorType.ValidationError, _raceValidator.Errors);
+            var race = this.Get(id, context);
+
+            _raceValidator.SetTransactionalContext(context);
+
+            if (!_raceValidator.IsValid(race, Scenario.Delete))
+                throw new FunctionalException(ErrorType.ValidationError, _raceValidator.Errors);
 
             if (context == null)
                 context = _raceRepository.GetTransactionalContext(TransactionContextScope.Internal);
@@ -92,7 +110,6 @@ namespace RaceBoard.Business.Managers
                 _raceRepository.Delete(id, context);
 
                 _raceRepository.ConfirmTransactionalContext(context);
-
             }
             catch (Exception)
             {

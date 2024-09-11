@@ -2,8 +2,8 @@
 {
     public class RaceSearchFilterRequest
     {
-        public int[] Ids { get; set; }
-        public int IdCompetition { get; set; }
-        public int IdRaceClass { get; set; }
+        public int[]? Ids { get; set; }
+        public int? IdCompetition { get; set; }
+        public int? IdRaceClass { get; set; }
     }
 }

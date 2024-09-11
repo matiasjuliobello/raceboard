@@ -7,7 +7,6 @@ using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data.Constants;
 using RaceBoard.Data.Helpers.Interfaces;
-using RaceBoard.Domain;
 
 namespace RaceBoard.Data.Repositories.Base.Abstract
 {
@@ -32,12 +31,15 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
             LessOrEqualThan = 10
         }
 
-        protected void __FixPaginationResults<T>(ref PaginatedResult<T> items, IEnumerable<T> results, IPaginationFilter paginationFilter)
+        protected void __FixPaginationResults<T>(ref PaginatedResult<T> items, IEnumerable<T> results, IPaginationFilter? paginationFilter)
         {
             items.Results = results;
 
-            if (paginationFilter.PageSize == 0)
-                paginationFilter.PageSize = 25;
+            if (paginationFilter != null)
+            {
+                if (paginationFilter.PageSize == 0)
+                    paginationFilter.PageSize = 25;
+            }
 
             items = new PaginatedResult<T>(results.Count(), paginationFilter, items.Results);
         }
@@ -175,6 +177,16 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
         protected string GetExistsQuery(string tableName, string condition)
         {
             return $"SELECT IIF(EXISTS(SELECT 1 FROM {tableName} WHERE {condition}), {SqlBoolean.True}, {SqlBoolean.False})";
+        }
+
+        protected bool Exists(int id, string tableName, string columnName = "Id", ITransactionalContext? context = null)
+        {
+            string existsQuery = this.GetExistsQuery($"{tableName}", $"{columnName} = @{columnName}");
+
+            QueryBuilder.AddCommand(existsQuery);
+            QueryBuilder.AddParameter(columnName, id);
+
+            return this.Execute<bool>(context);
         }
 
         protected string GetExistsDatesOverlappingCondition(string startDateColumnName, string endDateColumnName, string startDateParameterName, string endDateParameterName)
@@ -401,7 +413,7 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
 
             return result;
         }
-        
+
         private void SafeExecute(Action<Action<GridReader>, IDbConnection, IDbTransaction?, int?> executionCommand, Action<GridReader> onReaderExecution, ITransactionalContext? context = null, int? timeout = _DEFAULT_TIMEOUT)
         {
             IDbConnection connection = null;
@@ -477,12 +489,12 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
                     commandTimeout: timeout
                 );
         }
-        
+
         private PaginatedResult<T> GetPaginatedResults<T>(Func<GridReader, IEnumerable<T>> mappingFunction, IDbConnection connection, IDbTransaction? transaction = null, int? timeout = null)
         {
             string query = _queryBuilder.Build();
             object parameters = _queryBuilder.GetParameters();
-            IPaginationFilter paginationFilter = _queryBuilder.GetPaginationFilter();
+            IPaginationFilter? paginationFilter = _queryBuilder.GetPaginationFilter();
 
             using (var multi = connection.QueryMultiple(sql: query, param: parameters, transaction: transaction, commandTimeout: timeout))
             {
@@ -493,12 +505,12 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
                 return CreatePaginatedResult(results, totalRecords, paginationFilter);
             }
         }
-        
+
         private PaginatedResult<T> GetPaginatedResultsWithoutMappingFunction<T>(IDbConnection connection, IDbTransaction? transaction = null, int? timeout = null)
         {
             string query = _queryBuilder.Build();
             object parameters = _queryBuilder.GetParameters();
-            IPaginationFilter paginationFilter = _queryBuilder.GetPaginationFilter();
+            IPaginationFilter? paginationFilter = _queryBuilder.GetPaginationFilter();
 
             using (var multi = connection.QueryMultiple(sql: query, param: parameters, transaction: transaction, commandTimeout: timeout))
             {
@@ -509,8 +521,8 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
                 return CreatePaginatedResult(results, totalRecords, paginationFilter);
             }
         }
-        
-        private PaginatedResult<T> CreatePaginatedResult<T>(IEnumerable<T> items, int totalRecords, IPaginationFilter paginationFilter)
+
+        private PaginatedResult<T> CreatePaginatedResult<T>(IEnumerable<T> items, int totalRecords, IPaginationFilter? paginationFilter)
         {
             return new PaginatedResult<T>(totalRecords, paginationFilter, items);
         }

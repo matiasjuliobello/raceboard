@@ -56,12 +56,7 @@ namespace RaceBoard.Data.Repositories
 
         public bool Exists(int id, ITransactionalContext? context = null)
         {
-            string existsQuery = base.GetExistsQuery("[Person]", "[Id] = @id");
-
-            QueryBuilder.AddCommand(existsQuery);
-            QueryBuilder.AddParameter("id", id);
-
-            return base.Execute<bool>(context);
+            return base.Exists(id, "Person", "Id", context);
         }
 
         public bool ExistsDuplicate(Person person, ITransactionalContext? context = null)
@@ -76,9 +71,16 @@ namespace RaceBoard.Data.Repositories
             return base.Execute<bool>(context);
         }
 
-        public PaginatedResult<Person> Get(PersonSearchFilter searchFilter, PaginationFilter paginationFilter, Sorting sorting, ITransactionalContext? context = null)
+        public PaginatedResult<Person> Get(PersonSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return this.GetPersons(searchFilter, paginationFilter, sorting, context);
+        }
+
+        public Person? Get(int id, ITransactionalContext? context = null)
+        {
+            var searchFilter = new PersonSearchFilter() { Ids = new int[] { id } };
+
+            return this.GetPersons(searchFilter: searchFilter, paginationFilter: null, sorting: null, context: context).Results.FirstOrDefault();
         }
 
         public void Create(Person person, ITransactionalContext? context = null)
@@ -109,7 +111,7 @@ namespace RaceBoard.Data.Repositories
 
         #region Private Methods
 
-        private PaginatedResult<Person> GetPersons(PersonSearchFilter searchFilter, PaginationFilter? paginationFilter, Sorting? sorting, ITransactionalContext? context = null)
+        private PaginatedResult<Person> GetPersons(PersonSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             string sql = $@"SELECT
 	                            [Person].Id [Id],	                            
@@ -171,7 +173,7 @@ namespace RaceBoard.Data.Repositories
             return items;
         }
 
-        private void ProcessSearchFilter(PersonSearchFilter searchFilter)
+        private void ProcessSearchFilter(PersonSearchFilter? searchFilter = null)
         {
             if (searchFilter == null)
                 return;
