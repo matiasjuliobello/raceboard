@@ -166,6 +166,9 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(CompetitionSearchFilter? searchFilter = null)
         {
+            if (searchFilter == null)
+                return;
+
             base.AddFilterCriteria(ConditionType.In, "Competition", "Id", "id", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Equal, "Competition", "IdCity", "idCity", searchFilter.City?.Id);
             base.AddFilterCriteria(ConditionType.Like, "Competition", "Name", "name", searchFilter.Name);

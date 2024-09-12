@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RaceBoard.Business.Managers;
 using RaceBoard.Business.Managers.Interfaces;
+using RaceBoard.Common.Exceptions;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
 using RaceBoard.DTOs._Pagination.Request;
@@ -75,6 +76,11 @@ namespace RaceBoard.Service.Controllers
             var searchFilter = _mapper.Map<MastFlagSearchFilter>(searchFilterRequest);
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
             var sorting = _mapper.Map<Sorting>(sortingRequest);
+
+            if (searchFilter == null || searchFilter.Mast == null)
+            {
+                throw new FunctionalException(Common.Enums.ErrorType.ValidationError, "IdMastIsRequired");
+            }
 
             var mastFlags = _mastManager.GetFlags(searchFilter, paginationFilter, sorting);
 

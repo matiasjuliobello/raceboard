@@ -143,6 +143,9 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(BoatSearchFilter? searchFilter = null)
         {
+            if (searchFilter == null)
+                return;
+
             base.AddFilterCriteria(ConditionType.In, "[Boat]", "Id", "ids", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Equal, "[RaceClass]", "Id", "idRaceClass", searchFilter.RaceClass?.Id);
             base.AddFilterCriteria(ConditionType.Equal, "[RaceCategory]", "IdRaceCategory", "idRaceCategory", searchFilter.RaceCategory?.Id);

@@ -120,6 +120,9 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(MastSearchFilter? searchFilter = null)
         {
+            if (searchFilter == null)
+                return;
+
             base.AddFilterCriteria(ConditionType.In, "Mast", "Id", "ids", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Equal, "Mast", "IdCompetition", "idCompetition", searchFilter.Competition?.Id);
         }

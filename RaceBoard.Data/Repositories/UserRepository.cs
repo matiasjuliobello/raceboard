@@ -145,23 +145,12 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(UserSearchFilter? searchFilter = null)
         {
-            if (searchFilter.Ids != null && searchFilter.Ids.Length > 0)
-            {
-                QueryBuilder.AddCondition($"[User].Id IN @ids");
-                QueryBuilder.AddParameter("ids", searchFilter.Ids);
-            }
+            if (searchFilter == null)
+                return;
 
-            if (!string.IsNullOrEmpty(searchFilter.Username))
-            {
-                QueryBuilder.AddCondition($"[User].Username LIKE {AddLikeWildcards("@username")}");
-                QueryBuilder.AddParameter("username", searchFilter.Username);
-            }
-
-            if (!string.IsNullOrEmpty(searchFilter.EmailAddress))
-            {
-                QueryBuilder.AddCondition($"[User].Email LIKE {AddLikeWildcards("@email")}");
-                QueryBuilder.AddParameter("email", searchFilter.EmailAddress);
-            }
+            base.AddFilterCriteria(ConditionType.In, "[User]", "Id", "ids", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Like, "[User]", "Username", "username", searchFilter.Username);
+            base.AddFilterCriteria(ConditionType.Like, "[User]", "Email", "email", searchFilter.EmailAddress);
         }
 
         private void CreateUser(User user, ITransactionalContext? context = null)

@@ -117,7 +117,7 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddPagination(paginationFilter);
 
             var mastFlags = new List<MastFlag>();
-
+            
             PaginatedResult<MastFlag> items = base.GetPaginatedResults<MastFlag>
                 (
                     (reader) =>
@@ -147,10 +147,13 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(MastFlagSearchFilter? searchFilter = null)
         {
+            if (searchFilter == null)
+                return;
+
             base.AddFilterCriteria(ConditionType.In, "Mast_Flag", "Id", "ids", searchFilter.Ids);
-            base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IdMast", "idMast", searchFilter.Mast);
-            base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IdFlag", "idFlag", searchFilter.Flag);
-            base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IdPerson", "idPerson", searchFilter.Person);
+            base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IdMast", "idMast", searchFilter.Mast?.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IdFlag", "idFlag", searchFilter.Flag?.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IdPerson", "idPerson", searchFilter.Person?.Id);
             base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IsActive", "isActive", searchFilter.IsActive);
         }
 
