@@ -5,5 +5,6 @@
         public int Id { get; set; }
         public RaceClass RaceClass { get; set; }
         public Competition Competition { get; set; }
+        public DateTimeOffset Schedule { get; set; }
     }
 }

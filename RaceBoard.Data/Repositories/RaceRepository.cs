@@ -14,6 +14,7 @@ namespace RaceBoard.Data.Repositories
         private readonly Dictionary<string, string> _columnsMapping = new()
         {
             { "Id", "[Race].Id" },
+            { "Schedule", "[Race].Schedule" },
             { "RaceClass.Id", "[RaceClass].Id" },
             { "RaceClass.Name", "[RaceClass].Name"},
             { "Competition.Id", "[Competition].Id" },
@@ -84,6 +85,7 @@ namespace RaceBoard.Data.Repositories
         {
             string sql = $@"SELECT
                                 [Race].Id [Id],
+                                [Race].Schedule [Schedule],
                                 [RaceClass].Id [Id],
                                 [RaceClass].Name [Name],
                                 [Competition].Id [Id],
@@ -142,14 +144,15 @@ namespace RaceBoard.Data.Repositories
         private void CreateRace(Race race, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [Race]
-                                ( IdRaceClass, IdCompetition )
+                                ( IdRaceClass, IdCompetition, Schedule )
                             VALUES
-                                ( @idRaceClass, @idCompetition )";
+                                ( @idRaceClass, @idCompetition, @schedule )";
 
             QueryBuilder.AddCommand(sql);
 
             QueryBuilder.AddParameter("idRaceClass", race.RaceClass.Id);
             QueryBuilder.AddParameter("idCompetition", race.Competition.Id);
+            QueryBuilder.AddParameter("schedule", race.Schedule);
 
             QueryBuilder.AddReturnLastInsertedId();
 
@@ -160,12 +163,14 @@ namespace RaceBoard.Data.Repositories
         {
             string sql = @" UPDATE [Race] SET
                                 IdRaceClass = @idRaceClass,
-                                IdCompetition = @idCompetition";
+                                IdCompetition = @idCompetition
+                                Schedule = @schedule";
 
             QueryBuilder.AddCommand(sql);
 
             QueryBuilder.AddParameter("idRaceClass", race.RaceClass.Id);
             QueryBuilder.AddParameter("idCompetition", race.Competition.Id);
+            QueryBuilder.AddParameter("schedule", race.Schedule);
 
             QueryBuilder.AddParameter("id", race.Id);
             QueryBuilder.AddCondition("Id = @id");

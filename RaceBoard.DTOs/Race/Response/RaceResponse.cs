@@ -8,5 +8,6 @@ namespace RaceBoard.DTOs.Race.Response
         public int Id { get; set; }
         public CompetitionResponse Competition { get; set; }
         public RaceClassResponse RaceClass { get; set; }
+        public DateTimeOffset Schedule { get; set; }
     }
 }
