@@ -4,6 +4,7 @@
     {
         public int[]? Ids { get; set; }
         public string? Name { get; set; }
+        public int? IdOrganization { get; set; }
         public int? IdCompetition { get; set; }
         public int? IdRaceClass { get; set; }
     }

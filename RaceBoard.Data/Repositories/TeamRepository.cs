@@ -15,6 +15,8 @@ namespace RaceBoard.Data.Repositories
         {
             { "Id", "[Team].Id" },
             { "Name", "[Team].Name" },
+            { "Organization.Id", "[Organization].Id" },
+            { "Organization.Name", "[Organization].Name" },
             { "RaceClass.Id", "[RaceClass].Id" },
             { "RaceClass.Name", "[RaceClass].Name"},
             { "Competition.Id", "[Competition].Id" },
@@ -105,6 +107,8 @@ namespace RaceBoard.Data.Repositories
             string sql = $@"SELECT
                                 [Team].Id [Id],
                                 [Team].Name [Name],
+                                [Organization].Id [Id],
+                                [Organization].Name [Name],
                                 [RaceClass].Id [Id],
                                 [RaceClass].Name [Name],
                                 [Competition].Id [Id],
@@ -112,6 +116,7 @@ namespace RaceBoard.Data.Repositories
                                 [Competition].StartDate [StartDate],
                                 [Competition].EndDate [EndDate]
                             FROM [Team] [Team]
+                            INNER JOIN [Organization] [Organization] ON [Organization].Id = [Team].IdOrganization
                             INNER JOIN [Competition] [Competition] ON [Competition].Id = [Team].IdCompetition
                             INNER JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Team].IdRaceClass";
 
@@ -128,10 +133,11 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<Team, RaceClass, Competition, Team>
+                        return reader.Read<Team, Organization, RaceClass, Competition, Team>
                         (
-                            (team, raceClass, competition) =>
+                            (team, organization, raceClass, competition) =>
                             {
+                                team.Organization = organization;
                                 team.RaceClass = raceClass;
                                 team.Competition = competition;
 
@@ -139,7 +145,7 @@ namespace RaceBoard.Data.Repositories
 
                                 return team;
                             },
-                            splitOn: "Id, Id, Id"
+                            splitOn: "Id, Id, Id, Id"
                         ).AsList();
                     },
                     context
@@ -157,6 +163,7 @@ namespace RaceBoard.Data.Repositories
 
             base.AddFilterCriteria(ConditionType.In, "Team", "Id", "ids", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Like, "Team", "Name", "name", searchFilter.Name);
+            base.AddFilterCriteria(ConditionType.Equal, "Organization", "Id", "idOrganization", searchFilter.Organization?.Id); 
             base.AddFilterCriteria(ConditionType.Equal, "Competition", "Id", "idCompetition", searchFilter.Competition?.Id);
             base.AddFilterCriteria(ConditionType.Equal, "RaceClass", "Id", "idRaceClass", searchFilter.RaceClass?.Id);
         }
@@ -164,13 +171,14 @@ namespace RaceBoard.Data.Repositories
         private void CreateTeam(Team team, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [Team]
-                                ( Name, IdCompetition, IdRaceClass )
+                                ( Name, IdOrganization, IdCompetition, IdRaceClass )
                             VALUES
-                                ( @name, @idCompetition, @idRaceClass )";
+                                ( @name, @idOrganization, @idCompetition, @idRaceClass )";
 
             QueryBuilder.AddCommand(sql);
 
             QueryBuilder.AddParameter("name", team.Name);
+            QueryBuilder.AddParameter("idOrganization", team.Organization.Id); 
             QueryBuilder.AddParameter("idCompetition", team.Competition.Id);
             QueryBuilder.AddParameter("idRaceClass", team.RaceClass.Id);
 

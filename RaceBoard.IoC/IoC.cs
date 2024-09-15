@@ -17,6 +17,7 @@ using RaceBoard.FileStorage.Interfaces;
 using RaceBoard.FileStorage;
 using RaceBoard.Mailing.Interfaces;
 using RaceBoard.Mailing.Providers;
+using RaceBoard.Data.Helpers.SqlBulkHelper;
 
 namespace RaceBoard.IoC
 {
@@ -108,6 +109,8 @@ namespace RaceBoard.IoC
             services.AddScoped<ICompressionHelper, CompressionHelper>();
             services.AddScoped<IDateTimeHelper, DateTimeHelper>();
             services.AddScoped<IFormatHelper, FormatHelper>();
+            services.AddScoped<ISqlBulkInsertHelper, SqlBulkInsertHelper>();
+
 
             #endregion
 

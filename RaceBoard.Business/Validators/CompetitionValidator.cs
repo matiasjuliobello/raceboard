@@ -40,15 +40,15 @@ namespace RaceBoard.Business.Validators
                 .WithMessage(Translate("CityIsRequired"))
                 .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
-            RuleFor(x => x.StartDate)
-                .NotEmpty()
-                .WithMessage(Translate("StartDateIsRequired"))
-                .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+            //RuleFor(x => x.StartDate)
+            //    .NotEmpty()
+            //    .WithMessage(Translate("StartDateIsRequired"))
+            //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
-            RuleFor(x => x.EndDate)
-                .NotEmpty()
-                .WithMessage(Translate("EndDateIsRequired"))
-                .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+            //RuleFor(x => x.EndDate)
+            //    .NotEmpty()
+            //    .WithMessage(Translate("EndDateIsRequired"))
+            //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
             RuleFor(x => x)
                 .Must(x => !_competitionRepository.ExistsDuplicate(x, base.TransactionalContext))

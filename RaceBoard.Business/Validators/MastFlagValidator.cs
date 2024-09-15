@@ -83,10 +83,10 @@ namespace RaceBoard.Business.Validators
             //    .WithMessage(Translate("LoweringMomentCannotBeInThePast"))
             //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
-            RuleFor(x => x)
-                .Must(x => x.LoweringMoment > x.RaisingMoment)
-                .WithMessage(Translate("LoweringMomentMustOccurAfterRaisingMoment"))
-                .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+            //RuleFor(x => x)
+            //    .Must(x => x.LoweringMoment > x.RaisingMoment)
+            //    .WithMessage(Translate("LoweringMomentMustOccurAfterRaisingMoment"))
+            //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
         }
     }
 }

@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using RaceBoard.Business.Managers;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Common.Exceptions;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
 using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
-using RaceBoard.DTOs.Flag.Response;
-using RaceBoard.DTOs.Mast.Request;
 using RaceBoard.DTOs.Mast.Request;
 using RaceBoard.DTOs.Mast.Response;
 using RaceBoard.Service.Controllers.Abstract;
