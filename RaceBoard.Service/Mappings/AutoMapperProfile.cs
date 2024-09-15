@@ -124,15 +124,13 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => CreateObject<City>(src.IdCity)))
                 .ForMember(dest => dest.Organizations, opt => opt.MapFrom(src => CreateObject<Organization>(src.IdsOrganization)));
 
-            //CreateMap<CompetitionRequest, CompetitionRegistrationTerm>()
-            //    .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
-            //    .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
-
-            //CreateMap<CompetitionRequest, CompetitionAccreditationTerm>()
-            //    .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
-            //    .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
             CreateMap<CompetitionRaceClassRequest, List<CompetitionRaceClass>>().ConvertUsing(typeof(CompetitionRaceClassRequestToCompetitionRaceClassesConverter<CompetitionRaceClassRequest, List<CompetitionRaceClass>>));
 
+            CreateMap<CompetitionNewsUpdateRequest, CompetitionNewsUpdate>()
+                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)));
+
+            CreateMap<CompetitionNewsUpdateSearchFilterRequest, CompetitionNewsUpdateSearchFilter>()
+                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition))); 
 
             CreateMap<int, Organization>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src));
@@ -199,7 +197,6 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)))
                 .ForMember(dest => dest.Contestant, opt => opt.MapFrom(src => CreateObject<Person>(src.IdContestant)))
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => CreateObject<ContestantRole>(src.IdContestantRole)));
-
 
             CreateMap<FlagSearchFilterRequest, FlagSearchFilter>();
 
@@ -279,14 +276,7 @@ namespace RaceBoard.Service.Mappings
             CreateMap<CompetitionTerm, CompetitionTermResponse>()
                 .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => src.RaceClass));
 
-
-            //public RaceClass RaceClass { get; set; }
-            //public DateTimeOffset StartDate { get; set; }
-            //public DateTimeOffset EndDate { get; set; }
-
-            //public RaceClassResponse RaceClass { get; set; }
-            //public DateTimeRangeResponse Dates { get; set; }
-
+            CreateMap<CompetitionNewsUpdate, CompetitionNewsUpdateResponse>();
 
             CreateMap<ContestantRole, ContestantRoleResponse>();
 
