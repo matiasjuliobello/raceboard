@@ -8,6 +8,8 @@ using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Common.Enums;
 using RaceBoard.Common.Exceptions;
 using RaceBoard.Business.Validators.Interfaces;
+using RaceBoard.Common.Helpers.Interfaces;
+using RaceBoard.Common.Helpers;
 
 namespace RaceBoard.Business.Managers
 {
@@ -15,18 +17,24 @@ namespace RaceBoard.Business.Managers
     {
         private readonly IRaceRepository _raceRepository;
         private readonly ICustomValidator<Race> _raceValidator;
+        private readonly ICustomValidator<RaceComplaint> _raceComplaintValidator;
+        private readonly IDateTimeHelper _dateTimeHelper;
 
         #region Constructors
 
         public RaceManager
             (
-                IRaceRepository repository,
-                ICustomValidator<Race> validator,
+                IRaceRepository raceRepository,
+                ICustomValidator<Race> raceValidator,
+                ICustomValidator<RaceComplaint> raceComplaintValidator,
+                IDateTimeHelper dateTimeHelper,
                 ITranslator translator
             ) : base(translator)
         {
-            _raceRepository = repository;
-            _raceValidator = validator;
+            _raceRepository = raceRepository;
+            _raceValidator = raceValidator;
+            _raceComplaintValidator = raceComplaintValidator;
+            _dateTimeHelper = dateTimeHelper;
         }
 
         #endregion
@@ -117,6 +125,32 @@ namespace RaceBoard.Business.Managers
                 throw;
             }
         }
+
+        public void CreateComplaint(RaceComplaint raceComplaint, ITransactionalContext? context = null)
+        {
+            raceComplaint.Timestamp = _dateTimeHelper.GetCurrentTimestamp();
+
+            _raceComplaintValidator.SetTransactionalContext(context);
+
+            if (!_raceComplaintValidator.IsValid(raceComplaint, Scenario.Create))
+                throw new FunctionalException(ErrorType.ValidationError, _raceComplaintValidator.Errors);
+
+            if (context == null)
+                context = _raceRepository.GetTransactionalContext(TransactionContextScope.Internal);
+
+            try
+            {
+                _raceRepository.CreateComplaint(raceComplaint, context);
+
+                _raceRepository.ConfirmTransactionalContext(context);
+            }
+            catch (Exception)
+            {
+                _raceRepository.CancelTransactionalContext(context);
+                throw;
+            }
+        }
+
 
         #endregion
     }

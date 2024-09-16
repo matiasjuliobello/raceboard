@@ -161,6 +161,10 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
                 .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
 
+            CreateMap<RaceComplaintRequest, RaceComplaint>()
+                .ForMember(dest => dest.Race, opt => opt.MapFrom(src => CreateObject<Race>(src.IdRace)))
+                .ForMember(dest => dest.TeamContestant, opt => opt.MapFrom(src => CreateObject<TeamContestant>(src.IdTeamContestant)));
+
             CreateMap<BloodTypeSearchFilterRequest, BloodTypeSearchFilter>();
 
             CreateMap<MedicalInsuranceSearchFilterRequest, MedicalInsuranceSearchFilter>();
@@ -177,6 +181,7 @@ namespace RaceBoard.Service.Mappings
 
             CreateMap<TeamRequest, Team>()
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
+                .ForMember(dest => dest.Organization, opt => opt.MapFrom(src => CreateObject<Organization>(src.IdOrganization)))
                 .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
 
             CreateMap<TeamSearchFilterRequest, TeamSearchFilter>()

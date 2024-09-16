@@ -77,6 +77,11 @@ namespace RaceBoard.Data.Repositories
             return base.Delete("[Race]", id, "Id", context);
         }
 
+        public void CreateComplaint(RaceComplaint raceComplaint, ITransactionalContext? context = null)
+        {
+            this.CreateRaceComplaint(raceComplaint, context);
+        }
+
         #endregion
 
         #region Private Methods
@@ -176,6 +181,24 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddCondition("Id = @id");
 
             base.ExecuteAndGetRowsAffected(context);
+        }
+
+        private void CreateRaceComplaint(RaceComplaint raceComplaint, ITransactionalContext? context = null)
+        {
+            string sql = @" INSERT INTO [Race_Complaint]
+                                ( IdRace, IdTeamContestant, Timestamp )
+                            VALUES
+                                ( @idRace, @idTeamContestant, @timestamp )";
+
+            QueryBuilder.AddCommand(sql);
+
+            QueryBuilder.AddParameter("idRace", raceComplaint.Race.Id);
+            QueryBuilder.AddParameter("idTeamContestant", raceComplaint.TeamContestant.Id);
+            QueryBuilder.AddParameter("timestamp", raceComplaint.Timestamp);
+
+            QueryBuilder.AddReturnLastInsertedId();
+
+            raceComplaint.Id = base.Execute<int>(context);
         }
 
         #endregion

@@ -65,6 +65,7 @@ namespace RaceBoard.IoC
             services.AddTransient<ICustomValidator<MastFlag>, MastFlagValidator>();
             services.AddTransient<ICustomValidator<Organization>, OrganizationValidator>();
             services.AddTransient<ICustomValidator<Race>, RaceValidator>();
+            services.AddTransient<ICustomValidator<RaceComplaint>, RaceComplaintValidator>();
             services.AddTransient<ICustomValidator<Team>, TeamValidator>();
             services.AddTransient<ICustomValidator<TeamBoat>, TeamBoatValidator>();
             services.AddTransient<ICustomValidator<TeamContestant>, TeamContestantValidator>();
