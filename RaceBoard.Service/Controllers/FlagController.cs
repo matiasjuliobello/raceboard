@@ -35,7 +35,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpGet()]
-        public ActionResult<List<FlagResponse>> Get([FromQuery] FlagSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
+        public ActionResult<PaginatedResultResponse<FlagResponse>> Get([FromQuery] FlagSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<FlagSearchFilterRequest, FlagSearchFilter>(searchFilterRequest);
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);

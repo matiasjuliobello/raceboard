@@ -11,7 +11,9 @@ namespace RaceBoard.DTOs.Competition.Response
         public List<OrganizationResponse> Organizations { get; set; }
         public DateTimeRangeResponse RegistrationDates { get; set; }
         public DateTimeRangeResponse AccreditationDates { get; set; }
-        public DateTimeRangeResponse CompetitionDates { get; set; }
+        public DateTimeOffset StartDate { get; set; }
+        public DateTimeOffset EndDate { get; set; }
+        public int Teams {  get; set; }
     }
 }
 

@@ -48,6 +48,33 @@ namespace RaceBoard.Translations
         {
             AddText(AddTranslation("UserPreferencesNotFound"),
                 new Tuple<string, string>(Languages.Spanish, "No se encontró las preferencias del usuario"));
+            AddText(AddTranslation("ValidationError"),
+                new Tuple<string, string>(Languages.English, "Invalid data"),
+                new Tuple<string, string>(Languages.Spanish, "Datos inválidos"));
+            AddText(AddTranslation("GeneralError"),
+                new Tuple<string, string>(Languages.English, "General error"),
+                new Tuple<string, string>(Languages.Spanish, "Error general"));
+            AddText(AddTranslation("DuplicateRecordExists"),
+                new Tuple<string, string>(Languages.English, "Looks there's already a record with same data"),
+                new Tuple<string, string>(Languages.Spanish, "Parece que ya existe un registro con los mismos datos"));
+            AddText(AddTranslation("IdIsRequired"),
+                new Tuple<string, string>(Languages.English, "Id is a required field"),
+                new Tuple<string, string>(Languages.Spanish, "Falta el campo identificador del registro"));
+            AddText(AddTranslation("NameIsRequired"),
+                new Tuple<string, string>(Languages.English, "Name is a required field"),
+                new Tuple<string, string>(Languages.Spanish, "Se debe indicar un nombre"));
+            AddText(AddTranslation("NameIsTooShort"),
+                new Tuple<string, string>(Languages.English, "Name is too short"),
+                new Tuple<string, string>(Languages.Spanish, "El nombre es demasiado corto"));
+            AddText(AddTranslation("IdOrganizationIsRequired"),
+                new Tuple<string, string>(Languages.English, "Organization is a required field"),
+                new Tuple<string, string>(Languages.Spanish, "Se debe indicar una organización"));
+            AddText(AddTranslation("IdCompetitionIsRequired"),
+                new Tuple<string, string>(Languages.English, "Competition is a required field"),
+                new Tuple<string, string>(Languages.Spanish, "Se debe indicar una competición"));            
+            AddText(AddTranslation("IdRaceClassIsRequired"),
+                new Tuple<string, string>(Languages.English, "Race class is a required field"),
+                new Tuple<string, string>(Languages.Spanish, "Se debe indicar una clase de carrera"));
             AddText(AddTranslation("RequiredField"),
                 new Tuple<string, string>(Languages.English, "Required field"),
                 new Tuple<string, string>(Languages.Spanish, "Campo requerido"));

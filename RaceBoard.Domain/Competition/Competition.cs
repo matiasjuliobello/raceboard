@@ -10,5 +10,6 @@
         public DateTimeOffset EndDate { get; set; }
         public CompetitionRegistrationTerm RegistrationTerms { get; set; }
         public CompetitionAccreditationTerm AccreditationTerms { get; set; }
+        public int Teams { get; set; }
     }
 }

@@ -170,10 +170,11 @@ namespace RaceBoard.Data.Repositories
                                 [Competition].Name [Name],
                                 [Competition].StartDate [StartDate],
                                 [Competition].EndDate [EndDate],
+                                (SELECT COUNT(1) FROM Team WHERE Team.IdCompetition = Competition.Id) [Teams],
                                 [City].Id [Id],
                                 [City].Name [Name],
                                 [Organization].Id [Id],
-                                [Organization].Name [Name]
+                                [Organization].Name [Name]                                
                             FROM [Competition] [Competition]
                             INNER JOIN [City] [City] ON [City].Id = [Competition].IdCity
                             INNER JOIN [Competition_Organization] [Competition_Organization] ON [Competition_Organization].IdCompetition = [Competition].Id

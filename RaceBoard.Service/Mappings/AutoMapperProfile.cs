@@ -372,7 +372,6 @@ namespace RaceBoard.Service.Mappings
             }
         }
 
-
         #endregion
 
         #region Private Methods

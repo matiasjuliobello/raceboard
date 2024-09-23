@@ -46,6 +46,25 @@ namespace RaceBoard.Service.Controllers
             return Ok(response);
         }
 
+        [HttpGet("{id}/boats")]
+        public ActionResult<TeamBoatResponse> GetByIdTeam([FromRoute] int id)
+        {
+            var searchFilter = new TeamBoatSearchFilter()
+            {
+                Team = new Team() { Id = id }
+            };
+
+            var data = _teamBoatManager.Get(searchFilter);
+            if (data.Results.Count() == 0)
+                return NoContent();
+
+            var teamBoat = data.Results.First();
+
+            var response = _mapper.Map<TeamBoatResponse>(teamBoat);
+            
+            return Ok(response);
+        }
+
         [HttpGet("boats/{id}")]
         public ActionResult<TeamBoatResponse> Get([FromRoute] int id)
         {

@@ -13,7 +13,7 @@ using RaceBoard.Translations.Interfaces;
 
 namespace RaceBoard.Service.Controllers
 {
-    [Route("api/login")]
+    [Route("api/authentication")]
     [ApiController]
     public class AuthenticationController : AbstractController<AuthenticationController>
     {
@@ -43,7 +43,7 @@ namespace RaceBoard.Service.Controllers
 
         #endregion
 
-        [HttpPost]
+        [HttpPost("login")]
         [AllowAnonymous]
         public ActionResult<string> Login([FromBody] UserLoginRequest userLoginRequest)
         {

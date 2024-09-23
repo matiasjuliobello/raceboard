@@ -30,7 +30,7 @@
         "PasswordResetToken_Length": "32",
         "PasswordResetToken_Lifetime": "15",
         "Pagination_Default_PageSize": "25",
-        "CORS_Allowed_Origins": "http://localhost:4200,http://127.0.0.1:4200",
+        "CORS_Allowed_Origins": "http://localhost:4200,http://127.0.0.1:4200,http://localhost:5173,127.0.0.1:5173",
         "FileStorageWorkDirectory": "C:\\FileStorage-TEMP",
         "FileStorageDirectory": "C:\\FileStorage",
         "BlobFileStorageUrl": "https://bunny.net/",

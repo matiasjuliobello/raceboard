@@ -25,25 +25,44 @@ namespace RaceBoard.Business.Validators
 
         private void AddRules()
         {
-            //RuleFor(x => x.Id)
-            //    .NotEmpty()
-            //    .WithMessage(Translate("IdIsRequired"))
-            //    .When(x => Scenario == Scenario.Update);
+            RuleFor(x => x.Id)
+                .NotEmpty()
+                .WithMessage(Translate("IdIsRequired"))
+                .When(x => Scenario == Scenario.Update);
 
-            //RuleFor(x => x.Team.Id)
+            RuleFor(x => x.Name)
+                .Must(x => !string.IsNullOrEmpty(x))
+                .WithMessage(Translate("NameIsRequired"))
+                .Must(x => x.Length > 3)
+                .WithMessage(Translate("NameIsTooShort"))
+                .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+                /*.When(x => !string.IsNullOrEmpty(x.Name))*/;
+
+            //RuleFor(x => x.Organization.Id)
             //    .NotEmpty()
-            //    .WithMessage(Translate("IdTeamIsRequired"))
+            //    .WithMessage(Translate("IdOrganizationIsRequired"))
             //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+
+            RuleFor(x => x.Competition.Id)
+                .NotEmpty()
+                .WithMessage(Translate("IdCompetitionIsRequired"))
+                .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+
+
+            RuleFor(x => x.RaceClass.Id)
+                .NotEmpty()
+                .WithMessage(Translate("IdRaceClassIsRequired"))
+                .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
             //RuleFor(x => x.Boat.Id)
             //    .NotEmpty()
             //    .WithMessage(Translate("IdBoatIsRequired"))
             //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
-            //RuleFor(x => x)
-            //    .Must(x => !_teamBoatRepository.ExistsDuplicate(x, base.TransactionalContext))
-            //    .WithMessage(Translate("DuplicateRecordExists"))
-            //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+            RuleFor(x => x)
+                .Must(x => !_teamRepository.ExistsDuplicate(x, base.TransactionalContext))
+                .WithMessage(Translate("DuplicateRecordExists"))
+                .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
         }
     }
 }

@@ -59,14 +59,28 @@ namespace RaceBoard.Data.Repositories
 
         public bool ExistsDuplicate(TeamBoat teamBoat, ITransactionalContext? context = null)
         {
-            string condition = "[IdBoat] = @idBoat AND [IdCompetition] = @idCompetition";
+            string query = @"SELECT
+	                            IIF
+	                            (
+		                            EXISTS
+			                            (
 
-            string existsQuery = base.GetExistsDuplicateQuery("[Team_Boat]", condition, "Id", "@id");
+				                            SELECT 1 FROM 
+				                            (
+					                            SELECT [Team_Boat].Id FROM [Team_Boat] [Team_Boat]
+					                            INNER JOIN [Team] [Team] ON [Team].Id = [Team_Boat].IdTeam
+					                            INNER JOIN [Competition] [Competition] ON [Competition].Id = [Team].IdCompetition
+					                            WHERE
+						                            [Team_Boat].IdBoat = @idBoat 
+					                            AND [Team].IdCompetition = (SELECT IdCompetition FROM [Team] WHERE Id = @idTeam )
+					                            AND IIF([Team_Boat].Id = @idTeamBoat, 0, 1) = 1
+				                            ) [x]
+			                            ), 1, 0)";
 
-            QueryBuilder.AddCommand(existsQuery);
+            QueryBuilder.AddCommand(query);
+            QueryBuilder.AddParameter("idTeamBoat", teamBoat.Id);
             QueryBuilder.AddParameter("idBoat", teamBoat.Boat.Id);
-            QueryBuilder.AddParameter("idCompetition", teamBoat.Team.Competition.Id);
-            QueryBuilder.AddParameter("id", teamBoat.Id);
+            QueryBuilder.AddParameter("idTeam", teamBoat.Team.Id);
 
             return base.Execute<bool>(context);
         }

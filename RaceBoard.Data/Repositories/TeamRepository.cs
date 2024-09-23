@@ -59,7 +59,7 @@ namespace RaceBoard.Data.Repositories
 
         public bool ExistsDuplicate(Team team, ITransactionalContext? context = null)
         {
-            string condition = "[Name] = @name AND [IdCompetition] = @idCompetition AND [IdRaceClass] = @idRaceClass";
+            string condition = "[IdCompetition] = @idCompetition AND [IdRaceClass] = @idRaceClass AND [Name] = @name";
 
             string existsQuery = base.GetExistsDuplicateQuery("[Team]", condition, "Id", "@id");
 
