@@ -12,13 +12,10 @@ namespace RaceBoard.Business.Managers.Interfaces
         void Update(Competition competition, ITransactionalContext? context = null);
         void Delete(int id, ITransactionalContext? context = null);
 
-        List<CompetitionRaceClass> GetRaceClasses(int idCompetition, ITransactionalContext? context = null);
-        void SetRaceClasses(List<CompetitionRaceClass> competitionRaceClasses, ITransactionalContext? context = null);
-
-        List<CompetitionTerm> GetRegistrationTerms(int idCompetition, ITransactionalContext? context = null);
-        void SetRegistrationTerms(List<CompetitionRegistrationTerm> registrationTerms, ITransactionalContext? context = null);
-
-        List<CompetitionTerm> GetAccreditationTerms(int idCompetition, ITransactionalContext? context = null);
-        void SetAccreditationTerms(List<CompetitionAccreditationTerm> accreditationTerms, ITransactionalContext? context = null);
+        List<CompetitionGroup> GetGroups(int idCompetition, ITransactionalContext? context = null);
+        CompetitionGroup GetGroup(int id, ITransactionalContext? context = null);
+        void CreateGroup(CompetitionGroup competitionGroup, ITransactionalContext? context = null);
+        void UpdateGroup(CompetitionGroup competitionGroup, ITransactionalContext? context = null);
+        void DeleteGroup(int idCompetitionGroup, ITransactionalContext? context = null);
     }
 }

@@ -7,5 +7,6 @@
         public Culture Culture { get; set; }
         public TimeZone TimeZone { get; set; }
         public Language Language { get; set; }
+        public DateFormat DateFormat { get; set; }
     }
 }

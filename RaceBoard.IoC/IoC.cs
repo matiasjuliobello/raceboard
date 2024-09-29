@@ -61,6 +61,7 @@ namespace RaceBoard.IoC
             services.AddTransient<ICustomValidator<Boat>, BoatValidator>();
             services.AddTransient<ICustomValidator<Competition>, CompetitionValidator>();
             services.AddTransient<ICustomValidator<CompetitionNewsUpdate>, CompetitionNewsUpdateValidator>();
+            services.AddTransient<ICustomValidator<CompetitionGroup>, CompetitionGroupValidator>();
             services.AddTransient<ICustomValidator<Mast>, MastValidator>();
             services.AddTransient<ICustomValidator<MastFlag>, MastFlagValidator>();
             services.AddTransient<ICustomValidator<Organization>, OrganizationValidator>();
@@ -81,6 +82,7 @@ namespace RaceBoard.IoC
             services.AddScoped<ITranslationRepository, FakeTranslationRepository>();
             services.AddScoped<ITimeZoneRepository, TimeZoneRepository>();
             services.AddScoped<ICompetitionRepository, CompetitionRepository>();
+            services.AddScoped<ICompetitionGroupRepository, CompetitionGroupRepository>();
             services.AddScoped<ICompetitionNewsUpdateRepository, CompetitionNewsUpdateRepository>();
             services.AddScoped<IOrganizationRepository, OrganizationRepository>();
             services.AddScoped<IBoatRepository, BoatRepository>();

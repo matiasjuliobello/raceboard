@@ -17,17 +17,5 @@ namespace RaceBoard.Data.Repositories.Interfaces
 
         void SetOrganizations(int idCompetition, List<Organization> organizations, ITransactionalContext? context = null);
         int DeleteOrganizations(int idCompetition, ITransactionalContext? context = null);
-
-        List<CompetitionRaceClass> GetRaceClasses(int idCompetition, ITransactionalContext? context = null);
-        void AddRaceClasses(int idCompetition, List<RaceClass> raceClasses, ITransactionalContext? context = null);
-        int RemoveRaceClasses(int idCompetition, ITransactionalContext? context = null);
-
-        List<CompetitionTerm> GetRegistrationTerms(int idCompetition, ITransactionalContext? context = null);
-        void AddRegistrationTerms(List<CompetitionRegistrationTerm> registrationTerms, ITransactionalContext? context = null);
-        int RemoveRegistrationTerms(int idCompetition, ITransactionalContext? context = null);
-
-        List<CompetitionTerm> GetAccreditationTerms(int idCompetition, ITransactionalContext? context = null);
-        void AddAccreditationTerms(List<CompetitionAccreditationTerm> accreditationTerms, ITransactionalContext? context = null);
-        int RemoveAccreditationTerms(int idCompetition, ITransactionalContext? context = null);
     }
 }

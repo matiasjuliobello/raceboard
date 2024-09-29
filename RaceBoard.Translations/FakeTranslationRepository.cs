@@ -46,17 +46,62 @@ namespace RaceBoard.Translations
 
         private void AddHardcodedValues()
         {
-            AddText(AddTranslation("UserPreferencesNotFound"),
-                new Tuple<string, string>(Languages.Spanish, "No se encontró las preferencias del usuario"));
+            AddText(AddTranslation("RecordNotFound"),
+                new Tuple<string, string>(Languages.English, "Record not found"),
+                new Tuple<string, string>(Languages.Spanish, "No se encontró el registro"));
+            AddText(AddTranslation("Oops!LooksLikeYouAreLost"),
+                new Tuple<string, string>(Languages.English, "Oops! Looks like you're lost.."),
+                new Tuple<string, string>(Languages.Spanish, "Oops! Parece que estás perdido.."));
+            AddText(AddTranslation("TheDataYouAreLookingForWasNotFound"),
+                new Tuple<string, string>(Languages.English, "The data you are looking for was not found"),
+                new Tuple<string, string>(Languages.Spanish, "No se encontraron los datos que estás buscando"));
+
+            AddText(AddTranslation("Success"),
+                new Tuple<string, string>(Languages.English, "Success"),
+                new Tuple<string, string>(Languages.Spanish, "Operación exitosa"));
             AddText(AddTranslation("ValidationError"),
-                new Tuple<string, string>(Languages.English, "Invalid data"),
-                new Tuple<string, string>(Languages.Spanish, "Datos inválidos"));
+                new Tuple<string, string>(Languages.English, "Validation error"),
+                new Tuple<string, string>(Languages.Spanish, "Error de validación"));
             AddText(AddTranslation("GeneralError"),
                 new Tuple<string, string>(Languages.English, "General error"),
                 new Tuple<string, string>(Languages.Spanish, "Error general"));
+
+            AddText(AddTranslation("Registration"),
+                new Tuple<string, string>(Languages.English, "Registration"),
+                new Tuple<string, string>(Languages.Spanish, "Inscripción"));
+            AddText(AddTranslation("Accreditation"),
+                new Tuple<string, string>(Languages.English, "Accreditation"),
+                new Tuple<string, string>(Languages.Spanish, "Acreditación"));
+            AddText(AddTranslation("Competition"),
+                new Tuple<string, string>(Languages.English, "Competition"),
+                new Tuple<string, string>(Languages.Spanish, "Competición"));
+
+
+
+
+            AddText(AddTranslation("UserPreferencesNotFound"),
+                new Tuple<string, string>(Languages.Spanish, "No se encontró las preferencias del usuario"));
             AddText(AddTranslation("DuplicateRecordExists"),
                 new Tuple<string, string>(Languages.English, "Looks there's already a record with same data"),
                 new Tuple<string, string>(Languages.Spanish, "Parece que ya existe un registro con los mismos datos"));
+            AddText(AddTranslation("CannotDeleteContestantDueToExistingParticipation"),
+                new Tuple<string, string>(Languages.English, "Could not delete member due to existing participations with team"),
+                new Tuple<string, string>(Languages.Spanish, "No se puede remover al integrante porque ya tuvo participaciones con en el equipo"));
+            AddText(AddTranslation("BoatAlreadyAssignedToAnotherTeam"),
+                new Tuple<string, string>(Languages.English, "The boat is already assigned to another team in the same competition"),
+                new Tuple<string, string>(Languages.Spanish, "El barco ya está asignado a otro equipo de la misma competición"));
+            AddText(AddTranslation("TeamWasDeleted"),
+                new Tuple<string, string>(Languages.English, "Team was removed deleted"),
+                new Tuple<string, string>(Languages.Spanish, "Se eliminó el equipo"));
+            AddText(AddTranslation("GroupWasRemovedFromTheCompetition"),
+                new Tuple<string, string>(Languages.English, "Group was removed from competition"),
+                new Tuple<string, string>(Languages.Spanish, "Se eliminó al grupo de la competición"));
+            AddText(AddTranslation("BoatWasRemovedFromTheTeam"),
+                new Tuple<string, string>(Languages.English, "Boat was removed from team"),
+                new Tuple<string, string>(Languages.Spanish, "Se eliminó al barco del equipo"));
+            AddText(AddTranslation("MemberWasRemovedFromTheTeam"),
+                new Tuple<string, string>(Languages.English, "Member was removed from the team"),
+                new Tuple<string, string>(Languages.Spanish, "Se eliminó al integrante del equipo"));
             AddText(AddTranslation("IdIsRequired"),
                 new Tuple<string, string>(Languages.English, "Id is a required field"),
                 new Tuple<string, string>(Languages.Spanish, "Falta el campo identificador del registro"));
@@ -71,7 +116,16 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.Spanish, "Se debe indicar una organización"));
             AddText(AddTranslation("IdCompetitionIsRequired"),
                 new Tuple<string, string>(Languages.English, "Competition is a required field"),
-                new Tuple<string, string>(Languages.Spanish, "Se debe indicar una competición"));            
+                new Tuple<string, string>(Languages.Spanish, "Se debe indicar una competición"));
+            AddText(AddTranslation("IdMemberIsRequired"),
+                new Tuple<string, string>(Languages.English, "Member is a required field"),
+                new Tuple<string, string>(Languages.Spanish, "Se debe indicar un integrante"));
+            AddText(AddTranslation("IdRoleIsRequired"),
+                new Tuple<string, string>(Languages.English, "Role is a required field"),
+                new Tuple<string, string>(Languages.Spanish, "Se debe indicar un rol"));
+            AddText(AddTranslation("IdBoatIsRequired"),
+                new Tuple<string, string>(Languages.English, "You must select a boat"),
+                new Tuple<string, string>(Languages.Spanish, "Se debe indicar un barco"));            
             AddText(AddTranslation("IdRaceClassIsRequired"),
                 new Tuple<string, string>(Languages.English, "Race class is a required field"),
                 new Tuple<string, string>(Languages.Spanish, "Se debe indicar una clase de carrera"));
@@ -84,9 +138,9 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("DeleteFailed"),
                 new Tuple<string, string>(Languages.English, "Delete failed"),
                 new Tuple<string, string>(Languages.Spanish, "No se pudo eliminar"));
-            AddText(AddTranslation("RecordNotFound"),
-                new Tuple<string, string>(Languages.English, "Record not found"),
-                new Tuple<string, string>(Languages.Spanish, "No se encontró el registro"));
+            AddText(AddTranslation("RecordCouldNotBeDeleted"),
+                new Tuple<string, string>(Languages.English, "Record could not be deleted"),
+                new Tuple<string, string>(Languages.Spanish, "No se pudo eliminar el registro"));
             AddText(AddTranslation("AnErrorOccurredWhileAttemptingToSaveData"),
                 new Tuple<string, string>(Languages.English, "An error occurred while attempting to save data"),
                 new Tuple<string, string>(Languages.Spanish, "Ocurrió un error al intentar guardar los datos"));
@@ -162,7 +216,8 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("DeletedSuccessfully"),
                 new Tuple<string, string>(Languages.Spanish, "Eliminado exitosamente"));
             AddText(AddTranslation("SavedSuccessfully"),
-                new Tuple<string, string>(Languages.Spanish, "Guardado exitosamente"));
+                new Tuple<string, string>(Languages.English, "Data saved"),
+                new Tuple<string, string>(Languages.Spanish, "Datos guardados"));
             AddText(AddTranslation("StudioManagement"),
                 new Tuple<string, string>(Languages.Spanish, "Administración del estudio"));
             AddText(AddTranslation("Create"),

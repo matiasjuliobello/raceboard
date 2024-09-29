@@ -114,11 +114,13 @@ namespace RaceBoard.Data.Repositories
                                 [Competition].Id [Id],
                                 [Competition].Name [Name],
                                 [Competition].StartDate [StartDate],
-                                [Competition].EndDate [EndDate]
+                                [Competition].EndDate [EndDate],
+                                [Team_Contestant].Id [Id]
                             FROM [Team] [Team]
                             INNER JOIN [Organization] [Organization] ON [Organization].Id = [Team].IdOrganization
                             INNER JOIN [Competition] [Competition] ON [Competition].Id = [Team].IdCompetition
-                            INNER JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Team].IdRaceClass";
+                            INNER JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Team].IdRaceClass
+                            LEFT JOIN [Team_Contestant] ON [Team_Contestant].IdTeam = [Team].Id";
 
             QueryBuilder.AddCommand(sql);
 
@@ -133,19 +135,26 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<Team, Organization, RaceClass, Competition, Team>
+                        return reader.Read<Team, Organization, RaceClass, Competition, TeamContestant, Team>
                         (
-                            (team, organization, raceClass, competition) =>
+                            (team, organization, raceClass, competition, contestant) =>
                             {
+                                var t = teams.FirstOrDefault(x => x.Id == team.Id);
+                                if (t == null)
+                                    teams.Add(team);
+                                else
+                                    team = t;
+
                                 team.Organization = organization;
                                 team.RaceClass = raceClass;
                                 team.Competition = competition;
 
-                                teams.Add(team);
+                                if (contestant != null)
+                                    team.Contestants.Add(contestant);
 
                                 return team;
                             },
-                            splitOn: "Id, Id, Id, Id"
+                            splitOn: "Id, Id, Id, Id, Id"
                         ).AsList();
                     },
                     context

@@ -10,6 +10,7 @@ using RaceBoard.DTOs.Authentication.Response;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Common;
 using RaceBoard.Translations.Interfaces;
+using RaceBoard.DTOs.User.Response;
 
 namespace RaceBoard.Service.Controllers
 {
@@ -21,6 +22,7 @@ namespace RaceBoard.Service.Controllers
 
         private readonly IAuthenticationManager _authenticationManager;
         private readonly ISecurityTicketHelper _securityTicketHelper;
+        private readonly IUserManager _userManager;
 
         #endregion
 
@@ -32,6 +34,7 @@ namespace RaceBoard.Service.Controllers
                 ILogger<AuthenticationController> logger,
                 ITranslator translator,
                 IAuthenticationManager authenticationManager,
+                IUserManager userManager,
                 ISecurityTicketHelper securityTicketHelper,
                 ISessionHelper sessionHelper,
                 IRequestContextHelper requestContextHelper
@@ -39,13 +42,14 @@ namespace RaceBoard.Service.Controllers
         {
             _authenticationManager = authenticationManager;
             _securityTicketHelper = securityTicketHelper;
+            _userManager = userManager;
         }
 
         #endregion
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public ActionResult<string> Login([FromBody] UserLoginRequest userLoginRequest)
+        public ActionResult<UserLoginResponse> Login([FromBody] UserLoginRequest userLoginRequest)
         {
             var userLogin = _mapper.Map<UserLogin>(userLoginRequest);
 
@@ -53,7 +57,16 @@ namespace RaceBoard.Service.Controllers
 
             var accessToken = _securityTicketHelper.CreateToken(userLogin.Username);
 
-            var response = _mapper.Map<AccessToken, AccessTokenResponse>(accessToken);
+            var user = _userManager.GetByUsername(userLogin.Username);
+
+            var accessTokenResponse = _mapper.Map<AccessToken, AccessTokenResponse>(accessToken);
+            var userResponse = _mapper.Map<User, UserSimpleResponse>(user);
+
+            var response = new UserLoginResponse()
+            {
+                AccessToken = accessTokenResponse,
+                User = userResponse
+            };
             
             return Ok(response);
         }

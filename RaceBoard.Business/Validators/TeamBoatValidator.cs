@@ -42,7 +42,7 @@ namespace RaceBoard.Business.Validators
 
             RuleFor(x => x)
                 .Must(x => !_teamBoatRepository.ExistsDuplicate(x, base.TransactionalContext))
-                .WithMessage(Translate("DuplicateRecordExists"))
+                .WithMessage(Translate("BoatAlreadyAssignedToAnotherTeam"))
                 .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
         }
     }

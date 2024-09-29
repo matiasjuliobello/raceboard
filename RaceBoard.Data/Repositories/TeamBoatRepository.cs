@@ -60,22 +60,22 @@ namespace RaceBoard.Data.Repositories
         public bool ExistsDuplicate(TeamBoat teamBoat, ITransactionalContext? context = null)
         {
             string query = @"SELECT
-	                            IIF
-	                            (
-		                            EXISTS
-			                            (
+                             IIF
+                             (
+                              EXISTS
+                               (
 
-				                            SELECT 1 FROM 
-				                            (
-					                            SELECT [Team_Boat].Id FROM [Team_Boat] [Team_Boat]
-					                            INNER JOIN [Team] [Team] ON [Team].Id = [Team_Boat].IdTeam
-					                            INNER JOIN [Competition] [Competition] ON [Competition].Id = [Team].IdCompetition
-					                            WHERE
-						                            [Team_Boat].IdBoat = @idBoat 
-					                            AND [Team].IdCompetition = (SELECT IdCompetition FROM [Team] WHERE Id = @idTeam )
-					                            AND IIF([Team_Boat].Id = @idTeamBoat, 0, 1) = 1
-				                            ) [x]
-			                            ), 1, 0)";
+                                SELECT 1 FROM 
+                                (
+                                 SELECT [Team_Boat].Id FROM [Team_Boat] [Team_Boat]
+                                 INNER JOIN [Team] [Team] ON [Team].Id = [Team_Boat].IdTeam
+                                 INNER JOIN [Competition] [Competition] ON [Competition].Id = [Team].IdCompetition
+                                 WHERE
+                                  [Team_Boat].IdBoat = @idBoat 
+                                 AND [Team].IdCompetition = (SELECT IdCompetition FROM [Team] WHERE Id = @idTeam )
+                                 AND IIF([Team_Boat].Id = @idTeamBoat, 0, 1) = 1
+                                ) [x]
+                               ), 1, 0)";
 
             QueryBuilder.AddCommand(query);
             QueryBuilder.AddParameter("idTeamBoat", teamBoat.Id);

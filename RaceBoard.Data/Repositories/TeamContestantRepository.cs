@@ -61,9 +61,67 @@ public class TeamContestantRepository : AbstractRepository, ITeamContestantRepos
         string existsQuery = base.GetExistsDuplicateQuery("[Team_Contestant]", condition, "Id", "@id");
 
         QueryBuilder.AddCommand(existsQuery);
+        QueryBuilder.AddParameter("id", teamContestant.Id);
         QueryBuilder.AddParameter("idTeam", teamContestant.Team.Id);
         QueryBuilder.AddParameter("idPerson", teamContestant.Contestant.Id);
+
+        return base.Execute<bool>(context);
+    }
+
+    public bool HasContestantInAnotherCompetitionTeam(TeamContestant teamContestant, ITransactionalContext? context = null)
+    {
+        // string query = @"	SELECT 
+        //               1
+        //              FROM [Team_Contestant] [Team_Contestant] 
+        //              INNER JOIN [Team] [Team] ON [Team].Id = [Team_Contestant].IdTeam
+        //              INNER JOIN [Competition] [Competition] ON [Competition].Id = [Team].IdCompetition
+        //              WHERE 
+        //               [Competition].Id =	(	
+        //	                    SELECT IdCompetition FROM [Team_Contestant] 
+        //	                    INNER JOIN [Competition] [Competition] ON [Competition].Id = [Team].IdCompetition
+        //	                    WHERE [Team_Contestant].Id = @idTeamContestant AND [Team_Contestant].IdPerson = @idPerson
+        //)";
+
+        // string existsQuery = base.GetExistsDuplicateQuery("[Team_Contestant]", condition, "Id", "@id");
+
+        // QueryBuilder.AddCommand(existsQuery);
+        // QueryBuilder.AddParameter("id", teamContestant.Id);
+        // QueryBuilder.AddParameter("idTeam", teamContestant.Team.Id);
+        // QueryBuilder.AddParameter("idPerson", teamContestant.Contestant.Id);
+
+        // return base.Execute<bool>(context);
+        return false;
+    }
+
+    public bool HasParticipationOnRace(TeamContestant teamContestant, ITransactionalContext? context = null)
+    {
+        string condition = @"[Race_Complaint].IdTeamContestant = 
+                            (
+	                            SELECT [Team_Contestant].Id 
+	                            FROM [Team_Contestant] [Team_Contestant] 
+	                            INNER JOIN [Team] ON [Team].Id = [Team_Contestant].IdTeam
+	                            WHERE [Team_Contestant].IdPerson = @idPerson AND [Team].Id = @idTeam
+                            )";
+
+        string existsQuery = base.GetExistsQuery("[Race_Complaint]", condition);
+
+        QueryBuilder.AddCommand(existsQuery);
+        QueryBuilder.AddParameter("idTeam", teamContestant.Team.Id);
+        QueryBuilder.AddParameter("idPerson", teamContestant.Contestant.Id);
+
+        return base.Execute<bool>(context);
+    }
+
+    public bool HasDuplicatedRole(TeamContestant teamContestant, ITransactionalContext? context = null)
+    {
+        string condition = base.GetExistsQuery("[Team_Contestant]", "[IdTeam] = @idTeam AND [IdContestantRole] = @idContestantRole");
+
+        string query = $"{base.GetExcludeSameRecordCondition("Id", "id")} AND ({condition})";
+
+        QueryBuilder.AddCommand(query);
         QueryBuilder.AddParameter("id", teamContestant.Id);
+        QueryBuilder.AddParameter("idTeam", teamContestant.Team.Id);
+        QueryBuilder.AddParameter("idContestantRole", teamContestant.Role.Id);
 
         return base.Execute<bool>(context);
     }
@@ -183,11 +241,13 @@ public class TeamContestantRepository : AbstractRepository, ITeamContestantRepos
     private void UpdateTeamContestant(TeamContestant teamContestant, ITransactionalContext? context = null)
     {
         string sql = @" UPDATE [Team_Contestant] SET
+                                IdPerson = @idPerson,
                                 IdContestantRole = @idContestantRole";
 
         QueryBuilder.AddCommand(sql);
 
         QueryBuilder.AddParameter("idContestantRole", teamContestant.Role.Id);
+        QueryBuilder.AddParameter("idPerson", teamContestant.Contestant.Id);
         QueryBuilder.AddParameter("id", teamContestant.Id);
         QueryBuilder.AddCondition("Id = @id");
 

@@ -120,11 +120,12 @@ namespace RaceBoard.Service.Mappings
                     opt.MapFrom(s => s.IdsOrganization.ToList());
                 });
 
+            CreateMap<CompetitionGroupRequest, CompetitionGroup>()
+                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)));
+
             CreateMap<CompetitionSearchFilterRequest, CompetitionSearchFilter>()
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => CreateObject<City>(src.IdCity)))
                 .ForMember(dest => dest.Organizations, opt => opt.MapFrom(src => CreateObject<Organization>(src.IdsOrganization)));
-
-            CreateMap<CompetitionRaceClassRequest, List<CompetitionRaceClass>>().ConvertUsing(typeof(CompetitionRaceClassRequestToCompetitionRaceClassesConverter<CompetitionRaceClassRequest, List<CompetitionRaceClass>>));
 
             CreateMap<CompetitionNewsUpdateRequest, CompetitionNewsUpdate>()
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)));
@@ -151,7 +152,7 @@ namespace RaceBoard.Service.Mappings
             CreateMap<RaceCategorySearchFilterRequest, RaceCategorySearchFilter>();
 
             CreateMap<RaceClassRequest, RaceClass>()
-                .ForMember(dest => dest.RaceCategory, opt => opt.MapFrom(src => CreateObject<City>(src.IdRaceCategory)));
+                .ForMember(dest => dest.RaceCategory, opt => opt.MapFrom(src => CreateObject<RaceCategory>(src.IdRaceCategory)));
             CreateMap<RaceClassSearchFilterRequest, RaceClassSearchFilter>();
 
             CreateMap<RaceRequest, Race>()
@@ -233,6 +234,7 @@ namespace RaceBoard.Service.Mappings
             CreateMap<TimeZone, TimeZoneResponse>();
             CreateMap<Culture, CultureResponse>();
             CreateMap<Domain.Language, LanguageResponse>();
+            CreateMap<DateFormat, DateFormatResponse>();
             CreateMap<UserSettings, UserSettingsResponse>();
 
             CreateMap<PrivacyPolicy, PrivacyPolicyResponse>();
@@ -276,10 +278,7 @@ namespace RaceBoard.Service.Mappings
             CreateMap<Competition, CompetitionResponse>();
             CreateMap<Competition, CompetitionSimpleResponse>();
 
-            CreateMap<CompetitionRaceClass, CompetitionRaceClassResponse>();
-
-            CreateMap<CompetitionTerm, CompetitionTermResponse>()
-                .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => src.RaceClass));
+            CreateMap<CompetitionGroup, CompetitionGroupResponse>();
 
             CreateMap<CompetitionNewsUpdate, CompetitionNewsUpdateResponse>();
 
@@ -350,25 +349,6 @@ namespace RaceBoard.Service.Mappings
                 translation.Value = source.Translations.Count > 0 ? source.Translations.FirstOrDefault().Text : "";
 
                 return translation;
-            }
-        }
-
-        public class CompetitionRaceClassRequestToCompetitionRaceClassesConverter<TValue, TVersion> : ITypeConverter<CompetitionRaceClassRequest, List<CompetitionRaceClass>>
-        {
-            public List<CompetitionRaceClass> Convert(CompetitionRaceClassRequest source, List<CompetitionRaceClass> destination, ResolutionContext context)
-            {
-                var list = new List<CompetitionRaceClass>();
-
-                foreach (var i in source.IdsRaceClass)
-                {
-                    list.Add(new CompetitionRaceClass()
-                    {
-                        Competition = new Competition() { Id = source.IdCompetition },
-                        RaceClass = new RaceClass() { Id = i }
-                    });
-                }
-
-                return list;
             }
         }
 

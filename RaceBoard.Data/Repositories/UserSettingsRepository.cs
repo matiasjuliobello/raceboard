@@ -110,12 +110,15 @@ namespace RaceBoard.Data.Repositories
                             [TimeZone].Id [Id],
                             [TimeZone].Name [Name],
                             [TimeZone].Identifier [Identifier],
-                            [TimeZone].Offset [Offset]
+                            [TimeZone].Offset [Offset],
+                            [DateFormat].Id [Id],
+                            [DateFormat].Format [Format]
                         FROM UserSettings
                         LEFT JOIN [User] ON [User].Id = [UserSettings].IdUser
                         LEFT JOIN Culture ON [Culture].Id = [UserSettings].IdCulture
                         LEFT JOIN Language ON [Language].Id = [UserSettings].IdLanguage
-                        LEFT JOIN TimeZone ON [TimeZone].Id = [UserSettings].IdTimeZone";
+                        LEFT JOIN TimeZone ON [TimeZone].Id = [UserSettings].IdTimeZone
+                        LEFT JOIN DateFormat ON [DateFormat].Id = [UserSettings].IdDateFormat";
 
             QueryBuilder.AddCommand(sql);
 
@@ -127,18 +130,19 @@ namespace RaceBoard.Data.Repositories
                 (
                     (x) =>
                     {
-                        userSettingsList = x.Read<UserSettings, User, Culture, Language, TimeZone, UserSettings>
+                        userSettingsList = x.Read<UserSettings, User, Culture, Language, TimeZone, DateFormat, UserSettings>
                         (
-                            (userSettings, user, culture, language, timeZone) =>
+                            (userSettings, user, culture, language, timeZone, dateFormat) =>
                             {
                                 userSettings.User = user;
                                 userSettings.Culture = culture;
                                 userSettings.Language = language;
                                 userSettings.TimeZone = timeZone;
+                                userSettings.DateFormat = dateFormat;
 
                                 return userSettings;
                             },
-                            splitOn: "Id, Id, Id, Id, Id"
+                            splitOn: "Id, Id, Id, Id, Id, Id"
                         ).ToList();
                     },
                     context
