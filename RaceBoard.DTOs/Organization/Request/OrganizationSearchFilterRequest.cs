@@ -5,5 +5,6 @@
         public int[]? Ids { get; set; }
         public string? Name { get; set; }
         public int? IdCity { get; set; }
+        public int? IdCountry { get; set; }
     }
 }

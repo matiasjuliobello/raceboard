@@ -110,10 +110,13 @@ namespace RaceBoard.Data.Repositories
                                 (SELECT COUNT(1) FROM Team WHERE Team.IdCompetition = Competition.Id) [Teams],
                                 [City].Id [Id],
                                 [City].Name [Name],
+                                [Country].Id [Id],
+                                [Country].Name [Name],
                                 [Organization].Id [Id],
                                 [Organization].Name [Name]                                
                             FROM [Competition] [Competition]
                             INNER JOIN [City] [City] ON [City].Id = [Competition].IdCity
+                            INNER JOIN [Country] [Country] ON [Country].Id = [City].IdCountry
                             INNER JOIN [Competition_Organization] [Competition_Organization] ON [Competition_Organization].IdCompetition = [Competition].Id
                             INNER JOIN [Organization] [Organization] ON [Organization].Id = Competition_Organization.IdOrganization";
 
@@ -130,9 +133,9 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<Competition, City, Organization, Competition>
+                        return reader.Read<Competition, City, Country, Organization, Competition>
                         (
-                            (competition, city, organization) =>
+                            (competition, city, country, organization) =>
                             {
                                 var existingCompetition = competitions.FirstOrDefault(x => x.Id == competition.Id);
                                 if (existingCompetition == null)
@@ -146,11 +149,12 @@ namespace RaceBoard.Data.Repositories
 
                                 competition.Organizations.Add(organization);
 
+                                city.Country = country;
                                 competition.City = city;
 
                                 return competition;
                             },
-                            splitOn: "Id, Id, Id"
+                            splitOn: "Id, Id, Id, Id"
                         );
                     },
                     context

@@ -51,6 +51,8 @@ using RaceBoard.DTOs.Team.Request;
 using RaceBoard.DTOs.Team.Response;
 using RaceBoard.DTOs;
 using static RaceBoard.Service.Mappings.AutoMapperProfile;
+using RaceBoard.DTOs.City.Request;
+using RaceBoard.DTOs.Country.Request;
 
 namespace RaceBoard.Service.Mappings
 {
@@ -111,6 +113,10 @@ namespace RaceBoard.Service.Mappings
             CreateMap<RolePermissionsRequest, RolePermissions>()
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => CreateObject<Role>(src.IdRole)))
                 .ForMember(dest => dest.Permissions, opt => opt.MapFrom(src => src.Permissions));
+
+            CreateMap<CountrySearchFilterRequest, CountrySearchFilter>();
+            CreateMap<CitySearchFilterRequest, CitySearchFilter>()
+                .ForMember(dest => dest.Country, opt => opt.MapFrom(src => CreateObject<Country>(src.IdCountry)));
 
             CreateMap<CompetitionRequest, Competition>()
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => CreateObject<City>(src.IdCity)))
@@ -267,7 +273,6 @@ namespace RaceBoard.Service.Mappings
             CreateMap<MedicalInsurance, MedicalInsuranceResponse>();
 
             CreateMap<Country, CountryResponse>();
-
             CreateMap<City, CityResponse>();
 
             CreateMap<Person, PersonResponse>();

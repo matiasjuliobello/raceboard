@@ -16,7 +16,9 @@ namespace RaceBoard.Data.Repositories
             { "Id", "[Organization].Id" },
             { "Name", "[Organization].Name" },
             { "City.Id", "[City].Id" },
-            { "City.Name", "[City].Name"}
+            { "City.Name", "[City].Name"},
+            { "City.Country.Id", "[Country].Id" },
+            { "City.Country.Name", "[Country].Name"}
         };
 
         #endregion
@@ -83,9 +85,12 @@ namespace RaceBoard.Data.Repositories
                                 [Organization].Id [Id],
                                 [Organization].Name [Name],
                                 [City].Id [Id],
-                                [City].Name [Name]
+                                [City].Name [Name],
+                                [Country].Id [Id],
+                                [Country].Name [Name]
                             FROM [Organization] [Organization]
-                            INNER JOIN [City] [City] ON [City].Id = [Organization].IdCity";
+                            INNER JOIN [City] [City] ON [City].Id = [Organization].IdCity
+                            INNER JOIN [Country] [Country] ON [Country].Id =[City].IdCountry";
 
             QueryBuilder.AddCommand(sql);
 
@@ -100,17 +105,19 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<Organization, City, Organization>
+                        return reader.Read<Organization, City, Country, Organization>
                         (
-                            (organization, city) =>
+                            (organization, city, country) =>
                             {
+                                city.Country = country;
+
                                 organization.City = city;
 
                                 organizations.Add(organization);
 
                                 return organization;
                             },
-                            splitOn: "Id, Id"
+                            splitOn: "Id, Id, Id"
                         ).AsList();
                     },
                     context
@@ -129,6 +136,7 @@ namespace RaceBoard.Data.Repositories
             base.AddFilterCriteria(ConditionType.In, "Organization", "Id", "ids", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Like, "Organization", "Name", "name", searchFilter.Name);
             base.AddFilterCriteria(ConditionType.Equal, "City", "Id", "idCity", searchFilter.City?.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "Countntry", "Id", "idCountntry", searchFilter.Country?.Id);
         }
 
         private void CreateOrganization(Organization organization, ITransactionalContext? context = null)

@@ -32,6 +32,8 @@ namespace RaceBoard.IoC
             services.AddScoped<IUserSettingsManager, UserSettingsManager>();
             services.AddScoped<IUserPasswordResetManager, UserPasswordResetManager>();
             services.AddScoped<ITimeZoneManager, TimeZoneManager>();
+            services.AddScoped<ICityManager, CityManager>();
+            services.AddScoped<ICountryManager, CountryManager>();
             services.AddScoped<ICompetitionManager, CompetitionManager>();
             services.AddScoped<ICompetitionNewsUpdateManager, CompetitionNewsUpdateManager>();
             services.AddScoped<IOrganizationManager, OrganizationManager>();
@@ -81,6 +83,8 @@ namespace RaceBoard.IoC
             services.AddScoped<IUserPasswordResetRepository, UserPasswordResetRepository>();
             services.AddScoped<ITranslationRepository, FakeTranslationRepository>();
             services.AddScoped<ITimeZoneRepository, TimeZoneRepository>();
+            services.AddScoped<ICityRepository, CityRepository>();
+            services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<ICompetitionRepository, CompetitionRepository>();
             services.AddScoped<ICompetitionGroupRepository, CompetitionGroupRepository>();
             services.AddScoped<ICompetitionNewsUpdateRepository, CompetitionNewsUpdateRepository>();
