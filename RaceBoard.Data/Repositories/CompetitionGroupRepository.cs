@@ -64,12 +64,12 @@ namespace RaceBoard.Data.Repositories
 
         public bool ExistsDuplicate(CompetitionGroup competitionGroup, ITransactionalContext? context = null)
         {
-            string condition = "[IdCompetition] = @idComptition AND [Name] = @name";
+            string condition = "[IdCompetition] = @idCompetition AND [Name] = @name";
 
             string existsQuery = base.GetExistsDuplicateQuery("[CompetitionGroup]", condition, "Id", "@id");
 
             QueryBuilder.AddCommand(existsQuery);
-            QueryBuilder.AddParameter("idComptition", competitionGroup.Competition.Id);
+            QueryBuilder.AddParameter("idCompetition", competitionGroup.Competition.Id);
             QueryBuilder.AddParameter("name", competitionGroup.Name);
             QueryBuilder.AddParameter("id", competitionGroup.Id);
 
