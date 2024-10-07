@@ -36,8 +36,8 @@ namespace RaceBoard.Business.Validators
             {
                 var passwordPolicy = new PasswordPolicy()
                 {
-                    MinLength = 5,
-                    MaxLength = 15,
+                    MinLength = 8,
+                    MaxLength = 20,
                     MinLowercaseChars = 1,
                     MinUppercaseChars = 1,
                     MinNumericChars = 1,

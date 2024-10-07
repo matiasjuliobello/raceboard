@@ -78,7 +78,8 @@ namespace RaceBoard.Service.Mappings
 
             CreateMap<UserLoginRequest, UserLogin>();
 
-            CreateMap<UserRequest, User>();
+            CreateMap<UserRequest, User>()
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
 
             CreateMap<UserSearchFilterRequest, UserSearchFilter>();
 

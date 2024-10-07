@@ -47,6 +47,15 @@ namespace RaceBoard.Business.Managers
             return person;
         }
 
+        public Person GetByIdUser(int idUser, ITransactionalContext? context = null)
+        {
+            var person = _personRepository.GetByIdUser(idUser, context);
+            if (person == null)
+                throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
+
+            return person;
+        }
+
         public void Create(Person person, ITransactionalContext? context = null)
         {
             _personValidator.SetTransactionalContext(context);

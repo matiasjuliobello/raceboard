@@ -1,39 +1,39 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Service.Controllers.Abstract;
-using RaceBoard.DTOs.User.Response.Settings;
-using TimeZone = RaceBoard.Domain.TimeZone;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Translations.Interfaces;
+using RaceBoard.DTOs.Language.Response;
+using RaceBoard.Business.Managers.Interfaces;
+using Language = RaceBoard.Domain.Language;
 
 namespace RaceBoard.Service.Controllers
 {
-    [Route("api/time-zones")]
+    [Route("api/languages")]
     [ApiController]
-    public class TimeZoneController : AbstractController<TimeZoneController>
+    public class LanguageController : AbstractController<LanguageController>
     {
-        private readonly ITimeZoneManager _timeZoneManager;
+        private readonly ILanguageManager _languageManager;
 
-        public TimeZoneController
+        public LanguageController
             (
                 IMapper mapper,
-                ILogger<TimeZoneController> logger,
+                ILogger<LanguageController> logger,
                 ITranslator translator,
-                ITimeZoneManager timeZoneManager,
+                ILanguageManager languageManager,
                 ISessionHelper sessionHelper,
                 IRequestContextHelper requestContextHelper
             ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
         {
-            _timeZoneManager = timeZoneManager;
+            _languageManager = languageManager;
         }
 
         [HttpGet()]
-        public ActionResult<List<TimeZoneResponse>> Get()
+        public ActionResult<List<LanguageResponse>> Get()
         {
-            var data = _timeZoneManager.Get();
+            var data = _languageManager.Get();
 
-            var response = _mapper.Map<List<TimeZone>, List<TimeZoneResponse>>(data);
+            var response = _mapper.Map<List<Language>, List<LanguageResponse>>(data);
 
             return Ok(response);
         }
@@ -43,3 +43,4 @@ namespace RaceBoard.Service.Controllers
         #endregion
     }
 }
+

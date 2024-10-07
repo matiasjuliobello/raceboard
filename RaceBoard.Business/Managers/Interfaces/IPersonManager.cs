@@ -9,6 +9,7 @@ namespace RaceBoard.Business.Managers.Interfaces
     {
         PaginatedResult<Person> Get([FromQuery] PersonSearchFilter? searchFilter = null, [FromQuery] PaginationFilter? paginationFilter = null, [FromQuery] Sorting? sorting = null, ITransactionalContext? context = null);
         Person Get(int id, ITransactionalContext? context = null);
+        Person GetByIdUser(int idUser, ITransactionalContext? context = null);
         void Create(Person person, ITransactionalContext? context = null);
         void Update(Person person, ITransactionalContext? context = null);
         void Delete(int id, ITransactionalContext? context = null);

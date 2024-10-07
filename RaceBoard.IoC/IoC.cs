@@ -26,7 +26,6 @@ namespace RaceBoard.IoC
         public static void ConfigureIoC(this IServiceCollection services, IConfiguration configuration)
         {
             #region Managers
-
             services.AddScoped<IAuthenticationManager, AuthenticationManager>();
             services.AddScoped<IUserManager, UserManager>();
             services.AddScoped<IUserSettingsManager, UserSettingsManager>();
@@ -51,11 +50,10 @@ namespace RaceBoard.IoC
             //services.AddScoped<ICountryManager, CountryManager>();
             services.AddScoped<IFlagManager, FlagManager>();
             services.AddScoped<IMastManager, MastManager>();
-
+            services.AddScoped<ILanguageManager, LanguageManager>();
             #endregion
 
             #region Validators
-
             services.AddTransient<ICustomValidator<User>, UserValidator>();
             services.AddTransient<ICustomValidator<UserPassword>, UserPasswordValidator>();
             services.AddTransient<ICustomValidator<UserPasswordReset>, UserPasswordResetValidator>();
@@ -72,11 +70,9 @@ namespace RaceBoard.IoC
             services.AddTransient<ICustomValidator<Team>, TeamValidator>();
             services.AddTransient<ICustomValidator<TeamBoat>, TeamBoatValidator>();
             services.AddTransient<ICustomValidator<TeamContestant>, TeamContestantValidator>();
-
             #endregion
 
             #region Repositories
-
             services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserSettingsRepository, UserSettingsRepository>();
@@ -103,11 +99,10 @@ namespace RaceBoard.IoC
             services.AddScoped<IFlagRepository, FlagRepository>();
             services.AddScoped<IMastRepository, MastRepository>();
             services.AddScoped<IMastFlagRepository, MastFlagRepository>();
-
+            services.AddScoped<ILanguageRepository, LanguageRepository>();
             #endregion
 
             #region Helpers
-
             services.AddScoped<IConfigurationHelper, ConfigurationHelper>();
             services.AddTransient<IQueryBuilder, SqlQueryBuilder>();
             services.AddTransient<ICryptographyHelper, CryptographyHelper>();
@@ -120,17 +115,13 @@ namespace RaceBoard.IoC
             services.AddScoped<IDateTimeHelper, DateTimeHelper>();
             services.AddScoped<IFormatHelper, FormatHelper>();
             services.AddScoped<ISqlBulkInsertHelper, SqlBulkInsertHelper>();
-
-
             #endregion
 
             #region Providers
-
             services.AddScoped<ITranslationProvider, TranslationProvider>();
             services.AddScoped<IFileStorageProvider, BlobFileStorageProvider>();
             services.AddScoped<IFileStorageProvider, DiskFileStorageProvider>();
             services.AddScoped<IEmailProvider, MailSenderEmailProvider>();
-
             #endregion
 
             services.AddScoped<IContextResolver, ContextResolver>();

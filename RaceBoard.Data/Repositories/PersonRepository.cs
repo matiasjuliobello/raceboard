@@ -17,7 +17,6 @@ namespace RaceBoard.Data.Repositories
             { "Firstname", "[Person].Firstname" },
             { "Lastname", "[Person].Lastname"},
             { "BirthDate", "[Person].BirthDate"},
-            { "EmailAddress", "[Person].EmailAddress"},
             { "ContactPhone", "[Person].ContactPhone"},
             { "Country.Id", "[Country].Id"},
             { "Country.Name", "[Country].Name"},
@@ -83,6 +82,13 @@ namespace RaceBoard.Data.Repositories
             return this.GetPersons(searchFilter: searchFilter, paginationFilter: null, sorting: null, context: context).Results.FirstOrDefault();
         }
 
+        public Person GetByIdUser(int idUser, ITransactionalContext? context = null)
+        {
+            var searchFilter = new PersonSearchFilter() { IdUser = idUser };
+
+            return this.GetPersons(searchFilter: searchFilter, paginationFilter: null, sorting: null, context: context).Results.FirstOrDefault();
+        }
+
         public void Create(Person person, ITransactionalContext? context = null)
         {
             this.CreatePerson(person, context);
@@ -118,7 +124,6 @@ namespace RaceBoard.Data.Repositories
 	                            [Person].Firstname [Firstname],
                                 [Person].Lastname [Lastname],
                                 [Person].BirthDate [BirthDate],
-                                [Person].EmailAddress [EmailAddress],
                                 [Person].ContactPhone [ContactPhone],
                                 [User].Id [Id],
                                 [User].Username [Username],
@@ -130,9 +135,9 @@ namespace RaceBoard.Data.Repositories
                                 [MedicalInsurance].Id [Id],
                                 [MedicalInsurance].Name [Name]
                             FROM [Person] [Person]
-                            INNER JOIN [Country] [Country] ON [Country].Id = [Person].IdCountry
-                            INNER JOIN [BloodType] [BloodType] ON [BloodType].Id = [Person].IdBloodType
-                            INNER JOIN [MedicalInsurance] [MedicalInsurance] ON [MedicalInsurance].Id = [Person].IdMedicalInsurance
+                            LEFT JOIN [Country] [Country] ON [Country].Id = [Person].IdCountry
+                            LEFT JOIN [BloodType] [BloodType] ON [BloodType].Id = [Person].IdBloodType
+                            LEFT JOIN [MedicalInsurance] [MedicalInsurance] ON [MedicalInsurance].Id = [Person].IdMedicalInsurance
                             LEFT JOIN [User_Person] [User_Person] ON [User_Person].IdPerson = [Person].Id                            
                             LEFT JOIN [User] [User] ON [User].Id = [User_Person].IdUser";
 
@@ -179,27 +184,26 @@ namespace RaceBoard.Data.Repositories
                 return;
 
             base.AddFilterCriteria(ConditionType.In, "Person", "Id", "ids", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Equal, "User_Person", "IdUser", "idUser", searchFilter.IdUser);
             base.AddFilterCriteria(ConditionType.Like, "Person", "Firstname", "firstName", searchFilter.Firstname);
             base.AddFilterCriteria(ConditionType.Like, "Person", "Lastname", "lastName", searchFilter.Lastname);
-            base.AddFilterCriteria(ConditionType.Equal, "Person", "EmailAddress", "emailAddress", searchFilter.EmailAddress);
         }
 
         private void CreatePerson(Person person, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [Person]
-                                ( IdCountry, IdBloodType, IdMedicalInsurance, FirstName, LastName, BirthDate, EmailAddress, ContactPhone )
+                                ( IdCountry, IdBloodType, IdMedicalInsurance, FirstName, LastName, BirthDate, ContactPhone )
                             VALUES
-                                ( @idCountry, @idBloodType, @idMedicalInsurance, @firstname, @lastname, @birthDate, @emailAddress, @contactPhone )";
+                                ( @idCountry, @idBloodType, @idMedicalInsurance, @firstname, @lastname, @birthDate, @contactPhone )";
 
             QueryBuilder.AddCommand(sql);
 
-            QueryBuilder.AddParameter("idCountry", person.Country.Id);
-            QueryBuilder.AddParameter("idBloodType", person.BloodType.Id);
-            QueryBuilder.AddParameter("idMedicalInsurance", person.MedicalInsurance.Id);
+            QueryBuilder.AddParameter("idCountry", person.Country?.Id);
+            QueryBuilder.AddParameter("idBloodType", person.BloodType?.Id);
+            QueryBuilder.AddParameter("idMedicalInsurance", person.MedicalInsurance?.Id);
             QueryBuilder.AddParameter("firstname", person.Firstname);
             QueryBuilder.AddParameter("lastname", person.Lastname);
             QueryBuilder.AddParameter("birthDate", person.BirthDate);
-            QueryBuilder.AddParameter("emailAddress", person.EmailAddress);
             QueryBuilder.AddParameter("contactPhone", person.ContactPhone);
 
             QueryBuilder.AddReturnLastInsertedId();
@@ -216,7 +220,6 @@ namespace RaceBoard.Data.Repositories
                                 Firstname = @firstname,
                                 Lastname = @lastname,
                                 BirthDate = @birthDate,
-                                EmailAddress = @emailAddress,
                                 ContactPhone = @contactPhone";
 
             QueryBuilder.AddCommand(sql);
@@ -227,7 +230,6 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddParameter("firstname", person.Firstname);
             QueryBuilder.AddParameter("lastname", person.Lastname);
             QueryBuilder.AddParameter("birthDate", person.BirthDate);
-            QueryBuilder.AddParameter("emailAddress", person.EmailAddress);
             QueryBuilder.AddParameter("contactPhone", person.ContactPhone);
 
             QueryBuilder.AddParameter("id", person.Id);

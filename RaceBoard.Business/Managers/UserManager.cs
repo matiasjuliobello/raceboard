@@ -70,17 +70,26 @@ namespace RaceBoard.Business.Managers
         {
             return _userRepository.GetByEmailAddress(emailAddress, context);
         }
-        
+
         public void Create(User user, ITransactionalContext? context = null)
         {
-            string randomString = _stringHelper.GenerateRandomString(_passwordResetTokenLength);
-            string randomStringHash = _cryptographyHelper.ComputeHash(randomString);
-            
-            user.Password = randomStringHash;
             user.IsActive = true;
 
             if (!_userValidator.IsValid(user, Scenario.Create))
                 throw new FunctionalException(ErrorType.ValidationError, _userValidator.Errors);
+
+            var userPassword = new UserPassword()
+            {
+                IdUser = 0,
+                Password = user.Password
+            };
+
+            if (!_userPasswordValidator.IsValid(userPassword, Scenario.Update))
+                throw new FunctionalException(ErrorType.ValidationError, _userPasswordValidator.Errors);
+
+            //string randomString = _stringHelper.GenerateRandomString(_passwordResetTokenLength);
+            //string randomStringHash = _cryptographyHelper.ComputeHash(randomString);
+            user.Password = _cryptographyHelper.ComputeHash(user.Password);
 
             _userRepository.Create(user);
         }
@@ -88,6 +97,15 @@ namespace RaceBoard.Business.Managers
         public void Update(User user, ITransactionalContext? context = null)
         {
             if (!_userValidator.IsValid(user, Scenario.Update))
+                throw new FunctionalException(ErrorType.ValidationError, _userValidator.Errors);
+
+            var userPassword = new UserPassword()
+            {
+                IdUser = user.Id,
+                Password = user.Password
+            };
+
+            if (!_userPasswordValidator.IsValid(userPassword, Scenario.Update))
                 throw new FunctionalException(ErrorType.ValidationError, _userValidator.Errors);
 
             _userRepository.Update(user);
@@ -111,6 +129,9 @@ namespace RaceBoard.Business.Managers
                 IdUser = idUser,
                 Password = password
             };
+
+            if (!_userPasswordValidator.IsValid(userPassword, Scenario.Update))
+                throw new FunctionalException(ErrorType.ValidationError, _userValidator.Errors);
 
             userPassword.Password = _cryptographyHelper.ComputeHash(password);
 

@@ -11,6 +11,7 @@ using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Common;
 using RaceBoard.Translations.Interfaces;
 using RaceBoard.DTOs.User.Response;
+using RaceBoard.DTOs.Person.Response;
 
 namespace RaceBoard.Service.Controllers
 {
@@ -23,6 +24,7 @@ namespace RaceBoard.Service.Controllers
         private readonly IAuthenticationManager _authenticationManager;
         private readonly ISecurityTicketHelper _securityTicketHelper;
         private readonly IUserManager _userManager;
+        private readonly IPersonManager _personManager;
 
         #endregion
 
@@ -35,6 +37,7 @@ namespace RaceBoard.Service.Controllers
                 ITranslator translator,
                 IAuthenticationManager authenticationManager,
                 IUserManager userManager,
+                IPersonManager personManager,
                 ISecurityTicketHelper securityTicketHelper,
                 ISessionHelper sessionHelper,
                 IRequestContextHelper requestContextHelper
@@ -43,6 +46,7 @@ namespace RaceBoard.Service.Controllers
             _authenticationManager = authenticationManager;
             _securityTicketHelper = securityTicketHelper;
             _userManager = userManager;
+            _personManager = personManager;
         }
 
         #endregion
@@ -59,13 +63,17 @@ namespace RaceBoard.Service.Controllers
 
             var user = _userManager.GetByUsername(userLogin.Username);
 
+            var person = _personManager.GetByIdUser(user.Id);
+
             var accessTokenResponse = _mapper.Map<AccessToken, AccessTokenResponse>(accessToken);
             var userResponse = _mapper.Map<User, UserSimpleResponse>(user);
+            var personResponse = _mapper.Map<Person, PersonSimpleResponse>(person);
 
             var response = new UserLoginResponse()
             {
                 AccessToken = accessTokenResponse,
-                User = userResponse
+                User = userResponse,
+                Person = personResponse
             };
             
             return Ok(response);
