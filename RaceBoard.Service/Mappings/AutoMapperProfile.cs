@@ -53,6 +53,7 @@ using RaceBoard.DTOs;
 using static RaceBoard.Service.Mappings.AutoMapperProfile;
 using RaceBoard.DTOs.City.Request;
 using RaceBoard.DTOs.Country.Request;
+using RaceBoard.DTOs.Format.Response;
 
 namespace RaceBoard.Service.Mappings
 {

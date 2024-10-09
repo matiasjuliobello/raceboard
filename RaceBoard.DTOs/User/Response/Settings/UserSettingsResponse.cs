@@ -1,4 +1,5 @@
-﻿using RaceBoard.DTOs.Language.Response;
+﻿using RaceBoard.DTOs.Format.Response;
+using RaceBoard.DTOs.Language.Response;
 
 namespace RaceBoard.DTOs.User.Response.Settings
 {

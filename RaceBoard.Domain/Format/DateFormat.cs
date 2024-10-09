@@ -1,6 +1,6 @@
-﻿namespace RaceBoard.DTOs.User.Response.Settings
+﻿namespace RaceBoard.Domain.Format
 {
-    public class DateFormatResponse
+    public class DateFormat
     {
         public int Id { get; set; }
         public string Format { get; set; }

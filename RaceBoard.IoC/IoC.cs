@@ -51,6 +51,7 @@ namespace RaceBoard.IoC
             services.AddScoped<IFlagManager, FlagManager>();
             services.AddScoped<IMastManager, MastManager>();
             services.AddScoped<ILanguageManager, LanguageManager>();
+            services.AddScoped<IFormatManager, FormatManager>();
             #endregion
 
             #region Validators
@@ -100,6 +101,7 @@ namespace RaceBoard.IoC
             services.AddScoped<IMastRepository, MastRepository>();
             services.AddScoped<IMastFlagRepository, MastFlagRepository>();
             services.AddScoped<ILanguageRepository, LanguageRepository>();
+            services.AddScoped<IFormatRepository, FormatRepository>();
             #endregion
 
             #region Helpers
