@@ -1,4 +1,5 @@
-﻿using RaceBoard.Translations.Entities;
+﻿using Newtonsoft.Json.Linq;
+using RaceBoard.Translations.Entities;
 using RaceBoard.Translations.Interfaces;
 
 namespace RaceBoard.Translations
@@ -72,11 +73,6 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("Accreditation"),
                 new Tuple<string, string>(Languages.English, "Accreditation"),
                 new Tuple<string, string>(Languages.Spanish, "Acreditación"));
-            AddText(AddTranslation("Competition"),
-                new Tuple<string, string>(Languages.English, "Competition"),
-                new Tuple<string, string>(Languages.Spanish, "Competición"));
-
-
 
 
             AddText(AddTranslation("UserPreferencesNotFound"),
@@ -162,9 +158,19 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("PasswordPolicyNotFound"),
                 new Tuple<string, string>(Languages.English, "Password policy was not found"),
                 new Tuple<string, string>(Languages.Spanish, "La política de contraseñas no fue encontada"));
+
+            AddText(AddTranslation("FirstnameIsRequired"),
+                new Tuple<string, string>(Languages.English, "Firstname is required"),
+                new Tuple<string, string>(Languages.Spanish, "El nombre es requerido"));
+            AddText(AddTranslation("LastnameIsRequired"),
+                new Tuple<string, string>(Languages.English, "Lastname is required"),
+                new Tuple<string, string>(Languages.Spanish, "El apellido es requerido"));
+            AddText(AddTranslation("EmailIsRequired"),
+                new Tuple<string, string>(Languages.English, "Email is required"),
+                new Tuple<string, string>(Languages.Spanish, "El email es requerido"));
             AddText(AddTranslation("PasswordIsRequired"),
                 new Tuple<string, string>(Languages.English, "Password is required"),
-                new Tuple<string, string>(Languages.Spanish, "La contraseña es requerido"));
+                new Tuple<string, string>(Languages.Spanish, "La contraseña es requerida"));
             AddText(AddTranslation("PasswordMustHaveAtLeast_N_Characters"),
                 new Tuple<string, string>(Languages.English, "Password must have at least {0} char(s) long"),
                 new Tuple<string, string>(Languages.Spanish, "La contraseña debe tener al menos {0} caracteres de longitud"));
@@ -183,6 +189,42 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("PasswordMustHaveAtLeast_N_UppercaseCharacters"),
                 new Tuple<string, string>(Languages.English, "Password must have at least {0} uppercase letter(s)"),
                 new Tuple<string, string>(Languages.Spanish, "El password debe contener al menos {0} mayúscula(s)"));
+
+            AddText(AddTranslation("Home"),
+                new Tuple<string, string>(Languages.English, "Home"),
+                new Tuple<string, string>(Languages.Spanish, "Inicio"));
+            AddText(AddTranslation("Teams"),
+                new Tuple<string, string>(Languages.English, "Teams"),
+                new Tuple<string, string>(Languages.Spanish, "Equipos"));
+            AddText(AddTranslation("Competitions"),
+                new Tuple<string, string>(Languages.English, "Competitions"),
+                new Tuple<string, string>(Languages.Spanish, "Competiciones"));
+            AddText(AddTranslation("Organizations"),
+                new Tuple<string, string>(Languages.English, "Organizations"),
+                new Tuple<string, string>(Languages.Spanish, "Organizaciones"));
+            AddText(AddTranslation("Team"),
+                new Tuple<string, string>(Languages.English, "Team"),
+                new Tuple<string, string>(Languages.Spanish, "Equipo"));
+            AddText(AddTranslation("Competition"),
+                new Tuple<string, string>(Languages.English, "Competition"),
+                new Tuple<string, string>(Languages.Spanish, "Competición"));
+            AddText(AddTranslation("Organization"),
+                new Tuple<string, string>(Languages.English, "Organization"),
+                new Tuple<string, string>(Languages.Spanish, "Organización"));
+
+
+            AddText(AddTranslation("RaceClass"),
+                new Tuple<string, string>(Languages.English, "Class"),
+                new Tuple<string, string>(Languages.Spanish, "Clase"));
+            AddText(AddTranslation("RaceCategory"),
+                new Tuple<string, string>(Languages.English, "Category"),
+                new Tuple<string, string>(Languages.Spanish, "Categoría"));
+
+
+            AddText(AddTranslation("CreateNewTeam"),
+                new Tuple<string, string>(Languages.English, "Create new team"),
+                new Tuple<string, string>(Languages.Spanish, "Crear nuevo equipo"));
+
             AddText(AddTranslation("Welcome"),
                 new Tuple<string, string>(Languages.Spanish, "Bienvenido"));
             AddText(AddTranslation("LogIn"),
@@ -235,9 +277,23 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("Id"),
                 new Tuple<string, string>(Languages.Spanish, "Id"));
             AddText(AddTranslation("Name"),
+                 new Tuple<string, string>(Languages.English, "Name"),
                 new Tuple<string, string>(Languages.Spanish, "Nombre"));
             AddText(AddTranslation("Type"),
                 new Tuple<string, string>(Languages.Spanish, "Tipo"));
+            AddText(AddTranslation("Members"),
+                new Tuple<string, string>(Languages.English, "Members"),
+                new Tuple<string, string>(Languages.Spanish, "Integrantes"));
+
+            AddText(AddTranslation("SetTeamName"),
+                new Tuple<string, string>(Languages.English, "Set team name"),
+                new Tuple<string, string>(Languages.Spanish, "Indicar nombre de equipo"));
+            AddText(AddTranslation("ChooseCompetition"),
+                new Tuple<string, string>(Languages.English, "Choose competition"),
+                new Tuple<string, string>(Languages.Spanish, "Escoger competición"));
+            AddText(AddTranslation("ChooseRaceClass"),
+                new Tuple<string, string>(Languages.English, "Choose race class"),
+                new Tuple<string, string>(Languages.Spanish, "Escoger clase"));
         }
 
         private Translation AddTranslation(string key)
