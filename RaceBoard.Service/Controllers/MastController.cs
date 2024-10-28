@@ -68,15 +68,22 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpGet("flags")]
-        public ActionResult<List<MastFlagResponse>> GetMastFlags([FromQuery] MastFlagSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
+        public ActionResult<PaginatedResultResponse<MastFlagResponse>> GetMastFlags([FromQuery] MastFlagSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<MastFlagSearchFilter>(searchFilterRequest);
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
             var sorting = _mapper.Map<Sorting>(sortingRequest);
 
-            if (searchFilter == null || searchFilter.Mast == null)
+            if (searchFilter == null)
+                throw new FunctionalException(Common.Enums.ErrorType.ValidationError, "SearchFilterIsRequired");
+
+            //if (searchFilter.Mast == null && searchFilter.Mast == null)
+            //{
+            //    throw new FunctionalException(Common.Enums.ErrorType.ValidationError, "IdMastIsRequired");
+            //}
+            if (searchFilter.Mast == null && searchFilter.Competition == null)
             {
-                throw new FunctionalException(Common.Enums.ErrorType.ValidationError, "IdMastIsRequired");
+                throw new FunctionalException(Common.Enums.ErrorType.ValidationError, "IdCompetitionIsRequired");
             }
 
             var mastFlags = _mastManager.GetFlags(searchFilter, paginationFilter, sorting);

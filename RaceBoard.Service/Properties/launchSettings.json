@@ -14,8 +14,8 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
+        "CORS_Allowed_Origins": "http://localhost:4200,http://127.0.0.1:4200,http://localhost:5173,127.0.0.1:5173",
         "BuildId": "1.0",
-        "CORS_AllowedOrigins": "https://wwww.raceboard.com/",
         "SwaggerEnvironmentServerUrl": "https://wwww.raceboard.com/",
         "ConnectionString_DB": "Server=VAR-9XN8VL3\\LOCAL;Database=RaceBoard;Trusted_Connection=True;",
         "ConnectionString_Translations": "Server=VAR-9XN8VL3\\LOCAL;Database=Translations;Trusted_Connection=True;",
@@ -30,7 +30,6 @@
         "PasswordResetToken_Length": "32",
         "PasswordResetToken_Lifetime": "15",
         "Pagination_Default_PageSize": "25",
-        "CORS_Allowed_Origins": "http://localhost:4200,http://127.0.0.1:4200,http://localhost:5173,127.0.0.1:5173",
         "FileStorageWorkDirectory": "C:\\FileStorage-TEMP",
         "FileStorageDirectory": "C:\\FileStorage",
         "BlobFileStorageUrl": "https://bunny.net/",

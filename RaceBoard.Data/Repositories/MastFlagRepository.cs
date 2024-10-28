@@ -17,6 +17,7 @@ namespace RaceBoard.Data.Repositories
             { "RaisingMoment", "[Mast_Flag].RaisingMoment" },
             { "LoweringMoment", "[Mast_Flag].LoweringMoment" },
             { "IsActive", "[Mast_Flag].IsActive" },
+            { "Competition.Id", "[Competition].Id" },
             { "Mast.Id", "[Mast].Id" },
             { "Flag.Id", "[Flag].Id" },
             { "Flag.Name", "[Flag].Name" },
@@ -106,6 +107,7 @@ namespace RaceBoard.Data.Repositories
                                 [Person].Lastname [Lastname]
                             FROM [Mast_Flag]
                             INNER JOIN [Mast] [Mast] ON [Mast].Id = [Mast_Flag].IdMast
+                            INNER JOIN [Competition] [Competition] ON [Competition].Id = [Mast].IdCompetition
                             INNER JOIN [Flag] [Flag] ON [Flag].Id = [Mast_Flag].IdFlag
                             INNER JOIN [Person] [Person] ON [Person].Id = [Mast_Flag].IdPerson";
 
@@ -151,8 +153,9 @@ namespace RaceBoard.Data.Repositories
                 return;
 
             base.AddFilterCriteria(ConditionType.In, "Mast_Flag", "Id", "ids", searchFilter.Ids);
-            base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IdMast", "idMast", searchFilter.Mast?.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "Competition", "Id", "idCompetition", searchFilter.Competition?.Id);
             base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IdFlag", "idFlag", searchFilter.Flag?.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IdMast", "idMast", searchFilter.Mast?.Id);
             base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IdPerson", "idPerson", searchFilter.Person?.Id);
             base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IsActive", "isActive", searchFilter.IsActive);
         }

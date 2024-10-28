@@ -57,6 +57,7 @@ namespace RaceBoard.Data.Repositories
 
             QueryBuilder.AddCommand(existsQuery);
             QueryBuilder.AddParameter("id", mast.Id);
+            QueryBuilder.AddParameter("idCompetition", mast.Competition.Id);
 
             return base.Execute<bool>(context);
         }

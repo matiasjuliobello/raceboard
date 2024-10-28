@@ -30,6 +30,7 @@ namespace RaceBoard.IoC
             services.AddScoped<IUserManager, UserManager>();
             services.AddScoped<IUserSettingsManager, UserSettingsManager>();
             services.AddScoped<IUserPasswordResetManager, UserPasswordResetManager>();
+            services.AddScoped<IDeviceManager, DeviceManager>();
             services.AddScoped<ITimeZoneManager, TimeZoneManager>();
             services.AddScoped<ICityManager, CityManager>();
             services.AddScoped<ICountryManager, CountryManager>();
@@ -52,6 +53,7 @@ namespace RaceBoard.IoC
             services.AddScoped<IMastManager, MastManager>();
             services.AddScoped<ILanguageManager, LanguageManager>();
             services.AddScoped<IFormatManager, FormatManager>();
+            services.AddScoped<INotificationManager, NotificationManager>();
             #endregion
 
             #region Validators
@@ -78,6 +80,8 @@ namespace RaceBoard.IoC
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserSettingsRepository, UserSettingsRepository>();
             services.AddScoped<IUserPasswordResetRepository, UserPasswordResetRepository>();
+            services.AddScoped<IDeviceRepository, DeviceRepository>();
+            services.AddScoped<IDeviceSubscriptionRepository, DeviceSubscriptionRepository>();
             services.AddScoped<ITranslationRepository, FakeTranslationRepository>();
             services.AddScoped<ITimeZoneRepository, TimeZoneRepository>();
             services.AddScoped<ICityRepository, CityRepository>();
