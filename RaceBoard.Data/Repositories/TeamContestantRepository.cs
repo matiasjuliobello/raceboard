@@ -95,7 +95,7 @@ public class TeamContestantRepository : AbstractRepository, ITeamContestantRepos
 
     public bool HasParticipationOnRace(TeamContestant teamContestant, ITransactionalContext? context = null)
     {
-        string condition = @"[Race_Complaint].IdTeamContestant = 
+        string condition = @"[Race_Protest].IdTeamContestant = 
                             (
 	                            SELECT [Team_Contestant].Id 
 	                            FROM [Team_Contestant] [Team_Contestant] 
@@ -103,7 +103,7 @@ public class TeamContestantRepository : AbstractRepository, ITeamContestantRepos
 	                            WHERE [Team_Contestant].IdPerson = @idPerson AND [Team].Id = @idTeam
                             )";
 
-        string existsQuery = base.GetExistsQuery("[Race_Complaint]", condition);
+        string existsQuery = base.GetExistsQuery("[Race_Protest]", condition);
 
         QueryBuilder.AddCommand(existsQuery);
         QueryBuilder.AddParameter("idTeam", teamContestant.Team.Id);

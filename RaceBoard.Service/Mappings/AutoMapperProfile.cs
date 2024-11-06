@@ -169,14 +169,18 @@ namespace RaceBoard.Service.Mappings
 
             CreateMap<RaceRequest, Race>()
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
-                .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
+                .ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)));
             CreateMap<RaceSearchFilterRequest, RaceSearchFilter>()
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
                 .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
 
-            CreateMap<RaceComplaintRequest, RaceComplaint>()
+            CreateMap<RaceProtestRequest, RaceProtest>()
                 .ForMember(dest => dest.Race, opt => opt.MapFrom(src => CreateObject<Race>(src.IdRace)))
                 .ForMember(dest => dest.TeamContestant, opt => opt.MapFrom(src => CreateObject<TeamContestant>(src.IdTeamContestant)));
+
+            CreateMap<RaceCommitteeBoatReturnRequest, RaceCommitteeBoatReturn>()
+                .ForMember(dest => dest.Race, opt => opt.MapFrom(src => CreateObject<Race>(src.IdRace)));
+
 
             CreateMap<BloodTypeSearchFilterRequest, BloodTypeSearchFilter>();
 
@@ -235,7 +239,8 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Flag, opt => opt.MapFrom(src => CreateObject<Flag>(src.IdFlag)))
                 .ForMember(dest => dest.Person, opt => opt.MapFrom(src => CreateObject<Person>(src.IdPerson)));
 
-            CreateMap<NotificationRequest, Notification>();
+            CreateMap<NotificationRequest, Notification>()
+                .ForMember(dest => dest.NotificationType, opt => opt.MapFrom(src => (NotificationType)src.IdNotificationType));
 
             CreateMap<DeviceRequest, Device>()
                 .ForMember(dest => dest.Platform, opt => opt.MapFrom(src => CreateObject<Platform>(src.IdPlatform)));
@@ -244,6 +249,7 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Device, opt => opt.MapFrom(src => CreateObject<Device>(src.IdDevice)))
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
                 .ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)));
+
 
             #endregion
 

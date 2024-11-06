@@ -453,13 +453,22 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
             string sqlQuery = _queryBuilder.Build();
             object parameters = _queryBuilder.GetParameters();
 
-            return connection.ExecuteScalar<T>
-                (
-                    sql: sqlQuery,
-                    param: parameters,
-                    transaction: transaction,
-                    commandTimeout: timeout
-                );
+            try
+            {
+                return connection.ExecuteScalar<T>
+                    (
+                        sql: sqlQuery,
+                        param: parameters,
+                        transaction: transaction,
+                        commandTimeout: timeout
+                    );
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(sqlQuery);
+                throw;
+            }
         }
 
         private T GetSingleResult<T>(IDbConnection connection, IDbTransaction? transaction = null, int? timeout = null)

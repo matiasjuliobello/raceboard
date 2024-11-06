@@ -2,6 +2,12 @@
 
 namespace RaceBoard.Domain.Notification
 {
+    public enum NotificationType
+    {
+        Message = 1,
+        Topic = 2
+    }
+
     public class AndroidContent
     {
         public AndroidNotificationContent notification { get; set; }
@@ -42,7 +48,9 @@ namespace RaceBoard.Domain.Notification
 
     public class Message
     {
-        public string token { get; set; }
+        public string? token { get; set; }
+        public string? topic { get; set; }
+
         public NotificationContent notification { get; set; }
         public AndroidContent android { get; set; }
         public AppleContent apns { get; set; }
@@ -52,15 +60,14 @@ namespace RaceBoard.Domain.Notification
     {
         public Message message { get; set; }
 
-        public FirebaseNotification(string deviceToken, string title, string messag, string? imageFileUrl = null)
+        public FirebaseNotification(string title, string message, string? imageFileUrl = null)
         {
             this.message = new Message()
             {
-                token = deviceToken,
                 notification = new NotificationContent()
                 {
                     title = title,
-                    body = messag
+                    body = message
                 }
             };
 

@@ -1,11 +1,10 @@
-﻿using Google.Apis.Auth.OAuth2;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Configuration;
+using RestSharp;
+using Google.Apis.Auth.OAuth2;
 using RaceBoard.Business.Managers.Abstract;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Domain.Notification;
 using RaceBoard.Translations.Interfaces;
-using RestSharp;
 
 namespace RaceBoard.Business.Managers
 {
@@ -24,6 +23,10 @@ namespace RaceBoard.Business.Managers
                 IConfiguration configuration
             ) : base(translator)
         {
+            //string googleCredentialsScope = configuration["Google_Credentials_Scope"];
+            //string googleFirebaseCredentialsFilePath = configuration["Google_Firebase_Credentials_FilePath"];
+            //string googleFirebaseApiBaseUrl = configuration["Google_Firebase_ApiBaseUrl"];
+            //string googleFirebaseProjectId = configuration["Google_Firebase_ProjectId"];
         }
 
         #endregion
@@ -41,7 +44,13 @@ namespace RaceBoard.Business.Managers
 
         public async Task<RestResponse> SendNotification(Notification notification)
         {
-            var firebaseNotification = new FirebaseNotification(notification.DeviceToken, notification.Title, notification.Message, notification.ImageFileUrl);
+            var firebaseNotification = new FirebaseNotification(notification.Title, notification.Message, notification.ImageFileUrl);
+
+            if (notification.NotificationType == NotificationType.Message)
+                firebaseNotification.message.token = notification.IdTarget;
+
+            if (notification.NotificationType == NotificationType.Topic)
+                firebaseNotification.message.topic = notification.IdTarget;
 
             var bearerToken = GetJwtToken();
 

@@ -5,18 +5,18 @@ using RaceBoard.Translations.Interfaces;
 
 namespace RaceBoard.Business.Validators
 {
-    public class RaceComplaintValidator : AbstractCustomValidator<RaceComplaint>
+    public class RaceProtestValidator : AbstractCustomValidator<RaceProtest>
     {
-        private readonly IRaceRepository _raceRepository;
+        private readonly IRaceProtestRepository _raceProtestRepository;
 
-        public RaceComplaintValidator
+        public RaceProtestValidator
             (
                 ITranslator translator,
-                IRaceRepository raceRepository
+                IRaceProtestRepository raceProtestRepository
             )
             : base(translator)
         {
-            _raceRepository = raceRepository;
+            _raceProtestRepository = raceProtestRepository;
 
             base.SetRules(this.AddRules);
         }
@@ -28,9 +28,9 @@ namespace RaceBoard.Business.Validators
             //    .WithMessage(Translate("IdIsRequired"))
             //    .When(x => Scenario == Scenario.Update);
 
-            //RuleFor(x => x.RaceComplaint.Id)
+            //RuleFor(x => x.RaceProtest.Id)
             //    .NotEmpty()
-            //    .WithMessage(Translate("IdRaceComplaintIsRequired"))
+            //    .WithMessage(Translate("IdRaceProtestIsRequired"))
             //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
             //RuleFor(x => x.Boat.Id)

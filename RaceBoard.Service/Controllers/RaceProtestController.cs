@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using RaceBoard.Business.Managers;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
@@ -8,7 +7,6 @@ using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
 using RaceBoard.DTOs.Race.Request;
 using RaceBoard.DTOs.Race.Response;
-using RaceBoard.DTOs.Team.Response;
 using RaceBoard.Service.Controllers.Abstract;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Translations.Interfaces;
@@ -17,14 +15,14 @@ namespace RaceBoard.Service.Controllers
 {
     [Route("api/races")]
     [ApiController]
-    public class RaceComplaintController : AbstractController<RaceComplaintController>
+    public class RaceProtestController : AbstractController<RaceProtestController>
     {
         private readonly IRaceManager _raceManager;
 
-        public RaceComplaintController
+        public RaceProtestController
             (
                 IMapper mapper,
-                ILogger<RaceComplaintController> logger,
+                ILogger<RaceProtestController> logger,
                 ITranslator translator,
                 IRaceManager raceManager,
                 ISessionHelper sessionHelper,
@@ -34,7 +32,7 @@ namespace RaceBoard.Service.Controllers
             _raceManager = raceManager;
         }
 
-        [HttpGet("{id}/complaints")]
+        [HttpGet("{id}/protests")]
         public ActionResult<List<RaceResponse>> Get([FromQuery] RaceSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<RaceSearchFilterRequest, RaceSearchFilter>(searchFilterRequest);
@@ -48,7 +46,7 @@ namespace RaceBoard.Service.Controllers
             return Ok(response);
         }
 
-        [HttpGet("complaints/{id}")]
+        [HttpGet("protests/{id}")]
         public ActionResult<RaceResponse> Get([FromRoute] int id)
         {
             var data = _raceManager.Get(id);
@@ -58,12 +56,12 @@ namespace RaceBoard.Service.Controllers
             return Ok(response);
         }
 
-        [HttpPost("complaints")]
-        public ActionResult<int> Create(RaceComplaintRequest raceComplaintRequest)
+        [HttpPost("protests")]
+        public ActionResult<int> Create(RaceProtestRequest raceProtestRequest)
         {
-            var data = _mapper.Map<RaceComplaint>(raceComplaintRequest);
+            var data = _mapper.Map<RaceProtest>(raceProtestRequest);
 
-            _raceManager.CreateComplaint(data);
+            _raceManager.CreateProtest(data);
 
             return Ok(data.Id);
         }

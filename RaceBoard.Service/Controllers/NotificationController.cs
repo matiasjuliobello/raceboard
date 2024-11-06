@@ -31,7 +31,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpPost("devices")]
-        public ActionResult RegisterDevice(NotificationRequest notificationRequest)
+        public ActionResult SendNotificationToDevices(NotificationRequest notificationRequest)
         {
             var notification = _mapper.Map<Notification>(notificationRequest);
 

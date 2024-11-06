@@ -14,7 +14,5 @@ namespace RaceBoard.Data.Repositories.Interfaces
         void Create(Race race, ITransactionalContext? context = null);
         void Update(Race race, ITransactionalContext? context = null);
         int Delete(int id, ITransactionalContext? context = null);
-
-        void CreateComplaint(RaceComplaint raceComplaint, ITransactionalContext? context = null);
     }
 }

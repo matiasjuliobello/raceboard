@@ -93,11 +93,17 @@ namespace RaceBoard.Data.Repositories
                                 [Device].Id [Id],
                                 [Competition].Id [Id],
                                 [Competition].Name [Name],
+                                [City].Id [Id],
+                                [City].Name [Name],
+                                [Country].Id [Id],
+                                [Country].Name [Name],
                                 [RaceClass].Id [Id],
                                 [RaceClass].Name [Name]
                             FROM [Device_Subscription]
                             INNER JOIN [Device] ON [Device].Id = [Device_Subscription].IdDevice
                             INNER JOIN [Competition] ON [Competition].Id = [Device_Subscription].IdCompetition
+                            INNER JOIN [City] [City] ON [City].Id = [Competition].IdCity
+                            INNER JOIN [Country] [Country] ON [Country].Id = [City].IdCountry
                             INNER JOIN [RaceClass] ON [RaceClass].Id = [Device_Subscription].IdRaceClass";
 
             QueryBuilder.AddCommand(sql);
@@ -111,9 +117,9 @@ namespace RaceBoard.Data.Repositories
                 (
                     (x) =>
                     {
-                        subscriptions = x.Read<DeviceSubscription, Device, Competition, RaceClass, DeviceSubscription>
+                        subscriptions = x.Read<DeviceSubscription, Device, Competition, City, Country, RaceClass, DeviceSubscription>
                         (
-                            (subscription, device, competition, raceClass) =>
+                            (subscription, device, competition, city, country, raceClass) =>
                             {
                                 var item = subscriptions.FirstOrDefault(x => x.Device.Id == device.Id);
                                 if (item == null)
@@ -125,9 +131,12 @@ namespace RaceBoard.Data.Repositories
                                 }
                                 item.RaceClasses.Add(raceClass);
 
+                                city.Country = country;
+                                competition.City = city;
+
                                 return subscription;
                             },
-                            splitOn: "Id, Id, Id, Id"
+                            splitOn: "Id, Id, Id, Id, Id, Id"
                         ).ToList();
                     },
                     context

@@ -4,6 +4,8 @@ using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
+using System.Diagnostics;
+using System;
 
 namespace RaceBoard.Data.Repositories
 {
@@ -77,11 +79,6 @@ namespace RaceBoard.Data.Repositories
             return base.Delete("[Race]", id, "Id", context);
         }
 
-        public void CreateComplaint(RaceComplaint raceComplaint, ITransactionalContext? context = null)
-        {
-            this.CreateRaceComplaint(raceComplaint, context);
-        }
-
         #endregion
 
         #region Private Methods
@@ -98,8 +95,9 @@ namespace RaceBoard.Data.Repositories
                                 [Competition].StartDate [StartDate],
                                 [Competition].EndDate [EndDate]
                             FROM [Race] [Race]
-                            INNER JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Race].IdRaceClass
-                            INNER JOIN [Competition] [Competition] ON [Competition].Id = [Race].IdCompetition";
+                            INNER JOIN [Competition] [Competition] ON [Competition].Id = [Race].IdCompetition
+                            LEFT JOIN [Race_RaceClass] [Race_RaceClass] ON [Race_RaceClass].IdRace = [Race].Id
+                            LEFT JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Race_RaceClass].IdRaceClass";
 
             QueryBuilder.AddCommand(sql);
 
@@ -118,10 +116,17 @@ namespace RaceBoard.Data.Repositories
                         (
                             (race, raceClass, competition) =>
                             {
-                                race.RaceClass = raceClass;
-                                race.Competition = competition;
-
-                                races.Add(race);
+                                var existingRace = races.FirstOrDefault(x => x.Id == race.Id);
+                                if (existingRace == null)
+                                {
+                                    races.Add(race);
+                                    race.Competition = competition;
+                                }
+                                else
+                                {
+                                    race = existingRace;
+                                }
+                                race.RaceClasses.Add(raceClass);
 
                                 return race;
                             },
@@ -148,32 +153,36 @@ namespace RaceBoard.Data.Repositories
 
         private void CreateRace(Race race, ITransactionalContext? context = null)
         {
+            QueryBuilder.Clear();
+
             string sql = @" INSERT INTO [Race]
-                                ( IdRaceClass, IdCompetition, Schedule )
+                                ( IdCompetition, Schedule )
                             VALUES
-                                ( @idRaceClass, @idCompetition, @schedule )";
+                                ( @idCompetition, @schedule )";
 
             QueryBuilder.AddCommand(sql);
 
-            QueryBuilder.AddParameter("idRaceClass", race.RaceClass.Id);
             QueryBuilder.AddParameter("idCompetition", race.Competition.Id);
             QueryBuilder.AddParameter("schedule", race.Schedule);
 
             QueryBuilder.AddReturnLastInsertedId();
 
             race.Id = base.Execute<int>(context);
+
+            int removedRaceClasses = this.RemoveRaceClassesFromRace(race.Id, context);
+            this.AddRaceClassesToRace(race.Id, race.RaceClasses, context);
         }
 
         private void UpdateRace(Race race, ITransactionalContext? context = null)
         {
+            QueryBuilder.Clear();
+
             string sql = @" UPDATE [Race] SET
-                                IdRaceClass = @idRaceClass,
                                 IdCompetition = @idCompetition
                                 Schedule = @schedule";
 
             QueryBuilder.AddCommand(sql);
 
-            QueryBuilder.AddParameter("idRaceClass", race.RaceClass.Id);
             QueryBuilder.AddParameter("idCompetition", race.Competition.Id);
             QueryBuilder.AddParameter("schedule", race.Schedule);
 
@@ -181,24 +190,39 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddCondition("Id = @id");
 
             base.ExecuteAndGetRowsAffected(context);
+
+            int removedRaceClasses = this.RemoveRaceClassesFromRace(race.Id, context);
+            this.AddRaceClassesToRace(race.Id, race.RaceClasses, context);
         }
 
-        private void CreateRaceComplaint(RaceComplaint raceComplaint, ITransactionalContext? context = null)
+        private int RemoveRaceClassesFromRace(int idRace, ITransactionalContext? context = null)
         {
-            string sql = @" INSERT INTO [Race_Complaint]
-                                ( IdRace, IdTeamContestant, Timestamp )
-                            VALUES
-                                ( @idRace, @idTeamContestant, @timestamp )";
+            return base.Delete("[Race_RaceClass]", idRace, "IdRace", context);
+        }
 
-            QueryBuilder.AddCommand(sql);
+        private void AddRaceClassesToRace(int idRace, List<RaceClass> raceClasses, ITransactionalContext? context = null)
+        {
+            if (raceClasses == null)
+                return;
 
-            QueryBuilder.AddParameter("idRace", raceComplaint.Race.Id);
-            QueryBuilder.AddParameter("idTeamContestant", raceComplaint.TeamContestant.Id);
-            QueryBuilder.AddParameter("timestamp", raceComplaint.Timestamp);
+            QueryBuilder.Clear();
 
-            QueryBuilder.AddReturnLastInsertedId();
+            foreach (var raceClass in raceClasses)
+            {
+                string sqlRaceClass = @"INSERT INTO [Race_RaceClass]
+                                        ( IdRace, IdRaceClass )
+                                    VALUES
+                                        ( @idRace, @idRaceClass )";
 
-            raceComplaint.Id = base.Execute<int>(context);
+                QueryBuilder.AddCommand(sqlRaceClass);
+
+                QueryBuilder.AddParameter("idRace", idRace);
+                QueryBuilder.AddParameter("idRaceClass", raceClass.Id);
+
+                QueryBuilder.AddReturnLastInsertedId();
+
+                int idRace_RaceClass = base.Execute<int>(context);
+            }
         }
 
         #endregion
