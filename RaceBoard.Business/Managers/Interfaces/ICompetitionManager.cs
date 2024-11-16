@@ -17,5 +17,10 @@ namespace RaceBoard.Business.Managers.Interfaces
         void CreateGroup(CompetitionGroup competitionGroup, ITransactionalContext? context = null);
         void UpdateGroup(CompetitionGroup competitionGroup, ITransactionalContext? context = null);
         void DeleteGroup(int idCompetitionGroup, ITransactionalContext? context = null);
+
+        PaginatedResult<CommitteeBoatReturn> GetCommitteeBoatReturns(CommitteeBoatReturnSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
+        void CreateCommitteeBoatReturn(CommitteeBoatReturn committeeBoatReturn, ITransactionalContext? context = null);
+
+        void CreateProtest(RaceProtest raceProtest, ITransactionalContext? context = null);
     }
 }

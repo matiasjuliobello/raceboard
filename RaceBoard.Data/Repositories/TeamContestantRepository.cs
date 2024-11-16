@@ -63,7 +63,7 @@ public class TeamContestantRepository : AbstractRepository, ITeamContestantRepos
         QueryBuilder.AddCommand(existsQuery);
         QueryBuilder.AddParameter("id", teamContestant.Id);
         QueryBuilder.AddParameter("idTeam", teamContestant.Team.Id);
-        QueryBuilder.AddParameter("idPerson", teamContestant.Contestant.Id);
+        QueryBuilder.AddParameter("idPerson", teamContestant.Person.Id);
 
         return base.Execute<bool>(context);
     }
@@ -107,7 +107,7 @@ public class TeamContestantRepository : AbstractRepository, ITeamContestantRepos
 
         QueryBuilder.AddCommand(existsQuery);
         QueryBuilder.AddParameter("idTeam", teamContestant.Team.Id);
-        QueryBuilder.AddParameter("idPerson", teamContestant.Contestant.Id);
+        QueryBuilder.AddParameter("idPerson", teamContestant.Person.Id);
 
         return base.Execute<bool>(context);
     }
@@ -191,7 +191,7 @@ public class TeamContestantRepository : AbstractRepository, ITeamContestantRepos
                         (teamContestant, team, person, contestantRole) =>
                         {
                             teamContestant.Team = team;
-                            teamContestant.Contestant = person;
+                            teamContestant.Person = person;
                             teamContestant.Role = contestantRole;
 
                             teamContestants.Add(teamContestant);
@@ -230,7 +230,7 @@ public class TeamContestantRepository : AbstractRepository, ITeamContestantRepos
         QueryBuilder.AddCommand(sql);
 
         QueryBuilder.AddParameter("idTeam", teamContestant.Team.Id);
-        QueryBuilder.AddParameter("idPerson", teamContestant.Contestant.Id);
+        QueryBuilder.AddParameter("idPerson", teamContestant.Person.Id);
         QueryBuilder.AddParameter("idContestantRole", teamContestant.Role.Id);
 
         QueryBuilder.AddReturnLastInsertedId();
@@ -247,7 +247,7 @@ public class TeamContestantRepository : AbstractRepository, ITeamContestantRepos
         QueryBuilder.AddCommand(sql);
 
         QueryBuilder.AddParameter("idContestantRole", teamContestant.Role.Id);
-        QueryBuilder.AddParameter("idPerson", teamContestant.Contestant.Id);
+        QueryBuilder.AddParameter("idPerson", teamContestant.Person.Id);
         QueryBuilder.AddParameter("id", teamContestant.Id);
         QueryBuilder.AddCondition("Id = @id");
 

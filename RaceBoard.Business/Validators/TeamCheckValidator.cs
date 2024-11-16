@@ -1,23 +1,24 @@
-﻿using RaceBoard.Business.Validators.Abstract;
-using RaceBoard.Data.Repositories.Interfaces;
-using RaceBoard.Translations.Interfaces;
-using RaceBoard.Data.Repositories;
+﻿using FluentValidation;
+using RaceBoard.Business.Validators.Abstract;
 using RaceBoard.Domain;
+using RaceBoard.Translations.Interfaces;
+using RaceBoard.Common.Enums;
+using RaceBoard.Data.Repositories.Interfaces;
 
 namespace RaceBoard.Business.Validators
 {
-    public class RaceCommitteeBoatReturnValidator : AbstractCustomValidator<CommitteeBoatReturn>
+    public class TeamCheckValidator : AbstractCustomValidator<TeamContestantCheck>
     {
-        private readonly ICommitteeBoatReturnRepository _committeeBoatReturnRepository;
+        private readonly ITeamCheckRepository _teamCheckRepository;
 
-        public RaceCommitteeBoatReturnValidator
+        public TeamCheckValidator
             (
                 ITranslator translator,
-                ICommitteeBoatReturnRepository committeeBoatReturnRepository
+                ITeamCheckRepository teamCheckRepository
             )
             : base(translator)
         {
-            _committeeBoatReturnRepository = committeeBoatReturnRepository;
+            _teamCheckRepository = teamCheckRepository;
 
             base.SetRules(this.AddRules);
         }
@@ -29,9 +30,9 @@ namespace RaceBoard.Business.Validators
             //    .WithMessage(Translate("IdIsRequired"))
             //    .When(x => Scenario == Scenario.Update);
 
-            //RuleFor(x => x.RaceCommitteeBoatReturn.Id)
+            //RuleFor(x => x.Team.Id)
             //    .NotEmpty()
-            //    .WithMessage(Translate("IdRaceCommitteeBoatReturnIsRequired"))
+            //    .WithMessage(Translate("IdTeamIsRequired"))
             //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
             //RuleFor(x => x.Boat.Id)
@@ -40,8 +41,8 @@ namespace RaceBoard.Business.Validators
             //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
             //RuleFor(x => x)
-            //    .Must(x => !_teamBoatRepository.ExistsDuplicate(x, base.TransactionalContext))
-            //    .WithMessage(Translate("DuplicateRecordExists"))
+            //    .Must(x => !_teamCheckRepository.ExistsDuplicate(x, base.TransactionalContext))
+            //    .WithMessage(Translate("BoatAlreadyAssignedToAnotherTeam"))
             //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
         }
     }

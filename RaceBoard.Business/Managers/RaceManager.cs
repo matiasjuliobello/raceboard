@@ -17,10 +17,8 @@ namespace RaceBoard.Business.Managers
     {
         private readonly IRaceRepository _raceRepository;
         private readonly IRaceProtestRepository _raceProtestRepository;
-        private readonly IRaceCommitteeBoatReturnRepository _raceCommitteeBoatReturnRepository;
         private readonly ICustomValidator<Race> _raceValidator;
         private readonly ICustomValidator<RaceProtest> _raceProtestValidator;
-        private readonly ICustomValidator<RaceCommitteeBoatReturn> _raceCommitteeBoatReturnValidator;
         private readonly IDateTimeHelper _dateTimeHelper;
 
         #region Constructors
@@ -29,20 +27,16 @@ namespace RaceBoard.Business.Managers
             (
                 IRaceRepository raceRepository,
                 IRaceProtestRepository raceProtestRepository,
-                IRaceCommitteeBoatReturnRepository raceCommitteeBoatReturnRepository,
                 ICustomValidator<Race> raceValidator,
                 ICustomValidator<RaceProtest> raceProtestValidator,
-                ICustomValidator<RaceCommitteeBoatReturn> raceCommitteeBoatReturnValidator,
                 IDateTimeHelper dateTimeHelper,
                 ITranslator translator
             ) : base(translator)
         {
             _raceRepository = raceRepository;
             _raceProtestRepository = raceProtestRepository;
-            _raceCommitteeBoatReturnRepository = raceCommitteeBoatReturnRepository;
             _raceValidator = raceValidator;
             _raceProtestValidator = raceProtestValidator;
-            _raceCommitteeBoatReturnValidator = raceCommitteeBoatReturnValidator;
             _dateTimeHelper = dateTimeHelper;
         }
 
@@ -131,56 +125,6 @@ namespace RaceBoard.Business.Managers
             catch (Exception)
             {
                 _raceRepository.CancelTransactionalContext(context);
-                throw;
-            }
-        }
-
-        public void CreateProtest(RaceProtest raceProtest, ITransactionalContext? context = null)
-        {
-            raceProtest.Submission = _dateTimeHelper.GetCurrentTimestamp();
-
-            _raceProtestValidator.SetTransactionalContext(context);
-
-            if (!_raceProtestValidator.IsValid(raceProtest, Scenario.Create))
-                throw new FunctionalException(ErrorType.ValidationError, _raceProtestValidator.Errors);
-
-            if (context == null)
-                context = _raceProtestRepository.GetTransactionalContext(TransactionContextScope.Internal);
-
-            try
-            {
-                _raceProtestRepository.Create(raceProtest, context);
-
-                _raceProtestRepository.ConfirmTransactionalContext(context);
-            }
-            catch (Exception)
-            {
-                _raceProtestRepository.CancelTransactionalContext(context);
-                throw;
-            }
-        }
-
-        public void CreateCommitteeBoatReturns(RaceCommitteeBoatReturn committeeBoatReturn, ITransactionalContext? context = null)
-        {
-            committeeBoatReturn.Return = _dateTimeHelper.GetCurrentTimestamp();
-
-            _raceCommitteeBoatReturnValidator.SetTransactionalContext(context);
-
-            if (!_raceCommitteeBoatReturnValidator.IsValid(committeeBoatReturn, Scenario.Create))
-                throw new FunctionalException(ErrorType.ValidationError, _raceCommitteeBoatReturnValidator.Errors);
-
-            if (context == null)
-                context = _raceCommitteeBoatReturnRepository.GetTransactionalContext(TransactionContextScope.Internal);
-
-            try
-            {
-                _raceCommitteeBoatReturnRepository.Create(committeeBoatReturn, context);
-
-                _raceCommitteeBoatReturnRepository.ConfirmTransactionalContext(context);
-            }
-            catch (Exception)
-            {
-                _raceCommitteeBoatReturnRepository.CancelTransactionalContext(context);
                 throw;
             }
         }

@@ -8,6 +8,7 @@ using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Common.Enums;
 using RaceBoard.Common.Exceptions;
 using RaceBoard.Business.Validators.Interfaces;
+using RaceBoard.Common.Helpers.Interfaces;
 
 namespace RaceBoard.Business.Managers
 {
@@ -16,8 +17,14 @@ namespace RaceBoard.Business.Managers
         private readonly ICompetitionRepository _competitionRepository;
         private readonly ICompetitionGroupRepository _competitionGroupRepository;
 
+        private readonly ICommitteeBoatReturnRepository _committeeBoatReturnRepository;
+        private readonly ICustomValidator<CommitteeBoatReturn> _committeeBoatReturnValidator;
+
+
         private readonly ICustomValidator<Competition> _competitionValidator;
         private readonly ICustomValidator<CompetitionGroup> _competitionGroupValidator;
+
+        private readonly IDateTimeHelper _dateTimeHelper;
 
         #region Constructors
 
@@ -27,13 +34,19 @@ namespace RaceBoard.Business.Managers
                 ICompetitionGroupRepository competitionGrpupRepository,
                 ICustomValidator<Competition> competitionValidator,
                 ICustomValidator<CompetitionGroup> competitionGroupValidator,
+                ICommitteeBoatReturnRepository committeeBoatReturnRepository,
+                ICustomValidator<CommitteeBoatReturn> committeeBoatReturnValidator,
+                IDateTimeHelper dateTimeHelper,
                 ITranslator translator
             ) : base(translator)
         {
             _competitionRepository = competitionRepository;
             _competitionGroupRepository = competitionGrpupRepository;
+            _committeeBoatReturnRepository = committeeBoatReturnRepository;
             _competitionValidator = competitionValidator;
             _competitionGroupValidator = competitionGroupValidator;
+            _committeeBoatReturnValidator = committeeBoatReturnValidator;
+            _dateTimeHelper = dateTimeHelper;
         }
 
         #endregion
@@ -139,7 +152,7 @@ namespace RaceBoard.Business.Managers
         {
             return _competitionGroupRepository.Get(idCompetition, context);
         }
-        
+
         public CompetitionGroup GetGroup(int id, ITransactionalContext? context = null)
         {
             return _competitionGroupRepository.GetById(id, context);
@@ -221,6 +234,60 @@ namespace RaceBoard.Business.Managers
             }
         }
 
+        public PaginatedResult<CommitteeBoatReturn> GetCommitteeBoatReturns(CommitteeBoatReturnSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        {
+            return _committeeBoatReturnRepository.Get(searchFilter, paginationFilter, sorting, context);
+        }
+
+        public void CreateCommitteeBoatReturn(CommitteeBoatReturn committeeBoatReturn, ITransactionalContext? context = null)
+        {
+            committeeBoatReturn.ReturnTime = _dateTimeHelper.GetCurrentTimestamp();
+            _committeeBoatReturnValidator.SetTransactionalContext(context);
+
+            if (!_committeeBoatReturnValidator.IsValid(committeeBoatReturn, Scenario.Create))
+                throw new FunctionalException(ErrorType.ValidationError, _committeeBoatReturnValidator.Errors);
+
+            if (context == null)
+                context = _committeeBoatReturnRepository.GetTransactionalContext(TransactionContextScope.Internal);
+
+            try
+            {
+                _committeeBoatReturnRepository.Create(committeeBoatReturn, context);
+
+                _committeeBoatReturnRepository.ConfirmTransactionalContext(context);
+            }
+            catch (Exception)
+            {
+                _committeeBoatReturnRepository.CancelTransactionalContext(context);
+                throw;
+            }
+        }
+
+        public void CreateProtest(RaceProtest raceProtest, ITransactionalContext? context = null)
+        {
+            //raceProtest.Submission = _dateTimeHelper.GetCurrentTimestamp();
+
+            //_raceProtestValidator.SetTransactionalContext(context);
+
+            //if (!_raceProtestValidator.IsValid(raceProtest, Scenario.Create))
+            //    throw new FunctionalException(ErrorType.ValidationError, _raceProtestValidator.Errors);
+
+            //if (context == null)
+            //    context = _raceProtestRepository.GetTransactionalContext(TransactionContextScope.Internal);
+
+            //try
+            //{
+            //    _raceProtestRepository.Create(raceProtest, context);
+
+            //    _raceProtestRepository.ConfirmTransactionalContext(context);
+            //}
+            //catch (Exception)
+            //{
+            //    _raceProtestRepository.CancelTransactionalContext(context);
+            //    throw;
+            //}
+            throw new NotImplementedException();
+        }
 
         #endregion
     }

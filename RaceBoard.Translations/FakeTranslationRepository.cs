@@ -198,7 +198,7 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.Spanish, "Equipos"));
             AddText(AddTranslation("Competitions"),
                 new Tuple<string, string>(Languages.English, "Competitions"),
-                new Tuple<string, string>(Languages.Spanish, "Competiciones"));
+                new Tuple<string, string>(Languages.Spanish, "Campeonatos"));
             AddText(AddTranslation("Organizations"),
                 new Tuple<string, string>(Languages.English, "Organizations"),
                 new Tuple<string, string>(Languages.Spanish, "Organizaciones"));
@@ -207,7 +207,7 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.Spanish, "Equipo"));
             AddText(AddTranslation("Competition"),
                 new Tuple<string, string>(Languages.English, "Competition"),
-                new Tuple<string, string>(Languages.Spanish, "Competición"));
+                new Tuple<string, string>(Languages.Spanish, "Campeonato"));
             AddText(AddTranslation("Organization"),
                 new Tuple<string, string>(Languages.English, "Organization"),
                 new Tuple<string, string>(Languages.Spanish, "Organización"));

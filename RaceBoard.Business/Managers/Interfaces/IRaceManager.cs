@@ -11,8 +11,5 @@ namespace RaceBoard.Business.Managers.Interfaces
         void Create(Race race, ITransactionalContext? context = null);
         void Update(Race race, ITransactionalContext? context = null);
         void Delete(int id, ITransactionalContext? context = null);
-
-        void CreateProtest(RaceProtest raceProtest, ITransactionalContext? context = null);
-        void CreateCommitteeBoatReturns(RaceCommitteeBoatReturn committeeBoatReturn, ITransactionalContext? context = null);
     }
 }

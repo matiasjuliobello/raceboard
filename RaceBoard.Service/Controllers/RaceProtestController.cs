@@ -13,7 +13,7 @@ using RaceBoard.Translations.Interfaces;
 
 namespace RaceBoard.Service.Controllers
 {
-    [Route("api/races")]
+    [Route("api/competitions")]
     [ApiController]
     public class RaceProtestController : AbstractController<RaceProtestController>
     {
@@ -59,11 +59,12 @@ namespace RaceBoard.Service.Controllers
         [HttpPost("protests")]
         public ActionResult<int> Create(RaceProtestRequest raceProtestRequest)
         {
-            var data = _mapper.Map<RaceProtest>(raceProtestRequest);
+            //var data = _mapper.Map<RaceProtest>(raceProtestRequest);
 
-            _raceManager.CreateProtest(data);
+            //_raceManager.CreateProtest(data);
 
-            return Ok(data.Id);
+            //return Ok(data.Id);
+            return Ok();
         }
 
         #region Private Methods
