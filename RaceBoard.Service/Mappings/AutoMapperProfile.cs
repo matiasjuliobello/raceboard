@@ -227,7 +227,7 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => CreateObject<ContestantRole>(src.IdContestantRole)));
 
             CreateMap<TeamCheckRequest, TeamContestantCheck>()
-                .ForMember(dest => dest.TeamContestant, opt => opt.MapFrom(src => CreateObject<TeamContestant>(src.IdTeamContestant)))
+                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
                 .ForMember(dest => dest.CheckType, opt => opt.MapFrom(src => CreateEnum<Enums.CheckType>(src.IdCheckType)));
 
             CreateMap<TeamCheckSearchFilterRequest, TeamCheckSearchFilter>()

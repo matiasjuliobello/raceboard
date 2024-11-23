@@ -3,6 +3,8 @@ using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Business.Validators.Interfaces;
 using RaceBoard.Common.Enums;
 using RaceBoard.Common.Exceptions;
+using RaceBoard.Common.Helpers;
+using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data;
 using RaceBoard.Data.Repositories.Interfaces;
@@ -15,6 +17,7 @@ namespace RaceBoard.Business.Managers
     {
         private readonly ITeamCheckRepository _teamCheckRepository;
         private readonly ICustomValidator<TeamContestantCheck> _teamCheckValidator;
+        private readonly IDateTimeHelper _dateTimeHelper;
 
         #region Constructors
 
@@ -22,11 +25,13 @@ namespace RaceBoard.Business.Managers
             (
                 ITeamCheckRepository teamCheckRepository,
                 ICustomValidator<TeamContestantCheck> teamCheckValidator,
+                IDateTimeHelper dateTimeHelper,
                 ITranslator translator
             ) : base(translator)
         {
             _teamCheckRepository = teamCheckRepository;
             _teamCheckValidator = teamCheckValidator;
+            _dateTimeHelper = dateTimeHelper;
         }
 
         #endregion
@@ -38,11 +43,13 @@ namespace RaceBoard.Business.Managers
             return _teamCheckRepository.Get(searchFilter, paginationFilter, sorting, context);
         }
 
-        public void Create(TeamContestantCheck teamCheck, ITransactionalContext? context = null)
+        public void Create(TeamContestantCheck teamContestantCheck, ITransactionalContext? context = null)
         {
             _teamCheckValidator.SetTransactionalContext(context);
 
-            if (!_teamCheckValidator.IsValid(teamCheck, Scenario.Create))
+            teamContestantCheck.CheckTime = _dateTimeHelper.GetCurrentTimestamp();
+
+            if (!_teamCheckValidator.IsValid(teamContestantCheck, Scenario.Create))
                 throw new FunctionalException(ErrorType.ValidationError, _teamCheckValidator.Errors);
 
             if (context == null)
@@ -50,7 +57,7 @@ namespace RaceBoard.Business.Managers
 
             try
             {
-                _teamCheckRepository.Create(teamCheck, context);
+                _teamCheckRepository.Create(teamContestantCheck, context);
 
                 _teamCheckRepository.ConfirmTransactionalContext(context);
             }

@@ -15,14 +15,14 @@ namespace RaceBoard.Service.Controllers
 {
     [Route("api/teams")]
     [ApiController]
-    public class TeamCheckController : AbstractController<TeamCheckController>
+    public class TeamContestantCheckController : AbstractController<TeamContestantCheckController>
     {
         private readonly ITeamCheckManager _teamCheckManager;
 
-        public TeamCheckController
+        public TeamContestantCheckController
             (
                 IMapper mapper,
-                ILogger<TeamCheckController> logger,
+                ILogger<TeamContestantCheckController> logger,
                 ITranslator translator,
                 ITeamCheckManager teamCheckManager,
                 ISessionHelper sessionHelper,
@@ -46,33 +46,22 @@ namespace RaceBoard.Service.Controllers
             return Ok(response);
         }
 
-        [HttpGet("{id}/checks")]
-        public ActionResult<TeamContestantCheckResponse> GetByIdTeam([FromRoute] int id)
+        [HttpPost("contestants/checks")]
+        public ActionResult RegisterTeamContestantCheck([FromBody] TeamCheckRequest teamContestantCheckRequest)
         {
-            var searchFilter = new TeamCheckSearchFilter()
+            var teamContestantCheck = _mapper.Map<TeamContestantCheck>(teamContestantCheckRequest);
+
+            teamContestantCheck.TeamContestant = new TeamContestant()
             {
-                Team = new Team() { Id = id }
+                Person = new Person()
+                { 
+                    Id = teamContestantCheckRequest.IdPerson 
+                } 
             };
 
-            var data = _teamCheckManager.Get(searchFilter);
-            if (data.Results.Count() == 0)
-                return NoContent();
+            _teamCheckManager.Create(teamContestantCheck);
 
-            var teamCheck = data.Results.First();
-
-            var response = _mapper.Map<TeamContestantCheckResponse>(teamCheck);
-
-            return Ok(response);
-        }
-
-        [HttpPost("contestants/checks")]
-        public ActionResult AddTeamCheck([FromBody] TeamCheckRequest teamCheckRequest)
-        {
-            var data = _mapper.Map<TeamContestantCheck>(teamCheckRequest);
-
-            _teamCheckManager.Create(data);
-
-            return Ok();
+            return Ok(teamContestantCheck.Id);
         }
     }
 }

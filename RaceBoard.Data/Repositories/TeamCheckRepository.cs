@@ -5,6 +5,7 @@ using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 using RaceBoard.Domain._Enums;
+using System.Text;
 
 namespace RaceBoard.Data.Repositories
 {
@@ -80,11 +81,10 @@ namespace RaceBoard.Data.Repositories
         {
             return this.GetTeamContestantChecks(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
         }
-
       
-        public void Create(TeamContestantCheck teamCheck, ITransactionalContext? context = null)
+        public void Create(TeamContestantCheck teamContestantCheck, ITransactionalContext? context = null)
         {
-            this.CreateTeamCheck(teamCheck, context);
+            this.CreateTeamCheck(teamContestantCheck, context);
         }
 
         #endregion
@@ -166,21 +166,27 @@ namespace RaceBoard.Data.Repositories
             base.AddFilterCriteria(ConditionType.LessOrEqualThan, "[TeamContestant_Check]", "CheckTime", "dateTo", searchFilter?.DateTo?.UtcDateTime);
         }
 
-        private void CreateTeamCheck(TeamContestantCheck teamCheck, ITransactionalContext? context = null)
+        private void CreateTeamCheck(TeamContestantCheck teamContestantCheck, ITransactionalContext? context = null)
         {
-            //string sql = @" INSERT INTO [Team_Check]
-            //                ( IdTeam, IdCheck )
-            //            VALUES
-            //                ( @idTeam, @idCheck )";
+            var sb = new StringBuilder();
 
-            //QueryBuilder.AddCommand(sql);
+            sb.AppendLine("SELECT @idContestant = Id FROM [Team_Contestant] WHERE IdPerson = @idPerson;");
 
-            //QueryBuilder.AddParameter("idTeam", teamCheck.Team.Id);
-            //QueryBuilder.AddParameter("idCheck", teamCheck.Check.Id);
+            sb.AppendLine(@" INSERT INTO [TeamContestant_Check]
+                            ( IdTeamContestant, IdCheckType, CheckTime )
+                        VALUES
+                            ( @idContestant, @idCheck, @checkTime )");
 
-            //QueryBuilder.AddReturnLastInsertedId();
+            QueryBuilder.AddCommand(sb.ToString());
 
-            base.Execute<int>(context);
+            QueryBuilder.AddParameter("idContestant", 0);
+            QueryBuilder.AddParameter("idPerson", teamContestantCheck.TeamContestant.Person.Id);
+            QueryBuilder.AddParameter("idCheck", (int)teamContestantCheck.CheckType);
+            QueryBuilder.AddParameter("checkTime", teamContestantCheck.CheckTime);
+
+            QueryBuilder.AddReturnLastInsertedId();
+
+            teamContestantCheck.Id = base.Execute<int>(context);
         }
 
         #endregion

@@ -78,8 +78,8 @@ namespace RaceBoard.Service.Controllers
             return Ok();
         }
 
-        [HttpDelete("id")]
-        public ActionResult Delete(int id)
+        [HttpDelete("{id}")]
+        public ActionResult Delete([FromRoute] int id)
         {
             _boatManager.Delete(id);
 
