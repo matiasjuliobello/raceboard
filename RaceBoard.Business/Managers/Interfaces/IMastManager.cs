@@ -13,5 +13,6 @@ namespace RaceBoard.Business.Managers.Interfaces
         public PaginatedResult<MastFlag> GetFlags(MastFlagSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
         void RaiseFlag(MastFlag mastFlag, ITransactionalContext? context = null);
         void LowerFlag(MastFlag mastFlag, ITransactionalContext? context = null);
+        void RemoveFlag(int id, ITransactionalContext? context = null);
     }
 }

@@ -85,13 +85,19 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.Spanish, "No se puede remover al integrante porque ya tuvo participaciones con en el equipo"));
             AddText(AddTranslation("BoatAlreadyAssignedToAnotherTeam"),
                 new Tuple<string, string>(Languages.English, "The boat is already assigned to another team in the same competition"),
-                new Tuple<string, string>(Languages.Spanish, "El barco ya está asignado a otro equipo de la misma competición"));
+                new Tuple<string, string>(Languages.Spanish, "El barco ya está asignado a otro equipo de la misma campeonato"));
             AddText(AddTranslation("TeamWasDeleted"),
                 new Tuple<string, string>(Languages.English, "Team was removed deleted"),
                 new Tuple<string, string>(Languages.Spanish, "Se eliminó el equipo"));
             AddText(AddTranslation("GroupWasRemovedFromTheCompetition"),
                 new Tuple<string, string>(Languages.English, "Group was removed from competition"),
-                new Tuple<string, string>(Languages.Spanish, "Se eliminó al grupo de la competición"));
+                new Tuple<string, string>(Languages.Spanish, "Se eliminó al grupo del campeonato"));
+            AddText(AddTranslation("FileWasRemovedFromTheCompetition"),
+                new Tuple<string, string>(Languages.English, "File was removed from competition"),
+                new Tuple<string, string>(Languages.Spanish, "Se eliminó al archivo del campeonato"));
+            AddText(AddTranslation("FlagWasRemovedFromTheFlagPole"),
+                new Tuple<string, string>(Languages.English, "Flag was removed from competition flag pole"),
+                new Tuple<string, string>(Languages.Spanish, "Se eliminó la bandera del mástil del campeonato"));
             AddText(AddTranslation("BoatWasRemovedFromTheTeam"),
                 new Tuple<string, string>(Languages.English, "Boat was removed from team"),
                 new Tuple<string, string>(Languages.Spanish, "Se eliminó al barco del equipo"));
@@ -108,11 +114,11 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.English, "Name is too short"),
                 new Tuple<string, string>(Languages.Spanish, "El nombre es demasiado corto"));
             AddText(AddTranslation("IdOrganizationIsRequired"),
-                new Tuple<string, string>(Languages.English, "Organization is a required field"),
-                new Tuple<string, string>(Languages.Spanish, "Se debe indicar una organización"));
+                new Tuple<string, string>(Languages.English, "Club is a required field"),
+                new Tuple<string, string>(Languages.Spanish, "Se debe indicar un club"));
             AddText(AddTranslation("IdCompetitionIsRequired"),
                 new Tuple<string, string>(Languages.English, "Competition is a required field"),
-                new Tuple<string, string>(Languages.Spanish, "Se debe indicar una competición"));
+                new Tuple<string, string>(Languages.Spanish, "Se debe indicar una campeonato"));
             AddText(AddTranslation("IdMemberIsRequired"),
                 new Tuple<string, string>(Languages.English, "Member is a required field"),
                 new Tuple<string, string>(Languages.Spanish, "Se debe indicar un integrante"));
@@ -200,8 +206,8 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.English, "Competitions"),
                 new Tuple<string, string>(Languages.Spanish, "Campeonatos"));
             AddText(AddTranslation("Organizations"),
-                new Tuple<string, string>(Languages.English, "Organizations"),
-                new Tuple<string, string>(Languages.Spanish, "Organizaciones"));
+                new Tuple<string, string>(Languages.English, "Clubs"),
+                new Tuple<string, string>(Languages.Spanish, "Clubes"));
             AddText(AddTranslation("Team"),
                 new Tuple<string, string>(Languages.English, "Team"),
                 new Tuple<string, string>(Languages.Spanish, "Equipo"));
@@ -209,8 +215,8 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.English, "Competition"),
                 new Tuple<string, string>(Languages.Spanish, "Campeonato"));
             AddText(AddTranslation("Organization"),
-                new Tuple<string, string>(Languages.English, "Organization"),
-                new Tuple<string, string>(Languages.Spanish, "Organización"));
+                new Tuple<string, string>(Languages.English, "Club"),
+                new Tuple<string, string>(Languages.Spanish, "Club"));
 
 
             AddText(AddTranslation("RaceClass"),
@@ -290,7 +296,7 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.Spanish, "Indicar nombre de equipo"));
             AddText(AddTranslation("ChooseCompetition"),
                 new Tuple<string, string>(Languages.English, "Choose competition"),
-                new Tuple<string, string>(Languages.Spanish, "Escoger competición"));
+                new Tuple<string, string>(Languages.Spanish, "Escoger campeonato"));
             AddText(AddTranslation("ChooseRaceClass"),
                 new Tuple<string, string>(Languages.English, "Choose race class"),
                 new Tuple<string, string>(Languages.Spanish, "Escoger clase"));

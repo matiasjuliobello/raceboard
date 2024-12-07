@@ -1,6 +1,6 @@
-﻿namespace RaceBoard.Domain.Upload
+﻿namespace RaceBoard.Domain
 {
-    public class UploadedFile
+    public class FileUpload
     {
         public int Id { get; set; }
         public string Filename { get; set; }

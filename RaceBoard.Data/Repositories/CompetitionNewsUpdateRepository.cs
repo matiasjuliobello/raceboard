@@ -105,7 +105,7 @@ namespace RaceBoard.Data.Repositories
                 return;
 
             base.AddFilterCriteria(ConditionType.In, "Competition_NewsUpdate", "Id", "id", searchFilter.Ids);
-            base.AddFilterCriteria(ConditionType.Like, "Competition_NewsUpdate", "IdCompetition", "idCompetition", searchFilter.Competition.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "Competition_NewsUpdate", "IdCompetition", "idCompetition", searchFilter.Competition.Id);
         }
 
         #endregion

@@ -9,6 +9,7 @@ using RaceBoard.Common.Enums;
 using RaceBoard.Common.Exceptions;
 using RaceBoard.Business.Validators.Interfaces;
 using RaceBoard.Common.Helpers.Interfaces;
+using RaceBoard.Data.Repositories;
 
 namespace RaceBoard.Business.Managers
 {
@@ -16,15 +17,16 @@ namespace RaceBoard.Business.Managers
     {
         private readonly ICompetitionRepository _competitionRepository;
         private readonly ICompetitionGroupRepository _competitionGroupRepository;
+        private readonly IFileRepository _fileRepository;
 
         private readonly ICommitteeBoatReturnRepository _committeeBoatReturnRepository;
         private readonly ICustomValidator<CommitteeBoatReturn> _committeeBoatReturnValidator;
-
 
         private readonly ICustomValidator<Competition> _competitionValidator;
         private readonly ICustomValidator<CompetitionGroup> _competitionGroupValidator;
 
         private readonly IDateTimeHelper _dateTimeHelper;
+        private readonly IFileHelper _fileHelper;
 
         #region Constructors
 
@@ -32,21 +34,25 @@ namespace RaceBoard.Business.Managers
             (
                 ICompetitionRepository competitionRepository,
                 ICompetitionGroupRepository competitionGrpupRepository,
+                IFileRepository fileRepository,
                 ICustomValidator<Competition> competitionValidator,
                 ICustomValidator<CompetitionGroup> competitionGroupValidator,
                 ICommitteeBoatReturnRepository committeeBoatReturnRepository,
                 ICustomValidator<CommitteeBoatReturn> committeeBoatReturnValidator,
                 IDateTimeHelper dateTimeHelper,
+                IFileHelper fileHelper,
                 ITranslator translator
             ) : base(translator)
         {
             _competitionRepository = competitionRepository;
+            _fileRepository = fileRepository;
             _competitionGroupRepository = competitionGrpupRepository;
             _committeeBoatReturnRepository = committeeBoatReturnRepository;
             _competitionValidator = competitionValidator;
             _competitionGroupValidator = competitionGroupValidator;
             _committeeBoatReturnValidator = committeeBoatReturnValidator;
             _dateTimeHelper = dateTimeHelper;
+            _fileHelper = fileHelper;
         }
 
         #endregion
@@ -86,8 +92,12 @@ namespace RaceBoard.Business.Managers
                 _competitionRepository.Create(competition, context);
                 _competitionRepository.SetOrganizations(competition.Id, competition.Organizations, context);
 
-                _competitionRepository.ConfirmTransactionalContext(context);
+                competition.ImageFile.Path = _fileHelper.SaveFile(Common.CommonValues.Directories.Files, competition.Id.ToString(), competition.ImageFile.Name, competition.ImageFile.Content);
+                _fileRepository.Create(competition.ImageFile, context);
 
+                _competitionRepository.Update(competition, context);
+
+                _competitionRepository.ConfirmTransactionalContext(context);
             }
             catch (Exception)
             {

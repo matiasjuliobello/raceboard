@@ -1,9 +1,11 @@
 ﻿using Dapper;
+using Newtonsoft.Json.Linq;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
+using System;
 
 namespace RaceBoard.Data.Repositories
 {
@@ -16,7 +18,6 @@ namespace RaceBoard.Data.Repositories
             { "Id", "[Mast_Flag].Id" },
             { "RaisingMoment", "[Mast_Flag].RaisingMoment" },
             { "LoweringMoment", "[Mast_Flag].LoweringMoment" },
-            { "IsActive", "[Mast_Flag].IsActive" },
             { "Competition.Id", "[Competition].Id" },
             { "Mast.Id", "[Mast].Id" },
             { "Flag.Id", "[Flag].Id" },
@@ -60,7 +61,7 @@ namespace RaceBoard.Data.Repositories
 
         public bool ExistsDuplicate(MastFlag mastFlag, ITransactionalContext? context = null)
         {
-            string condition = "[IdMast] = @idMast AND [IdFlag] = @idFlag AND [IsActive] = @isActive";
+            string condition = "[IdMast] = @idMast AND [IdFlag] = @idFlag";
 
             string existsQuery = base.GetExistsDuplicateQuery("[Mast_Flag]", condition, "Id", "@id");
 
@@ -68,7 +69,6 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddParameter("id", mastFlag.Id);
             QueryBuilder.AddParameter("idMast", mastFlag.Mast.Id);
             QueryBuilder.AddParameter("idFlag", mastFlag.Flag.Id);
-            QueryBuilder.AddParameter("isActive", mastFlag.IsActive);
 
             return base.Execute<bool>(context);
         }
@@ -88,6 +88,11 @@ namespace RaceBoard.Data.Repositories
             this.UpdateMastFlag(mastFlag, context);
         }
 
+        public int Delete(int id, ITransactionalContext? context = null)
+        {
+            return base.Delete("[Mast_Flag]", id, "Id", context);
+        }
+
         #endregion
 
         #region Private Methods
@@ -98,18 +103,20 @@ namespace RaceBoard.Data.Repositories
                                 [Mast_Flag].Id [Id],
 	                            [Mast_Flag].RaisingMoment [RaisingMoment],
 	                            [Mast_Flag].LoweringMoment [LoweringMoment],
-	                            [Mast_Flag].IsActive,
 	                            [Mast].Id [Id],
                                 [Flag].Id [Id],
                                 [Flag].Name [Name],
 	                            [Person].Id [Id],
                                 [Person].Firstname [Firstname],
-                                [Person].Lastname [Lastname]
+                                [Person].Lastname [Lastname],
+	                            [User].Id [Id]
                             FROM [Mast_Flag]
                             INNER JOIN [Mast] [Mast] ON [Mast].Id = [Mast_Flag].IdMast
                             INNER JOIN [Competition] [Competition] ON [Competition].Id = [Mast].IdCompetition
                             INNER JOIN [Flag] [Flag] ON [Flag].Id = [Mast_Flag].IdFlag
-                            INNER JOIN [Person] [Person] ON [Person].Id = [Mast_Flag].IdPerson";
+                            INNER JOIN [User] [User] ON [User].Id = [Mast_Flag].IdUser
+                            INNER JOIN [User_Person] [User_Person] ON [User_Person].IdUser = [User].Id
+                            INNER JOIN [Person] [Person] ON [Person].Id = [User_Person].IdPerson";
 
             QueryBuilder.AddCommand(sql);
 
@@ -124,19 +131,21 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<MastFlag, Mast, Flag, Person, MastFlag>
+                        return reader.Read<MastFlag, Mast, Flag, Person, User, MastFlag>
                         (
-                            (mastFlag, mast, flag, person) =>
+                            (mastFlag, mast, flag, person, user) =>
                             {
                                 mastFlag.Mast = mast;
                                 mastFlag.Flag = flag;
+
+                                person.User = user;
                                 mastFlag.Person = person;
 
                                 mastFlags.Add(mastFlag);
 
                                 return mastFlag;
                             },
-                            splitOn: "Id, Id, Id, Id"
+                            splitOn: "Id, Id, Id, Id, Id"
                         ).AsList();
                     },
                     context
@@ -156,25 +165,35 @@ namespace RaceBoard.Data.Repositories
             base.AddFilterCriteria(ConditionType.Equal, "Competition", "Id", "idCompetition", searchFilter.Competition?.Id);
             base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IdFlag", "idFlag", searchFilter.Flag?.Id);
             base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IdMast", "idMast", searchFilter.Mast?.Id);
-            base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IdPerson", "idPerson", searchFilter.Person?.Id);
-            base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IsActive", "isActive", searchFilter.IsActive);
+            base.AddFilterCriteria(ConditionType.Equal, "Mast_Flag", "IdUser", "idUser", searchFilter.Person?.User?.Id);
+
+            if (searchFilter.RisingMoment.HasValue)
+                searchFilter.RisingMoment = searchFilter.RisingMoment.Value.UtcDateTime.Date;
+            base.AddFilterCriteria(ConditionType.GreaterOrEqualThan, "Mast_Flag", "RaisingMoment", "raisingMoment", searchFilter.RisingMoment);
+
+            if (searchFilter.LoweringMoment.HasValue)
+            {
+                searchFilter.LoweringMoment = searchFilter.LoweringMoment.Value.UtcDateTime.Date.AddDays(1);
+                //base.AddFilterCriteria(ConditionType.LessOrEqualThan, "Mast_Flag", "LoweringMoment", "loweringMoment", searchFilter.LoweringMoment);
+                QueryBuilder.AddCondition($"( [Mast_Flag].LoweringMoment <= @loweringMoment OR [Mast_Flag].LoweringMoment IS NULL)");
+                QueryBuilder.AddParameter("loweringMoment", searchFilter.LoweringMoment);
+            }
         }
 
         private void CreateMastFlag(MastFlag mastFlag, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [Mast_Flag]
-                                ( IdMast, IdFlag, IdPerson, RaisingMoment, LoweringMoment, IsActive )
+                                ( IdMast, IdFlag, IdUser, RaisingMoment, LoweringMoment )
                             VALUES
-                                ( @idMast, @idFlag, @idPerson, @raisingMoment, @loweringMoment, @isActive )";
+                                ( @idMast, @idFlag, @idUser, @raisingMoment, @loweringMoment )";
 
             QueryBuilder.AddCommand(sql);
 
             QueryBuilder.AddParameter("idMast", mastFlag.Mast.Id);
             QueryBuilder.AddParameter("idFlag", mastFlag.Flag.Id);
-            QueryBuilder.AddParameter("idPerson", mastFlag.Person.Id);
+            QueryBuilder.AddParameter("idUser", mastFlag.Person.User.Id);
             QueryBuilder.AddParameter("raisingMoment", mastFlag.RaisingMoment);
             QueryBuilder.AddParameter("loweringMoment", mastFlag.LoweringMoment);
-            QueryBuilder.AddParameter("isActive", mastFlag.IsActive);
 
             QueryBuilder.AddReturnLastInsertedId();
 
@@ -183,15 +202,11 @@ namespace RaceBoard.Data.Repositories
 
         private void UpdateMastFlag(MastFlag mastFlag, ITransactionalContext? context = null)
         {
-            string sql = @" UPDATE [Mast_Flag]
-                            SET
-                                LoweringMoment = @loweringMoment, 
-                                IsActive = @isActive";
+            string sql = @" UPDATE [Mast_Flag] SET LoweringMoment = @loweringMoment";
 
             QueryBuilder.AddCommand(sql);
 
             QueryBuilder.AddParameter("loweringMoment", mastFlag.LoweringMoment);
-            QueryBuilder.AddParameter("isActive", mastFlag.IsActive);
             QueryBuilder.AddParameter("id", mastFlag.Id);
 
             QueryBuilder.AddCondition("Id = @id");

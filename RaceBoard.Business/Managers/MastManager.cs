@@ -1,13 +1,17 @@
 ﻿using RaceBoard.Business.Managers.Abstract;
 using RaceBoard.Business.Managers.Interfaces;
+using RaceBoard.Business.Validators;
 using RaceBoard.Business.Validators.Interfaces;
 using RaceBoard.Common.Enums;
 using RaceBoard.Common.Exceptions;
+using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data;
+using RaceBoard.Data.Repositories;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 using RaceBoard.Translations.Interfaces;
+using System;
 
 namespace RaceBoard.Business.Managers
 {
@@ -130,6 +134,40 @@ namespace RaceBoard.Business.Managers
             catch (Exception)
             {
                 _mastFlagRepository.CancelTransactionalContext(context);
+                throw;
+            }
+        }
+
+        public void RemoveFlag(int id, ITransactionalContext? context = null)
+        {
+            var filter = new MastFlagSearchFilter()
+            {
+                Ids = new int[] { id }
+            };
+            var mastFlags = this.GetFlags(searchFilter: filter, context: context);
+
+            if (mastFlags.Results.Count() == 0)
+                throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
+
+            //_competitionValidator.SetTransactionalContext(context);
+
+            //if (!_competitionValidator.IsValid(competition, Scenario.Delete))
+            //    throw new FunctionalException(ErrorType.ValidationError, _competitionValidator.Errors);
+            
+            if (context == null)
+                context = _mastFlagRepository.GetTransactionalContext(TransactionContextScope.Internal);
+
+            try
+            {
+                _mastFlagRepository.Delete(id, context);
+
+                context.Confirm();
+            }
+            catch (Exception)
+            {
+                if (context != null)
+                    context.Cancel();
+                
                 throw;
             }
         }

@@ -33,5 +33,10 @@ namespace RaceBoard.Common
         {
             public const string Culture = "es-AR";
         }
+
+        public static class Directories
+        {
+            public const string Files = "Files";
+        }
     }
 }

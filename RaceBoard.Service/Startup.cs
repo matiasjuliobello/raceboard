@@ -36,7 +36,7 @@ namespace RaceBoard.Service
             _configuration = configuration;
             _environment = webHostEnvironment;
 
-            _cors_allowed_origins =  _configuration["CORS_Allowed_Origins"].Split(",", StringSplitOptions.RemoveEmptyEntries);
+            _cors_allowed_origins =  _configuration["CORS_Allowed_Origins"].Split(";", StringSplitOptions.RemoveEmptyEntries);
         }
 
         #endregion

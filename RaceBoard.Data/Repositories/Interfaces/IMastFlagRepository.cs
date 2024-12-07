@@ -15,5 +15,6 @@ namespace RaceBoard.Data.Repositories.Interfaces
         PaginatedResult<MastFlag> Get(MastFlagSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
         void Create(MastFlag mastFlag, ITransactionalContext? context = null);
         void Update(MastFlag mastFlag, ITransactionalContext? context = null);
+        int Delete(int id, ITransactionalContext? context = null);
     }
 }

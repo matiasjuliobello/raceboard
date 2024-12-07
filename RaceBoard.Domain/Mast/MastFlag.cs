@@ -8,6 +8,5 @@
         public Person Person { get; set; }
         public DateTimeOffset RaisingMoment { get; set; }
         public DateTimeOffset? LoweringMoment { get; set; }
-        public bool IsActive { get; set; }
     }
 }

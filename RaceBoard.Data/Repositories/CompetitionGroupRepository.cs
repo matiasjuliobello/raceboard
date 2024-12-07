@@ -143,10 +143,11 @@ namespace RaceBoard.Data.Repositories
                 var raceClasses = this.GetCompetitionGroupRaceClasses(competitionGroup.Id, context);
                 competitionGroup.RaceClasses.AddRange(raceClasses);
 
-                var totals =  this.GetGroupTotals(competitionGroup.Id, context);
-                competitionGroup.RegistrationTotalCount = totals.RegistrationCount;
-                competitionGroup.AccreditationTotalCount = totals.AccreditationCount;
-                competitionGroup.CompetitionTotalCount = totals.CompetitionCount;
+                // TODO disabled this code when removed IdRaceClass from [Race] table (needs rework now)
+                //var totals =  this.GetGroupTotals(competitionGroup.Id, context);
+                //competitionGroup.RegistrationTotalCount = totals.RegistrationCount;
+                //competitionGroup.AccreditationTotalCount = totals.AccreditationCount;
+                //competitionGroup.CompetitionTotalCount = totals.CompetitionCount;
             }
 
             return competitionGroups;

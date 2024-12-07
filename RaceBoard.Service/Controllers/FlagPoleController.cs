@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Common.Exceptions;
+using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
 using RaceBoard.DTOs._Pagination.Request;
@@ -14,23 +15,26 @@ using RaceBoard.Translations.Interfaces;
 
 namespace RaceBoard.Service.Controllers
 {
-    [Route("api/masts")]
+    [Route("api/flag-poles")]
     [ApiController]
-    public class MastController : AbstractController<MastController>
+    public class FlagPoleController : AbstractController<FlagPoleController>
     {
         private readonly IMastManager _mastManager;
+        private readonly IDateTimeHelper _dateTimeHelper;
 
-        public MastController
+        public FlagPoleController
             (
                 IMapper mapper,
-                ILogger<MastController> logger,
+                ILogger<FlagPoleController> logger,
                 ITranslator translator,
                 IMastManager mastManager,
                 ISessionHelper sessionHelper,
+                IDateTimeHelper dateTimeHelper,
                 IRequestContextHelper requestContextHelper
             ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
         {
             _mastManager = mastManager;
+            _dateTimeHelper = dateTimeHelper;
         }
 
         [HttpGet()]
@@ -98,6 +102,27 @@ namespace RaceBoard.Service.Controllers
         {
             var mastFlag = _mapper.Map<MastFlag>(mastFlagRequest);
 
+            var currentUser = base.GetUserFromRequestContext();
+            mastFlag.Person = new Person() { User = new User() { Id = currentUser.Id } };
+
+            var currentTime = _dateTimeHelper.GetCurrentTimestamp();
+            mastFlag.RaisingMoment = currentTime;
+
+            if (mastFlagRequest.HoursToLower != null)
+            {
+                if (mastFlag.LoweringMoment == null)
+                    mastFlag.LoweringMoment = mastFlag.RaisingMoment;
+
+                mastFlag.LoweringMoment = mastFlag.LoweringMoment.Value.AddHours(mastFlagRequest.HoursToLower.Value);
+            }
+            if (mastFlagRequest.MinutesToLower != null)
+            {
+                if (mastFlag.LoweringMoment == null)
+                    mastFlag.LoweringMoment = mastFlag.RaisingMoment;
+
+                mastFlag.LoweringMoment = mastFlag.LoweringMoment.Value.AddMinutes(mastFlagRequest.MinutesToLower.Value);
+            }
+
             _mastManager.RaiseFlag(mastFlag);
 
             return Ok(mastFlag.Id);
@@ -108,7 +133,21 @@ namespace RaceBoard.Service.Controllers
         {
             var mastFlag = _mapper.Map<MastFlag>(mastFlagRequest);
 
+            var currentUser = base.GetUserFromRequestContext();
+            mastFlag.Person = new Person() { User = new User() { Id = currentUser.Id } };
+
+            var currentTime = _dateTimeHelper.GetCurrentTimestamp();
+            mastFlag.LoweringMoment = currentTime;
+
             _mastManager.LowerFlag(mastFlag);
+
+            return Ok();
+        }
+
+        [HttpDelete("flags/{id}")]
+        public ActionResult Delete([FromRoute] int id)
+        {
+            _mastManager.RemoveFlag(id);
 
             return Ok();
         }

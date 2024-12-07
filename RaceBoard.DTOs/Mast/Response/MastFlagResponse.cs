@@ -10,7 +10,7 @@ namespace RaceBoard.DTOs.Mast.Response
         public FlagResponse Flag { get; set; }
         public PersonSimpleResponse Person { get; set; }
         public DateTimeOffset RaisingMoment { get; set; }
-        public DateTimeOffset LoweringMoment { get; set; }
+        public DateTimeOffset? LoweringMoment { get; set; }
         public bool IsActive { get; set; }
     }
 }

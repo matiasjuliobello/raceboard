@@ -113,12 +113,17 @@ namespace RaceBoard.Data.Repositories
                                 [Country].Id [Id],
                                 [Country].Name [Name],
                                 [Organization].Id [Id],
-                                [Organization].Name [Name]                                
+                                [Organization].Name [Name],
+                                [File].Id [Id],
+                                [File].Description [Description],
+                                [File].Name [Name],
+                                [File].Path [Path]
                             FROM [Competition] [Competition]
                             INNER JOIN [City] [City] ON [City].Id = [Competition].IdCity
                             INNER JOIN [Country] [Country] ON [Country].Id = [City].IdCountry
                             INNER JOIN [Competition_Organization] [Competition_Organization] ON [Competition_Organization].IdCompetition = [Competition].Id
-                            INNER JOIN [Organization] [Organization] ON [Organization].Id = Competition_Organization.IdOrganization";
+                            INNER JOIN [Organization] [Organization] ON [Organization].Id = Competition_Organization.IdOrganization
+                            LEFT JOIN [File] [File] ON [File].Id = [Competition].IdFileImage";
 
             QueryBuilder.AddCommand(sql);
 
@@ -133,9 +138,9 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<Competition, City, Country, Organization, Competition>
+                        return reader.Read<Competition, City, Country, Organization, Domain.File, Competition>
                         (
-                            (competition, city, country, organization) =>
+                            (competition, city, country, organization, file) =>
                             {
                                 var existingCompetition = competitions.FirstOrDefault(x => x.Id == competition.Id);
                                 if (existingCompetition == null)
@@ -152,9 +157,11 @@ namespace RaceBoard.Data.Repositories
                                 city.Country = country;
                                 competition.City = city;
 
+                                competition.ImageFile = file;
+
                                 return competition;
                             },
-                            splitOn: "Id, Id, Id, Id"
+                            splitOn: "Id, Id, Id, Id, Id"
                         );
                     },
                     context
@@ -178,9 +185,9 @@ namespace RaceBoard.Data.Repositories
         private void CreateCompetition(Competition competition, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [Competition]
-                                ( IdCity, Name, StartDate, EndDate )
+                                ( IdCity, Name, StartDate, EndDate, IdFileImage )
                             VALUES
-                                ( @idCity, @name, @startDate, @endDate )";
+                                ( @idCity, @name, @startDate, @endDate, @idFileImage)";
 
             QueryBuilder.AddCommand(sql);
 
@@ -188,6 +195,7 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddParameter("name", competition.Name);
             QueryBuilder.AddParameter("startDate", competition.StartDate);
             QueryBuilder.AddParameter("endDate", competition.EndDate);
+            QueryBuilder.AddParameter("idFileImage", competition.ImageFile?.Id);
 
             QueryBuilder.AddReturnLastInsertedId();
 
@@ -200,7 +208,8 @@ namespace RaceBoard.Data.Repositories
                                 IdCity = @idCity,
                                 Name = @name,
                                 StartDate = @startDate,
-                                EndDate = @endDate";
+                                EndDate = @endDate,
+                                IdFileImage =  @idFileImage";
 
             QueryBuilder.AddCommand(sql);
 
@@ -208,6 +217,7 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddParameter("name", competition.Name);
             QueryBuilder.AddParameter("startDate", competition.StartDate);
             QueryBuilder.AddParameter("endDate", competition.EndDate);
+            QueryBuilder.AddParameter("idFileImage", competition.ImageFile?.Id);
 
             QueryBuilder.AddParameter("id", competition.Id);
             QueryBuilder.AddCondition("Id = @id");

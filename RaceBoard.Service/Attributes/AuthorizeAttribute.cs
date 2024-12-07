@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace RaceBoard.Service.Attributes
 {
-    public class ___AuthorizeAttribute : ActionFilterAttribute, IFilterFactory
+    public class AuthorizeAttribute : ActionFilterAttribute, IFilterFactory
     {
         #region IFilterFactory implementation
 

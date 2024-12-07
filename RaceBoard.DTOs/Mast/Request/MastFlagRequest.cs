@@ -5,9 +5,8 @@
         public int Id { get; set; }
         public int IdMast { get; set; }
         public int IdFlag { get; set; }
-        public int IdPerson { get; set; }
-        public DateTimeOffset RaisingMoment { get; set; }
-        public DateTimeOffset LoweringMoment { get; set; }
-        public bool IsActive { get; set; }
+        //public DateTimeOffset RaisingMoment { get; set; }
+        public int? HoursToLower { get; set; }
+        public int? MinutesToLower { get; set; }
     }
 }

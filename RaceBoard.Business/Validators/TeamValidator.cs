@@ -30,12 +30,12 @@ namespace RaceBoard.Business.Validators
                 .WithMessage(Translate("IdIsRequired"))
                 .When(x => Scenario == Scenario.Update);
 
-            RuleFor(x => x.Name)
-                .Must(x => !string.IsNullOrEmpty(x))
-                .WithMessage(Translate("NameIsRequired"))
-                .Must(x => x.Length > 3)
-                .WithMessage(Translate("NameIsTooShort"))
-                .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+            //RuleFor(x => x.Name)
+            //    .Must(x => !string.IsNullOrEmpty(x))
+            //    .WithMessage(Translate("NameIsRequired"))
+            //    .Must(x => x.Length > 3)
+            //    .WithMessage(Translate("NameIsTooShort"))
+            //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
                 /*.When(x => !string.IsNullOrEmpty(x.Name))*/;
 
             //RuleFor(x => x.Organization.Id)

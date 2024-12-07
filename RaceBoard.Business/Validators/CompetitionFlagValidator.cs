@@ -38,35 +38,40 @@ namespace RaceBoard.Business.Validators
 
         private void AddRules()
         {
+            RuleFor(x => x.Id)
+                .NotEmpty()
+                .WithMessage(Translate("IdIsRequired"))
+                .When(x => Scenario == Scenario.Update || Scenario == Scenario.Delete);
+
             RuleFor(x => x.Mast.Id)
                 .NotEmpty()
                 .WithMessage(Translate("IdMastIsRequired"))
-                .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+                .When(x => Scenario == Scenario.Create);
 
             RuleFor(x => x.Mast.Id)
                 .Must(x => _mastRepository.Exists(x))
                 .WithMessage(Translate("IdMastIsNotValid"))
-                .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+                .When(x => Scenario == Scenario.Create);
 
             RuleFor(x => x.Flag.Id)
                 .NotEmpty()
                 .WithMessage(Translate("IdFlagIsRequired"))
-                .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+                .When(x => Scenario == Scenario.Create);
 
             RuleFor(x => x.Flag.Id)
                 .Must(x => _flagRepository.Exists(x))
                 .WithMessage(Translate("IdFlagIsNotValid"))
-                .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+                .When(x => Scenario == Scenario.Create);
 
-            RuleFor(x => x.Person.Id)
-                .NotEmpty()
-                .WithMessage(Translate("IdPersonIsRequired"))
-                .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+            //RuleFor(x => x.Person.Id)
+            //    .NotEmpty()
+            //    .WithMessage(Translate("IdPersonIsRequired"))
+            //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
-            RuleFor(x => x.Person.Id)
-                .Must(x => _personRepository.Exists(x, base.TransactionalContext))
-                .WithMessage(Translate("IdPersonIsNotValid"))
-                .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+            //RuleFor(x => x.Person.Id)
+            //    .Must(x => _personRepository.Exists(x, base.TransactionalContext))
+            //    .WithMessage(Translate("IdPersonIsNotValid"))
+            //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
             RuleFor(x => x)
                 .Must(x => !_mastFlagRepository.ExistsDuplicate(x, base.TransactionalContext))

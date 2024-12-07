@@ -8,7 +8,6 @@ namespace RaceBoard.DTOs.Team.Response
     public class TeamResponse
     {
         public int Id { get; set; }
-        public string Name { get; set; }
         public OrganizationResponse Organization { get; set; }
         public CompetitionSimpleResponse Competition { get; set; }
         public RaceClassResponse RaceClass { get; set; }

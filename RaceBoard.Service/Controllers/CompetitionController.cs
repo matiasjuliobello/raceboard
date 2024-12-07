@@ -57,9 +57,14 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpPost()]
-        public ActionResult<int> Create(CompetitionRequest competitionRequest)
+        public ActionResult<int> Create(IFormFile file, [FromForm] CompetitionRequest competitionRequest)
         {
+            var uploadedImage = _mapper.Map<IFormFile, FileUpload>(file);
+
             var competition = _mapper.Map<Competition>(competitionRequest);
+
+            competition.ImageFile = base.CreateFileInstance(uploadedImage);
+            competition.ImageFile.Description = "";
 
             _competitionManager.Create(competition);
 

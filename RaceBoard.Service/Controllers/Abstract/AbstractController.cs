@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Translations.Interfaces;
 using System.Net;
+using RaceBoard.DTOs.Competition.Request;
+using System.Security;
 
 namespace RaceBoard.Service.Controllers.Abstract
 {
@@ -68,6 +70,21 @@ namespace RaceBoard.Service.Controllers.Abstract
                 return text;
 
             return _translator.Get(text, arguments);
+        }
+
+        protected Domain.File CreateFileInstance(FileUpload uploadedFile)
+        {
+            var currentUser = this.GetUserFromRequestContext();
+            var currentDate = DateTimeOffset.UtcNow;
+
+            return new Domain.File()
+            {
+                CreationPerson = null,
+                CreationUser = currentUser,
+                CreationDate = currentDate,
+                Content = uploadedFile.Content,
+                Name = uploadedFile.UniqueFilename
+            };
         }
     }
 }
