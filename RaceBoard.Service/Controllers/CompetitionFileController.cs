@@ -61,7 +61,7 @@ namespace RaceBoard.Service.Controllers
 
         [HttpPost("files")]
         [Authorize()]
-        public ActionResult<int> Create(IFormFile file, [FromForm] CompetitionFileUploadRequest competitionFileUploadRequest)
+        public ActionResult<int> Create(IFormFile file, [FromForm] CompetitionFileRequest competitionFileUploadRequest)
         {
             var validationResult = ValidateBadRequestMessage(file, competitionFileUploadRequest);
             if (!validationResult.success)
@@ -90,7 +90,7 @@ namespace RaceBoard.Service.Controllers
 
         #region Private Methods
 
-        private (bool success, string errorMessage) ValidateBadRequestMessage(IFormFile file, CompetitionFileUploadRequest competitionFileUploadRequest)
+        private (bool success, string errorMessage) ValidateBadRequestMessage(IFormFile file, CompetitionFileRequest competitionFileUploadRequest)
         {
             if (file == null || file.Length == 0)
                 return new(false, "NoFileWasSelected");

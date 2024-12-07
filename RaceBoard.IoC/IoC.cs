@@ -35,7 +35,7 @@ namespace RaceBoard.IoC
             services.AddScoped<ICityManager, CityManager>();
             services.AddScoped<ICountryManager, CountryManager>();
             services.AddScoped<ICompetitionManager, CompetitionManager>();
-            services.AddScoped<ICompetitionNewsUpdateManager, CompetitionNewsUpdateManager>();
+            services.AddScoped<ICompetitionNotificationManager, CompetitionNotificationManager>();
             services.AddScoped<IOrganizationManager, OrganizationManager>();
             services.AddScoped<IBoatManager, BoatManager>();
             services.AddScoped<IRaceClassManager, RaceClassManager>();
@@ -66,7 +66,7 @@ namespace RaceBoard.IoC
             services.AddTransient<ICustomValidator<Person>, PersonValidator>();
             services.AddTransient<ICustomValidator<Boat>, BoatValidator>();
             services.AddTransient<ICustomValidator<Competition>, CompetitionValidator>();
-            services.AddTransient<ICustomValidator<CompetitionNewsUpdate>, CompetitionNewsUpdateValidator>();
+            services.AddTransient<ICustomValidator<CompetitionNotification>, CompetitionNotificationValidator>();
             services.AddTransient<ICustomValidator<CompetitionGroup>, CompetitionGroupValidator>();
             services.AddTransient<ICustomValidator<CompetitionFile>, CompetitionFileValidator>();
             services.AddTransient<ICustomValidator<Mast>, MastValidator>();
@@ -94,7 +94,7 @@ namespace RaceBoard.IoC
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<ICompetitionRepository, CompetitionRepository>();
             services.AddScoped<ICompetitionGroupRepository, CompetitionGroupRepository>();
-            services.AddScoped<ICompetitionNewsUpdateRepository, CompetitionNewsUpdateRepository>();
+            services.AddScoped<ICompetitionNotificationRepository, CompetitionNotificationRepository>();
             services.AddScoped<ICompetitionFileRepository, CompetitionFileRepository>();
             services.AddScoped<IFileRepository, FileRepository>();
             services.AddScoped<IFileTypeRepository, FileTypeRepository>();

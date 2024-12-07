@@ -2,11 +2,11 @@
 
 namespace RaceBoard.DTOs.Competition.Request
 {
-    public class CompetitionFileUploadRequest
+    public class CompetitionNotificationRequest
     {
         public int IdCompetition { get; set; }
-        public int IdFileType { get; set; }
-        public string Description { get; set; }
+        public string Message { get; set; }
+        public DateTimeOffset Timestamp { get; set; }
         public List<RaceClassRequest> RaceClasses { get; set; }
     }
 }

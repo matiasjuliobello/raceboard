@@ -49,7 +49,7 @@ namespace RaceBoard.Data.Repositories
 
         public bool Exists(int id, ITransactionalContext? context = null)
         {
-            return base.Exists(id, "Competition_NewsUpdate", "Id", context);
+            return base.Exists(id, "Competition_File", "Id", context);
         }
 
         public bool ExistsDuplicate(CompetitionFile competitionFile, ITransactionalContext? context = null)

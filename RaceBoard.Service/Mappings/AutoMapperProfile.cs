@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-//using static RaceBoard.Service.Mappings.AutoMapperProfile;
 using RaceBoard.Common;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
@@ -53,7 +52,6 @@ using RaceBoard.DTOs.Notification.Request;
 using RaceBoard.Domain.Notification;
 using RaceBoard.DTOs.Device.Request;
 using RaceBoard.DTOs.Device.Response;
-using static RaceBoard.Service.Mappings.AutoMapperProfile;
 using File = RaceBoard.Domain.File;
 using TimeZone = RaceBoard.Domain.TimeZone;
 using Action = RaceBoard.Domain.Action;
@@ -140,10 +138,10 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => CreateObject<City>(src.IdCity)))
                 .ForMember(dest => dest.Organizations, opt => opt.MapFrom(src => CreateObject<Organization>(src.IdsOrganization)));
 
-            CreateMap<CompetitionNewsUpdateRequest, CompetitionNewsUpdate>()
+            CreateMap<CompetitionNotificationRequest, CompetitionNotification>()
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)));
 
-            CreateMap<CompetitionNewsUpdateSearchFilterRequest, CompetitionNewsUpdateSearchFilter>()
+            CreateMap<CompetitionNotificationSearchFilterRequest, CompetitionNotificationSearchFilter>()
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition))); 
 
             CreateMap<int, Organization>()
@@ -187,7 +185,7 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
                 .ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)));
 
-            CreateMap<CompetitionFileUploadRequest, CompetitionFile>()
+            CreateMap<CompetitionFileRequest, CompetitionFile>()
                 .ForMember(dest => dest.FileType, opt => opt.MapFrom(src => CreateObject<FileType>(src.IdFileType)))
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)));
 
@@ -195,6 +193,13 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
                 .ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)))
                 .ForMember(dest => dest.FileType, opt => opt.MapFrom(src => CreateObject<FileType>(src.IdFileType)));
+
+            CreateMap<CompetitionNotificationRequest, CompetitionNotification>()
+                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)));
+
+            CreateMap<CompetitionNotificationSearchFilterRequest, CompetitionNotificationSearchFilter>()
+                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
+                .ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)));
 
             CreateMap<BloodTypeSearchFilterRequest, BloodTypeSearchFilter>();
 
@@ -333,7 +338,7 @@ namespace RaceBoard.Service.Mappings
             CreateMap<Competition, CompetitionResponse>();
             CreateMap<Competition, CompetitionSimpleResponse>();
             CreateMap<CompetitionGroup, CompetitionGroupResponse>();
-            CreateMap<CompetitionNewsUpdate, CompetitionNewsUpdateResponse>();
+            CreateMap<CompetitionNotification, CompetitionNotificationResponse>();
             CreateMap<CommitteeBoatReturn, CommitteeBoatReturnResponse>();
             CreateMap<CompetitionFile, CompetitionFileResponse>();
             //CreateMap<CompetitionRaceClass, CompetitionRaceClassResponse>();

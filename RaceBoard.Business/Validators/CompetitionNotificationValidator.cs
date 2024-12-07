@@ -5,18 +5,18 @@ using RaceBoard.Data.Repositories.Interfaces;
 
 namespace RaceBoard.Business.Validators
 {
-    public class CompetitionNewsUpdateValidator : AbstractCustomValidator<CompetitionNewsUpdate>
+    public class CompetitionNotificationValidator : AbstractCustomValidator<CompetitionNotification>
     {
-        private readonly ICompetitionNewsUpdateRepository _competitionNewsUpdateRepository;
+        private readonly ICompetitionNotificationRepository _competitionNotificationRepository;
 
-        public CompetitionNewsUpdateValidator
+        public CompetitionNotificationValidator
             (
                 ITranslator translator,
-                ICompetitionNewsUpdateRepository competitionNewsUpdateRepository
+                ICompetitionNotificationRepository competitionNotificationRepository
             )
             : base(translator)
         {
-            _competitionNewsUpdateRepository = competitionNewsUpdateRepository;
+            _competitionNotificationRepository = competitionNotificationRepository;
 
             base.SetRules(this.AddRules);
         }
