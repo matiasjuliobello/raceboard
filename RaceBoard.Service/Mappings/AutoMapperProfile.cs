@@ -49,13 +49,14 @@ using RaceBoard.DTOs.City.Request;
 using RaceBoard.DTOs.Country.Request;
 using RaceBoard.DTOs.Format.Response;
 using RaceBoard.DTOs.Notification.Request;
-using RaceBoard.Domain.Notification;
 using RaceBoard.DTOs.Device.Request;
 using RaceBoard.DTOs.Device.Response;
 using File = RaceBoard.Domain.File;
 using TimeZone = RaceBoard.Domain.TimeZone;
 using Action = RaceBoard.Domain.Action;
 using Enums = RaceBoard.Domain._Enums;
+using RaceBoard.Messaging.Entities;
+using RaceBoard.Messaging.Providers;
 
 
 namespace RaceBoard.Service.Mappings

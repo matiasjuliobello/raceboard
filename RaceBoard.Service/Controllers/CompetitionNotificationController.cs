@@ -9,9 +9,12 @@ using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
 using RaceBoard.DTOs.Competition.Request;
 using RaceBoard.DTOs.Competition.Response;
+using RaceBoard.Messaging.Entities;
+using RaceBoard.Messaging.Interfaces;
 using RaceBoard.Service.Controllers.Abstract;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Translations.Interfaces;
+using RestSharp;
 
 namespace RaceBoard.Service.Controllers
 {
@@ -20,6 +23,7 @@ namespace RaceBoard.Service.Controllers
     public class CompetitionNotificationController : AbstractController<CompetitionNotificationController>
     {
         private readonly ICompetitionNotificationManager _competitionNotificationManager;
+        private readonly INotificationProvider _notificationProvider;
 
         public CompetitionNotificationController
             (
@@ -27,11 +31,13 @@ namespace RaceBoard.Service.Controllers
                 ILogger<CompetitionNotificationController> logger,
                 ITranslator translator,
                 ICompetitionNotificationManager competitionNotificationManager,
+                INotificationProvider notificationProvider,
                 ISessionHelper sessionHelper,
                 IRequestContextHelper requestContextHelper
             ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
         {
             _competitionNotificationManager = competitionNotificationManager;
+            _notificationProvider = notificationProvider;
         }
 
         [HttpGet("{id}/notifications")]
@@ -53,13 +59,21 @@ namespace RaceBoard.Service.Controllers
         [HttpPost("notifications")]
         public ActionResult<int> Create(CompetitionNotificationRequest competitionNotificationRequest)
         {
-            var data = _mapper.Map<CompetitionNotification>(competitionNotificationRequest);
+            var competitionNotification = _mapper.Map<CompetitionNotification>(competitionNotificationRequest);
 
-            data.CreationUser = base.GetUserFromRequestContext();
+            competitionNotification.CreationUser = base.GetUserFromRequestContext();
 
-            _competitionNotificationManager.Create(data);
+            _competitionNotificationManager.Create(competitionNotification);
 
-            return Ok(data.Id);
+            try
+            {
+                this.SendNotifications(competitionNotification);
+            }
+            catch (Exception)
+            {
+            }
+
+            return Ok(competitionNotification.Id);
         }
 
         [HttpDelete("notifications/{id}")]
@@ -71,6 +85,31 @@ namespace RaceBoard.Service.Controllers
         }
 
         #region Private Methods
+
+        private void SendNotifications(CompetitionNotification competitionNotification)
+        {
+            List<Task<RestResponse>> tasks = new List<Task<RestResponse>>();
+
+            Parallel.ForEach(competitionNotification.RaceClasses, raceClass =>
+            {
+                string topicName = $"{competitionNotification.Competition.Id}_{raceClass.Id}";
+
+                var notification = new Notification()
+                {
+                    NotificationType = Messaging.Providers.NotificationType.Topic,
+                    IdTarget = topicName,
+                    Title = competitionNotification.Title,
+                    Message = competitionNotification.Message,
+                    ImageFileUrl = null
+                };
+
+                Task<RestResponse> response = _notificationProvider.SendNotification(notification);
+
+                tasks.Add(response);
+            });
+
+            Task.WaitAll(tasks.ToArray());
+        }
 
         #endregion
     }

@@ -1,6 +1,9 @@
-﻿namespace RaceBoard.Domain.Notification
+﻿using RaceBoard.Messaging.Interfaces;
+using RaceBoard.Messaging.Providers;
+
+namespace RaceBoard.Messaging.Entities
 {
-    public class Notification
+    public class Notification : IMessagingNotification
     {
         public NotificationType NotificationType { get; set; }
         public string IdTarget { get; set; }

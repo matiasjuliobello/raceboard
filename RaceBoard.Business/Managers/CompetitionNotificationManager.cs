@@ -75,12 +75,13 @@ namespace RaceBoard.Business.Managers
                 _competitionNotificationRepository.Create(competitionNotification, context);
                 _competitionNotificationRepository.AssociateRaceClasses(competitionNotification, context);
 
-                _competitionNotificationRepository.ConfirmTransactionalContext(context);
-
+                context.Confirm();
             }
             catch (Exception)
             {
-                _competitionNotificationRepository.CancelTransactionalContext(context);
+                if (context != null)
+                    context.Cancel();
+
                 throw;
             }
         }

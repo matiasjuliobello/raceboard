@@ -18,6 +18,8 @@ using RaceBoard.FileStorage;
 using RaceBoard.Mailing.Interfaces;
 using RaceBoard.Mailing.Providers;
 using RaceBoard.Data.Helpers.SqlBulkHelper;
+using RaceBoard.Messaging.Interfaces;
+using RaceBoard.Messaging.Providers;
 
 namespace RaceBoard.IoC
 {
@@ -54,7 +56,6 @@ namespace RaceBoard.IoC
             services.AddScoped<IMastManager, MastManager>();
             services.AddScoped<ILanguageManager, LanguageManager>();
             services.AddScoped<IFormatManager, FormatManager>();
-            services.AddScoped<INotificationManager, NotificationManager>();
             services.AddScoped<ICompetitionFileManager, CompetitionFileManager>();
             services.AddScoped<IFileTypeManager, FileTypeManager>();
             #endregion
@@ -137,6 +138,7 @@ namespace RaceBoard.IoC
 
             #region Providers
             services.AddScoped<ITranslationProvider, TranslationProvider>();
+            services.AddScoped<INotificationProvider, GoogleFirebaseNotificationProvider>();
             services.AddScoped<IFileStorageProvider, BlobFileStorageProvider>();
             services.AddScoped<IFileStorageProvider, DiskFileStorageProvider>();
             services.AddScoped<IEmailProvider, MailSenderEmailProvider>();
