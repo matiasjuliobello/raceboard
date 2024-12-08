@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RaceBoard.Business.Managers;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
@@ -9,12 +7,9 @@ using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
 using RaceBoard.DTOs.Competition.Request;
 using RaceBoard.DTOs.Competition.Response;
-using RaceBoard.Messaging.Entities;
-using RaceBoard.Messaging.Interfaces;
 using RaceBoard.Service.Controllers.Abstract;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Translations.Interfaces;
-using RestSharp;
 
 namespace RaceBoard.Service.Controllers
 {
@@ -23,21 +18,21 @@ namespace RaceBoard.Service.Controllers
     public class CompetitionNotificationController : AbstractController<CompetitionNotificationController>
     {
         private readonly ICompetitionNotificationManager _competitionNotificationManager;
-        private readonly INotificationProvider _notificationProvider;
+        private readonly INotificationManager _notificationManager;
 
         public CompetitionNotificationController
             (
                 IMapper mapper,
                 ILogger<CompetitionNotificationController> logger,
                 ITranslator translator,
-                ICompetitionNotificationManager competitionNotificationManager,
-                INotificationProvider notificationProvider,
+                ICompetitionNotificationManager competitionNotificationManager,                
+                INotificationManager notificationManager,
                 ISessionHelper sessionHelper,
                 IRequestContextHelper requestContextHelper
             ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
         {
             _competitionNotificationManager = competitionNotificationManager;
-            _notificationProvider = notificationProvider;
+            _notificationManager = notificationManager;
         }
 
         [HttpGet("{id}/notifications")]
@@ -57,7 +52,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpPost("notifications")]
-        public ActionResult<int> Create(CompetitionNotificationRequest competitionNotificationRequest)
+        public async Task<ActionResult<int>> Create(CompetitionNotificationRequest competitionNotificationRequest)
         {
             var competitionNotification = _mapper.Map<CompetitionNotification>(competitionNotificationRequest);
 
@@ -65,13 +60,13 @@ namespace RaceBoard.Service.Controllers
 
             _competitionNotificationManager.Create(competitionNotification);
 
-            try
-            {
-                this.SendNotifications(competitionNotification);
-            }
-            catch (Exception)
-            {
-            }
+            await _notificationManager.SendNotifications
+                (
+                    competitionNotification.Title, 
+                    competitionNotification.Message, 
+                    competitionNotification.Id, 
+                    competitionNotification.RaceClasses.Select(x => x.Id).ToArray()
+                );
 
             return Ok(competitionNotification.Id);
         }
@@ -85,31 +80,6 @@ namespace RaceBoard.Service.Controllers
         }
 
         #region Private Methods
-
-        private void SendNotifications(CompetitionNotification competitionNotification)
-        {
-            List<Task<RestResponse>> tasks = new List<Task<RestResponse>>();
-
-            Parallel.ForEach(competitionNotification.RaceClasses, raceClass =>
-            {
-                string topicName = $"{competitionNotification.Competition.Id}_{raceClass.Id}";
-
-                var notification = new Notification()
-                {
-                    NotificationType = Messaging.Providers.NotificationType.Topic,
-                    IdTarget = topicName,
-                    Title = competitionNotification.Title,
-                    Message = competitionNotification.Message,
-                    ImageFileUrl = null
-                };
-
-                Task<RestResponse> response = _notificationProvider.SendNotification(notification);
-
-                tasks.Add(response);
-            });
-
-            Task.WaitAll(tasks.ToArray());
-        }
 
         #endregion
     }

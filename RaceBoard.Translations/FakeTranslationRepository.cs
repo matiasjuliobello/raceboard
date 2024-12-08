@@ -300,6 +300,14 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("ChooseRaceClass"),
                 new Tuple<string, string>(Languages.English, "Choose race class"),
                 new Tuple<string, string>(Languages.Spanish, "Escoger clase"));
+
+            AddText(AddTranslation("NewFileHasBeenUploaded"),
+                new Tuple<string, string>(Languages.English, "A new file has been uploaded to competition"),
+                new Tuple<string, string>(Languages.Spanish, "Se ha subido un nuevo archivo al campeonato"));
+
+            AddText(AddTranslation("NewFlagsHoisted"),
+                new Tuple<string, string>(Languages.English, "New flag(s) have been hoisted"),
+                new Tuple<string, string>(Languages.Spanish, "Se izaron nueva/s bandera(s)"));
         }
 
         private Translation AddTranslation(string key)

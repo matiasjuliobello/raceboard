@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using RaceBoard.Business.Managers;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
@@ -20,6 +21,7 @@ namespace RaceBoard.Service.Controllers
     public class CompetitionFileController : AbstractController<CompetitionFileController>
     {
         private readonly ICompetitionFileManager _competitionFileManager;
+        private readonly INotificationManager _notificationManager;
         private readonly IDateTimeHelper _dateTimeHelper;
 
         public CompetitionFileController
@@ -28,12 +30,14 @@ namespace RaceBoard.Service.Controllers
                 ILogger<CompetitionFileController> logger,
                 ITranslator translator,
                 ICompetitionFileManager competitionFileManager,
+                INotificationManager notificationManager,
                 IDateTimeHelper dateTimeHelper,
                 ISessionHelper sessionHelper,
                 IRequestContextHelper requestContextHelper
             ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
         {
             _competitionFileManager = competitionFileManager;
+            _notificationManager = notificationManager;
             _dateTimeHelper = dateTimeHelper;
         }
 
@@ -75,6 +79,16 @@ namespace RaceBoard.Service.Controllers
             competitionFile.File.Description = competitionFileUploadRequest.Description;
 
             _competitionFileManager.Create(competitionFile);
+
+            #region Notifications
+            _notificationManager.SendNotifications
+                (
+                    base.Translate("NewFileHasBeenUploaded"),
+                    competitionFile.File.Description,
+                    competitionFile.Competition.Id,
+                    competitionFile.RaceClasses.Select(x => x.Id).ToArray()
+                );
+            #endregion
 
             return Ok();
         }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using RaceBoard.Business.Managers;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Common.Exceptions;
 using RaceBoard.Common.Helpers.Interfaces;
@@ -20,6 +21,8 @@ namespace RaceBoard.Service.Controllers
     public class FlagPoleController : AbstractController<FlagPoleController>
     {
         private readonly IMastManager _mastManager;
+        private readonly INotificationManager _notificationManager;
+        private readonly ICompetitionManager _competitionManager;
         private readonly IDateTimeHelper _dateTimeHelper;
 
         public FlagPoleController
@@ -28,12 +31,16 @@ namespace RaceBoard.Service.Controllers
                 ILogger<FlagPoleController> logger,
                 ITranslator translator,
                 IMastManager mastManager,
+                INotificationManager notificationManager,
+                ICompetitionManager competitionManager,
                 ISessionHelper sessionHelper,
                 IDateTimeHelper dateTimeHelper,
                 IRequestContextHelper requestContextHelper
             ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
         {
             _mastManager = mastManager;
+            _notificationManager = notificationManager;
+            _competitionManager = competitionManager;
             _dateTimeHelper = dateTimeHelper;
         }
 
@@ -98,7 +105,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpPost("flags")]
-        public ActionResult<int> RaiseMastFlag([FromBody] MastFlagRequest mastFlagRequest)
+        public ActionResult<int> RaiseFlag([FromBody] MastFlagRequest mastFlagRequest)
         {
             var mastFlag = _mapper.Map<MastFlag>(mastFlagRequest);
 
@@ -125,11 +132,24 @@ namespace RaceBoard.Service.Controllers
 
             _mastManager.RaiseFlag(mastFlag);
 
+            #region Notifications
+            var competitionGroups = _competitionManager.GetGroups(mastFlag.Mast.Competition.Id);
+            int[] idsRaceClasses = competitionGroups.SelectMany(x => x.RaceClasses.Select(y => y.Id)).ToArray();
+
+            _notificationManager.SendNotifications
+                (
+                    base.Translate("NewFlagsHoisted"),
+                    mastFlag.Flag.Name,
+                    mastFlag.Mast.Competition.Id,
+                    idsRaceClasses
+                );
+            #endregion
+
             return Ok(mastFlag.Id);
         }
 
         [HttpPut("flags")]
-        public ActionResult LowerMastFlag([FromBody] MastFlagRequest mastFlagRequest)
+        public ActionResult LowerFlag([FromBody] MastFlagRequest mastFlagRequest)
         {
             var mastFlag = _mapper.Map<MastFlag>(mastFlagRequest);
 

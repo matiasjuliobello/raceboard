@@ -58,6 +58,7 @@ namespace RaceBoard.IoC
             services.AddScoped<IFormatManager, FormatManager>();
             services.AddScoped<ICompetitionFileManager, CompetitionFileManager>();
             services.AddScoped<IFileTypeManager, FileTypeManager>();
+            services.AddScoped<INotificationManager, NotificationManager>();
             #endregion
 
             #region Validators

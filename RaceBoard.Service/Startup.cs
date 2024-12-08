@@ -8,10 +8,6 @@ using RaceBoard.Service.Swagger;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Service.Helpers;
 using RaceBoard.Common;
-using AutoMapper;
-using RaceBoard.FileStorage.Interfaces;
-using RaceBoard.FileStorage;
-using Microsoft.Extensions.Configuration;
 
 namespace RaceBoard.Service
 {

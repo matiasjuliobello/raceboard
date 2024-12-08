@@ -4,6 +4,7 @@
     {
         public int Id { get; set; }
         public int IdMast { get; set; }
+        public int IdCompetition { get; set; }
         public int IdFlag { get; set; }
         //public DateTimeOffset RaisingMoment { get; set; }
         public int? HoursToLower { get; set; }

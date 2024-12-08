@@ -260,8 +260,9 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)));
 
             CreateMap<MastFlagRequest, MastFlag>()
+                .ForMember(dest => dest.Flag, opt => opt.MapFrom(src => CreateObject<Flag>(src.IdFlag)))
                 .ForMember(dest => dest.Mast, opt => opt.MapFrom(src => CreateObject<Mast>(src.IdMast)))
-                .ForMember(dest => dest.Flag, opt => opt.MapFrom(src => CreateObject<Flag>(src.IdFlag)));
+                .ForPath(m => m.Mast.Competition, o => o.MapFrom(src => CreateObject<Competition>(src.IdCompetition)));
 
             CreateMap<MastFlagSearchFilterRequest, MastFlagSearchFilter>()
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
