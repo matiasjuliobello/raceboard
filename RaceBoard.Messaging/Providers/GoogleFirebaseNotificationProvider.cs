@@ -1,4 +1,5 @@
 ﻿using Google.Apis.Auth.OAuth2;
+using Microsoft.Extensions.Configuration;
 using RaceBoard.Messaging.Entities;
 using RaceBoard.Messaging.Interfaces;
 using RestSharp;
@@ -12,14 +13,18 @@ namespace RaceBoard.Messaging.Providers
         private const string _GOOGLE_FIREBASE_API_BASE_URL = "https://fcm.googleapis.com/v1";
         private const string _GOOGLE_FIREBASE_PROJECT_ID = "raceboard-b3663";
 
+        private readonly bool _enabled;
+
         #region Constructors
 
-        public GoogleFirebaseNotificationProvider()
+        public GoogleFirebaseNotificationProvider(IConfiguration configuration)
         {
             //string googleCredentialsScope = configuration["Google_Credentials_Scope"];
             //string googleFirebaseCredentialsFilePath = configuration["Google_Firebase_Credentials_FilePath"];
             //string googleFirebaseApiBaseUrl = configuration["Google_Firebase_ApiBaseUrl"];
             //string googleFirebaseProjectId = configuration["Google_Firebase_ProjectId"];
+
+            bool.TryParse(configuration["Messaging_Enabled"], out _enabled);
         }
 
         #endregion
@@ -28,6 +33,9 @@ namespace RaceBoard.Messaging.Providers
 
         public async Task<RestResponse> SendNotification(IMessagingNotification messagingNotification)
         {
+            if (!_enabled)
+                return await Task.FromResult<RestResponse>(null);
+
             var notification = messagingNotification as Notification;
             if (notification == null)
                 throw new Exception("INotification implementation is not GoogleFirebaseNotification");

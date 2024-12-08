@@ -66,9 +66,9 @@ namespace RaceBoard.Data.Repositories
         public void Create(CompetitionNotification competitionNotification, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [Competition_Notification]
-                                ( IdCompetition, Title, Message, Timestamp, IdCreationUser, CreationDate )
+                                ( IdCompetition, Title, Message, IdCreationUser, CreationDate )
                             VALUES
-                                ( @idCompetition, @title, @message, @timestamp, @idCreationUser, @creationDate )";
+                                ( @idCompetition, @title, @message, @idCreationUser, @creationDate )";
 
             QueryBuilder.AddCommand(sql);
 

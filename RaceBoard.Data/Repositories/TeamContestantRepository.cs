@@ -5,6 +5,7 @@ using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Data;
 using RaceBoard.Domain;
 using Dapper;
+using Microsoft.AspNetCore.Components;
 
 public class TeamContestantRepository : AbstractRepository, ITeamContestantRepository
 {
@@ -95,21 +96,23 @@ public class TeamContestantRepository : AbstractRepository, ITeamContestantRepos
 
     public bool HasParticipationOnRace(TeamContestant teamContestant, ITransactionalContext? context = null)
     {
-        string condition = @"[Race_Protest].IdTeamContestant = 
-                            (
-	                            SELECT [Team_Contestant].Id 
-	                            FROM [Team_Contestant] [Team_Contestant] 
-	                            INNER JOIN [Team] ON [Team].Id = [Team_Contestant].IdTeam
-	                            WHERE [Team_Contestant].IdPerson = @idPerson AND [Team].Id = @idTeam
-                            )";
+        //string condition = @"[Race_Protest].IdTeamContestant = 
+        //                    (
+        //                     SELECT [Team_Contestant].Id 
+        //                     FROM [Team_Contestant] [Team_Contestant] 
+        //                     INNER JOIN [Team] ON [Team].Id = [Team_Contestant].IdTeam
+        //                     WHERE [Team_Contestant].IdPerson = @idPerson AND [Team].Id = @idTeam
+        //                    )";
 
-        string existsQuery = base.GetExistsQuery("[Race_Protest]", condition);
+        //string existsQuery = base.GetExistsQuery("[Race_Protest]", condition);
 
-        QueryBuilder.AddCommand(existsQuery);
-        QueryBuilder.AddParameter("idTeam", teamContestant.Team.Id);
-        QueryBuilder.AddParameter("idPerson", teamContestant.Person.Id);
+        //QueryBuilder.AddCommand(existsQuery);
+        //QueryBuilder.AddParameter("idTeam", teamContestant.Team.Id);
+        //QueryBuilder.AddParameter("idPerson", teamContestant.Person.Id);
 
-        return base.Execute<bool>(context);
+        //return base.Execute<bool>(context);
+
+        return false;
     }
 
     public bool HasDuplicatedRole(TeamContestant teamContestant, ITransactionalContext? context = null)

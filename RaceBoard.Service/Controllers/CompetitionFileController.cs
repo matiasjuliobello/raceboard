@@ -8,7 +8,6 @@ using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
 using RaceBoard.DTOs.Competition.Request;
 using RaceBoard.DTOs.Competition.Response;
-using RaceBoard.DTOs.File.Response;
 using RaceBoard.Service.Attributes;
 using RaceBoard.Service.Controllers.Abstract;
 using RaceBoard.Service.Helpers.Interfaces;
