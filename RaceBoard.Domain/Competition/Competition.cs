@@ -8,6 +8,6 @@
         public List<Organization> Organizations { get; set; }
         public DateTimeOffset StartDate { get; set; }
         public DateTimeOffset EndDate { get; set; }
-        public File ImageFile {  get; set; }
+        public File? ImageFile {  get; set; }
     }
 }

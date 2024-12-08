@@ -40,6 +40,11 @@ namespace RaceBoard.Business.Validators
                 .WithMessage(Translate("CityIsRequired"))
                 .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
+            RuleFor(x => x.Organizations)
+                .NotEmpty()
+                .WithMessage(Translate("OrganizationsIsRequired"))
+                .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+
             //RuleFor(x => x.StartDate)
             //    .NotEmpty()
             //    .WithMessage(Translate("StartDateIsRequired"))

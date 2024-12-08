@@ -1,16 +1,28 @@
 ﻿using Dapper;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data.Helpers.Interfaces;
+using RaceBoard.Data.Helpers.SqlBulkHelper;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
-using System;
 using File = RaceBoard.Domain.File;
 
 namespace RaceBoard.Data.Repositories
 {
     public class CompetitionFileRepository : AbstractRepository, ICompetitionFileRepository
     {
+        public class BulkCompetitionFileRaceClass
+        {
+            public int IdCompetitionFile { get; set; }
+            public int IdRaceClass { get; set; }
+
+            public BulkCompetitionFileRaceClass(int idCompetitionFile, int idRaceClass)
+            {
+                this.IdCompetitionFile = idCompetitionFile;
+                this.IdRaceClass = idRaceClass;
+            }
+        }
+
         #region Private Members
 
         private readonly Dictionary<string, string> _columnsMapping = new()
@@ -20,12 +32,20 @@ namespace RaceBoard.Data.Repositories
             { "File.CreationDate", "[File].CreationDate" }
         };
 
+        private readonly ISqlBulkInsertHelper _bulkInsertHelper;
+
         #endregion
 
         #region Constructors
 
-        public CompetitionFileRepository(IContextResolver contextResolver, IQueryBuilder queryBuilder) : base(contextResolver, queryBuilder)
+        public CompetitionFileRepository
+            (
+                IContextResolver contextResolver,
+                IQueryBuilder queryBuilder,
+                ISqlBulkInsertHelper bulkInsertHelper
+            ) : base(contextResolver, queryBuilder)
         {
+            _bulkInsertHelper = bulkInsertHelper;
         }
 
         #endregion
@@ -85,24 +105,36 @@ namespace RaceBoard.Data.Repositories
             if (competitionFile.RaceClasses == null)
                 return;
 
-            string sql = @" INSERT INTO [Competition_File_RaceClass]
-                                ( IdCompetitionFile, IdRaceClass )
-                            VALUES
-                                ( @idCompetitionFile, @idRaceClass )";
+            //string sql = @" INSERT INTO [Competition_File_RaceClass]
+            //                    ( IdCompetitionFile, IdRaceClass )
+            //                VALUES
+            //                    ( @idCompetitionFile, @idRaceClass )";
 
-            foreach (var raceClass in competitionFile.RaceClasses)
-            {
-                QueryBuilder.Clear();
+            //foreach (var raceClass in competitionFile.RaceClasses)
+            //{
+            //    QueryBuilder.Clear();
 
-                QueryBuilder.AddCommand(sql);
+            //    QueryBuilder.AddCommand(sql);
 
-                QueryBuilder.AddParameter("idCompetitionFile", competitionFile.Id);
-                QueryBuilder.AddParameter("idRaceClass", raceClass.Id);
+            //    QueryBuilder.AddParameter("idCompetitionFile", competitionFile.Id);
+            //    QueryBuilder.AddParameter("idRaceClass", raceClass.Id);
 
-                QueryBuilder.AddReturnLastInsertedId();
+            //    QueryBuilder.AddReturnLastInsertedId();
 
-                int id = base.Execute<int>(context);
-            }
+            //    int id = base.Execute<int>(context);
+            //}
+
+            var bulkItems = new List<BulkCompetitionFileRaceClass>();
+
+            competitionFile.RaceClasses.ForEach(x => { bulkItems.Add(new BulkCompetitionFileRaceClass(competitionFile.Id, x.Id)); });
+
+            var sqlBulkSettings = new SqlBulkSettings<BulkCompetitionFileRaceClass>();
+            sqlBulkSettings.TableName = "Competition_File_RaceClass";
+            sqlBulkSettings.Mappings.Add(new SqlBulkColumnMapping(nameof(BulkCompetitionFileRaceClass.IdCompetitionFile), "IdCompetitionFile"));
+            sqlBulkSettings.Mappings.Add(new SqlBulkColumnMapping(nameof(BulkCompetitionFileRaceClass.IdRaceClass), "IdRaceClass"));
+            sqlBulkSettings.Data = bulkItems;
+
+            _bulkInsertHelper.PerformBulkInsert(sqlBulkSettings, context);
         }
 
         public int Delete(int id, ITransactionalContext? context = null)

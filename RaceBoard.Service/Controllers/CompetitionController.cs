@@ -57,14 +57,16 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpPost()]
-        public ActionResult<int> Create(IFormFile file, [FromForm] CompetitionRequest competitionRequest)
+        public ActionResult<int> Create(IFormFile imageFile, [FromForm] CompetitionRequest competitionRequest)
         {
-            var uploadedImage = _mapper.Map<IFormFile, FileUpload>(file);
-
             var competition = _mapper.Map<Competition>(competitionRequest);
 
-            competition.ImageFile = base.CreateFileInstance(uploadedImage);
-            competition.ImageFile.Description = "";
+            var uploadedImage = _mapper.Map<IFormFile, FileUpload>(imageFile);
+            if (uploadedImage != null)
+            {
+                competition.ImageFile = base.CreateFileInstance(uploadedImage);
+                competition.ImageFile.Description = "";
+            }
 
             _competitionManager.Create(competition);
 
@@ -72,9 +74,16 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpPut()]
-        public ActionResult Update(CompetitionRequest competitionRequest)
+        public ActionResult Update(IFormFile imageFile, [FromForm] CompetitionRequest competitionRequest)
         {
             var competition = _mapper.Map<Competition>(competitionRequest);
+
+            var uploadedImage = _mapper.Map<IFormFile, FileUpload>(imageFile);
+            if (uploadedImage != null)
+            {
+                competition.ImageFile = base.CreateFileInstance(uploadedImage);
+                competition.ImageFile.Description = "";
+            }
 
             _competitionManager.Update(competition);
 

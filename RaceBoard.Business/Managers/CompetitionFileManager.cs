@@ -26,7 +26,6 @@ namespace RaceBoard.Business.Managers
         private readonly IDateTimeHelper _dateTimeHelper;
 
         private readonly IFileHelper _fileHelper;
-        //private readonly IFileStorageProvider _fileStorageProvider;
         private readonly IFileRepository _fileRepository;
 
         #region Constructors
@@ -47,11 +46,7 @@ namespace RaceBoard.Business.Managers
             _competitionFileValidator = competitionFileValidator;
             _dateTimeHelper = dateTimeHelper;
             _fileHelper = fileHelper;
-            //_fileStorageProvider = fileStorageProvider;
             _fileRepository = fileRepository;
-
-            //string currentWorkingPath = AppDomain.CurrentDomain.BaseDirectory; // Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            //_fileStorageProvider.SetCurrentDirectory(currentWorkingPath);
         }
 
         #endregion

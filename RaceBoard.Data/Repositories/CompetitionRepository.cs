@@ -60,7 +60,7 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddCommand(existsQuery);
             QueryBuilder.AddParameter("name", competition.Name);
             QueryBuilder.AddParameter("idCity", competition.City.Id);
-            QueryBuilder.AddParameter("idsOrganization", competition.Organizations.Select(x => x.Id));
+            //QueryBuilder.AddParameter("idsOrganization", competition.Organizations.Select(x => x.Id));
             QueryBuilder.AddParameter("id", competition.Id);
 
             return base.Execute<bool>(context);

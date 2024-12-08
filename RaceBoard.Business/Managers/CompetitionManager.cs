@@ -92,10 +92,12 @@ namespace RaceBoard.Business.Managers
                 _competitionRepository.Create(competition, context);
                 _competitionRepository.SetOrganizations(competition.Id, competition.Organizations, context);
 
-                competition.ImageFile.Path = _fileHelper.SaveFile(Common.CommonValues.Directories.Files, competition.Id.ToString(), competition.ImageFile.Name, competition.ImageFile.Content);
-                _fileRepository.Create(competition.ImageFile, context);
-
-                _competitionRepository.Update(competition, context);
+                if (competition.ImageFile != null)
+                {
+                    competition.ImageFile.Path = _fileHelper.SaveFile(Common.CommonValues.Directories.Files, competition.Id.ToString(), competition.ImageFile.Name, competition.ImageFile.Content);
+                    _fileRepository.Create(competition.ImageFile, context);
+                    _competitionRepository.Update(competition, context);
+                }
 
                 context.Confirm();
             }
@@ -104,7 +106,7 @@ namespace RaceBoard.Business.Managers
                 if (context != null)
                     context.Cancel();
 
-                if (!string.IsNullOrEmpty(competition.ImageFile.Path))
+                if (!string.IsNullOrEmpty(competition.ImageFile?.Path))
                     _fileHelper.DeleteFile(Path.Combine(competition.ImageFile.Path, competition.ImageFile.Name));
 
                 throw;
@@ -125,6 +127,13 @@ namespace RaceBoard.Business.Managers
             {
                 _competitionRepository.Update(competition, context);
                 _competitionRepository.SetOrganizations(competition.Id, competition.Organizations, context);
+
+                if (competition.ImageFile != null)
+                {
+                    competition.ImageFile.Path = _fileHelper.SaveFile(Common.CommonValues.Directories.Files, competition.Id.ToString(), competition.ImageFile.Name, competition.ImageFile.Content);
+                    _fileRepository.Create(competition.ImageFile, context);
+                    _competitionRepository.Update(competition, context);
+                }
 
                 _competitionRepository.ConfirmTransactionalContext(context);
 

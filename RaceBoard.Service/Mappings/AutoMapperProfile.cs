@@ -189,6 +189,7 @@ namespace RaceBoard.Service.Mappings
             CreateMap<CompetitionFileRequest, CompetitionFile>()
                 .ForMember(dest => dest.FileType, opt => opt.MapFrom(src => CreateObject<FileType>(src.IdFileType)))
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)));
+                //.ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)));
 
             CreateMap<CompetitionFileSearchFilterRequest, CompetitionFileSearchFilter>()
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
