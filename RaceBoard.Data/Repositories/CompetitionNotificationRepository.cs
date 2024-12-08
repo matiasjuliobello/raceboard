@@ -4,6 +4,7 @@ using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
+using System.Text;
 
 namespace RaceBoard.Data.Repositories
 {
@@ -14,8 +15,8 @@ namespace RaceBoard.Data.Repositories
         private readonly Dictionary<string, string> _columnsMapping = new()
         {
             { "Id", "[Competition_Notification].Id" },
+            { "Title", "[Competition_Notification].Title" },
             { "Message", "[Competition_Notification].Message" },
-            { "Timestamp", "[Competition_Notification].Timestamp" },
             { "IdCreationUser", "[Competition_Notification].IdCreationUser"},
             { "CreationDate", "[Competition_Notification].CreationDate"}
         };
@@ -65,15 +66,15 @@ namespace RaceBoard.Data.Repositories
         public void Create(CompetitionNotification competitionNotification, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [Competition_Notification]
-                                ( IdCompetition, Message, Timestamp, IdCreationUser, CreationDate )
+                                ( IdCompetition, Title, Message, Timestamp, IdCreationUser, CreationDate )
                             VALUES
-                                ( @idCompetition, @message, @timestamp, @idCreationUser, @creationDate )";
+                                ( @idCompetition, @title, @message, @timestamp, @idCreationUser, @creationDate )";
 
             QueryBuilder.AddCommand(sql);
 
             QueryBuilder.AddParameter("idCompetition", competitionNotification.Competition.Id);
+            QueryBuilder.AddParameter("title", competitionNotification.Title);
             QueryBuilder.AddParameter("message", competitionNotification.Message);
-            QueryBuilder.AddParameter("timestamp", competitionNotification.Timestamp);
             QueryBuilder.AddParameter("idCreationUser", competitionNotification.CreationUser.Id);
             QueryBuilder.AddParameter("creationDate", competitionNotification.CreationDate);
 
@@ -109,11 +110,12 @@ namespace RaceBoard.Data.Repositories
 
         public int Delete(int id, ITransactionalContext? context = null)
         {
-            int affectedChildRecords = base.Delete("[Competition_Notification_RaceClass]", id, "IdCompetitionNotification", context);
+            return base.Delete("[Competition_Notification]", id, "Id", context);
+        }
 
-            int affectedRecords = base.Delete("[Competition_Notification]", id, "Id", context);
-
-            return affectedRecords;
+        public int DeleteRaceClasses(int id, ITransactionalContext? context = null)
+        {
+            return base.Delete("[Competition_Notification_RaceClass]", id, "IdCompetitionNotification", context);
         }
 
         #endregion
@@ -122,10 +124,17 @@ namespace RaceBoard.Data.Repositories
 
         private PaginatedResult<CompetitionNotification> GetCompetitionNotifications(CompetitionNotificationSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
-            string sql = $@"SELECT
-                                [Competition_Notification].Id           [Id],
-                                [Competition_Notification].Message      [Message],
-                                [Competition_Notification].Timestamp    [Timestamp],
+            var query = new StringBuilder();
+
+            query.AppendLine($@"SELECT
+                                [Competition_Notification].Id           [Id],");
+
+            if (searchFilter?.Ids?.Length > 0 )
+                query.AppendLine("[Competition_Notification].Message    [Message],");
+
+            query.AppendLine(@"
+                                [Competition_Notification].Title        [Title],
+                                [Competition_Notification].CreationDate [CreationDate],
                                 [Competition].Id                        [Id],
                                 [Competition].[Name]                    [Name],
 	                            [User].Id                               [Id],
@@ -140,9 +149,9 @@ namespace RaceBoard.Data.Repositories
                             LEFT JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Competition_Notification_RaceClass].IdRaceClass
                             LEFT JOIN [User] [User] ON [User].Id = [Competition_Notification].IdCreationUser
                             LEFT JOIN [User_Person] [User_Person] ON [User_Person].IdUser = [User].Id
-                            LEFT JOIN [Person] [Person] ON [Person].Id = [User_Person].IdPerson";
+                            LEFT JOIN [Person] [Person] ON [Person].Id = [User_Person].IdPerson");
 
-            QueryBuilder.AddCommand(sql);
+            QueryBuilder.AddCommand(query.ToString());
 
             ProcessSearchFilter(searchFilter);
 

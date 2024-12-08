@@ -97,11 +97,16 @@ namespace RaceBoard.Business.Managers
 
                 _competitionRepository.Update(competition, context);
 
-                _competitionRepository.ConfirmTransactionalContext(context);
+                context.Confirm();
             }
             catch (Exception)
             {
-                _competitionRepository.CancelTransactionalContext(context);
+                if (context != null)
+                    context.Cancel();
+
+                if (!string.IsNullOrEmpty(competition.ImageFile.Path))
+                    _fileHelper.DeleteFile(Path.Combine(competition.ImageFile.Path, competition.ImageFile.Name));
+
                 throw;
             }
         }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RaceBoard.Business.Managers;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
@@ -59,6 +60,14 @@ namespace RaceBoard.Service.Controllers
             _competitionNotificationManager.Create(data);
 
             return Ok(data.Id);
+        }
+
+        [HttpDelete("notifications/{id}")]
+        public ActionResult Delete([FromRoute] int id)
+        {
+            _competitionNotificationManager.Delete(id);
+
+            return Ok();
         }
 
         #region Private Methods

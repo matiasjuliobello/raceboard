@@ -107,11 +107,12 @@ namespace RaceBoard.Data.Repositories
 
         public int Delete(int id, ITransactionalContext? context = null)
         {
-            int affectedChildRecords = base.Delete("[Competition_File_RaceClass]", id, "IdCompetitionFile", context);
+            return base.Delete("[Competition_File]", id, "Id", context);
+        }
 
-            int affectedRecords = base.Delete("[Competition_File]", id, "Id", context);
-
-            return affectedRecords;
+        public int DeleteRaceClasses(int id, ITransactionalContext? context = null)
+        {
+            return base.Delete("[Competition_File_RaceClass]", id, "IdCompetitionFile", context);
         }
 
         #endregion

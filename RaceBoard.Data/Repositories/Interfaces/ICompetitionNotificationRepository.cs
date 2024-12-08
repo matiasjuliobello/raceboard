@@ -15,5 +15,6 @@ namespace RaceBoard.Data.Repositories.Interfaces
         void Create(CompetitionNotification competitionNotification, ITransactionalContext? context = null);
         void AssociateRaceClasses(CompetitionNotification competitionNotification, ITransactionalContext? context = null);
         int Delete(int id, ITransactionalContext? context = null);
+        int DeleteRaceClasses(int id, ITransactionalContext? context = null);
     }
 }

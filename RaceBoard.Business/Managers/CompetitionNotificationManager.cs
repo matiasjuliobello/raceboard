@@ -1,5 +1,6 @@
 ﻿using RaceBoard.Business.Managers.Abstract;
 using RaceBoard.Business.Managers.Interfaces;
+using RaceBoard.Business.Validators;
 using RaceBoard.Business.Validators.Interfaces;
 using RaceBoard.Common.Enums;
 using RaceBoard.Common.Exceptions;
@@ -44,9 +45,22 @@ namespace RaceBoard.Business.Managers
             return _competitionNotificationRepository.Get(searchFilter, paginationFilter, sorting, context);
         }
 
+        public CompetitionNotification Get(int id, ITransactionalContext? context = null)
+        {
+            var searchFilter = new CompetitionNotificationSearchFilter() { Ids = new int[] { id } };
+
+            var competitions = _competitionNotificationRepository.Get(searchFilter, paginationFilter: null, sorting: null, context);
+
+            var competition = competitions.Results.FirstOrDefault();
+            if (competition == null)
+                throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
+
+            return competition;
+        }
+
         public void Create(CompetitionNotification competitionNotification, ITransactionalContext? context = null)
         {
-            competitionNotification.Timestamp = _dateTimeHelper.GetCurrentTimestamp();
+            competitionNotification.CreationDate = _dateTimeHelper.GetCurrentTimestamp();
             
             _competitionNotificationValidator.SetTransactionalContext(context);
 
@@ -70,6 +84,35 @@ namespace RaceBoard.Business.Managers
                 throw;
             }
         }
+
+        public void Delete(int id, ITransactionalContext? context = null)
+        {
+            var competitionNotification = this.Get(id, context);
+
+            _competitionNotificationValidator.SetTransactionalContext(context);
+
+            if (!_competitionNotificationValidator.IsValid(competitionNotification, Scenario.Delete))
+                throw new FunctionalException(ErrorType.ValidationError, _competitionNotificationValidator.Errors);
+
+            if (context == null)
+                context = _competitionNotificationRepository.GetTransactionalContext(TransactionContextScope.Internal);
+
+            try
+            {
+                _competitionNotificationRepository.DeleteRaceClasses(id, context);
+                _competitionNotificationRepository.Delete(id, context);
+
+                context.Confirm();
+            }
+            catch (Exception)
+            {
+                if (context != null)
+                    context.Cancel();
+
+                throw;
+            }
+        }
+
 
         #endregion
     }

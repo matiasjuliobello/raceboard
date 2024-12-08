@@ -38,6 +38,19 @@ namespace RaceBoard.Common.Helpers
             return fileFullPath;
         }
 
+        public bool DeleteFile(string path, string directoryName, string fileName)
+        {
+            string workDirectory = Path.Combine(path, directoryName);
+
+            _fileStorageProvider.SetCurrentDirectory(workDirectory);
+            
+            return _fileStorageProvider.DeleteFile(fileName);
+        }
+
+        public bool DeleteFile(string fullFilePath)
+        {
+            return _fileStorageProvider.DeleteFile(fullFilePath);
+        }
 
         #endregion
     }

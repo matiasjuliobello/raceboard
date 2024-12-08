@@ -6,6 +6,7 @@ using RaceBoard.Business.Validators.Interfaces;
 using RaceBoard.Common.Enums;
 using RaceBoard.Common.Exceptions;
 using RaceBoard.Common.Extensions;
+using RaceBoard.Common.Helpers;
 using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data;
@@ -100,45 +101,43 @@ namespace RaceBoard.Business.Managers
                 if (context != null)
                     context.Cancel();
 
-                //_fileStorageProvider.DeleteDirectory("");
+                if (!string.IsNullOrEmpty(competitionFile.File.Path))
+                    _fileHelper.DeleteFile(Path.Combine(competitionFile.File.Path, competitionFile.File.Name));
+
                 throw;
             }
         }
 
         public void Delete(int id, ITransactionalContext? context = null)
         {
-            //var competitionFile = this.Get(id, context);
+            var competitionFile = this.Get(id, context);
 
-            ////_competitionValidator.SetTransactionalContext(context);
+            //_competitionValidator.SetTransactionalContext(context);
 
-            ////if (!_competitionValidator.IsValid(competitionFile, Scenario.Delete))
-            ////    throw new FunctionalException(ErrorType.ValidationError, _competitionValidator.Errors);
+            //if (!_competitionValidator.IsValid(competitionFile, Scenario.Delete))
+            //    throw new FunctionalException(ErrorType.ValidationError, _competitionValidator.Errors);
 
-            //if (context == null)
-            //    context = _competitionFileRepository.GetTransactionalContext(TransactionContextScope.Internal);
+            if (context == null)
+                context = _competitionFileRepository.GetTransactionalContext(TransactionContextScope.Internal);
 
-            //try
-            //{
-            //    _competitionFileRepository.Delete(competitionFile.Id, context);
+            try
+            {
+                _competitionFileRepository.DeleteRaceClasses(competitionFile.Id, context);
+                _competitionFileRepository.Delete(competitionFile.Id, context);
 
-            //    _fileRepository.Delete(competitionFile.File.Id, context);
+                _fileRepository.Delete(competitionFile.File.Id, context);
 
-            //    string workDirectory = Path.Combine(Common.CommonValues.Directories.Files, competitionFile.Competition.Id.ToString());
-            //    _fileStorageProvider.SetCurrentDirectory(workDirectory);
+                _fileHelper.DeleteFile(Common.CommonValues.Directories.Files, competitionFile.Competition.Id.ToString(), competitionFile.File.Name);
 
-            //    string competitionFileName = competitionFile.File.Name;
+                context.Confirm();
+            }
+            catch (Exception)
+            {
+                if (context != null)
+                    context.Cancel();
 
-            //    _fileStorageProvider.DeleteFile(competitionFileName);
-
-            //    context.Confirm();
-            //}
-            //catch (Exception)
-            //{
-            //    if (context != null)
-            //        context.Cancel();
-
-            //    throw;
-            //}
+                throw;
+            }
         }
 
         #endregion
