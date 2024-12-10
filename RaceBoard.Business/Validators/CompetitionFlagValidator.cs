@@ -1,26 +1,26 @@
 ﻿using FluentValidation;
 using RaceBoard.Business.Validators.Abstract;
-using RaceBoard.Domain;
 using RaceBoard.Translations.Interfaces;
 using RaceBoard.Common.Enums;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Common.Helpers.Interfaces;
+using RaceBoard.Domain;
 
 namespace RaceBoard.Business.Validators
 {
-    public class MastFlagValidator : AbstractCustomValidator<MastFlag>
+    public class CompetitionFlagValidator : AbstractCustomValidator<CompetitionFlag>
     {
-        private readonly IMastFlagRepository _mastFlagRepository;
-        private readonly IMastRepository _mastRepository;
+        private readonly ICompetitionFlagRepository _mastFlagRepository;
+        private readonly ICompetitionRepository _mastRepository;
         private readonly IFlagRepository _flagRepository;
         private readonly IPersonRepository _personRepository;
         private readonly IDateTimeHelper _dateTimeHelper;
 
-        public MastFlagValidator
+        public CompetitionFlagValidator
             (
                 ITranslator translator,
-                IMastFlagRepository mastFlagRepository,
-                IMastRepository mastRepository,
+                ICompetitionFlagRepository mastFlagRepository,
+                ICompetitionRepository mastRepository,
                 IFlagRepository flagRepository,
                 IPersonRepository personRepository,
                 IDateTimeHelper dateTimeHelper
@@ -38,59 +38,59 @@ namespace RaceBoard.Business.Validators
 
         private void AddRules()
         {
-            RuleFor(x => x.Id)
-                .NotEmpty()
-                .WithMessage(Translate("IdIsRequired"))
-                .When(x => Scenario == Scenario.Update || Scenario == Scenario.Delete);
-
-            RuleFor(x => x.Mast.Id)
-                .NotEmpty()
-                .WithMessage(Translate("IdMastIsRequired"))
-                .When(x => Scenario == Scenario.Create);
-
-            RuleFor(x => x.Mast.Id)
-                .Must(x => _mastRepository.Exists(x))
-                .WithMessage(Translate("IdMastIsNotValid"))
-                .When(x => Scenario == Scenario.Create);
-
-            RuleFor(x => x.Flag.Id)
-                .NotEmpty()
-                .WithMessage(Translate("IdFlagIsRequired"))
-                .When(x => Scenario == Scenario.Create);
-
-            RuleFor(x => x.Flag.Id)
-                .Must(x => _flagRepository.Exists(x))
-                .WithMessage(Translate("IdFlagIsNotValid"))
-                .When(x => Scenario == Scenario.Create);
-
-            //RuleFor(x => x.Person.Id)
+            //RuleFor(x => x.Id)
             //    .NotEmpty()
-            //    .WithMessage(Translate("IdPersonIsRequired"))
-            //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+            //    .WithMessage(Translate("IdIsRequired"))
+            //    .When(x => Scenario == Scenario.Update || Scenario == Scenario.Delete);
 
-            //RuleFor(x => x.Person.Id)
-            //    .Must(x => _personRepository.Exists(x, base.TransactionalContext))
-            //    .WithMessage(Translate("IdPersonIsNotValid"))
-            //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+            //RuleFor(x => x.Competition.Id)
+            //    .NotEmpty()
+            //    .WithMessage(Translate("IdCompetitionIsRequired"))
+            //    .When(x => Scenario == Scenario.Create);
 
-            RuleFor(x => x)
-                .Must(x => !_mastFlagRepository.ExistsDuplicate(x, base.TransactionalContext))
-                .WithMessage(Translate("DuplicateRecordExists"))
-                .When(x => Scenario == Scenario.Create);
+            //RuleFor(x => x.Competition.Id)
+            //    .Must(x => _mastRepository.Exists(x))
+            //    .WithMessage(Translate("IdCompetitionIsNotValid"))
+            //    .When(x => Scenario == Scenario.Create);
 
-            //RuleFor(x => x.RaisingMoment)
+            //RuleFor(x => x.Flag.Id)
+            //    .NotEmpty()
+            //    .WithMessage(Translate("IdFlagIsRequired"))
+            //    .When(x => Scenario == Scenario.Create);
+
+            //RuleFor(x => x.Flag.Id)
+            //    .Must(x => _flagRepository.Exists(x))
+            //    .WithMessage(Translate("IdFlagIsNotValid"))
+            //    .When(x => Scenario == Scenario.Create);
+
+            ////RuleFor(x => x.Person.Id)
+            ////    .NotEmpty()
+            ////    .WithMessage(Translate("IdPersonIsRequired"))
+            ////    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+
+            ////RuleFor(x => x.Person.Id)
+            ////    .Must(x => _personRepository.Exists(x, base.TransactionalContext))
+            ////    .WithMessage(Translate("IdPersonIsNotValid"))
+            ////    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+
+            //RuleFor(x => x)
+            //    .Must(x => !_mastFlagRepository.ExistsDuplicate(x, base.TransactionalContext))
+            //    .WithMessage(Translate("DuplicateRecordExists"))
+            //    .When(x => Scenario == Scenario.Create);
+
+            //RuleFor(x => x.Raising)
             //    .Must(x => x < _dateTimeHelper.GetCurrentTimestamp())
-            //    .WithMessage(Translate("LoweringMomentCannotBeInThePast"))
+            //    .WithMessage(Translate("LoweringCannotBeInThePast"))
             //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
-            //RuleFor(x => x.LoweringMoment)
+            //RuleFor(x => x.Lowering)
             //    .Must(x => x < _dateTimeHelper.GetCurrentTimestamp())
-            //    .WithMessage(Translate("LoweringMomentCannotBeInThePast"))
+            //    .WithMessage(Translate("LoweringCannotBeInThePast"))
             //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
             //RuleFor(x => x)
-            //    .Must(x => x.LoweringMoment > x.RaisingMoment)
-            //    .WithMessage(Translate("LoweringMomentMustOccurAfterRaisingMoment"))
+            //    .Must(x => x.Lowering > x.Raising)
+            //    .WithMessage(Translate("LoweringMustOccurAfterRaising"))
             //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
         }
     }

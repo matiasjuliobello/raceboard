@@ -37,6 +37,8 @@ namespace RaceBoard.IoC
             services.AddScoped<ICityManager, CityManager>();
             services.AddScoped<ICountryManager, CountryManager>();
             services.AddScoped<ICompetitionManager, CompetitionManager>();
+            services.AddScoped<ICompetitionFileManager, CompetitionFileManager>();
+            services.AddScoped<ICompetitionFlagManager, CompetitionFlagManager>();
             services.AddScoped<ICompetitionNotificationManager, CompetitionNotificationManager>();
             services.AddScoped<IOrganizationManager, OrganizationManager>();
             services.AddScoped<IBoatManager, BoatManager>();
@@ -53,10 +55,8 @@ namespace RaceBoard.IoC
             services.AddScoped<IMedicalInsuranceManager, MedicalInsuranceManager>();
             //services.AddScoped<ICountryManager, CountryManager>();
             services.AddScoped<IFlagManager, FlagManager>();
-            services.AddScoped<IMastManager, MastManager>();
             services.AddScoped<ILanguageManager, LanguageManager>();
             services.AddScoped<IFormatManager, FormatManager>();
-            services.AddScoped<ICompetitionFileManager, CompetitionFileManager>();
             services.AddScoped<IFileTypeManager, FileTypeManager>();
             services.AddScoped<INotificationManager, NotificationManager>();
             #endregion
@@ -71,8 +71,7 @@ namespace RaceBoard.IoC
             services.AddTransient<ICustomValidator<CompetitionNotification>, CompetitionNotificationValidator>();
             services.AddTransient<ICustomValidator<CompetitionGroup>, CompetitionGroupValidator>();
             services.AddTransient<ICustomValidator<CompetitionFile>, CompetitionFileValidator>();
-            services.AddTransient<ICustomValidator<Mast>, MastValidator>();
-            services.AddTransient<ICustomValidator<MastFlag>, MastFlagValidator>();
+            services.AddTransient<ICustomValidator<CompetitionFlag>, CompetitionFlagValidator>();
             services.AddTransient<ICustomValidator<Organization>, OrganizationValidator>();
             services.AddTransient<ICustomValidator<Race>, RaceValidator>();
             services.AddTransient<ICustomValidator<RaceProtest>, RaceProtestValidator>();
@@ -96,8 +95,9 @@ namespace RaceBoard.IoC
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<ICompetitionRepository, CompetitionRepository>();
             services.AddScoped<ICompetitionGroupRepository, CompetitionGroupRepository>();
-            services.AddScoped<ICompetitionNotificationRepository, CompetitionNotificationRepository>();
+            services.AddScoped<ICompetitionFlagRepository, CompetitionFlagRepository>();
             services.AddScoped<ICompetitionFileRepository, CompetitionFileRepository>();
+            services.AddScoped<ICompetitionNotificationRepository, CompetitionNotificationRepository>();
             services.AddScoped<IFileRepository, FileRepository>();
             services.AddScoped<IFileTypeRepository, FileTypeRepository>();
             services.AddScoped<IOrganizationRepository, OrganizationRepository>();
@@ -116,8 +116,6 @@ namespace RaceBoard.IoC
             services.AddScoped<IBloodTypeRepository, BloodTypeRepository>();
             services.AddScoped<IMedicalInsuranceRepository, MedicalInsuranceRepository>();
             services.AddScoped<IFlagRepository, FlagRepository>();
-            services.AddScoped<IMastRepository, MastRepository>();
-            services.AddScoped<IMastFlagRepository, MastFlagRepository>();
             services.AddScoped<ILanguageRepository, LanguageRepository>();
             services.AddScoped<IFormatRepository, FormatRepository>();
             #endregion
