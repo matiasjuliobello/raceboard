@@ -78,7 +78,7 @@ namespace RaceBoard.Service.Controllers
 
             foreach (var competitionFlag in competitionFlagGroup.Flags)
             {
-                competitionFlag.Person = new Person() { User = new User() { Id = currentUser.Id } };
+                competitionFlag.User = new User() { Id = currentUser.Id };
                 competitionFlag.Raising = currentTime;
 
                 if (hoursToLower != null)
@@ -128,7 +128,7 @@ namespace RaceBoard.Service.Controllers
 
             foreach (var competitionFlag in competitionFlagGroup.Flags)
             {
-                competitionFlag.Person = new Person() { User = new User() { Id = currentUser.Id } };
+                competitionFlag.User = new User() { Id = currentUser.Id };
                 competitionFlag.Lowering = currentTime;
             }
 
@@ -137,13 +137,13 @@ namespace RaceBoard.Service.Controllers
             return Ok();
         }
 
-        [HttpDelete("flags/{idCompetitionFlagGroup}")]
-        public ActionResult DeleteFlags([FromRoute] int idCompetitionFlagGroup)
-        {
-            _competitionFlagManager.RemoveFlags(idCompetitionFlagGroup);
+        //[HttpDelete("flags/{idCompetitionFlagGroup}")]
+        //public ActionResult DeleteFlags([FromRoute] int idCompetitionFlagGroup)
+        //{
+        //    _competitionFlagManager.RemoveFlags(idCompetitionFlagGroup);
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
         #region Private Methods
 

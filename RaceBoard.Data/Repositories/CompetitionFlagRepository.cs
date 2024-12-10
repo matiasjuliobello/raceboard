@@ -234,7 +234,7 @@ namespace RaceBoard.Data.Repositories
                 QueryBuilder.AddParameter("order", competitionFlag.Order);
                 QueryBuilder.AddParameter("raising", competitionFlag.Raising);
                 QueryBuilder.AddParameter("lowering", competitionFlag.Lowering);
-                QueryBuilder.AddParameter("idUser", competitionFlag.Person.User.Id);
+                QueryBuilder.AddParameter("idUser", competitionFlag.User.Id);
 
                 QueryBuilder.AddReturnLastInsertedId();
 
