@@ -20,6 +20,7 @@ namespace RaceBoard.Business.Managers.Interfaces
 
         PaginatedResult<CommitteeBoatReturn> GetCommitteeBoatReturns(CommitteeBoatReturnSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
         void CreateCommitteeBoatReturn(CommitteeBoatReturn committeeBoatReturn, ITransactionalContext? context = null);
+        void DeleteCommitteeBoatReturn(int id, ITransactionalContext? context = null);
 
         void CreateProtest(RaceProtest raceProtest, ITransactionalContext? context = null);
     }

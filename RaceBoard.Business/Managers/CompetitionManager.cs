@@ -266,6 +266,7 @@ namespace RaceBoard.Business.Managers
         public void CreateCommitteeBoatReturn(CommitteeBoatReturn committeeBoatReturn, ITransactionalContext? context = null)
         {
             committeeBoatReturn.ReturnTime = _dateTimeHelper.GetCurrentTimestamp();
+
             _committeeBoatReturnValidator.SetTransactionalContext(context);
 
             if (!_committeeBoatReturnValidator.IsValid(committeeBoatReturn, Scenario.Create))
@@ -277,12 +278,47 @@ namespace RaceBoard.Business.Managers
             try
             {
                 _committeeBoatReturnRepository.Create(committeeBoatReturn, context);
+                _committeeBoatReturnRepository.AssociateRaceClasses(committeeBoatReturn, context);
 
-                _committeeBoatReturnRepository.ConfirmTransactionalContext(context);
+                context.Confirm();
             }
             catch (Exception)
             {
-                _committeeBoatReturnRepository.CancelTransactionalContext(context);
+                if (context != null)
+                    context.Cancel();
+
+                throw;
+            }
+        }
+
+        public void DeleteCommitteeBoatReturn(int id, ITransactionalContext? context = null)
+        {
+            if (context == null)
+                context = _committeeBoatReturnRepository.GetTransactionalContext(TransactionContextScope.Internal);
+
+            var searchFilter = new CommitteeBoatReturnSearchFilter() { Ids = new int[] { id } };
+            var committeeBoatReturn = this.GetCommitteeBoatReturns(searchFilter, paginationFilter: null, sorting: null, context);
+
+            //_committeeBoatReturnValidator.SetTransactionalContext(context);
+
+            //if (!_committeeBoatReturnValidator.IsValid(committeeBoatReturn, Scenario.Delete))
+            //    throw new FunctionalException(ErrorType.ValidationError, _committeeBoatReturnValidator.Errors);
+
+            if (context == null)
+                context = _committeeBoatReturnRepository.GetTransactionalContext(TransactionContextScope.Internal);
+
+            try
+            {
+                _committeeBoatReturnRepository.DeleteRaceClasses(id, context);
+                _committeeBoatReturnRepository.Delete(id, context);
+
+                context.Confirm();
+            }
+            catch (Exception)
+            {
+                if (context != null)
+                    context.Cancel();
+
                 throw;
             }
         }

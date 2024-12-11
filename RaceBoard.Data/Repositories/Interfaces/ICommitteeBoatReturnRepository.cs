@@ -1,5 +1,7 @@
 using RaceBoard.Common.Helpers.Pagination;
+using RaceBoard.Data.Helpers.SqlBulkHelper;
 using RaceBoard.Domain;
+using static RaceBoard.Data.Repositories.CommitteeBoatReturnRepository;
 
 namespace RaceBoard.Data.Repositories.Interfaces
 {
@@ -10,9 +12,10 @@ namespace RaceBoard.Data.Repositories.Interfaces
 		void CancelTransactionalContext(ITransactionalContext context);
 
         PaginatedResult<CommitteeBoatReturn> Get(CommitteeBoatReturnSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
-        //RaceCommitteeBoatReturn? Get(int id, ITransactionalContext? context = null);
         void Create(CommitteeBoatReturn committeeBoatReturn, ITransactionalContext? context = null);
-        //void Update(RaceCommitteeBoatReturn raceCommitteeBoatReturn, ITransactionalContext? context = null);
-        //int Delete(int id, ITransactionalContext? context = null);
+        void AssociateRaceClasses(CommitteeBoatReturn raceCommitteeBoatReturn, ITransactionalContext? context = null);
+        int Delete(int id, ITransactionalContext? context = null);
+        int DeleteRaceClasses(int id, ITransactionalContext? context = null);
+
     }
 }

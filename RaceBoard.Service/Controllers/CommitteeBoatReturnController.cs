@@ -32,12 +32,14 @@ namespace RaceBoard.Service.Controllers
             _competitionManager = competitionManager;
         }
 
-        [HttpGet("committee-boat-returns")]
-        public ActionResult<List<CommitteeBoatReturnResponse>> Get([FromQuery] CommitteeBoatReturnSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
+        [HttpGet("{id}/committee-boat-returns")]
+        public ActionResult<List<CommitteeBoatReturnResponse>> Get([FromRoute] int id, [FromQuery] CommitteeBoatReturnSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<CommitteeBoatReturnSearchFilterRequest, CommitteeBoatReturnSearchFilter>(searchFilterRequest);
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
             var sorting = _mapper.Map<Sorting>(sortingRequest);
+
+            searchFilter.Competition = new Competition() {  Id  = id };
 
             var committeeBoatReturns = _competitionManager.GetCommitteeBoatReturns(searchFilter, paginationFilter, sorting);
 
@@ -69,7 +71,7 @@ namespace RaceBoard.Service.Controllers
         [HttpDelete("committee-boat-returns/{id}")]
         public ActionResult Delete([FromRoute] int id)
         {
-            _competitionManager.Delete(id);
+            _competitionManager.DeleteCommitteeBoatReturn(id);
 
             return Ok();
         }

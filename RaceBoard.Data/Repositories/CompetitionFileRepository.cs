@@ -102,27 +102,8 @@ namespace RaceBoard.Data.Repositories
 
         public void AssociateRaceClasses(CompetitionFile competitionFile, ITransactionalContext? context = null)
         {
-            if (competitionFile.RaceClasses == null)
+            if (competitionFile.RaceClasses == null || competitionFile.RaceClasses.Count == 0)
                 return;
-
-            //string sql = @" INSERT INTO [Competition_File_RaceClass]
-            //                    ( IdCompetitionFile, IdRaceClass )
-            //                VALUES
-            //                    ( @idCompetitionFile, @idRaceClass )";
-
-            //foreach (var raceClass in competitionFile.RaceClasses)
-            //{
-            //    QueryBuilder.Clear();
-
-            //    QueryBuilder.AddCommand(sql);
-
-            //    QueryBuilder.AddParameter("idCompetitionFile", competitionFile.Id);
-            //    QueryBuilder.AddParameter("idRaceClass", raceClass.Id);
-
-            //    QueryBuilder.AddReturnLastInsertedId();
-
-            //    int id = base.Execute<int>(context);
-            //}
 
             var bulkItems = new List<BulkCompetitionFileRaceClass>();
 

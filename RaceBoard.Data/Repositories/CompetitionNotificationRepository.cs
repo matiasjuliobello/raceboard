@@ -85,7 +85,7 @@ namespace RaceBoard.Data.Repositories
 
         public void AssociateRaceClasses(CompetitionNotification competitionNotification, ITransactionalContext? context = null)
         {
-            if (competitionNotification.RaceClasses == null)
+            if (competitionNotification.RaceClasses == null || competitionNotification.RaceClasses.Count == 0)
                 return;
 
             string sql = @" INSERT INTO [Competition_Notification_RaceClass]

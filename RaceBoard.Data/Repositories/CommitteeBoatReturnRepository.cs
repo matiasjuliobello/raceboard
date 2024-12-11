@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data.Helpers.Interfaces;
+using RaceBoard.Data.Helpers.SqlBulkHelper;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
@@ -9,6 +10,19 @@ namespace RaceBoard.Data.Repositories
 {
     public class CommitteeBoatReturnRepository : AbstractRepository, ICommitteeBoatReturnRepository
     {
+        public class BulkCompetitionCommitteeBoatReturnRaceClass
+        {
+            public int IdCommitteeBoatReturn { get; set; }
+            public int IdRaceClass { get; set; }
+
+            public BulkCompetitionCommitteeBoatReturnRaceClass(int idCompetitionFile, int idRaceClass)
+            {
+                this.IdCommitteeBoatReturn = idCompetitionFile;
+                this.IdRaceClass = idRaceClass;
+            }
+        }
+
+
         #region Private Members
 
         private readonly Dictionary<string, string> _columnsMapping = new()
@@ -22,12 +36,20 @@ namespace RaceBoard.Data.Repositories
             { "RaceClass.Name", "[RaceClass].Name"}
         };
 
+        private readonly ISqlBulkInsertHelper _sqlbulkInsertHelper;
+
         #endregion
 
         #region Constructors
 
-        public CommitteeBoatReturnRepository(IContextResolver contextResolver, IQueryBuilder queryBuilder) : base(contextResolver, queryBuilder)
+        public CommitteeBoatReturnRepository
+            (
+                IContextResolver contextResolver,
+                IQueryBuilder queryBuilder,
+                ISqlBulkInsertHelper sqlbulkInsertHelper
+            ) : base(contextResolver, queryBuilder)
         {
+            _sqlbulkInsertHelper = sqlbulkInsertHelper;
         }
 
         #endregion
@@ -57,7 +79,34 @@ namespace RaceBoard.Data.Repositories
         public void Create(CommitteeBoatReturn raceCommitteeBoatReturn, ITransactionalContext? context = null)
         {
             this.CreateCommitteeBoatReturn(raceCommitteeBoatReturn, context);
-            this.AddRaceClassesToCommitteeBoatReturn(raceCommitteeBoatReturn.Id, raceCommitteeBoatReturn.RaceClasses, context);
+        }
+
+        public void AssociateRaceClasses(CommitteeBoatReturn raceCommitteeBoatReturn, ITransactionalContext? context = null)
+        {
+            if (raceCommitteeBoatReturn.RaceClasses == null || raceCommitteeBoatReturn.RaceClasses.Count == 0)
+                return;
+
+            var bulkItems = new List<BulkCompetitionCommitteeBoatReturnRaceClass>();
+
+            raceCommitteeBoatReturn.RaceClasses.ForEach(x => { bulkItems.Add(new BulkCompetitionCommitteeBoatReturnRaceClass(raceCommitteeBoatReturn.Id, x.Id)); });
+
+            var sqlBulkSettings = new SqlBulkSettings<BulkCompetitionCommitteeBoatReturnRaceClass>();
+            sqlBulkSettings.TableName = "CommitteeBoatReturn_RaceClass";
+            sqlBulkSettings.Mappings.Add(new SqlBulkColumnMapping(nameof(BulkCompetitionCommitteeBoatReturnRaceClass.IdCommitteeBoatReturn), "IdCommitteeBoatReturn"));
+            sqlBulkSettings.Mappings.Add(new SqlBulkColumnMapping(nameof(BulkCompetitionCommitteeBoatReturnRaceClass.IdRaceClass), "IdRaceClass"));
+            sqlBulkSettings.Data = bulkItems;
+
+            _sqlbulkInsertHelper.PerformBulkInsert(sqlBulkSettings, context);
+        }
+
+        public int Delete(int id, ITransactionalContext? context = null)
+        {
+            return base.Delete("[CommitteeBoatReturn]", id, "Id", context);
+        }
+
+        public int DeleteRaceClasses(int id, ITransactionalContext? context = null)
+        {
+            return base.Delete("[CommitteeBoatReturn_RaceClass]", id, "IdCommitteeBoatReturn", context);
         }
 
         #endregion
@@ -76,8 +125,8 @@ namespace RaceBoard.Data.Repositories
                                 [RaceClass].Name [Name]
                             FROM [CommitteeBoatReturn] [CommitteeBoatReturn]
                             INNER JOIN [Competition] [Competition] ON [Competition].Id = [CommitteeBoatReturn].IdCompetition                            
-                            INNER JOIN [CommitteeBoatReturn_RaceClass] [CommitteeBoatReturn_RaceClass] ON [CommitteeBoatReturn_RaceClass].IdCommitteeBoatReturn = [CommitteeBoatReturn].Id
-                            INNER JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [CommitteeBoatReturn_RaceClass].IdRaceClass";
+                            LEFT JOIN [CommitteeBoatReturn_RaceClass] [CommitteeBoatReturn_RaceClass] ON [CommitteeBoatReturn_RaceClass].IdCommitteeBoatReturn = [CommitteeBoatReturn].Id
+                            LEFT JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [CommitteeBoatReturn_RaceClass].IdRaceClass";
 
             QueryBuilder.AddCommand(sql);
 
@@ -147,31 +196,6 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddReturnLastInsertedId();
 
             raceCommitteeBoatReturn.Id = base.Execute<int>(context);
-        }
-
-        private void AddRaceClassesToCommitteeBoatReturn(int idCommitteeBoatReturn, List<RaceClass> raceClasses, ITransactionalContext? context = null)
-        {
-            if (raceClasses == null)
-                return;
-
-            QueryBuilder.Clear();
-
-            foreach (var raceClass in raceClasses)
-            {
-                string sqlRaceClass = @"INSERT INTO [CommitteeBoatReturn_RaceClass]
-                                        ( IdCommitteeBoatReturn, IdRaceClass )
-                                    VALUES
-                                        ( @idCommitteeBoatReturn, @idRaceClass )";
-
-                QueryBuilder.AddCommand(sqlRaceClass);
-
-                QueryBuilder.AddParameter("idCommitteeBoatReturn", idCommitteeBoatReturn);
-                QueryBuilder.AddParameter("idRaceClass", raceClass.Id);
-
-                QueryBuilder.AddReturnLastInsertedId();
-
-                int id = base.Execute<int>(context);
-            }
         }
 
         #endregion
