@@ -35,7 +35,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpGet()]
-        [Authorize(Action = Enums.Action.Competition_Get)]
+        //[Authorize(Action = Enums.Action.Competition_Get)]
         public ActionResult<PaginatedResultResponse<CompetitionResponse>> Get([FromQuery] CompetitionSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<CompetitionSearchFilter>(searchFilterRequest);
@@ -50,7 +50,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Action = Enums.Action.Competition_Get)]
+        //[Authorize(Action = Enums.Action.Competition_Get)]
         public ActionResult<CompetitionResponse> Get([FromRoute] int id)
         {
             var data = _competitionManager.Get(id);
@@ -61,7 +61,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpPost()]
-        [Authorize(Action = Enums.Action.Competition_Create)]
+        //[Authorize(Action = Enums.Action.Competition_Create)]
         public ActionResult<int> Create(IFormFile imageFile, [FromForm] CompetitionRequest competitionRequest)
         {
             var competition = _mapper.Map<Competition>(competitionRequest);
@@ -79,7 +79,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpPut()]
-        [Authorize(Action = Enums.Action.Competition_Update)]
+        //[Authorize(Action = Enums.Action.Competition_Update)]
         public ActionResult Update(IFormFile imageFile, [FromForm] CompetitionRequest competitionRequest)
         {
             var competition = _mapper.Map<Competition>(competitionRequest);
@@ -97,7 +97,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpDelete("id")]
-        [Authorize(Action = Enums.Action.Competition_Delete)]
+        //[Authorize(Action = Enums.Action.Competition_Delete)]
         public ActionResult Delete(int id)
         {
             _competitionManager.Delete(id);

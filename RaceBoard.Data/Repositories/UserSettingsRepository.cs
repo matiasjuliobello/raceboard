@@ -122,7 +122,7 @@ namespace RaceBoard.Data.Repositories
 
             QueryBuilder.AddCommand(sql);
 
-            ProcessSearchFilter(userSettingsSearchFilter);
+            this.ProcessSearchFilter(userSettingsSearchFilter);
 
             List<UserSettings> userSettingsList = null;
 
@@ -155,7 +155,7 @@ namespace RaceBoard.Data.Repositories
         {
             base.AddFilterCriteria(ConditionType.Equal, "UserSettings", "Id", "ids", searchFilter.Id);
             base.AddFilterCriteria(ConditionType.In, "UserSettings", "IdUser", "idUser", searchFilter.IdsUser);
-            base.AddFilterCriteria(ConditionType.Equal, "User", "Username", "userName", searchFilter.Username);
+            base.AddFilterCriteria(ConditionType.Equal, "[User]", "Username", "userName", searchFilter.Username);
         }
 
         #endregion

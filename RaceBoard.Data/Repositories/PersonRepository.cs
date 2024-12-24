@@ -298,8 +298,8 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddCommand(sql);
 
             QueryBuilder.AddParameter("idCountry", person.Country.Id);
-            QueryBuilder.AddParameter("idBloodType", person.BloodType.Id);
-            QueryBuilder.AddParameter("idMedicalInsurance", person.MedicalInsurance.Id);
+            QueryBuilder.AddParameter("idBloodType", person.BloodType?.Id);
+            QueryBuilder.AddParameter("idMedicalInsurance", person.MedicalInsurance?.Id);
             QueryBuilder.AddParameter("firstname", person.Firstname);
             QueryBuilder.AddParameter("lastname", person.Lastname);
             QueryBuilder.AddParameter("birthDate", person.BirthDate);
