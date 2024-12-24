@@ -280,6 +280,10 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
             switch (conditionType)
             {
                 case ConditionType.Equal:
+                    if (value != null && value.GetType() == typeof(string))
+                    {
+                        AddEqualsToStringCondition(value.ToString(), tableName, columnName, parameterName);
+                    }
                     if (value != null && value.GetType() == typeof(bool))
                     {
                         AddEqualsToBooleanCondition(value as bool?, tableName, columnName, parameterName);
@@ -562,6 +566,14 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
             {
                 QueryBuilder.AddCondition($"{tableName}.{columnName} IN @{parameterName}");
                 QueryBuilder.AddParameter(parameterName, values);
+            }
+        }
+        private void AddEqualsToStringCondition(string? value, string tableName, string columnName, string parameterName)
+        {
+            if (!String.IsNullOrEmpty(value))
+            {
+                QueryBuilder.AddCondition($"{tableName}.{columnName} = @{parameterName}");
+                QueryBuilder.AddParameter(parameterName, value);
             }
         }
         private void AddEqualsToIntegerCondition(int? value, string tableName, string columnName, string parameterName)

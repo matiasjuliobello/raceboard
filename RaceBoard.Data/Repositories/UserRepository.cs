@@ -1,4 +1,5 @@
-﻿using RaceBoard.Common.Helpers.Pagination;
+﻿using Dapper;
+using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
@@ -95,6 +96,9 @@ namespace RaceBoard.Data.Repositories
         public void Create(User user, ITransactionalContext? context = null)
         {
             this.CreateUser(user, context);
+
+            if (user.Role != null)
+                this.SetUserRole(user, context);
         }
 
         public void Update(User user, ITransactionalContext? context = null)
@@ -130,8 +134,12 @@ namespace RaceBoard.Data.Repositories
                                 [User].Username [Username],
                                 [User].Password [Password],
                                 [User].Email [Email],
-                                [User].IsActive [IsActive]
-                            FROM [User] [User]";
+                                [User].IsActive [IsActive],
+                                [Role].Id [Id],
+                                [Role].Name [Name]
+                            FROM [User] [User]
+                            LEFT JOIN [User_Role] [User_Role] ON [User_Role].IdUser = [User].Id
+                            LEFT JOIN [Role] [Role] ON [Role].Id = [User_Role].IdRole";
 
             QueryBuilder.AddCommand(sql);
 
@@ -140,7 +148,31 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddSorting(sorting, _columnsMapping);
             QueryBuilder.AddPagination(paginationFilter);
 
-            return base.GetMultipleResultsWithPagination<User>(context);
+            var users = new List<User>();
+
+            PaginatedResult<User> items = base.GetPaginatedResults<User>
+                (
+                    (reader) =>
+                    {
+                        return reader.Read<User, Role, User>
+                        (
+                            (user, userRole) =>
+                            {
+                                user.Role = userRole;
+
+                                users.Add(user);
+
+                                return user;
+                            },
+                            splitOn: "Id, Id"
+                        ).AsList();
+                    },
+                    context
+                );
+
+            items.Results = users;
+
+            return items;
         }
 
         private void ProcessSearchFilter(UserSearchFilter? searchFilter = null)
@@ -170,6 +202,23 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddReturnLastInsertedId();
 
             user.Id = base.Execute<int>(context);
+        }
+
+        private void SetUserRole(User user, ITransactionalContext? context = null)
+        {
+            string sql = @" INSERT INTO [User_Role]
+                                ( IdUser, IdRole )
+                            VALUES
+                                ( @idUser, @idRole )";
+
+            QueryBuilder.AddCommand(sql);
+
+            QueryBuilder.AddParameter("idUser", user.Id);
+            QueryBuilder.AddParameter("idRole", user.Role.Id);
+
+            QueryBuilder.AddReturnLastInsertedId();
+
+            base.Execute<int>(context);
         }
 
         private void UpdateUser(User user, ITransactionalContext? context = null)

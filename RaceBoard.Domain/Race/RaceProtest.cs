@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public Race Race { get; set; }
-        public TeamContestant TeamContestant { get; set; }
+        public TeamMember TeamMember { get; set; }
         public DateTimeOffset Submission { get; set; }
     }
 }

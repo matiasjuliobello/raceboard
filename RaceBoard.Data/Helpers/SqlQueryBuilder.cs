@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Linq;
 using System.Text;
+using static RaceBoard.Data.Helpers.SqlQueryBuilder;
 
 namespace RaceBoard.Data.Helpers
 {
@@ -31,6 +32,13 @@ namespace RaceBoard.Data.Helpers
             public const string WHERE = "WHERE";
             public const string COUNT = "COUNT";
         }
+
+        public class LogicalOperator
+        {
+            public const string And = "AND";
+            public const string Or = "OR";
+        }
+
 
         #endregion
 
@@ -59,9 +67,11 @@ namespace RaceBoard.Data.Helpers
             _query.AppendLine(command);
         }
 
-        public void AddCondition(string condition)
+        public void AddCondition(string condition, string logicalOperator = LogicalOperator.And)
         {
-            _conditions.Add($" {GetLogicalOperator()} {condition} ");
+            //_conditions.Add($" {GetLogicalOperator()} {condition} ");
+
+            _conditions.Add($" {GetLogicalOperator(logicalOperator)} {condition} ");
         }
 
         public void AddParameter(string name, object value)
@@ -205,9 +215,9 @@ namespace RaceBoard.Data.Helpers
             _sorting.Clear();
         }
 
-        private string GetLogicalOperator()
+        private string GetLogicalOperator(string logicalOperator = LogicalOperator.And)
         {
-            return _conditions.Any() ? " AND " : " WHERE ";
+            return _conditions.Any() ? $" {logicalOperator} " : " WHERE ";
         }
 
         private string BuildOrderByClause(OrderByClause orderByClause)

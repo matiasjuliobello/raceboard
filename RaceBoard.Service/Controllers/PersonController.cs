@@ -34,6 +34,19 @@ namespace RaceBoard.Service.Controllers
             _personManager = personManager;
         }
 
+        [HttpGet("search")]
+        public ActionResult<PaginatedResultResponse<PersonResponse>> Search([FromQuery] string searchTerm, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
+        {
+            var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
+            var sorting = _mapper.Map<Sorting>(sortingRequest);
+
+            var data = _personManager.Search(searchTerm, paginationFilter, sorting);
+
+            var response = _mapper.Map<PaginatedResultResponse<PersonResponse>>(data);
+
+            return Ok(response);
+        }
+
         [HttpGet()]
         public ActionResult<PaginatedResultResponse<PersonResponse>> Get([FromQuery] PersonSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {

@@ -60,14 +60,14 @@ namespace RaceBoard.Data.Repositories
         private void CreateRaceProtest(RaceProtest raceProtest, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [Race_Protest]
-                                ( IdRace, IdTeamContestant, SubmissionDate )
+                                ( IdRace, IdTeamMember, SubmissionDate )
                             VALUES
-                                ( @idRace, @idTeamContestant, @submissionDate )";
+                                ( @idRace, @idTeamMember, @submissionDate )";
 
             QueryBuilder.AddCommand(sql);
 
             QueryBuilder.AddParameter("idRace", raceProtest.Race.Id);
-            QueryBuilder.AddParameter("idTeamContestant", raceProtest.TeamContestant.Id);
+            QueryBuilder.AddParameter("idTeamMember", raceProtest.TeamMember.Id);
             QueryBuilder.AddParameter("submissionDate", raceProtest.Submission);
 
             QueryBuilder.AddReturnLastInsertedId();

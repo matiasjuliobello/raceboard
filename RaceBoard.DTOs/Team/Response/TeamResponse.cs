@@ -12,6 +12,6 @@ namespace RaceBoard.DTOs.Team.Response
         public CompetitionSimpleResponse Competition { get; set; }
         public RaceClassResponse RaceClass { get; set; }
         public BoatResponse Boat { get; set; }
-        public List<TeamContestantResponse> Contestants { get; set;}
+        public List<TeamMemberResponse> Members { get; set;}
     }
 }

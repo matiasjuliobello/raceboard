@@ -45,6 +45,8 @@ namespace RaceBoard.Service.Controllers
 
             var response = _mapper.Map<PaginatedResultResponse<CommitteeBoatReturnResponse>>(committeeBoatReturns);
 
+
+
             return Ok(response);
         }
 

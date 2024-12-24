@@ -20,7 +20,6 @@ namespace RaceBoard.Service.Controllers
     public class UserController : AbstractController<UserController>
     {
         private readonly IUserManager _userManager;
-        private readonly IRequestContextHelper _requestContextHelper;
 
         public UserController
             (
@@ -33,7 +32,6 @@ namespace RaceBoard.Service.Controllers
             ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
         {
             _userManager = userManager;
-            _requestContextHelper = requestContextHelper;
         }
 
         [HttpGet()]
@@ -81,7 +79,7 @@ namespace RaceBoard.Service.Controllers
         [HttpPut("password")]
         public ActionResult UpdatePassword(UserPasswordRequest userPasswordRequest)
         {
-            var currentUser = _requestContextHelper.GetUser();
+            var currentUser = base.GetUserFromRequestContext();
             
             _userManager.SavePassword(currentUser.Id, userPasswordRequest.Password);
 

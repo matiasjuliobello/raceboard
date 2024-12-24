@@ -14,8 +14,7 @@ namespace RaceBoard.Data.Repositories
         private readonly Dictionary<string, string> _columnsMapping = new()
         {
             { "Id", "[Team_Boat].Id" },
-            { "Team.Id", "[Team].Id" },
-            { "Team.Name", "[Team].Name" },
+            { "Team.Id", "[Team].Id" },            
             { "Boat.Id", "[Boat].Id" },
             { "Boat.Name", "[Boat].Name"},
             { "Boat.SailNumber", "[Boat].SailNumber"},
@@ -121,7 +120,6 @@ namespace RaceBoard.Data.Repositories
             string sql = $@"SELECT
                                 [Team_Boat].Id [Id],
                                 [Team].Id [Id],
-                                [Team].Name [Name],
                                 [Boat].Id [Id],
                                 [Boat].Name [Name],
                                 [Boat].SailNumber [SailNumber],

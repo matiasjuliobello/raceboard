@@ -4,6 +4,7 @@ using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
+using static RaceBoard.Data.Helpers.SqlQueryBuilder;
 
 namespace RaceBoard.Data.Repositories
 {
@@ -70,6 +71,11 @@ namespace RaceBoard.Data.Repositories
             return base.Execute<bool>(context);
         }
 
+        public PaginatedResult<Person> Search(string searchTerm, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        {
+            return this.SearchPersons(searchTerm, paginationFilter, sorting, context);
+        }
+
         public PaginatedResult<Person> Get(PersonSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return this.GetPersons(searchFilter, paginationFilter, sorting, context);
@@ -116,6 +122,72 @@ namespace RaceBoard.Data.Repositories
         #endregion
 
         #region Private Methods
+
+        private PaginatedResult<Person> SearchPersons(string searchTerm, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        {
+            string sql = $@"SELECT
+	                            [Person].Id [Id],	                            
+	                            [Person].Firstname [Firstname],
+                                [Person].Lastname [Lastname],
+                                [Person].BirthDate [BirthDate],
+                                [Person].ContactPhone [ContactPhone],
+                                [User].Id [Id],
+                                [User].Username [Username],
+                                [User].Email [Email],
+                                [Country].Id [Id],
+                                [Country].Name [Name],
+                                [BloodType].Id [Id],
+                                [BloodType].Name [Name],
+                                [MedicalInsurance].Id [Id],
+                                [MedicalInsurance].Name [Name]
+                            FROM [Person] [Person]
+                            LEFT JOIN [Country] [Country] ON [Country].Id = [Person].IdCountry
+                            LEFT JOIN [BloodType] [BloodType] ON [BloodType].Id = [Person].IdBloodType
+                            LEFT JOIN [MedicalInsurance] [MedicalInsurance] ON [MedicalInsurance].Id = [Person].IdMedicalInsurance
+                            LEFT JOIN [User_Person] [User_Person] ON [User_Person].IdPerson = [Person].Id                            
+                            LEFT JOIN [User] [User] ON [User].Id = [User_Person].IdUser
+            ";
+            QueryBuilder.AddCommand(sql);
+
+            QueryBuilder.AddCondition("[Person].Firstname LIKE '%' + @searchTerm + '%'", LogicalOperator.Or);
+            QueryBuilder.AddCondition("[Person].Lastname LIKE '%' + @searchTerm + '%'", LogicalOperator.Or);
+            //QueryBuilder.AddCondition("[User].Email LIKE '%' + @searchTerm + '%'", LogicalOperator.Or);
+            //QueryBuilder.AddParameter("firstName", searchTerm);
+            //QueryBuilder.AddParameter("lastName", searchTerm);
+            QueryBuilder.AddParameter("searchTerm", searchTerm);
+
+            QueryBuilder.AddSorting(sorting, _columnsMapping);
+            QueryBuilder.AddPagination(paginationFilter);
+
+            var persons = new List<Person>();
+
+            PaginatedResult<Person> items = base.GetPaginatedResults<Person>
+                (
+                    (reader) =>
+                    {
+                        return reader.Read<Person, User, Country, BloodType, MedicalInsurance, Person>
+                        (
+                            (person, user, country, bloodType, medicalInsurance) =>
+                            {
+                                person.User = user;
+                                person.Country = country;
+                                person.BloodType = bloodType;
+                                person.MedicalInsurance = medicalInsurance;
+
+                                persons.Add(person);
+
+                                return person;
+                            },
+                            splitOn: "Id, Id, Id, Id, Id"
+                        ).AsList();
+                    },
+                    context
+                );
+
+            items.Results = persons;
+
+            return items;
+        }
 
         private PaginatedResult<Person> GetPersons(PersonSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
@@ -187,6 +259,7 @@ namespace RaceBoard.Data.Repositories
             base.AddFilterCriteria(ConditionType.Equal, "User_Person", "IdUser", "idUser", searchFilter.IdUser);
             base.AddFilterCriteria(ConditionType.Like, "Person", "Firstname", "firstName", searchFilter.Firstname);
             base.AddFilterCriteria(ConditionType.Like, "Person", "Lastname", "lastName", searchFilter.Lastname);
+            base.AddFilterCriteria(ConditionType.Like, "[User]", "Email", "emailAddress", searchFilter.EmailAddress);
         }
 
         private void CreatePerson(Person person, ITransactionalContext? context = null)

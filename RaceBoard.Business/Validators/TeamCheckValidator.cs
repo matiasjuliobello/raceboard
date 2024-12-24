@@ -7,14 +7,14 @@ using RaceBoard.Data.Repositories.Interfaces;
 
 namespace RaceBoard.Business.Validators
 {
-    public class TeamCheckValidator : AbstractCustomValidator<TeamContestantCheck>
+    public class TeamCheckValidator : AbstractCustomValidator<TeamMemberCheck>
     {
-        private readonly ITeamCheckRepository _teamCheckRepository;
+        private readonly ITeamMemberCheckRepository _teamCheckRepository;
 
         public TeamCheckValidator
             (
                 ITranslator translator,
-                ITeamCheckRepository teamCheckRepository
+                ITeamMemberCheckRepository teamCheckRepository
             )
             : base(translator)
         {

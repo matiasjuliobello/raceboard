@@ -15,16 +15,16 @@ namespace RaceBoard.Business.Managers
 {
     public class TeamCheckManager : AbstractManager, ITeamCheckManager
     {
-        private readonly ITeamCheckRepository _teamCheckRepository;
-        private readonly ICustomValidator<TeamContestantCheck> _teamCheckValidator;
+        private readonly ITeamMemberCheckRepository _teamCheckRepository;
+        private readonly ICustomValidator<TeamMemberCheck> _teamCheckValidator;
         private readonly IDateTimeHelper _dateTimeHelper;
 
         #region Constructors
 
         public TeamCheckManager
             (
-                ITeamCheckRepository teamCheckRepository,
-                ICustomValidator<TeamContestantCheck> teamCheckValidator,
+                ITeamMemberCheckRepository teamCheckRepository,
+                ICustomValidator<TeamMemberCheck> teamCheckValidator,
                 IDateTimeHelper dateTimeHelper,
                 ITranslator translator
             ) : base(translator)
@@ -38,18 +38,18 @@ namespace RaceBoard.Business.Managers
 
         #region ITeamCheckManager implementation
 
-        public PaginatedResult<TeamContestantCheck> Get(TeamCheckSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        public PaginatedResult<TeamMemberCheck> Get(TeamCheckSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return _teamCheckRepository.Get(searchFilter, paginationFilter, sorting, context);
         }
 
-        public void Create(TeamContestantCheck teamContestantCheck, ITransactionalContext? context = null)
+        public void Create(TeamMemberCheck teamMemberCheck, ITransactionalContext? context = null)
         {
             _teamCheckValidator.SetTransactionalContext(context);
 
-            teamContestantCheck.CheckTime = _dateTimeHelper.GetCurrentTimestamp();
+            teamMemberCheck.CheckTime = _dateTimeHelper.GetCurrentTimestamp();
 
-            if (!_teamCheckValidator.IsValid(teamContestantCheck, Scenario.Create))
+            if (!_teamCheckValidator.IsValid(teamMemberCheck, Scenario.Create))
                 throw new FunctionalException(ErrorType.ValidationError, _teamCheckValidator.Errors);
 
             if (context == null)
@@ -57,7 +57,7 @@ namespace RaceBoard.Business.Managers
 
             try
             {
-                _teamCheckRepository.Create(teamContestantCheck, context);
+                _teamCheckRepository.Create(teamMemberCheck, context);
 
                 _teamCheckRepository.ConfirmTransactionalContext(context);
             }

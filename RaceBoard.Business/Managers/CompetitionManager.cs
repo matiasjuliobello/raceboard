@@ -18,6 +18,7 @@ namespace RaceBoard.Business.Managers
         private readonly ICompetitionRepository _competitionRepository;
         private readonly ICompetitionGroupRepository _competitionGroupRepository;
         private readonly IFileRepository _fileRepository;
+        private readonly IUserAccessRepository _userAccessRepository;
 
         private readonly ICommitteeBoatReturnRepository _committeeBoatReturnRepository;
         private readonly ICustomValidator<CommitteeBoatReturn> _committeeBoatReturnValidator;
@@ -35,6 +36,7 @@ namespace RaceBoard.Business.Managers
                 ICompetitionRepository competitionRepository,
                 ICompetitionGroupRepository competitionGrpupRepository,
                 IFileRepository fileRepository,
+                IUserAccessRepository userAccessRepository,
                 ICustomValidator<Competition> competitionValidator,
                 ICustomValidator<CompetitionGroup> competitionGroupValidator,
                 ICommitteeBoatReturnRepository committeeBoatReturnRepository,
@@ -47,6 +49,7 @@ namespace RaceBoard.Business.Managers
             _competitionRepository = competitionRepository;
             _fileRepository = fileRepository;
             _competitionGroupRepository = competitionGrpupRepository;
+            _userAccessRepository = userAccessRepository;
             _committeeBoatReturnRepository = committeeBoatReturnRepository;
             _competitionValidator = competitionValidator;
             _competitionGroupValidator = competitionGroupValidator;

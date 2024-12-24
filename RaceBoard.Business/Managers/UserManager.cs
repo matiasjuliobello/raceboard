@@ -75,23 +75,38 @@ namespace RaceBoard.Business.Managers
         {
             user.IsActive = true;
 
+            if (context == null)
+                context = _userRepository.GetTransactionalContext();
+
+            _userValidator.SetTransactionalContext(context);
+
             if (!_userValidator.IsValid(user, Scenario.Create))
                 throw new FunctionalException(ErrorType.ValidationError, _userValidator.Errors);
 
-            var userPassword = new UserPassword()
+            try
             {
-                IdUser = 0,
-                Password = user.Password
-            };
+                //var userPassword = new UserPassword()
+                //{
+                //    IdUser = 0,
+                //    Password = user.Password
+                //};
+                //if (!_userPasswordValidator.IsValid(userPassword, Scenario.Update))
+                //    throw new FunctionalException(ErrorType.ValidationError, _userPasswordValidator.Errors);
 
-            if (!_userPasswordValidator.IsValid(userPassword, Scenario.Update))
-                throw new FunctionalException(ErrorType.ValidationError, _userPasswordValidator.Errors);
+                //string randomString = _stringHelper.GenerateRandomString(_passwordResetTokenLength);
+                //string randomStringHash = _cryptographyHelper.ComputeHash(randomString);
+                user.Password = _cryptographyHelper.ComputeHash(user.Password);
 
-            //string randomString = _stringHelper.GenerateRandomString(_passwordResetTokenLength);
-            //string randomStringHash = _cryptographyHelper.ComputeHash(randomString);
-            user.Password = _cryptographyHelper.ComputeHash(user.Password);
+                _userRepository.Create(user, context);
 
-            _userRepository.Create(user);
+                context.Confirm();
+            }
+            catch (Exception)
+            {
+                if (context != null)
+                    context.Cancel();
+                throw;
+            }
         }
 
         public void Update(User user, ITransactionalContext? context = null)

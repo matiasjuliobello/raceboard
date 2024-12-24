@@ -7,6 +7,7 @@ namespace RaceBoard.Business.Managers.Interfaces
 {
     public interface IPersonManager
     {
+        PaginatedResult<Person> Search(string searchTerm, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
         PaginatedResult<Person> Get([FromQuery] PersonSearchFilter? searchFilter = null, [FromQuery] PaginationFilter? paginationFilter = null, [FromQuery] Sorting? sorting = null, ITransactionalContext? context = null);
         Person Get(int id, ITransactionalContext? context = null);
         Person GetByIdUser(int idUser, ITransactionalContext? context = null);

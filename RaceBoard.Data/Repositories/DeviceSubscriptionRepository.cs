@@ -14,7 +14,6 @@ namespace RaceBoard.Data.Repositories
         private readonly Dictionary<string, string> _columnsMapping = new()
         {
             //{ "Id", "[Team].Id" },
-            //{ "Name", "[Team].Name" },
             //{ "Organization.Id", "[Organization].Id" },
             //{ "Organization.Name", "[Organization].Name" },
             //{ "RaceClass.Id", "[RaceClass].Id" },

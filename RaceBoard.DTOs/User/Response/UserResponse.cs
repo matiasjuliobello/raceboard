@@ -10,6 +10,7 @@
         public string Email { get; set; }
         public DateTimeOffset BirthDate { get; set; }
         public bool IsActive { get; set; }
-        public List<UserIdentificationResponse> Identifications {  get; set; }  
+        public List<UserIdentificationResponse> Identifications {  get; set; }
+        public UserRoleResponse Role {  get; set; }
     }
 }

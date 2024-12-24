@@ -6,7 +6,7 @@ namespace RaceBoard.Business.Managers.Interfaces
 {
     public interface ITeamCheckManager
     {
-        PaginatedResult<TeamContestantCheck> Get(TeamCheckSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
-        void Create(TeamContestantCheck teamCheck, ITransactionalContext? context = null);
+        PaginatedResult<TeamMemberCheck> Get(TeamCheckSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
+        void Create(TeamMemberCheck teamCheck, ITransactionalContext? context = null);
     }
 }

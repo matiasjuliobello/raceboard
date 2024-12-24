@@ -114,12 +114,12 @@ namespace RaceBoard.Data.Repositories
                                 [Competition].Name [Name],
                                 [Competition].StartDate [StartDate],
                                 [Competition].EndDate [EndDate],
-                                [Team_Contestant].Id [Id]
+                                [Team_Member].Id [Id]
                             FROM [Team] [Team]
                             INNER JOIN [Organization] [Organization] ON [Organization].Id = [Team].IdOrganization
                             INNER JOIN [Competition] [Competition] ON [Competition].Id = [Team].IdCompetition
                             INNER JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Team].IdRaceClass
-                            LEFT JOIN [Team_Contestant] ON [Team_Contestant].IdTeam = [Team].Id";
+                            LEFT JOIN [Team_Member] ON [Team_Member].IdTeam = [Team].Id";
 
             QueryBuilder.AddCommand(sql);
 
@@ -134,9 +134,9 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<Team, Organization, RaceClass, Competition, TeamContestant, Team>
+                        return reader.Read<Team, Organization, RaceClass, Competition, TeamMember, Team>
                         (
-                            (team, organization, raceClass, competition, contestant) =>
+                            (team, organization, raceClass, competition, member) =>
                             {
                                 var t = teams.FirstOrDefault(x => x.Id == team.Id);
                                 if (t == null)
@@ -148,8 +148,8 @@ namespace RaceBoard.Data.Repositories
                                 team.RaceClass = raceClass;
                                 team.Competition = competition;
 
-                                if (contestant != null)
-                                    team.Contestants.Add(contestant);
+                                if (member != null)
+                                    team.Members.Add(member);
 
                                 return team;
                             },

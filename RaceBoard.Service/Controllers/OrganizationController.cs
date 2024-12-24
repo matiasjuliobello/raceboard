@@ -8,6 +8,7 @@ using RaceBoard.DTOs._Pagination.Response;
 using RaceBoard.DTOs.Organization.Request;
 using RaceBoard.DTOs.Organization.Response;
 using RaceBoard.Service.Controllers.Abstract;
+using RaceBoard.Service.Helpers;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Translations.Interfaces;
 
@@ -60,6 +61,8 @@ namespace RaceBoard.Service.Controllers
         public ActionResult<int> Create(OrganizationRequest organizationRequest)
         {
             var organization = _mapper.Map<Organization>(organizationRequest);
+
+            organization.CreationUser = base.GetUserFromRequestContext();
 
             _organizationManager.Create(organization);
 

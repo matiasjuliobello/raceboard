@@ -8,25 +8,33 @@ using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Common.Enums;
 using RaceBoard.Common.Exceptions;
 using RaceBoard.Business.Validators.Interfaces;
+using RaceBoard.Common.Helpers.Interfaces;
+using Enums = RaceBoard.Domain.Enums;
 
 namespace RaceBoard.Business.Managers
 {
     public class OrganizationManager : AbstractManager, IOrganizationManager
     {
         private readonly IOrganizationRepository _organizationRepository;
+        private readonly IOrganizationMemberRepository _organizationMemberRepository;
         private readonly ICustomValidator<Organization> _organizationValidator;
+        private readonly IDateTimeHelper _dateTimeHelper;
 
         #region Constructors
 
         public OrganizationManager
             (
                 IOrganizationRepository organizationRepository,
+                IOrganizationMemberRepository organizationMemberRepository,
                 ICustomValidator<Organization> organizationValidator,
+                IDateTimeHelper dateTimeHelper,
                 ITranslator translator
             ) : base(translator)
         {
             _organizationRepository = organizationRepository;
+            _organizationMemberRepository = organizationMemberRepository;
             _organizationValidator = organizationValidator;
+            _dateTimeHelper = dateTimeHelper;
         }
 
         #endregion
@@ -57,16 +65,29 @@ namespace RaceBoard.Business.Managers
             if (context == null)
                 context = _organizationRepository.GetTransactionalContext(TransactionContextScope.Internal);
 
+            var currentDate = _dateTimeHelper.GetCurrentTimestamp();
+
             try
             {
                 _organizationRepository.Create(organization, context);
 
-                _organizationRepository.ConfirmTransactionalContext(context);
+                var organizationMember = new OrganizationMember()
+                {
+                    IsActive = true,
+                    JoinDate = currentDate,
+                    Organization = organization,
+                    User = organization.CreationUser,
+                    Role = new Role() { Id = (int)Enums.UserRole.Manager }
+                };
+                _organizationMemberRepository.Add(organizationMember, context);
 
+                context.Confirm();
             }
             catch (Exception)
             {
-                _organizationRepository.CancelTransactionalContext(context);
+                if (context != null)
+                    context.Cancel();
+
                 throw;
             }
         }

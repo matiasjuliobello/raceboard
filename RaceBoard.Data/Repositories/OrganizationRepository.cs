@@ -142,14 +142,16 @@ namespace RaceBoard.Data.Repositories
         private void CreateOrganization(Organization organization, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [Organization]
-                                ( IdCity, Name )
+                                ( IdCity, Name, IdCreationUser, CreationDate )
                             VALUES
-                                ( @idCity, @name )";
+                                ( @idCity, @name, @idCreationUser, @creationDate )";
 
             QueryBuilder.AddCommand(sql);
 
             QueryBuilder.AddParameter("idCity", organization.City.Id);
             QueryBuilder.AddParameter("name", organization.Name);
+            QueryBuilder.AddParameter("idCreationUser", organization.CreationUser.Id);
+            QueryBuilder.AddParameter("creationDate", organization.CreationDate);
 
             QueryBuilder.AddReturnLastInsertedId();
 

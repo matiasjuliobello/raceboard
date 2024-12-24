@@ -9,5 +9,6 @@ namespace RaceBoard.DTOs.User.Request
         public string Password { get; set; }
         public string Email { get; set; }
         public PersonRequest Person { get; set; }
+        public int IdRole { get; set; }
     }
 }

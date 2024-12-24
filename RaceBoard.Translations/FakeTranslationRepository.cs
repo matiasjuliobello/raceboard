@@ -74,13 +74,49 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.English, "Accreditation"),
                 new Tuple<string, string>(Languages.Spanish, "Acreditación"));
 
+            AddText(AddTranslation("Accept"),
+                new Tuple<string, string>(Languages.English, "Accept"),
+                new Tuple<string, string>(Languages.Spanish, "Aceptar"));
+
+            AddText(AddTranslation("Pending"),
+                new Tuple<string, string>(Languages.English, "Pending"),
+                new Tuple<string, string>(Languages.Spanish, "Pendiente"));
+            AddText(AddTranslation("Confirmed"),
+                new Tuple<string, string>(Languages.English, "Confirmed"),
+                new Tuple<string, string>(Languages.Spanish, "Confirmado"));
+            AddText(AddTranslation("Removed"),
+                new Tuple<string, string>(Languages.English, "Removed"),
+                new Tuple<string, string>(Languages.Spanish, "Eliminado"));
+
+
+            AddText(AddTranslation("InvitePersonToJoin"),
+                new Tuple<string, string>(Languages.English, "Invite person to join"),
+                new Tuple<string, string>(Languages.Spanish, "Invitar persona a unirse"));
+
+            AddText(AddTranslation("InvitationExpired"),
+                new Tuple<string, string>(Languages.English, "Invitation expired"),
+                new Tuple<string, string>(Languages.Spanish, "Invitación vencida"));
+
+            AddText(AddTranslation("InvitationWasSent"),
+                new Tuple<string, string>(Languages.English, "Invitation was sent"),
+                new Tuple<string, string>(Languages.Spanish, "Se envió la invitación"));
+            AddText(AddTranslation("MemberAdded"),
+                new Tuple<string, string>(Languages.English, "Member added"),
+                new Tuple<string, string>(Languages.Spanish, "Integrante agregado"));
+
+            AddText(AddTranslation("MemberWasInvited"),
+                new Tuple<string, string>(Languages.English, "Invitation was sent to member"),
+                new Tuple<string, string>(Languages.Spanish, "Se envió la invitación al integrante"));
+            AddText(AddTranslation("MemberWasRemoved"),
+                new Tuple<string, string>(Languages.English, "Member was removed"),
+                new Tuple<string, string>(Languages.Spanish, "Se eliminó al integrante"));
 
             AddText(AddTranslation("UserPreferencesNotFound"),
                 new Tuple<string, string>(Languages.Spanish, "No se encontró las preferencias del usuario"));
             AddText(AddTranslation("DuplicateRecordExists"),
                 new Tuple<string, string>(Languages.English, "Looks there's already a record with same data"),
                 new Tuple<string, string>(Languages.Spanish, "Parece que ya existe un registro con los mismos datos"));
-            AddText(AddTranslation("CannotDeleteContestantDueToExistingParticipation"),
+            AddText(AddTranslation("CannotDeleteMemberDueToExistingParticipation"),
                 new Tuple<string, string>(Languages.English, "Could not delete member due to existing participations with team"),
                 new Tuple<string, string>(Languages.Spanish, "No se puede remover al integrante porque ya tuvo participaciones con en el equipo"));
             AddText(AddTranslation("BoatAlreadyAssignedToAnotherTeam"),
@@ -101,9 +137,8 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("BoatWasRemovedFromTheTeam"),
                 new Tuple<string, string>(Languages.English, "Boat was removed from team"),
                 new Tuple<string, string>(Languages.Spanish, "Se eliminó al barco del equipo"));
-            AddText(AddTranslation("MemberWasRemovedFromTheTeam"),
-                new Tuple<string, string>(Languages.English, "Member was removed from the team"),
-                new Tuple<string, string>(Languages.Spanish, "Se eliminó al integrante del equipo"));
+
+
             AddText(AddTranslation("IdIsRequired"),
                 new Tuple<string, string>(Languages.English, "Id is a required field"),
                 new Tuple<string, string>(Languages.Spanish, "Falta el campo identificador del registro"));

@@ -35,16 +35,23 @@
         "BlobFileStorageUrl": "https://bunny.net/",
         "BlobFileStorageUsername": "john",
         "BlobFileStoragePassword": "123",
-        //[Mailer Send]
-        "EmailProvider_SenderEmailAddress": "matias.bello@trial-jy7zpl9xwdpl5vx6.mlsender.net",
+        "Mailing_Enabled": "false",
+        "EmailProvider_SenderEmailAddress": "matias.julio.bello@gmail.com",
         "EmailProvider_SenderFriendlyName": "Race Board",
         "EmailProvider_API_Key": "mlsn.6bab06df1150d9f4182531483f4fa3e1960ddf46dd3184a56e1fa14543a43b20",
         "EmailProvider_URL_Base": "https://api.mailersend.com/v1/",
-        "SendPaymentEmails": "false",
         "EmailProvider_URL_ResourceSingleDelivery": "email",
         "EmailProvider_URL_ResourceBulkDelivery": "bulk-email",
         "EmailProvider_API_Header_Authentication_Name": "Authorization",
-        "EmailProvider_API_Header_Auth_Prefix": ""
+        "EmailProvider_API_Header_Auth_Prefix": "",
+        "EmailProvider_SMTP_SenderEmailAddress": "matias.julio.bello@gmail.com",
+        "EmailProvider_SMTP_SenderFriendlyName": "Race Board",
+        "EmailProvider_SMTP_Host": "smtp.gmail.com",
+        "EmailProvider_SMTP_Port": "587",
+        "EmailProvider_SMTP_SSL": "true",
+        "EmailProvider_SMTP_Username": "matias.julio.bello@gmail.com",
+        "EmailProvider_SMTP_Password": "ktyb vdpt bsjx ijjn"
+
         //[Mail Relay]
         //"EmailProvider_SenderEmailAddress": "raceboard@ipzmarketing.com",
         //"EmailProvider_SenderFriendlyName": "Race Board",

@@ -29,9 +29,11 @@ namespace RaceBoard.IoC
         {
             #region Managers
             services.AddScoped<IAuthenticationManager, AuthenticationManager>();
+            services.AddScoped<IAuthorizationManager, AuthorizationManager>();
             services.AddScoped<IUserManager, UserManager>();
             services.AddScoped<IUserSettingsManager, UserSettingsManager>();
             services.AddScoped<IUserPasswordResetManager, UserPasswordResetManager>();
+            services.AddScoped<IRoleManager, RoleManager>();
             services.AddScoped<IDeviceManager, DeviceManager>();
             services.AddScoped<ITimeZoneManager, TimeZoneManager>();
             services.AddScoped<ICityManager, CityManager>();
@@ -41,15 +43,16 @@ namespace RaceBoard.IoC
             services.AddScoped<ICompetitionFlagManager, CompetitionFlagManager>();
             services.AddScoped<ICompetitionNotificationManager, CompetitionNotificationManager>();
             services.AddScoped<IOrganizationManager, OrganizationManager>();
+            services.AddScoped<IOrganizationMemberManager, OrganizationMemberManager>();
             services.AddScoped<IBoatManager, BoatManager>();
             services.AddScoped<IRaceClassManager, RaceClassManager>();
             services.AddScoped<IRaceCategoryManager, RaceCategoryManager>();
             services.AddScoped<IRaceManager, RaceManager>();
             services.AddScoped<IPersonManager, PersonManager>();
-            services.AddScoped<IContestantRoleManager, ContestantRoleManager>();
+            services.AddScoped<ITeamMemberRoleManager, TeamMemberRoleManager>();
             services.AddScoped<ITeamManager, TeamManager>();
             services.AddScoped<ITeamBoatManager, TeamBoatManager>();
-            services.AddScoped<ITeamContestantManager, TeamContestantManager>();
+            services.AddScoped<ITeamMemberManager, TeamMemberManager>();
             services.AddScoped<ITeamCheckManager, TeamCheckManager>();
             services.AddScoped<IBloodTypeManager, BloodTypeManager>();
             services.AddScoped<IMedicalInsuranceManager, MedicalInsuranceManager>();
@@ -59,9 +62,11 @@ namespace RaceBoard.IoC
             services.AddScoped<IFormatManager, FormatManager>();
             services.AddScoped<IFileTypeManager, FileTypeManager>();
             services.AddScoped<INotificationManager, NotificationManager>();
+            services.AddScoped<IMailManager, MailManager>();
             #endregion
 
             #region Validators
+            services.AddTransient<ICustomValidator<RolePermissions>, RolePermissionsValidator>();
             services.AddTransient<ICustomValidator<User>, UserValidator>();
             services.AddTransient<ICustomValidator<UserPassword>, UserPasswordValidator>();
             services.AddTransient<ICustomValidator<UserPasswordReset>, UserPasswordResetValidator>();
@@ -73,20 +78,25 @@ namespace RaceBoard.IoC
             services.AddTransient<ICustomValidator<CompetitionFile>, CompetitionFileValidator>();
             services.AddTransient<ICustomValidator<CompetitionFlag>, CompetitionFlagValidator>();
             services.AddTransient<ICustomValidator<Organization>, OrganizationValidator>();
+            services.AddTransient<ICustomValidator<OrganizationMember>, OrganizationMemberValidator>();
+            services.AddTransient<ICustomValidator<OrganizationMemberInvitation>, OrganizationMemberInvitationValidator>();
             services.AddTransient<ICustomValidator<Race>, RaceValidator>();
             services.AddTransient<ICustomValidator<RaceProtest>, RaceProtestValidator>();
             services.AddTransient<ICustomValidator<CommitteeBoatReturn>, RaceCommitteeBoatReturnValidator>();
             services.AddTransient<ICustomValidator<Team>, TeamValidator>();
             services.AddTransient<ICustomValidator<TeamBoat>, TeamBoatValidator>();
-            services.AddTransient<ICustomValidator<TeamContestant>, TeamContestantValidator>();
-            services.AddTransient<ICustomValidator<TeamContestantCheck>, TeamCheckValidator>();
+            services.AddTransient<ICustomValidator<TeamMember>, TeamMemberValidator>();
+            services.AddTransient<ICustomValidator<TeamMemberCheck>, TeamCheckValidator>();
             #endregion
 
             #region Repositories
             services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
+            services.AddScoped<IAuthorizationRepository, AuthorizationRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserAccessRepository, UserAccessRepository>();
             services.AddScoped<IUserSettingsRepository, UserSettingsRepository>();
             services.AddScoped<IUserPasswordResetRepository, UserPasswordResetRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IDeviceRepository, DeviceRepository>();
             services.AddScoped<IDeviceSubscriptionRepository, DeviceSubscriptionRepository>();
             services.AddScoped<ITranslationRepository, FakeTranslationRepository>();
@@ -101,6 +111,7 @@ namespace RaceBoard.IoC
             services.AddScoped<IFileRepository, FileRepository>();
             services.AddScoped<IFileTypeRepository, FileTypeRepository>();
             services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+            services.AddScoped<IOrganizationMemberRepository, OrganizationMemberRepository>();
             services.AddScoped<IBoatRepository, BoatRepository>();
             services.AddScoped<IRaceClassRepository, RaceClassRepository>();
             services.AddScoped<IRaceCategoryRepository, RaceCategoryRepository>();
@@ -108,11 +119,11 @@ namespace RaceBoard.IoC
             services.AddScoped<IRaceProtestRepository, RaceProtestRepository>();
             services.AddScoped<ICommitteeBoatReturnRepository, CommitteeBoatReturnRepository>();
             services.AddScoped<IPersonRepository, PersonRepository>();
-            services.AddScoped<IContestantRoleRepository, ContestantRoleRepository>();
+            services.AddScoped<ITeamMemberRoleRepository, TeamMemberRoleRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
             services.AddScoped<ITeamBoatRepository, TeamBoatRepository>();
-            services.AddScoped<ITeamContestantRepository, TeamContestantRepository>();
-            services.AddScoped<ITeamCheckRepository, TeamCheckRepository>();
+            services.AddScoped<ITeamMemberRepository, TeamMemberRepository>();
+            services.AddScoped<ITeamMemberCheckRepository, TeamMemberCheckRepository>();
             services.AddScoped<IBloodTypeRepository, BloodTypeRepository>();
             services.AddScoped<IMedicalInsuranceRepository, MedicalInsuranceRepository>();
             services.AddScoped<IFlagRepository, FlagRepository>();
@@ -140,7 +151,7 @@ namespace RaceBoard.IoC
             services.AddScoped<INotificationProvider, GoogleFirebaseNotificationProvider>();
             services.AddScoped<IFileStorageProvider, BlobFileStorageProvider>();
             services.AddScoped<IFileStorageProvider, DiskFileStorageProvider>();
-            services.AddScoped<IEmailProvider, MailSenderEmailProvider>();
+            services.AddScoped<IEmailProvider, MailSmtpClientEmailProvider>();
             #endregion
 
             services.AddScoped<IContextResolver, ContextResolver>();

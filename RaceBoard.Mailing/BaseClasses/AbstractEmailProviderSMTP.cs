@@ -1,12 +1,19 @@
 ﻿using RaceBoard.Mailing.Enums;
 using RaceBoard.Mailing.Interfaces;
+using System.Net.Mail;
+using System.Net;
+using Microsoft.Extensions.Configuration;
 
 namespace RaceBoard.Mailing.BaseClasses
 {
     public abstract class AbstractEmailProviderSMTP : IEmailProvider
     {
+        protected string _senderEmailAddress = string.Empty;
+        protected string _senderFriendlyName = string.Empty;
+
         protected string _host = string.Empty;
         protected int _port = 0;
+        protected bool _useSSL = false;
         protected string _username = string.Empty;
         protected string _password = string.Empty;
 
@@ -17,12 +24,16 @@ namespace RaceBoard.Mailing.BaseClasses
         protected List<IEmailAddress> _recipients = new List<IEmailAddress>();
         protected List<IEmailAttachment> _attachments = new List<IEmailAttachment>();
 
-        public AbstractEmailProviderSMTP(string host, int port, string username, string password)
+        public AbstractEmailProviderSMTP(IConfiguration configuration)
         {
-            _host = host;
-            _port = port;
-            _username = username;
-            _password = password;
+            _host = configuration["EmailProvider_SMTP_Host"];
+            _port = Convert.ToInt32(configuration["EmailProvider_SMTP_Port"]);
+            _useSSL = Convert.ToBoolean(configuration["EmailProvider_SMTP_SSL"]);
+            _username = configuration["EmailProvider_SMTP_Username"];
+            _password = configuration["EmailProvider_SMTP_Password"];
+
+            _senderEmailAddress = configuration["EmailProvider_SMTP_SenderEmailAddress"];
+            _senderFriendlyName = configuration["EmailProvider_SMTP_SenderFriendlyName"];
         }
 
         public void AddSender(IEmailAddress mailAddress)
@@ -58,7 +69,44 @@ namespace RaceBoard.Mailing.BaseClasses
 
         public virtual void Send()
         {
-            throw new NotImplementedException("Method not available in base class <EmailSenderSMTP>. Must implement in derived class.");
+            //throw new NotImplementedException("Method not available in base class <EmailSenderSMTP>. Must implement in derived class.");
+
+            var smtpClient = new SmtpClient(_host)
+            {
+                Port = _port,
+                Credentials = new NetworkCredential(_username, _password),
+                EnableSsl = _useSSL,
+            };
+            smtpClient.Timeout = 5000;
+
+            if (_sender == null)
+            {
+                _sender = new EmailAddress(_senderEmailAddress, _senderFriendlyName);
+            }
+
+            var mailMessage = new MailMessage()
+            {
+                From = new MailAddress(_sender.Email, _sender.Name),
+                Sender = new MailAddress(_sender.Email, _sender.Name),
+                Subject = _subject,
+                Body = _body
+            };
+
+            foreach (var recipient in _recipients)
+            {
+                mailMessage.To.Add(new MailAddress(recipient.Email, recipient.Name));
+            }
+
+            foreach (var attachment in _attachments)
+            {
+                Attachment mailAttachment = attachment.Content != null ?
+                    new Attachment(new MemoryStream(attachment.Content), attachment.Filename) :
+                    new Attachment(attachment.Filename, attachment.Type);
+
+                mailMessage.Attachments.Add(mailAttachment);
+            }
+
+            smtpClient.Send(mailMessage);
         }
     }
 }

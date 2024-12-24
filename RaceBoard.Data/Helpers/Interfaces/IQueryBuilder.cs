@@ -6,7 +6,7 @@ namespace RaceBoard.Data.Helpers.Interfaces
     public interface IQueryBuilder
     {
         void AddCommand(string query);
-        void AddCondition(string query);
+        void AddCondition(string query, string logicalOperator = "AND");
         void AddParameter(string name, object value);
         void AddGrouping(string grouping);
         void AddSorting(string sorting);

@@ -33,6 +33,11 @@ namespace RaceBoard.Business.Managers
 
         #region IPersonManager implementation
 
+        public PaginatedResult<Person> Search(string searchTerm, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        {
+            return _personRepository.Search(searchTerm, paginationFilter, sorting, context);
+        }
+
         public PaginatedResult<Person> Get(PersonSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return _personRepository.Get(searchFilter, paginationFilter, sorting, context);
