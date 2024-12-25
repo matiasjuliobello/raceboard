@@ -384,6 +384,7 @@ namespace RaceBoard.Data.Repositories
 
         private void ProcessSearchFilter(OrganizationMemberSearchFilter searchFilter)
         {
+            base.AddFilterCriteria(ConditionType.In, "Organization_Member", "Id", "id", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Equal, "Organization_Member", "IdOrganization", "idOrganization", searchFilter.IdOrganization);
         }
 

@@ -6,6 +6,7 @@ using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
 using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
+using RaceBoard.DTOs.Organization.Request;
 using RaceBoard.DTOs.Team.Request;
 using RaceBoard.DTOs.Team.Response;
 using RaceBoard.Service.Controllers.Abstract;
@@ -58,17 +59,19 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpPost("members")]
-        public ActionResult Create([FromBody] TeamMemberRequest teamMemberRequest)
+        public ActionResult AddMemberInvitation([FromBody] TeamMemberInvitationRequest teamMemberInvitationRequest)
         {
-            var data = _mapper.Map<TeamMember>(teamMemberRequest);
+            var data = _mapper.Map<TeamMemberInvitation>(teamMemberInvitationRequest);
 
-            _teamMemberManager.Create(data);
+            data.RequestUser = base.GetUserFromRequestContext();
+
+            _teamMemberManager.AddInvitation(data);
 
             return Ok();
         }
 
         [HttpPut("members")]
-        public ActionResult Update([FromBody] TeamMemberRequest teamMemberRequest)
+        public ActionResult Update([FromBody] TeamMemberInvitationRequest teamMemberRequest)
         {
             var data = _mapper.Map<TeamMember>(teamMemberRequest);
 

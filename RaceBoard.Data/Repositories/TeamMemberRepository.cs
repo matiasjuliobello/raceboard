@@ -5,7 +5,6 @@ using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Data;
 using RaceBoard.Domain;
 using Dapper;
-using Microsoft.AspNetCore.Components;
 
 public class TeamMemberRepository : AbstractRepository, ITeamMemberRepository
 {
@@ -116,7 +115,7 @@ public class TeamMemberRepository : AbstractRepository, ITeamMemberRepository
 
     public bool HasDuplicatedRole(TeamMember teamMember, ITransactionalContext? context = null)
     {
-        string condition = base.GetExistsQuery("[Team_Member]", "[IdTeam] = @idTeam AND [IdTeamMemberRole] = @idTeamMemberRole");
+        string condition = base.GetExistsQuery("[Team_Member]", "[IdTeam] = @idTeam AND [IdRole] = @idTeamMemberRole");
 
         string query = $"{base.GetExcludeSameRecordCondition("Id", "id")} AND ({condition})";
 
@@ -140,9 +139,14 @@ public class TeamMemberRepository : AbstractRepository, ITeamMemberRepository
         return this.GetTeamMembers(searchFilter: searchFilter, paginationFilter: null, sorting: null, context: context).Results.FirstOrDefault();
     }
 
-    public void Create(TeamMember teamMember, ITransactionalContext? context = null)
+    //public void Create(TeamMember teamMember, ITransactionalContext? context = null)
+    //{
+    //    this.CreateTeamMember(teamMember, context);
+    //}
+    public void CreateInvitation(TeamMemberInvitation teamMemberInvitation, ITransactionalContext? context = null)
     {
-        this.CreateTeamMember(teamMember, context);
+        this.CreateMemberRequest(teamMemberInvitation, context);
+        this.CreateMemberRequestInvitation(teamMemberInvitation, context);
     }
 
     public void Update(TeamMember teamMember, ITransactionalContext? context = null)
@@ -171,8 +175,10 @@ public class TeamMemberRepository : AbstractRepository, ITeamMemberRepository
                                 [TeamMemberRole].Name [Name]
                             FROM [Team_Member] [Team_Member]
                             INNER JOIN [Team] [Team] ON [Team].Id = [Team_Member].IdTeam
-                            INNER JOIN [Person] [Person] ON [Person].Id = [Team_Member].IdPerson
-                            INNER JOIN [TeamMemberRole] [TeamMemberRole] ON [TeamMemberRole].Id = [Team_Member].IdTeamMemberRole";
+                            INNER JOIN [TeamMemberRole] [TeamMemberRole] ON [TeamMemberRole].Id = [Team_Member].IdRole
+                            INNER JOIN [User] [User] ON [User].Id = [Team_Member].IdUser
+                            INNER JOIN [User_Person] [User_Person] ON [User_Person].IdUser = [User].Id
+                            INNER JOIN [Person] [Person] ON [Person].Id = [User_Person].IdPerson";;
 
         QueryBuilder.AddCommand(sql);
 
@@ -218,32 +224,72 @@ public class TeamMemberRepository : AbstractRepository, ITeamMemberRepository
         base.AddFilterCriteria(ConditionType.In,    "Team_Member", "Id", "ids", searchFilter.Ids);
         base.AddFilterCriteria(ConditionType.Equal, "Team_Member", "IdTeam", "idTeam", searchFilter.Team?.Id);
         base.AddFilterCriteria(ConditionType.Equal, "Team_Member", "IdPerson", "idPerson", searchFilter.Member?.Id);
-        base.AddFilterCriteria(ConditionType.Equal, "Team_Member", "IdTeamMemberRole", "idRole", searchFilter.Role?.Id);
+        base.AddFilterCriteria(ConditionType.Equal, "Team_Member", "IdRole", "idTeamMemberRole", searchFilter.Role?.Id);
     }
 
-    private void CreateTeamMember(TeamMember teamMember, ITransactionalContext? context = null)
+    //private void CreateTeamMember(TeamMember teamMember, ITransactionalContext? context = null)
+    //{
+    //    string sql = @" INSERT INTO [Team_Member]
+    //                            ( IdTeam, IdPerson, IdTeamMemberRole )
+    //                        VALUES
+    //                            ( @idTeam, @idPerson, @idTeamMemberRole )";
+
+    //    QueryBuilder.AddCommand(sql);
+
+    //    QueryBuilder.AddParameter("idTeam", teamMember.Team.Id);
+    //    QueryBuilder.AddParameter("idPerson", teamMember.Person.Id);
+    //    QueryBuilder.AddParameter("idTeamMemberRole", teamMember.Role.Id);
+
+    //    QueryBuilder.AddReturnLastInsertedId();
+
+    //    base.Execute<int>(context);
+    //}
+    private void CreateMemberRequest(TeamMemberInvitation teamMemberInvitation, ITransactionalContext? context = null)
     {
-        string sql = @" INSERT INTO [Team_Member]
-                                ( IdTeam, IdPerson, IdTeamMemberRole )
-                            VALUES
-                                ( @idTeam, @idPerson, @idTeamMemberRole )";
+        string sql = @" INSERT INTO [Team_MemberRequest]
+                            ( IdTeam, IdUser, IdRole, IdRequestUser, requestDate, IsPending )
+                        VALUES
+                            ( @idTeam, @idUser, @idRole, @idRequestUser, @requestDate, @isPending )";
 
         QueryBuilder.AddCommand(sql);
 
-        QueryBuilder.AddParameter("idTeam", teamMember.Team.Id);
-        QueryBuilder.AddParameter("idPerson", teamMember.Person.Id);
-        QueryBuilder.AddParameter("idTeamMemberRole", teamMember.Role.Id);
+        QueryBuilder.AddParameter("idTeam", teamMemberInvitation.Team.Id);
+        QueryBuilder.AddParameter("idUser", teamMemberInvitation.User?.Id);
+        QueryBuilder.AddParameter("idRole", teamMemberInvitation.Role.Id);
+        QueryBuilder.AddParameter("idRequestUser", teamMemberInvitation.RequestUser.Id);
+        QueryBuilder.AddParameter("requestDate", teamMemberInvitation.RequestDate);
+        QueryBuilder.AddParameter("isPending", true);
 
         QueryBuilder.AddReturnLastInsertedId();
 
-        base.Execute<int>(context);
+        teamMemberInvitation.Id = base.Execute<int>(context);
     }
+
+    private void CreateMemberRequestInvitation(TeamMemberInvitation teamMemberInvitation, ITransactionalContext? context = null)
+    {
+        string sql = @" INSERT INTO [Team_MemberRequestInvitation]
+                            ( IdTeamMemberRequest, EmailAddress, Token, IsExpired )
+                        VALUES
+                            ( @idTeamMemberRequest, @emailAddress, @token, @isExpired )";
+
+        QueryBuilder.AddCommand(sql);
+
+        QueryBuilder.AddParameter("idTeamMemberRequest", teamMemberInvitation.Id);
+        QueryBuilder.AddParameter("emailAddress", teamMemberInvitation.Invitation.EmailAddress);
+        QueryBuilder.AddParameter("token", teamMemberInvitation.Invitation.Token);
+        QueryBuilder.AddParameter("isExpired", false);
+
+        QueryBuilder.AddReturnLastInsertedId();
+
+        int id = base.Execute<int>(context);
+    }
+
 
     private void UpdateTeamMember(TeamMember teamMember, ITransactionalContext? context = null)
     {
         string sql = @" UPDATE [Team_Member] SET
                                 IdPerson = @idPerson,
-                                IdTeamMemberRole = @idTeamMemberRole";
+                                IdRole = @idTeamMemberRole";
 
         QueryBuilder.AddCommand(sql);
 

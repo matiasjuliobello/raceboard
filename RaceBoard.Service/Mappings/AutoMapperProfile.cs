@@ -235,14 +235,20 @@ namespace RaceBoard.Service.Mappings
             CreateMap<TeamBoatSearchFilterRequest, TeamBoatSearchFilter>()
                 .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)));
 
-            CreateMap<TeamMemberRequest, TeamMember>()
-                .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)))
-                .ForMember(dest => dest.Person, opt => opt.MapFrom(src => CreateObject<Person>(src.IdPerson)))
-                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => CreateObject<TeamMemberRole>(src.IdTeamMemberRole)));
+            //CreateMap<TeamMemberInvitationRequest, TeamMember>()
+            //    .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)))
+            //    .ForMember(dest => dest.Person, opt => opt.MapFrom(src => CreateObject<Person>(src.IdPerson)))
+            //    .ForMember(dest => dest.Role, opt => opt.MapFrom(src => CreateObject<TeamMemberRole>(src.IdTeamMemberRole)));
             CreateMap<TeamMemberSearchFilterRequest, TeamMemberSearchFilter>()
                 .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)))
                 .ForMember(dest => dest.Member, opt => opt.MapFrom(src => CreateObject<Person>(src.IdTeamMember)))
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => CreateObject<TeamMemberRole>(src.IdTeamMemberRole)));
+            CreateMap<TeamMemberInvitationRequest, TeamMemberInvitation>()
+                .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)))
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => CreateObject<Role>(src.IdRole)))
+                .ForMember(dest => dest.User, opt => opt.MapFrom(src => CreateObject<User>(src.IdUser)));
+            CreateMap<InvitationRequest, Invitation>();
+
 
             CreateMap<TeamCheckRequest, TeamMemberCheck>()
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
@@ -360,10 +366,12 @@ namespace RaceBoard.Service.Mappings
 
             CreateMap<Team, TeamResponse>();
             CreateMap<Team, TeamSimpleResponse>(); 
-            CreateMap<TeamBoat, TeamBoatResponse>();
             CreateMap<TeamMember, TeamMemberResponse>();
+            CreateMap<TeamMemberInvitation, TeamMemberInvitationResponse>();
             CreateMap<TeamMemberCheck, TeamMemberCheckResponse>();
+            CreateMap<TeamBoat, TeamBoatResponse>();
             CreateMap<DeviceSubscription, DeviceSubscriptionResponse>();
+
 
             #endregion
         }

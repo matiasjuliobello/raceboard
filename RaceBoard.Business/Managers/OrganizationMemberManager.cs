@@ -4,6 +4,7 @@ using RaceBoard.Business.Managers.Abstract;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Business.Validators;
 using RaceBoard.Business.Validators.Interfaces;
+using RaceBoard.Common;
 using RaceBoard.Common.Enums;
 using RaceBoard.Common.Exceptions;
 using RaceBoard.Common.Helpers.Interfaces;
@@ -26,7 +27,6 @@ namespace RaceBoard.Business.Managers
         private readonly IDateTimeHelper _dateTimeHelper;
         private readonly IStringHelper _stringHelper;
         private readonly ICryptographyHelper _cryptographyHelper;
-        private readonly IConfiguration _configuration;
         private readonly IMailManager _mailManager;
 
         private const int _INVITATION_TOKEN_LENGTH = 32;
@@ -45,7 +45,6 @@ namespace RaceBoard.Business.Managers
                 IDateTimeHelper dateTimeHelper,
                 IStringHelper stringHelper,
                 ICryptographyHelper cryptographyHelper,
-                IConfiguration configuration,
                 IMailManager mailManager
             ) : base(translator)
         {
@@ -58,7 +57,6 @@ namespace RaceBoard.Business.Managers
             _dateTimeHelper = dateTimeHelper;
             _stringHelper = stringHelper;
             _cryptographyHelper = cryptographyHelper;
-            _configuration = configuration;
             _mailManager = mailManager;
         }
 

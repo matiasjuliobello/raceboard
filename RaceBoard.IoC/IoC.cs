@@ -51,8 +51,8 @@ namespace RaceBoard.IoC
             services.AddScoped<IPersonManager, PersonManager>();
             services.AddScoped<ITeamMemberRoleManager, TeamMemberRoleManager>();
             services.AddScoped<ITeamManager, TeamManager>();
-            services.AddScoped<ITeamBoatManager, TeamBoatManager>();
             services.AddScoped<ITeamMemberManager, TeamMemberManager>();
+            services.AddScoped<ITeamBoatManager, TeamBoatManager>();
             services.AddScoped<ITeamCheckManager, TeamCheckManager>();
             services.AddScoped<IBloodTypeManager, BloodTypeManager>();
             services.AddScoped<IMedicalInsuranceManager, MedicalInsuranceManager>();
@@ -84,8 +84,9 @@ namespace RaceBoard.IoC
             services.AddTransient<ICustomValidator<RaceProtest>, RaceProtestValidator>();
             services.AddTransient<ICustomValidator<CommitteeBoatReturn>, RaceCommitteeBoatReturnValidator>();
             services.AddTransient<ICustomValidator<Team>, TeamValidator>();
-            services.AddTransient<ICustomValidator<TeamBoat>, TeamBoatValidator>();
             services.AddTransient<ICustomValidator<TeamMember>, TeamMemberValidator>();
+            services.AddTransient<ICustomValidator<TeamMemberInvitation>, TeamMemberInvitationValidator>();
+            services.AddTransient<ICustomValidator<TeamBoat>, TeamBoatValidator>();
             services.AddTransient<ICustomValidator<TeamMemberCheck>, TeamCheckValidator>();
             #endregion
 
@@ -121,8 +122,8 @@ namespace RaceBoard.IoC
             services.AddScoped<IPersonRepository, PersonRepository>();
             services.AddScoped<ITeamMemberRoleRepository, TeamMemberRoleRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
-            services.AddScoped<ITeamBoatRepository, TeamBoatRepository>();
             services.AddScoped<ITeamMemberRepository, TeamMemberRepository>();
+            services.AddScoped<ITeamBoatRepository, TeamBoatRepository>();
             services.AddScoped<ITeamMemberCheckRepository, TeamMemberCheckRepository>();
             services.AddScoped<IBloodTypeRepository, BloodTypeRepository>();
             services.AddScoped<IMedicalInsuranceRepository, MedicalInsuranceRepository>();
