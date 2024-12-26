@@ -139,6 +139,15 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.English, "Member was removed"),
                 new Tuple<string, string>(Languages.Spanish, "Se eliminó al integrante"));
 
+            AddText(AddTranslation("MemberHasNotConfirmedParticipationYet"),
+                new Tuple<string, string>(Languages.English, "Member has not confirmed participation yet"),
+                new Tuple<string, string>(Languages.Spanish, "El integrante aún no confirmó su participación"));
+            AddText(AddTranslation("MemberHasConfirmedParticipation"),
+                new Tuple<string, string>(Languages.English, "Member has confirmed participation"),
+                new Tuple<string, string>(Languages.Spanish, "El integrante confirmó su participación"));
+            AddText(AddTranslation("MemberAccessHasBeenRevoked"),
+                new Tuple<string, string>(Languages.English, "Member access has been revoked"),
+                new Tuple<string, string>(Languages.Spanish, "Se ha revocado el acceso al integrante"));
 
             AddText(AddTranslation("UserPreferencesNotFound"),
                 new Tuple<string, string>(Languages.English, "User preferences not found"),

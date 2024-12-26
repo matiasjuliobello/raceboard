@@ -6,7 +6,8 @@ using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
 using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
-using RaceBoard.DTOs.Organization.Request;
+using RaceBoard.DTOs.Team.Request;
+using RaceBoard.DTOs.Team.Response;
 using RaceBoard.DTOs.Team.Request;
 using RaceBoard.DTOs.Team.Response;
 using RaceBoard.Service.Controllers.Abstract;
@@ -34,13 +35,16 @@ namespace RaceBoard.Service.Controllers
             _teamMemberManager = teamMemberManager;
         }
 
-        [HttpGet("members")]
-        public ActionResult<PaginatedResultResponse<TeamMemberResponse>> Get([FromQuery] TeamMemberSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
+        [HttpGet("{id}/members")]
+        public ActionResult<PaginatedResultResponse<TeamMemberResponse>> Get([FromRoute] int id, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
-            var searchFilter = _mapper.Map<TeamMemberSearchFilter>(searchFilterRequest);
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
             var sorting = _mapper.Map<Sorting>(sortingRequest);
 
+            var searchFilter = new TeamMemberSearchFilter()
+            {
+                Team = new Team() {  Id = id }
+            };
             var data = _teamMemberManager.Get(searchFilter, paginationFilter, sorting);
 
             var response = _mapper.Map<PaginatedResultResponse<TeamMemberResponse>>(data);
@@ -48,12 +52,15 @@ namespace RaceBoard.Service.Controllers
             return Ok(response);
         }
 
-        [HttpGet("members/{id}")]
-        public ActionResult<TeamMemberResponse> Get([FromRoute] int id)
+        [HttpGet("{id}/members/pending")]
+        public ActionResult<PaginatedResultResponse<TeamMemberInvitationResponse>> GetPendingInvitations([FromRoute] int id, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
-            var data = _teamMemberManager.Get(id);
+            var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
+            var sorting = _mapper.Map<Sorting>(sortingRequest);
 
-            var response = _mapper.Map<TeamMemberResponse>(data);
+            var data = _teamMemberManager.GetMemberInvitations(id, isPending: true, paginationFilter, sorting);
+
+            var response = _mapper.Map<PaginatedResultResponse<TeamMemberInvitationResponse>>(data);
 
             return Ok(response);
         }
@@ -71,11 +78,13 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpPut("members")]
-        public ActionResult Update([FromBody] TeamMemberInvitationRequest teamMemberRequest)
+        public ActionResult UpdateMemberInvitation([FromBody] TeamMemberInvitationRequest teamMemberInvitationRequest)
         {
-            var data = _mapper.Map<TeamMember>(teamMemberRequest);
+            var data = _mapper.Map<TeamMemberInvitation>(teamMemberInvitationRequest);
 
-            _teamMemberManager.Update(data);
+            data.User = base.GetUserFromRequestContext();
+
+            _teamMemberManager.UpdateInvitation(data);
 
             return Ok();
         }
@@ -83,7 +92,15 @@ namespace RaceBoard.Service.Controllers
         [HttpDelete("members/{id}")]
         public ActionResult Delete([FromRoute] int id)
         {
-            _teamMemberManager.Delete(id);
+            _teamMemberManager.Remove(id);
+
+            return Ok();
+        }
+
+        [HttpDelete("members/pending/{id}")]
+        public ActionResult DeleteMemberInvitation([FromRoute] int id)
+        {
+            _teamMemberManager.RemoveInvitation(id);
 
             return Ok();
         }

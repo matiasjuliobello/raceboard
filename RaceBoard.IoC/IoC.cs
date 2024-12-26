@@ -39,6 +39,7 @@ namespace RaceBoard.IoC
             services.AddScoped<ICityManager, CityManager>();
             services.AddScoped<ICountryManager, CountryManager>();
             services.AddScoped<ICompetitionManager, CompetitionManager>();
+            services.AddScoped<ICompetitionMemberManager, CompetitionMemberManager>();
             services.AddScoped<ICompetitionFileManager, CompetitionFileManager>();
             services.AddScoped<ICompetitionFlagManager, CompetitionFlagManager>();
             services.AddScoped<ICompetitionNotificationManager, CompetitionNotificationManager>();
@@ -73,6 +74,8 @@ namespace RaceBoard.IoC
             services.AddTransient<ICustomValidator<Person>, PersonValidator>();
             services.AddTransient<ICustomValidator<Boat>, BoatValidator>();
             services.AddTransient<ICustomValidator<Competition>, CompetitionValidator>();
+            services.AddTransient<ICustomValidator<CompetitionMember>, CompetitionMemberValidator>();
+            services.AddTransient<ICustomValidator<CompetitionMemberInvitation>, CompetitionMemberInvitationValidator>();
             services.AddTransient<ICustomValidator<CompetitionNotification>, CompetitionNotificationValidator>();
             services.AddTransient<ICustomValidator<CompetitionGroup>, CompetitionGroupValidator>();
             services.AddTransient<ICustomValidator<CompetitionFile>, CompetitionFileValidator>();
@@ -105,6 +108,7 @@ namespace RaceBoard.IoC
             services.AddScoped<ICityRepository, CityRepository>();
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<ICompetitionRepository, CompetitionRepository>();
+            services.AddScoped<ICompetitionMemberRepository, CompetitionMemberRepository>();
             services.AddScoped<ICompetitionGroupRepository, CompetitionGroupRepository>();
             services.AddScoped<ICompetitionFlagRepository, CompetitionFlagRepository>();
             services.AddScoped<ICompetitionFileRepository, CompetitionFileRepository>();

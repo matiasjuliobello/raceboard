@@ -13,11 +13,12 @@ namespace RaceBoard.Data.Repositories.Interfaces
         bool HasMemberInAnotherCompetitionTeam(TeamMember teamMember, ITransactionalContext? context = null);
         bool HasParticipationOnRace(TeamMember teamMember, ITransactionalContext? context = null);
         bool HasDuplicatedRole(TeamMember teamMember, ITransactionalContext? context = null);
-        PaginatedResult<TeamMember> Get(TeamMemberSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
-        TeamMember? Get(int id, ITransactionalContext? context = null);
-        //void Create(TeamMember teamMember, ITransactionalContext? context = null);
+        PaginatedResult<TeamMember> Get(TeamMemberSearchFilter searchFilter, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
+        PaginatedResult<TeamMemberInvitation> GetInvitations(TeamMemberInvitationSearchFilter searchFilter, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
+        void Add(TeamMember teamMember, ITransactionalContext? context = null);
+        int Remove(int id, ITransactionalContext? context = null);
         void CreateInvitation(TeamMemberInvitation teamMemberInvitation, ITransactionalContext? context = null);
-        void Update(TeamMember teamMember, ITransactionalContext? context = null);
-        void Delete(TeamMember teamMember, ITransactionalContext? context = null);
+        void UpdateInvitation(TeamMemberInvitation teamMemberInvitation, ITransactionalContext? context = null);
+        void RemoveInvitation(TeamMemberInvitation teamMemberInvitation, ITransactionalContext? context = null);
     }
 }

@@ -1,10 +1,10 @@
 ﻿namespace RaceBoard.Domain
 {
-    public class TeamMemberInvitation
+    public class CompetitionMemberInvitation
     {
         public int Id { get; set; }
-        public Team Team { get; set; }
-        public TeamMemberRole Role { get; set; }
+        public Competition Competition { get; set; }
+        public Role Role { get; set; }
         public User RequestUser { get; set; }
         public User? User { get; set; }
         public Person? Person { get; set; }
@@ -12,7 +12,7 @@
         public bool IsPending { get; set; }
         public Invitation Invitation { get; set; }
 
-        public TeamMemberInvitation()
+        public CompetitionMemberInvitation()
         {
             this.Invitation = new Invitation();
         }

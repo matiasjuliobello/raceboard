@@ -1,17 +1,15 @@
 ﻿using RaceBoard.DTOs.Invitation.Response;
-//using RaceBoard.DTOs.Permissions.Response;
+using RaceBoard.DTOs.Permissions.Response;
 using RaceBoard.DTOs.Person.Response;
-using RaceBoard.DTOs.TeamMemberRole.Response;
 using RaceBoard.DTOs.User.Response;
 
-namespace RaceBoard.DTOs.Team.Response
+namespace RaceBoard.DTOs.Competition.Response
 {
-    public class TeamMemberInvitationResponse
+    public class CompetitionMemberInvitationResponse
     {
         public int Id { get; set; }
-        public TeamResponse Team { get; set; }
-        //public RoleResponse Role { get; set; }
-        public TeamMemberRoleResponse Role { get; set; }
+        public CompetitionResponse Competition { get; set; }
+        public RoleResponse Role { get; set; }
         public UserSimpleResponse RequestUser { get; set; }
         public UserSimpleResponse? User { get; set; }
         public PersonSimpleResponse? Person { get; set; }

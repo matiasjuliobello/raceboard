@@ -71,6 +71,13 @@ namespace RaceBoard.Data.Repositories
             return this.GetCompetitions(searchFilter, paginationFilter, sorting, context);
         }
 
+        public Competition? Get(int id, ITransactionalContext? context = null)
+        {
+            var searchFilter = new CompetitionSearchFilter() { Ids = new int[] { id } };
+
+            return this.GetCompetitions(searchFilter: searchFilter, paginationFilter: null, sorting: null, context: context).Results.FirstOrDefault();
+        }
+
         public void Create(Competition competition, ITransactionalContext? context = null)
         {
             this.CreateCompetition(competition, context);

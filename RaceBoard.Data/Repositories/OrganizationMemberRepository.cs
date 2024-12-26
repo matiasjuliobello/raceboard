@@ -395,6 +395,8 @@ namespace RaceBoard.Data.Repositories
 
             base.AddFilterCriteria(ConditionType.In, "Organization_MemberRequest", "Id", "id", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Equal, "Organization_MemberRequest", "IdOrganization", "idOrganization", searchFilter.IdOrganization);
+            base.AddFilterCriteria(ConditionType.Equal, "Organization_MemberRequest", "IdRole", "idRole", searchFilter.IdRole);
+            base.AddFilterCriteria(ConditionType.Equal, "Organization_MemberRequest", "IdUser", "idUser", searchFilter.IdUser);
             base.AddFilterCriteria(ConditionType.Equal, "Organization_MemberRequest", "IsPending", "isPending", searchFilter.IsPending);
             base.AddFilterCriteria(ConditionType.Equal, "Organization_MemberRequestInvitation", "Token", "token", searchFilter.Token);
             base.AddFilterCriteria(ConditionType.Equal, "Organization_MemberRequestInvitation", "IsExpired", "isExpired", searchFilter.IsExpired);

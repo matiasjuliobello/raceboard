@@ -11,6 +11,7 @@ namespace RaceBoard.Data.Repositories.Interfaces
         bool Exists(int id, ITransactionalContext? context = null);
         bool ExistsDuplicate(Competition competition, ITransactionalContext? context = null);
         PaginatedResult<Competition> Get(CompetitionSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
+        Competition? Get(int id, ITransactionalContext? context = null);
         void Create(Competition competition, ITransactionalContext? context = null);
         void Update(Competition competition, ITransactionalContext? context = null);
         int Delete(int id, ITransactionalContext? context = null);

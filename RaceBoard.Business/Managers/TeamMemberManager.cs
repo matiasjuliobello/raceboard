@@ -1,11 +1,13 @@
 ﻿using RaceBoard.Business.Managers.Abstract;
 using RaceBoard.Business.Managers.Interfaces;
+using RaceBoard.Business.Validators;
 using RaceBoard.Business.Validators.Interfaces;
 using RaceBoard.Common.Enums;
 using RaceBoard.Common.Exceptions;
 using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data;
+using RaceBoard.Data.Repositories;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 using RaceBoard.Translations.Interfaces;
@@ -58,42 +60,40 @@ namespace RaceBoard.Business.Managers
 
         #region ITeamMemberManager implementation
 
-        public PaginatedResult<TeamMember> Get(TeamMemberSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        public PaginatedResult<TeamMember> Get(TeamMemberSearchFilter searchFilter, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return _teamMemberRepository.Get(searchFilter, paginationFilter, sorting, context);
         }
 
         public TeamMember Get(int id, ITransactionalContext? context = null)
         {
-            var teamMember = _teamMemberRepository.Get(id, context);
+            var searchFilter = new TeamMemberSearchFilter() { Ids = new int[] { id } };
+
+            var teamMember = _teamMemberRepository.Get(searchFilter, paginationFilter: null, sorting: null, context).Results.FirstOrDefault();
             if (teamMember == null)
                 throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
 
             return teamMember;
         }
 
-        //public void Create(TeamMember teamMember, ITransactionalContext? context = null)
-        //{
-        //    _teamMemberValidator.SetTransactionalContext(context);
+        public PaginatedResult<TeamMemberInvitation> GetMemberInvitations(int idTeam, bool isPending, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        {
+            var searchFilter = new TeamMemberInvitationSearchFilter() { IdTeam = idTeam, IsPending = isPending };
 
-        //    if (!_teamMemberValidator.IsValid(teamMember, Scenario.Create))
-        //        throw new FunctionalException(ErrorType.ValidationError, _teamMemberValidator.Errors);
+            return _teamMemberRepository.GetInvitations(searchFilter, paginationFilter, sorting, context);
+        }
 
-        //    if (context == null)
-        //        context = _teamMemberRepository.GetTransactionalContext(TransactionContextScope.Internal);
+        public TeamMemberInvitation GetInvitation(int id, ITransactionalContext? context = null)
+        {
+            var searchFilter = new TeamMemberInvitationSearchFilter() { Ids = new int[] { id } };
 
-        //    try
-        //    {
-        //        _teamMemberRepository.Create(teamMember, context);
+            var teamMemberInvitation = _teamMemberRepository.GetInvitations(searchFilter, paginationFilter: null, sorting: null, context).Results.FirstOrDefault();
+            if (teamMemberInvitation == null)
+                throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
 
-        //        _teamMemberRepository.ConfirmTransactionalContext(context);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        _teamMemberRepository.CancelTransactionalContext(context);
-        //        throw;
-        //    }
-        //}
+            return teamMemberInvitation;
+        }
+
         public void AddInvitation(TeamMemberInvitation teamMemberInvitation, ITransactionalContext? context = null)
         {
             if (context == null)
@@ -133,31 +133,56 @@ namespace RaceBoard.Business.Managers
             }
         }
 
-        public void Update(TeamMember teamMember, ITransactionalContext? context = null)
+        public void UpdateInvitation(TeamMemberInvitation teamMemberInvitation, ITransactionalContext? context = null)
         {
-            _teamMemberValidator.SetTransactionalContext(context);
+            var invitations = _teamMemberRepository.GetInvitations(new TeamMemberInvitationSearchFilter() { Token = teamMemberInvitation.Invitation.Token });
+            if (invitations.Results.Count() == 0)
+                throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
 
-            if (!_teamMemberValidator.IsValid(teamMember, Scenario.Update))
-                throw new FunctionalException(ErrorType.ValidationError, _teamMemberValidator.Errors);
+            var invitation = invitations.Results.First();
+            if (invitation.Invitation.IsExpired)
+                throw new FunctionalException(ErrorType.NotFound, this.Translate("InvitationExpired"));
 
             if (context == null)
                 context = _teamMemberRepository.GetTransactionalContext(TransactionContextScope.Internal);
 
+            _teamMemberInvitationValidator.SetTransactionalContext(context);
+            if (!_teamMemberInvitationValidator.IsValid(teamMemberInvitation, Scenario.Update))
+                throw new FunctionalException(ErrorType.ValidationError, _teamMemberInvitationValidator.Errors);
+
+            var currentDate = _dateTimeHelper.GetCurrentTimestamp();
+
             try
             {
-                _teamMemberRepository.Update(teamMember, context);
+                var teamMember = new TeamMember()
+                {
+                    IsActive = true,
+                    JoinDate = currentDate,
+                    Team = invitation.Team,
+                    Role = invitation.Role,
+                    User = teamMemberInvitation.User!
+                };
+                _teamMemberRepository.Add(teamMember, context);
 
-                _teamMemberRepository.ConfirmTransactionalContext(context);
+                invitation.User = teamMemberInvitation.User;
+                _teamMemberRepository.UpdateInvitation(invitation, context);
+
+                context.Confirm();
             }
             catch (Exception)
             {
-                _teamMemberRepository.CancelTransactionalContext(context);
+                if (context != null)
+                    context.Cancel();
+
                 throw;
             }
         }
 
-        public void Delete(int id, ITransactionalContext? context = null)
+        public void Remove(int id, ITransactionalContext? context = null)
         {
+            if (context == null)
+                context = _teamMemberRepository.GetTransactionalContext(TransactionContextScope.Internal);
+
             var teamMember = this.Get(id, context);
 
             _teamMemberValidator.SetTransactionalContext(context);
@@ -165,25 +190,59 @@ namespace RaceBoard.Business.Managers
             if (!_teamMemberValidator.IsValid(teamMember, Scenario.Delete))
                 throw new FunctionalException(ErrorType.ValidationError, _teamMemberValidator.Errors);
 
-            if (context == null)
-                context = _teamMemberRepository.GetTransactionalContext(TransactionContextScope.Internal);
-
             try
             {
-                _teamMemberRepository.Delete(teamMember, context);
+                _teamMemberRepository.Remove(teamMember.Id, context);
 
-                _teamMemberRepository.ConfirmTransactionalContext(context);
+                var searchFilter = new TeamMemberInvitationSearchFilter()
+                {
+                    IdTeam = teamMember.Team.Id,
+                    IdRole = teamMember.Role.Id,
+                    IdUser = teamMember.User.Id
+                };
+                var invitation = _teamMemberRepository.GetInvitations(searchFilter, paginationFilter: null, sorting: null, context).Results.FirstOrDefault();
+                if (invitation != null)
+                    _teamMemberRepository.RemoveInvitation(invitation, context);
 
+                context.Confirm();
             }
             catch (Exception)
             {
-                _teamMemberRepository.CancelTransactionalContext(context);
+                if (context != null)
+                    context.Cancel();
+
+                throw;
+            }
+        }
+
+        public void RemoveInvitation(int id, ITransactionalContext? context = null)
+        {
+            if (context == null)
+                context = _teamMemberRepository.GetTransactionalContext(TransactionContextScope.Internal);
+
+            var teamMemberInvitation = this.GetInvitation(id, context);
+
+            _teamMemberInvitationValidator.SetTransactionalContext(context);
+
+            if (!_teamMemberInvitationValidator.IsValid(teamMemberInvitation, Scenario.Delete))
+                throw new FunctionalException(ErrorType.ValidationError, _teamMemberInvitationValidator.Errors);
+
+            try
+            {
+                _teamMemberRepository.RemoveInvitation(teamMemberInvitation, context);
+
+                context.Confirm();
+            }
+            catch (Exception)
+            {
+                if (context != null)
+                    context.Cancel();
+
                 throw;
             }
         }
 
         #endregion
-
 
         #region Private Methods
 
