@@ -453,9 +453,9 @@ public class TeamMemberRepository : AbstractRepository, ITeamMemberRepository
             return;
 
         base.AddFilterCriteria(ConditionType.In, "Team_MemberRequest", "Id", "id", searchFilter.Ids);
-        base.AddFilterCriteria(ConditionType.Equal, "Team_MemberRequest", "IdTeam", "idTeam", searchFilter.IdTeam);
-        base.AddFilterCriteria(ConditionType.Equal, "Team_MemberRequest", "IdRole", "idRole", searchFilter.IdRole);
-        base.AddFilterCriteria(ConditionType.Equal, "Team_MemberRequest", "IdUser", "idUser", searchFilter.IdUser);
+        base.AddFilterCriteria(ConditionType.Equal, "Team_MemberRequest", "IdTeam", "idTeam", searchFilter.Team?.Id);
+        base.AddFilterCriteria(ConditionType.Equal, "Team_MemberRequest", "IdRole", "idRole", searchFilter.Role?.Id);
+        base.AddFilterCriteria(ConditionType.Equal, "Team_MemberRequest", "IdUser", "idUser", searchFilter.User?.Id);
         base.AddFilterCriteria(ConditionType.Equal, "Team_MemberRequest", "IsPending", "isPending", searchFilter.IsPending);
         base.AddFilterCriteria(ConditionType.Equal, "Team_MemberRequestInvitation", "Token", "token", searchFilter.Token);
         base.AddFilterCriteria(ConditionType.Equal, "Team_MemberRequestInvitation", "IsExpired", "isExpired", searchFilter.IsExpired);

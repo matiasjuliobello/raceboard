@@ -385,7 +385,7 @@ namespace RaceBoard.Data.Repositories
         private void ProcessSearchFilter(OrganizationMemberSearchFilter searchFilter)
         {
             base.AddFilterCriteria(ConditionType.In, "Organization_Member", "Id", "id", searchFilter.Ids);
-            base.AddFilterCriteria(ConditionType.Equal, "Organization_Member", "IdOrganization", "idOrganization", searchFilter.IdOrganization);
+            base.AddFilterCriteria(ConditionType.Equal, "Organization_Member", "IdOrganization", "idOrganization", searchFilter.Organization?.Id);
         }
 
         private void ProcessInvitationSearchFilter(OrganizationMemberInvitationSearchFilter searchFilter)
@@ -394,15 +394,14 @@ namespace RaceBoard.Data.Repositories
                 return;
 
             base.AddFilterCriteria(ConditionType.In, "Organization_MemberRequest", "Id", "id", searchFilter.Ids);
-            base.AddFilterCriteria(ConditionType.Equal, "Organization_MemberRequest", "IdOrganization", "idOrganization", searchFilter.IdOrganization);
-            base.AddFilterCriteria(ConditionType.Equal, "Organization_MemberRequest", "IdRole", "idRole", searchFilter.IdRole);
-            base.AddFilterCriteria(ConditionType.Equal, "Organization_MemberRequest", "IdUser", "idUser", searchFilter.IdUser);
+            base.AddFilterCriteria(ConditionType.Equal, "Organization_MemberRequest", "IdOrganization", "idOrganization", searchFilter.Organization?.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "Organization_MemberRequest", "IdRole", "idRole", searchFilter.Role?.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "Organization_MemberRequest", "IdUser", "idUser", searchFilter.User?.Id);
             base.AddFilterCriteria(ConditionType.Equal, "Organization_MemberRequest", "IsPending", "isPending", searchFilter.IsPending);
             base.AddFilterCriteria(ConditionType.Equal, "Organization_MemberRequestInvitation", "Token", "token", searchFilter.Token);
             base.AddFilterCriteria(ConditionType.Equal, "Organization_MemberRequestInvitation", "IsExpired", "isExpired", searchFilter.IsExpired);
         }
 
         #endregion
-
     }
 }

@@ -82,7 +82,11 @@ namespace RaceBoard.Business.Managers
 
         public PaginatedResult<OrganizationMemberInvitation> GetMemberInvitations(int idOrganization, bool isPending, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
-            var searchFilter = new OrganizationMemberInvitationSearchFilter() { IdOrganization = idOrganization, IsPending = isPending };
+            var searchFilter = new OrganizationMemberInvitationSearchFilter()
+            { 
+                Organization = new Organization() {  Id = idOrganization },
+                IsPending = isPending 
+            };
 
             return _organizationMemberRepository.GetInvitations(searchFilter, paginationFilter, sorting, context);
         }
@@ -202,9 +206,9 @@ namespace RaceBoard.Business.Managers
 
                 var searchFilter = new OrganizationMemberInvitationSearchFilter() 
                 {
-                    IdOrganization = organizationMember.Organization.Id,
-                    IdRole = organizationMember.Role.Id,
-                    IdUser = organizationMember.User.Id
+                    Organization = organizationMember.Organization,
+                    Role = organizationMember.Role,
+                    User = organizationMember.User
                 };
                 var invitation = _organizationMemberRepository.GetInvitations(searchFilter, paginationFilter: null, sorting: null, context).Results.FirstOrDefault();
                 if (invitation != null)

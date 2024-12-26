@@ -3,10 +3,10 @@
     public class TeamMemberInvitationSearchFilter
     {
         public int[]? Ids { get; set; }
-        public int? IdTeam { get; set; }
-        public int? IdRequestUser { get; set; }
-        public int? IdRole { get; set; }
-        public int? IdUser { get; set; }
+        public Team? Team { get; set; }
+        public User? RequestUser { get; set; }
+        public TeamMemberRole? Role { get; set; }
+        public User? User { get; set; }
         public string? Token { get; set; }
         public string? EmailAddress { get; set; }
         public bool? IsPending { get; set; }

@@ -82,7 +82,11 @@ namespace RaceBoard.Business.Managers
 
         public PaginatedResult<CompetitionMemberInvitation> GetMemberInvitations(int idCompetition, bool isPending, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
-            var searchFilter = new CompetitionMemberInvitationSearchFilter() { IdCompetition = idCompetition, IsPending = isPending };
+            var searchFilter = new CompetitionMemberInvitationSearchFilter()
+            {
+                Competition = new Competition() {  Id = idCompetition },
+                IsPending = isPending
+            };
 
             return _competitionMemberRepository.GetInvitations(searchFilter, paginationFilter, sorting, context);
         }
@@ -202,9 +206,9 @@ namespace RaceBoard.Business.Managers
 
                 var searchFilter = new CompetitionMemberInvitationSearchFilter()
                 {
-                    IdCompetition = competitionMember.Competition.Id,
-                    IdRole = competitionMember.Role.Id,
-                    IdUser = competitionMember.User.Id
+                    Competition = competitionMember.Competition,
+                    Role = competitionMember.Role,
+                    User = competitionMember.User
                 };
                 var invitation = _competitionMemberRepository.GetInvitations(searchFilter, paginationFilter: null, sorting: null, context).Results.FirstOrDefault();
                 if (invitation != null)

@@ -40,7 +40,7 @@ namespace RaceBoard.Service.Controllers
 
             var searchFilter = new OrganizationMemberSearchFilter()
             {
-                IdOrganization = id
+                Organization = new Organization() {  Id = id }
             };
             var data = _organizationMemberManager.Get(searchFilter, paginationFilter, sorting);
 

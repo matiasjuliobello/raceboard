@@ -138,7 +138,6 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => CreateObject<Role>(src.IdRole)))
                 .ForMember(dest => dest.User, opt => opt.MapFrom(src => CreateObject<User>(src.IdUser)));
 
-
             CreateMap<CompetitionGroupRequest, CompetitionGroup>()
                 .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)));
 

@@ -40,7 +40,7 @@ namespace RaceBoard.Service.Controllers
 
             var searchFilter = new CompetitionMemberSearchFilter()
             {
-                IdCompetition = id
+                Competition = new Competition () {  Id = id }
             };
             var data = _competitionMemberManager.Get(searchFilter, paginationFilter, sorting);
 
