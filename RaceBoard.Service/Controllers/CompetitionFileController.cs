@@ -63,7 +63,6 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpPost("files")]
-        [Authorize()]
         public ActionResult<int> Create(IFormFile file, [FromForm] CompetitionFileRequest competitionFileUploadRequest)
         {
             var validationResult = ValidateBadRequestMessage(file, competitionFileUploadRequest);
