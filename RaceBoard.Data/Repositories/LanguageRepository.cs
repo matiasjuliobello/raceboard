@@ -34,7 +34,8 @@ namespace RaceBoard.Data.Repositories
         {
             string sql = $@"SELECT
 	                            Id [Id],	                            
-	                            Name [Name]
+	                            Name [Name],
+                                Code [Code]
                             FROM [Language]";
 
             QueryBuilder.AddCommand(sql);

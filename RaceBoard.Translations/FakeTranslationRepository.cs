@@ -2,6 +2,8 @@
 using RaceBoard.Translations.Entities;
 using RaceBoard.Translations.Interfaces;
 using System.Net.NetworkInformation;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.Xml;
 
 namespace RaceBoard.Translations
 {
@@ -60,6 +62,57 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("TheDataYouAreLookingForWasNotFound"),
                 new Tuple<string, string>(Languages.English, "The data you are looking for was not found"),
                 new Tuple<string, string>(Languages.Spanish, "No se encontraron los datos que estás buscando"));
+
+            AddText(AddTranslation("MySettings"),
+                new Tuple<string, string>(Languages.English, "My settings"),
+                new Tuple<string, string>(Languages.Spanish, "Mi configuración"));
+            AddText(AddTranslation("PersonalData"),
+                new Tuple<string, string>(Languages.English, "Personal data"),
+                new Tuple<string, string>(Languages.Spanish, "Datos personales"));
+            AddText(AddTranslation("Preferences"),
+                new Tuple<string, string>(Languages.English, "Preferences"),
+                new Tuple<string, string>(Languages.Spanish, "Preferencias"));
+            AddText(AddTranslation("Logout"),
+                new Tuple<string, string>(Languages.English, "Logout"),
+                new Tuple<string, string>(Languages.Spanish, "Cerrar sesión"));
+
+            AddText(AddTranslation("Language"),
+                new Tuple<string, string>(Languages.English, "Language"),
+                new Tuple<string, string>(Languages.Spanish, "Idioma"));
+            AddText(AddTranslation("DateFormat"),
+                new Tuple<string, string>(Languages.English, "Date format"),
+                new Tuple<string, string>(Languages.Spanish, "Formato de fecha"));
+            AddText(AddTranslation("TimeZone"),
+                new Tuple<string, string>(Languages.English, "Time zone"),
+                new Tuple<string, string>(Languages.Spanish, "Zona horaria"));
+            AddText(AddTranslation("Users"),
+                new Tuple<string, string>(Languages.English, "Users"),
+                new Tuple<string, string>(Languages.Spanish, "Usuarios"));
+            AddText(AddTranslation("Users"),
+                new Tuple<string, string>(Languages.English, "Users"),
+                new Tuple<string, string>(Languages.Spanish, "Usuarios"));
+            AddText(AddTranslation("SavePreferences"),
+                new Tuple<string, string>(Languages.English, "Save preferences"),
+                new Tuple<string, string>(Languages.Spanish, "Guardar preferencias"));
+            AddText(AddTranslation("ChangePreferences"),
+                new Tuple<string, string>(Languages.English, "Change preferences"),
+                new Tuple<string, string>(Languages.Spanish, "Cambiar preferencias"));
+            AddText(AddTranslation("SavePreferences"),
+                new Tuple<string, string>(Languages.English, "Save preferences"),
+                new Tuple<string, string>(Languages.Spanish, "Guardar preferencias"));
+            AddText(AddTranslation("Hello!Welcome"),
+                new Tuple<string, string>(Languages.English, "Hello! Welcome"),
+                new Tuple<string, string>(Languages.Spanish, "Hola! Bienvenido"));
+            AddText(AddTranslation("LoadingTimeZones.."),
+                new Tuple<string, string>(Languages.English, "Loading time zones.."),
+                new Tuple<string, string>(Languages.Spanish, "Cargando zonas horarias.."));
+            AddText(AddTranslation("LoadingLanguages.."),
+                new Tuple<string, string>(Languages.English, "Loading languages.."),
+                new Tuple<string, string>(Languages.Spanish, "Cargando idiomas."));
+
+            AddText(AddTranslation("Main"),
+                new Tuple<string, string>(Languages.English, "Main"),
+                new Tuple<string, string>(Languages.Spanish, "Principal"));
 
             AddText(AddTranslation("LoadingCountries.."),
                 new Tuple<string, string>(Languages.English, "Loading countries.."),
@@ -173,8 +226,18 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("BoatAlreadyAssignedToAnotherTeam"),
                 new Tuple<string, string>(Languages.English, "The boat is already assigned to another team in the same championship"),
                 new Tuple<string, string>(Languages.Spanish, "El barco ya está asignado a otro equipo de la misma campeonato"));
+
+            AddText(AddTranslation("OrganizationWasCreated"),
+                new Tuple<string, string>(Languages.English, "Club was created"),
+                new Tuple<string, string>(Languages.Spanish, "Se creó el club"));
+            AddText(AddTranslation("ChampionshipWasCreated"),
+                new Tuple<string, string>(Languages.English, "Championship was created"),
+                new Tuple<string, string>(Languages.Spanish, "Se creó el campeonato"));
+            AddText(AddTranslation("TeamWasCreated"),
+                new Tuple<string, string>(Languages.English, "Team was created"),
+                new Tuple<string, string>(Languages.Spanish, "Se creó el equipo"));
             AddText(AddTranslation("TeamWasDeleted"),
-                new Tuple<string, string>(Languages.English, "Team was removed deleted"),
+                new Tuple<string, string>(Languages.English, "Team was deleted"),
                 new Tuple<string, string>(Languages.Spanish, "Se eliminó el equipo"));
             AddText(AddTranslation("GroupWasRemoved"),
                 new Tuple<string, string>(Languages.English, "Group was removed"),
@@ -188,7 +251,6 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("BoatWasRemoved"),
                 new Tuple<string, string>(Languages.English, "Boat was removed"),
                 new Tuple<string, string>(Languages.Spanish, "Se eliminó al barco"));
-
 
             AddText(AddTranslation("LoadingCompetitionGroups.."),
                 new Tuple<string, string>(Languages.English, "Boat was removed"),
@@ -215,7 +277,80 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.English, "Assign"),
                 new Tuple<string, string>(Languages.Spanish, "Asignar"));
 
+            AddText(AddTranslation("LanguageChanged"),
+                new Tuple<string, string>(Languages.English, "Language was changed"),
+                new Tuple<string, string>(Languages.Spanish, "Se cambió el idioma"));
+            AddText(AddTranslation("DeleteCommitteeBoatReturn"),
+                new Tuple<string, string>(Languages.English, "Delete committee boat return"),
+                new Tuple<string, string>(Languages.Spanish, "Eliminar vuelta de lancha del comité"));
+            AddText(AddTranslation("CommitteeBoatReturn"),
+                new Tuple<string, string>(Languages.English, "Committee boat return"),
+                new Tuple<string, string>(Languages.Spanish, "Vuelta de lancha del comité"));
+            AddText(AddTranslation("CommitteeBoatReturns"),
+                new Tuple<string, string>(Languages.English, "Committee boat returns"),
+                new Tuple<string, string>(Languages.Spanish, "Vueltas de lancha del comité"));
+            AddText(AddTranslation("RegisterCommitteeBoatReturn"),
+                new Tuple<string, string>(Languages.English, "Register committee boat return"),
+                new Tuple<string, string>(Languages.Spanish, "Registrar vuelta de lancha del comité"));
+            AddText(AddTranslation("CommitteeBoatName"),
+                new Tuple<string, string>(Languages.English, "Committee boat name"),
+                new Tuple<string, string>(Languages.Spanish, "Nombre de lancha del comité"));
+            AddText(AddTranslation("Register"),
+                new Tuple<string, string>(Languages.English, "Register"),
+                new Tuple<string, string>(Languages.Spanish, "Registrar"));
+            AddText(AddTranslation("RegisterReturn"),
+                new Tuple<string, string>(Languages.English, "Register return"),
+                new Tuple<string, string>(Languages.Spanish, "Registrar vuelta"));
+            AddText(AddTranslation("LoadingCommitteeBoatReturns.."),
+                new Tuple<string, string>(Languages.English, "Loading committee boat returns.."),
+                new Tuple<string, string>(Languages.Spanish, "Cargando vueltas de lancha del comité"));
+            AddText(AddTranslation("Unreported"),
+                new Tuple<string, string>(Languages.English, "Unreported"),
+                new Tuple<string, string>(Languages.Spanish, "Sin informar"));
+            AddText(AddTranslation("BoatName"),
+                new Tuple<string, string>(Languages.English, "Boat name"),
+                new Tuple<string, string>(Languages.Spanish, "Nombre de lancha"));
+            AddText(AddTranslation("NoCommitteeBoatReturnsYet"),
+                new Tuple<string, string>(Languages.English, "No committee boat returns yet"),
+                new Tuple<string, string>(Languages.Spanish, "Aún sin vueltas de lancha del comité"));
+            AddText(AddTranslation("ReturnTime"),
+                new Tuple<string, string>(Languages.English, "Return time"),
+                new Tuple<string, string>(Languages.Spanish, "Momento de la vuelta"));
+            AddText(AddTranslation("CommitteeBoatReturnWasRemoved"),
+                new Tuple<string, string>(Languages.English, "Committee boat return was removed"),
+                new Tuple<string, string>(Languages.Spanish, "Vuelta de lancha de comité eliminada"));
 
+
+            AddText(AddTranslation("DeleteNotification"),
+                new Tuple<string, string>(Languages.English, "Delete notification"),
+                new Tuple<string, string>(Languages.Spanish, "Eliminar notificación"));
+            AddText(AddTranslation("NotificationWasDeleted"),
+                new Tuple<string, string>(Languages.English, "Notification was deleted"),
+                new Tuple<string, string>(Languages.Spanish, "Notificación elminada"));
+            AddText(AddTranslation("Notifications"),
+                new Tuple<string, string>(Languages.English, "Notifications"),
+                new Tuple<string, string>(Languages.Spanish, "Notificaciones"));
+            AddText(AddTranslation("LoadingNotifications.."),
+                new Tuple<string, string>(Languages.English, "Loading notifications.."),
+                new Tuple<string, string>(Languages.Spanish, "Cargando notificaciones.."));
+            AddText(AddTranslation("NoNotificationsYet"),
+                new Tuple<string, string>(Languages.English, "No notifications yet"),
+                new Tuple<string, string>(Languages.Spanish, "Aún sin notificaciones"));
+            AddText(AddTranslation("Title"),
+                new Tuple<string, string>(Languages.English, "Title"),
+                new Tuple<string, string>(Languages.Spanish, "Título"));
+            AddText(AddTranslation("Message"),
+                new Tuple<string, string>(Languages.English, "Message"),
+                new Tuple<string, string>(Languages.Spanish, "Mensaje"));
+            AddText(AddTranslation("Author"),
+                new Tuple<string, string>(Languages.English, "Author"),
+                new Tuple<string, string>(Languages.Spanish, "Autor"));
+            AddText(AddTranslation("CreationDate"),
+                new Tuple<string, string>(Languages.English, "Creationd ate"),
+                new Tuple<string, string>(Languages.Spanish, "Fecha de creación"));
+            AddText(AddTranslation("CreateNotification"),
+                new Tuple<string, string>(Languages.English, "Create notification"),
+                new Tuple<string, string>(Languages.Spanish, "Crear notificación"));
 
             AddText(AddTranslation("IdIsRequired"),
                 new Tuple<string, string>(Languages.English, "Id is a required field"),
@@ -440,6 +575,14 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.English, "Status"),
                 new Tuple<string, string>(Languages.Spanish, "Estado"));
 
+            AddText(AddTranslation("ClickHere"),
+                new Tuple<string, string>(Languages.English, "Click here"),
+                new Tuple<string, string>(Languages.Spanish, "Haga click aquí"));
+            AddText(AddTranslation("..OrJustWait"),
+                new Tuple<string, string>(Languages.English, ".. or just wait"),
+                new Tuple<string, string>(Languages.Spanish, ".. o espere"));
+
+
             AddText(AddTranslation("CreateNewOrganization"),
                 new Tuple<string, string>(Languages.English, "Create new club"),
                 new Tuple<string, string>(Languages.Spanish, "Crear nuevo club"));
@@ -451,27 +594,41 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.Spanish, "Crear nuevo equipo"));
 
             AddText(AddTranslation("Welcome"),
+                new Tuple<string, string>(Languages.English, "Welcome"),
                 new Tuple<string, string>(Languages.Spanish, "Bienvenido"));
             AddText(AddTranslation("LogIn"),
+                new Tuple<string, string>(Languages.English, "Login"),
                 new Tuple<string, string>(Languages.Spanish, "Entrar"));
             AddText(AddTranslation("LogOut"),
+                new Tuple<string, string>(Languages.English, "Logout"),
                 new Tuple<string, string>(Languages.Spanish, "Cerrar sesión"));
+            AddText(AddTranslation("YouHaveSuccessfullyLogout"),
+                new Tuple<string, string>(Languages.English, "You have successfully logout"),
+                new Tuple<string, string>(Languages.Spanish, "Haz cerrado la sesión exitosamente"));
             AddText(AddTranslation("Username"),
+                new Tuple<string, string>(Languages.English, "Username"),
                 new Tuple<string, string>(Languages.Spanish, "Nombre de usuario"));
             AddText(AddTranslation("Password"),
+                new Tuple<string, string>(Languages.English, "Password"),
                 new Tuple<string, string>(Languages.Spanish, "Contraseña"));
-            AddText(AddTranslation("ForgetData"),
-                new Tuple<string, string>(Languages.Spanish, "Olvidó su contraseña?"));
+            AddText(AddTranslation("ForgotData?"),
+                new Tuple<string, string>(Languages.English, "Forgot data?"),
+                new Tuple<string, string>(Languages.Spanish, "Olvidó su contraseña?"));            
             AddText(AddTranslation("PrivacyPolicy"),
+                new Tuple<string, string>(Languages.English, "Privacy policy"),
                 new Tuple<string, string>(Languages.Spanish, "Acuerdo de privacidad"));
             AddText(AddTranslation("DisclosureStatement"),
+                new Tuple<string, string>(Languages.English, "Disclosure statement"),
                 new Tuple<string, string>(Languages.Spanish, "Política de divulgación"));
-            AddText(AddTranslation("RecoverPassword"),
+            AddText(AddTranslation("ResetPassword"),
+                new Tuple<string, string>(Languages.English, "Reset password"),
                 new Tuple<string, string>(Languages.Spanish, "Recuperar contraseña"));
-            AddText(AddTranslation("ContentTextRecoverPassword"),
+            AddText(AddTranslation("ContentTextResetPassword"),
+                new Tuple<string, string>(Languages.English, "Fill in the data to receive an e-mail with instructions to reset your password"),
                 new Tuple<string, string>(Languages.Spanish, "Complete los datos para recibir un correo con instrucciones para reestablecer su contraseña"));
             AddText(AddTranslation("UserOrEmail"),
-                new Tuple<string, string>(Languages.Spanish, "Nombre de usuario o email"));
+                new Tuple<string, string>(Languages.English, "Username or e-mail"),
+                new Tuple<string, string>(Languages.Spanish, "Nombre de usuario o e-mail"));
             AddText(AddTranslation("Continue"),
                 new Tuple<string, string>(Languages.English, "Continue"),
                 new Tuple<string, string>(Languages.Spanish, "Continuar"));
@@ -599,6 +756,9 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("Flag"),
                 new Tuple<string, string>(Languages.English, "Flag"),
                 new Tuple<string, string>(Languages.Spanish, "Bandera"));
+            AddText(AddTranslation("Flags"),
+                new Tuple<string, string>(Languages.English, "Flags"),
+                new Tuple<string, string>(Languages.Spanish, "Banderas"));
             AddText(AddTranslation("RaisedAt"),
                 new Tuple<string, string>(Languages.English, "Raised at"),
                 new Tuple<string, string>(Languages.Spanish, "Izada a las "));
@@ -647,12 +807,16 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("Minutes"),
                 new Tuple<string, string>(Languages.English, "Minutes"),
                 new Tuple<string, string>(Languages.Spanish, "Minutos"));
+            AddText(AddTranslation("Seconds"),
+                new Tuple<string, string>(Languages.English, "Seconds"),
+                new Tuple<string, string>(Languages.Spanish, "Segundos"));
             AddText(AddTranslation("WithoutLoweringSchedule"),
                 new Tuple<string, string>(Languages.English, "WithoutLoweringSchedule"),
                 new Tuple<string, string>(Languages.Spanish, "Sin horario de arriado"));
-            AddText(AddTranslation("FlagWillBeLoweredInmediately"),
-                new Tuple<string, string>(Languages.English, "Flag will be lowered inmediately"),
-                new Tuple<string, string>(Languages.Spanish, "La bandera será bajada inmediatamente"));
+
+            AddText(AddTranslation("YouDoNotHaveRightsToAccessThisContent"),
+                new Tuple<string, string>(Languages.English, "You do not have rights to access this content"),
+                new Tuple<string, string>(Languages.Spanish, "No tienes permiso para acceder a este contenido")); 
 
             AddText(AddTranslation("NewFileHasBeenUploaded"),
                 new Tuple<string, string>(Languages.English, "A new file has been uploaded to championship"),

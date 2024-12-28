@@ -44,22 +44,14 @@ namespace RaceBoard.Data.Repositories
 
         public void Create(UserSettings userSettings, ITransactionalContext? context = null)
         {
-            string sql = $@"INSERT INTO [UserSettings]
-                            ( 
-                                IdUser, IdCulture, IdLanguage, IdTimeZone
-                            )
+            string sql = $@"INSERT INTO [UserSettings] 
+                                ( IdUser, IdLanguage, IdTimeZone )
                             VALUES
-                            (
-                                @idUser,
-                                @idCulture,
-                                @idLanguage,
-                                @idTimeZone
-                            )";
+                                ( @idUser, @idLanguage, @idTimeZone )";
 
             QueryBuilder.AddCommand(sql);
 
             QueryBuilder.AddParameter("idUser", userSettings.User.Id);
-            QueryBuilder.AddParameter("idCulture", userSettings.Culture.Id);
             QueryBuilder.AddParameter("idLanguage", userSettings.Language.Id);
             QueryBuilder.AddParameter("idTimeZone", userSettings.TimeZone.Id);
 
@@ -72,7 +64,6 @@ namespace RaceBoard.Data.Repositories
         {
             string sql = $@"UPDATE [UserSettings]
                             SET
-                                IdCulture = @idCulture,
                                 IdLanguage = @idLanguage,
                                 IdTimeZone = @idTimeZone";
 
@@ -81,7 +72,6 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddCondition("IdUser = @idUser");
             QueryBuilder.AddParameter("idUser", userSettings.User.Id);
 
-            QueryBuilder.AddParameter("idCulture", userSettings.Culture.Id);
             QueryBuilder.AddParameter("idLanguage", userSettings.Language.Id);
             QueryBuilder.AddParameter("idTimeZone", userSettings.TimeZone.Id);
 
@@ -103,11 +93,9 @@ namespace RaceBoard.Data.Repositories
                        SELECT 
                             [UserSettings].Id [Id],
                             [UserSettings].IdUser [Id],
-                            [Culture].Id [Id], 
-                            [Culture].Name [Name],
-                            [Culture].Description [Description],                         
                             [Language].Id [Id],
                             [Language].Name [Name],
+                            [Language].Code [Code],
                             [TimeZone].Id [Id],
                             [TimeZone].Name [Name],
                             [TimeZone].Identifier [Identifier],
@@ -116,7 +104,6 @@ namespace RaceBoard.Data.Repositories
                             [DateFormat].Format [Format]
                         FROM UserSettings
                         LEFT JOIN [User] ON [User].Id = [UserSettings].IdUser
-                        LEFT JOIN Culture ON [Culture].Id = [UserSettings].IdCulture
                         LEFT JOIN Language ON [Language].Id = [UserSettings].IdLanguage
                         LEFT JOIN TimeZone ON [TimeZone].Id = [UserSettings].IdTimeZone
                         LEFT JOIN DateFormat ON [DateFormat].Id = [UserSettings].IdDateFormat";
@@ -131,19 +118,18 @@ namespace RaceBoard.Data.Repositories
                 (
                     (x) =>
                     {
-                        userSettingsList = x.Read<UserSettings, User, Culture, Language, TimeZone, DateFormat, UserSettings>
+                        userSettingsList = x.Read<UserSettings, User, Language, TimeZone, DateFormat, UserSettings>
                         (
-                            (userSettings, user, culture, language, timeZone, dateFormat) =>
+                            (userSettings, user, language, timeZone, dateFormat) =>
                             {
                                 userSettings.User = user;
-                                userSettings.Culture = culture;
                                 userSettings.Language = language;
                                 userSettings.TimeZone = timeZone;
                                 userSettings.DateFormat = dateFormat;
 
                                 return userSettings;
                             },
-                            splitOn: "Id, Id, Id, Id, Id, Id"
+                            splitOn: "Id, Id, Id, Id, Id"
                         ).ToList();
                     },
                     context
