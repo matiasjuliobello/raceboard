@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Translations.Interfaces;
 using System.Net;
-using RaceBoard.DTOs.Competition.Request;
-using System.Security;
 
 namespace RaceBoard.Service.Controllers.Abstract
 {
@@ -40,7 +38,16 @@ namespace RaceBoard.Service.Controllers.Abstract
 
         protected User GetUserFromRequestContext()
         {
-            return _requestContextHelper.GetUser();
+            return _requestContextHelper!.GetUser();
+        }
+
+        protected string GetRequestLanguage()
+        {
+            var context = _requestContextHelper!.GetContext();
+            if (context == null || String.IsNullOrEmpty(context.Language))
+                return "";
+
+            return context.Language;
         }
 
         protected UserSettings GetUserSettings(string username)

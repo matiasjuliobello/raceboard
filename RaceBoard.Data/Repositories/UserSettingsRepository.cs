@@ -73,13 +73,14 @@ namespace RaceBoard.Data.Repositories
             string sql = $@"UPDATE [UserSettings]
                             SET
                                 IdCulture = @idCulture,
-                                IdLanguage = @idLanguage
+                                IdLanguage = @idLanguage,
                                 IdTimeZone = @idTimeZone";
 
             QueryBuilder.AddCommand(sql);
 
-            QueryBuilder.AddCondition("Id = @id");
-            QueryBuilder.AddParameter("id", userSettings.Id);
+            QueryBuilder.AddCondition("IdUser = @idUser");
+            QueryBuilder.AddParameter("idUser", userSettings.User.Id);
+
             QueryBuilder.AddParameter("idCulture", userSettings.Culture.Id);
             QueryBuilder.AddParameter("idLanguage", userSettings.Language.Id);
             QueryBuilder.AddParameter("idTimeZone", userSettings.TimeZone.Id);

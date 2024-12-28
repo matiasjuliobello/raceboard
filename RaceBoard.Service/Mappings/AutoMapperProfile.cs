@@ -88,7 +88,7 @@ namespace RaceBoard.Service.Mappings
             CreateMap<UserSearchFilterRequest, UserSearchFilter>();
 
             CreateMap<UserSettingsRequest, UserSettings>()
-                .ForMember(dest => dest.Culture, opt => opt.MapFrom(src => CreateObject<Culture>(src.Id)))
+                .ForMember(dest => dest.Culture, opt => opt.MapFrom(src => CreateObject<Culture>(src.IdCulture)))
                 .ForMember(dest => dest.Language, opt => opt.MapFrom(src => CreateObject<Domain.Language>(src.IdLanguage)))
                 .ForMember(dest => dest.TimeZone, opt => opt.MapFrom(src => CreateObject<TimeZone>(src.IdTimeZone)));
 

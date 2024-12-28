@@ -47,6 +47,8 @@ namespace RaceBoard.Translations
         public string Get(string key, params object[] arguments)
         {
             TranslatedText translatedText = _translationProvider.Get(key, _language);
+            if (translatedText == null)
+                return key;
 
             string text = translatedText.Text;
 

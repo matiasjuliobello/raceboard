@@ -55,6 +55,8 @@ namespace RaceBoard.Service.Controllers
         {
             var data = _mapper.Map<UserSettings>(userSettingsRequest);
 
+            data.User = base.GetUserFromRequestContext();
+
             _userSettingsManager.Create(data);
 
             return Ok(data.Id);
@@ -64,6 +66,8 @@ namespace RaceBoard.Service.Controllers
         public ActionResult Update(UserSettingsRequest userSettingsRequest)
         {
             var data = _mapper.Map<UserSettings>(userSettingsRequest);
+
+            data.User = base.GetUserFromRequestContext();
 
             _userSettingsManager.Update(data);
 

@@ -6,6 +6,7 @@ using RaceBoard.Translations.Interfaces;
 using RaceBoard.DTOs.Translation.Response;
 using Microsoft.AspNetCore.Authorization;
 
+
 namespace RaceBoard.Service.Controllers
 {
     [Route("api/translations")]
@@ -13,6 +14,7 @@ namespace RaceBoard.Service.Controllers
     public class TranslationController : AbstractController<TranslationController>
     {
         private readonly ITranslationProvider _translationProvider;
+        private readonly ITranslator _translator;
 
         public TranslationController
             (
@@ -24,6 +26,7 @@ namespace RaceBoard.Service.Controllers
                 IRequestContextHelper requestContextHelper
             ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
         {
+            _translator = translator;
             _translationProvider = translationProvider;
         }
 
@@ -31,7 +34,7 @@ namespace RaceBoard.Service.Controllers
         [AllowAnonymous]
         public ActionResult<List<TranslationResponse>> Get()
         {
-            string language = "es-AR";
+            string language = base.GetRequestLanguage() ?? "es-AR"; //_translator.CurrentLanguage
 
             var data = _translationProvider.Get(language);
 
