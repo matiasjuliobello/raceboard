@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
 using RaceBoard.Translations.Entities;
 using RaceBoard.Translations.Interfaces;
+using System.Diagnostics.Metrics;
+using System.Drawing;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.Xml;
@@ -560,6 +562,13 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("MedicalInsurance"),
                 new Tuple<string, string>(Languages.English, "Medical insurance"),
                 new Tuple<string, string>(Languages.Spanish, "Obra social"));
+            AddText(AddTranslation("Email"),
+                new Tuple<string, string>(Languages.English, "E-mail"),
+                new Tuple<string, string>(Languages.Spanish, "E-mail"));
+
+            AddText(AddTranslation("IamChampsionshipManager"),
+                new Tuple<string, string>(Languages.English, "I'm a championship manager"),
+                new Tuple<string, string>(Languages.Spanish, "Soy organizador de campeonatos"));
 
             AddText(AddTranslation("NoResultsFoundFor"),
                 new Tuple<string, string>(Languages.English, "No results found for"),
@@ -582,7 +591,9 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.English, ".. or just wait"),
                 new Tuple<string, string>(Languages.Spanish, ".. o espere"));
 
-
+            AddText(AddTranslation("CreateNewAccount"),
+                new Tuple<string, string>(Languages.English, "Create new account"),
+                new Tuple<string, string>(Languages.Spanish, "Crear nueva cuenta"));
             AddText(AddTranslation("CreateNewOrganization"),
                 new Tuple<string, string>(Languages.English, "Create new club"),
                 new Tuple<string, string>(Languages.Spanish, "Crear nuevo club"));
@@ -592,6 +603,30 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("CreateNewTeam"),
                 new Tuple<string, string>(Languages.English, "Create new team"),
                 new Tuple<string, string>(Languages.Spanish, "Crear nuevo equipo"));
+            AddText(AddTranslation("WelcomeToRaceBoard"),
+                new Tuple<string, string>(Languages.English, "Welcome to RaceBoard"),
+                new Tuple<string, string>(Languages.Spanish, "Bienvenido a RaceBoard"));
+            AddText(AddTranslation("LandingWelcomeMessage"),
+                new Tuple<string, string>(Languages.English, "Access championship results, get regattas latest status, and get in touch with the committee"),
+                new Tuple<string, string>(Languages.Spanish, "Accede a los resultados de los campeonatos, informate sobre el estado de las regatas y comunicate con la comisión"));
+            AddText(AddTranslation("RememberMe"),
+                new Tuple<string, string>(Languages.English, "Remember me"),
+                new Tuple<string, string>(Languages.Spanish, "Recuérdame"));
+            AddText(AddTranslation("Enter"),
+                new Tuple<string, string>(Languages.English, "Enter"),
+                new Tuple<string, string>(Languages.Spanish, "Entrar"));
+            AddText(AddTranslation("OrStartSessionWith"),
+                new Tuple<string, string>(Languages.English, "Or start session with"),
+                new Tuple<string, string>(Languages.Spanish, "O iniciar sesión con"));
+            AddText(AddTranslation("DontHaveAnAccountYet?"),
+                new Tuple<string, string>(Languages.English, "Don't have an account yet?"),
+                new Tuple<string, string>(Languages.Spanish, "¿Aún no tienes una cuenta?"));
+            AddText(AddTranslation("SuccessulLogin"),
+                new Tuple<string, string>(Languages.English, "Successul login"),
+                new Tuple<string, string>(Languages.Spanish, "Login exitoso"));
+            AddText(AddTranslation("Welcome"),
+                new Tuple<string, string>(Languages.English, "Welcome"),
+                new Tuple<string, string>(Languages.Spanish, "Bienvenido"));
 
             AddText(AddTranslation("Welcome"),
                 new Tuple<string, string>(Languages.English, "Welcome"),
