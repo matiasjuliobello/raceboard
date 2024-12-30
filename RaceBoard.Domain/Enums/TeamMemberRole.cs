@@ -2,8 +2,8 @@
 {
     public enum TeamMemberRole
     {
-        Leader = 1,
-        Helmsan = 2,
-        Crew = 3
+        Leader = 10,
+        Helm = 11,
+        Crew = 12
     }
 }

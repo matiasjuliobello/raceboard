@@ -18,10 +18,10 @@ namespace RaceBoard.Data.Repositories
             //{ "Organization.Name", "[Organization].Name" },
             //{ "RaceClass.Id", "[RaceClass].Id" },
             //{ "RaceClass.Name", "[RaceClass].Name"},
-            //{ "Competition.Id", "[Competition].Id" },
-            //{ "Competition.Name", "[Competition].Name"},
-            //{ "Competition.StartDate", "[Competition].StartDate"},
-            //{ "Competition.EndDate", "[Competition].EndDate"}
+            //{ "Championship.Id", "[Championship].Id" },
+            //{ "Championship.Name", "[Championship].Name"},
+            //{ "Championship.StartDate", "[Championship].StartDate"},
+            //{ "Championship.EndDate", "[Championship].EndDate"}
         };
 
         #endregion
@@ -90,8 +90,8 @@ namespace RaceBoard.Data.Repositories
             string sql = $@"SELECT
                                 [Device_Subscription].Id [Id],
                                 [Device].Id [Id],
-                                [Competition].Id [Id],
-                                [Competition].Name [Name],
+                                [Championship].Id [Id],
+                                [Championship].Name [Name],
                                 [City].Id [Id],
                                 [City].Name [Name],
                                 [Country].Id [Id],
@@ -100,8 +100,8 @@ namespace RaceBoard.Data.Repositories
                                 [RaceClass].Name [Name]
                             FROM [Device_Subscription]
                             INNER JOIN [Device] ON [Device].Id = [Device_Subscription].IdDevice
-                            INNER JOIN [Competition] ON [Competition].Id = [Device_Subscription].IdCompetition
-                            INNER JOIN [City] [City] ON [City].Id = [Competition].IdCity
+                            INNER JOIN [Championship] ON [Championship].Id = [Device_Subscription].IdChampionship
+                            INNER JOIN [City] [City] ON [City].Id = [Championship].IdCity
                             INNER JOIN [Country] [Country] ON [Country].Id = [City].IdCountry
                             INNER JOIN [RaceClass] ON [RaceClass].Id = [Device_Subscription].IdRaceClass";
 
@@ -116,22 +116,22 @@ namespace RaceBoard.Data.Repositories
                 (
                     (x) =>
                     {
-                        subscriptions = x.Read<DeviceSubscription, Device, Competition, City, Country, RaceClass, DeviceSubscription>
+                        subscriptions = x.Read<DeviceSubscription, Device, Championship, City, Country, RaceClass, DeviceSubscription>
                         (
-                            (subscription, device, competition, city, country, raceClass) =>
+                            (subscription, device, championship, city, country, raceClass) =>
                             {
                                 var item = subscriptions.FirstOrDefault(x => x.Device.Id == device.Id);
                                 if (item == null)
                                 {
                                     item = subscription;
                                     item.Device = device;
-                                    item.Competition = competition;
+                                    item.Championship = championship;
                                     subscriptions.Add(item);
                                 }
                                 item.RaceClasses.Add(raceClass);
 
                                 city.Country = country;
-                                competition.City = city;
+                                championship.City = city;
 
                                 return subscription;
                             },
@@ -151,14 +151,14 @@ namespace RaceBoard.Data.Repositories
             foreach (var raceClass in deviceSubscription.RaceClasses)
             {
                 string sql = @" INSERT INTO [Device_Subscription]
-                                    ( IdDevice, IdCompetition, IdRaceClass )
+                                    ( IdDevice, IdChampionship, IdRaceClass )
                                 VALUES
-                                    ( @idDevice, @idCompetition, @idRaceClass )";
+                                    ( @idDevice, @idChampionship, @idRaceClass )";
 
                 QueryBuilder.AddCommand(sql);
 
                 QueryBuilder.AddParameter("idDevice", deviceSubscription.Device.Id);
-                QueryBuilder.AddParameter("idCompetition", deviceSubscription.Competition.Id);
+                QueryBuilder.AddParameter("idChampionship", deviceSubscription.Championship.Id);
                 QueryBuilder.AddParameter("idRaceClass", raceClass.Id);
 
                 QueryBuilder.AddReturnLastInsertedId();

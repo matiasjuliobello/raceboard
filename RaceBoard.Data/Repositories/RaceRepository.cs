@@ -19,10 +19,10 @@ namespace RaceBoard.Data.Repositories
             { "Schedule", "[Race].Schedule" },
             { "RaceClass.Id", "[RaceClass].Id" },
             { "RaceClass.Name", "[RaceClass].Name"},
-            { "Competition.Id", "[Competition].Id" },
-            { "Competition.Name", "[Competition].Name"},
-            { "Competition.StartDate", "[Competition].StartDate"},
-            { "Competition.EndDate", "[Competition].EndDate"}
+            { "Championship.Id", "[Championship].Id" },
+            { "Championship.Name", "[Championship].Name"},
+            { "Championship.StartDate", "[Championship].StartDate"},
+            { "Championship.EndDate", "[Championship].EndDate"}
         };
 
         #endregion
@@ -90,12 +90,12 @@ namespace RaceBoard.Data.Repositories
                                 [Race].Schedule [Schedule],
                                 [RaceClass].Id [Id],
                                 [RaceClass].Name [Name],
-                                [Competition].Id [Id],
-                                [Competition].Name [Name],
-                                [Competition].StartDate [StartDate],
-                                [Competition].EndDate [EndDate]
+                                [Championship].Id [Id],
+                                [Championship].Name [Name],
+                                [Championship].StartDate [StartDate],
+                                [Championship].EndDate [EndDate]
                             FROM [Race] [Race]
-                            INNER JOIN [Competition] [Competition] ON [Competition].Id = [Race].IdCompetition
+                            INNER JOIN [Championship] [Championship] ON [Championship].Id = [Race].IdChampionship
                             LEFT JOIN [Race_RaceClass] [Race_RaceClass] ON [Race_RaceClass].IdRace = [Race].Id
                             LEFT JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Race_RaceClass].IdRaceClass";
 
@@ -112,15 +112,15 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<Race, RaceClass, Competition, Race>
+                        return reader.Read<Race, RaceClass, Championship, Race>
                         (
-                            (race, raceClass, competition) =>
+                            (race, raceClass, championship) =>
                             {
                                 var existingRace = races.FirstOrDefault(x => x.Id == race.Id);
                                 if (existingRace == null)
                                 {
                                     races.Add(race);
-                                    race.Competition = competition;
+                                    race.Championship = championship;
                                 }
                                 else
                                 {
@@ -147,7 +147,7 @@ namespace RaceBoard.Data.Repositories
                 return;
 
             base.AddFilterCriteria(ConditionType.In, "Race", "Id", "ids", searchFilter.Ids);
-            base.AddFilterCriteria(ConditionType.Equal, "Competition", "Id", "idCompetition", searchFilter.Competition?.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "Championship", "Id", "idChampionship", searchFilter.Championship?.Id);
             base.AddFilterCriteria(ConditionType.Equal, "RaceClass", "Id", "idRaceClass", searchFilter.RaceClass?.Id);
         }
 
@@ -156,13 +156,13 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.Clear();
 
             string sql = @" INSERT INTO [Race]
-                                ( IdCompetition, Schedule )
+                                ( IdChampionship, Schedule )
                             VALUES
-                                ( @idCompetition, @schedule )";
+                                ( @idChampionship, @schedule )";
 
             QueryBuilder.AddCommand(sql);
 
-            QueryBuilder.AddParameter("idCompetition", race.Competition.Id);
+            QueryBuilder.AddParameter("idChampionship", race.Championship.Id);
             QueryBuilder.AddParameter("schedule", race.Schedule);
 
             QueryBuilder.AddReturnLastInsertedId();
@@ -178,12 +178,12 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.Clear();
 
             string sql = @" UPDATE [Race] SET
-                                IdCompetition = @idCompetition
+                                IdChampionship = @idChampionship
                                 Schedule = @schedule";
 
             QueryBuilder.AddCommand(sql);
 
-            QueryBuilder.AddParameter("idCompetition", race.Competition.Id);
+            QueryBuilder.AddParameter("idChampionship", race.Championship.Id);
             QueryBuilder.AddParameter("schedule", race.Schedule);
 
             QueryBuilder.AddParameter("id", race.Id);

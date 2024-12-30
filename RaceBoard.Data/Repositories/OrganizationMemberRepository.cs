@@ -78,7 +78,7 @@ namespace RaceBoard.Data.Repositories
             //QueryBuilder.AddCommand(existsQuery);
             //QueryBuilder.AddParameter("name", organizationMember.Name);
             //QueryBuilder.AddParameter("idCity", organizationMember.City.Id);
-            ////QueryBuilder.AddParameter("idsOrganization", competition.Organizations.Select(x => x.Id));
+            ////QueryBuilder.AddParameter("idsOrganization", championship.Organizations.Select(x => x.Id));
             //QueryBuilder.AddParameter("id", organizationMember.Id);
 
             //return base.Execute<bool>(context);
@@ -386,6 +386,8 @@ namespace RaceBoard.Data.Repositories
         {
             base.AddFilterCriteria(ConditionType.In, "Organization_Member", "Id", "id", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Equal, "Organization_Member", "IdOrganization", "idOrganization", searchFilter.Organization?.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "Organization_Member", "IdUser", "idUser", searchFilter.User?.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "Organization_Member", "IsActive", "isActive", searchFilter.IsActive);
         }
 
         private void ProcessInvitationSearchFilter(OrganizationMemberInvitationSearchFilter searchFilter)

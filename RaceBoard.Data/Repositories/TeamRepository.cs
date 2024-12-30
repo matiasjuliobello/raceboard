@@ -18,10 +18,10 @@ namespace RaceBoard.Data.Repositories
             { "Organization.Name", "[Organization].Name" },
             { "RaceClass.Id", "[RaceClass].Id" },
             { "RaceClass.Name", "[RaceClass].Name"},
-            { "Competition.Id", "[Competition].Id" },
-            { "Competition.Name", "[Competition].Name"},
-            { "Competition.StartDate", "[Competition].StartDate"},
-            { "Competition.EndDate", "[Competition].EndDate"}
+            { "Championship.Id", "[Championship].Id" },
+            { "Championship.Name", "[Championship].Name"},
+            { "Championship.StartDate", "[Championship].StartDate"},
+            { "Championship.EndDate", "[Championship].EndDate"}
         };
 
         #endregion
@@ -58,12 +58,12 @@ namespace RaceBoard.Data.Repositories
 
         public bool ExistsDuplicate(Team team, ITransactionalContext? context = null)
         {
-            //string condition = "[IdCompetition] = @idCompetition AND [IdRaceClass] = @idRaceClass";
+            //string condition = "[IdChampionship] = @idChampionship AND [IdRaceClass] = @idRaceClass";
 
             //string existsQuery = base.GetExistsDuplicateQuery("[Team]", condition, "Id", "@id");
 
             //QueryBuilder.AddCommand(existsQuery);
-            //QueryBuilder.AddParameter("idCompetition", team.Competition.Id);
+            //QueryBuilder.AddParameter("idChampionship", team.Championship.Id);
             //QueryBuilder.AddParameter("idRaceClass", team.RaceClass.Id);
             //QueryBuilder.AddParameter("id", team.Id);
 
@@ -110,14 +110,14 @@ namespace RaceBoard.Data.Repositories
                                 [Organization].Name [Name],
                                 [RaceClass].Id [Id],
                                 [RaceClass].Name [Name],
-                                [Competition].Id [Id],
-                                [Competition].Name [Name],
-                                [Competition].StartDate [StartDate],
-                                [Competition].EndDate [EndDate],
+                                [Championship].Id [Id],
+                                [Championship].Name [Name],
+                                [Championship].StartDate [StartDate],
+                                [Championship].EndDate [EndDate],
                                 [Team_Member].Id [Id]
                             FROM [Team] [Team]
                             INNER JOIN [Organization] [Organization] ON [Organization].Id = [Team].IdOrganization
-                            INNER JOIN [Competition] [Competition] ON [Competition].Id = [Team].IdCompetition
+                            INNER JOIN [Championship] [Championship] ON [Championship].Id = [Team].IdChampionship
                             INNER JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Team].IdRaceClass
                             LEFT JOIN [Team_Member] ON [Team_Member].IdTeam = [Team].Id";
 
@@ -134,9 +134,9 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<Team, Organization, RaceClass, Competition, TeamMember, Team>
+                        return reader.Read<Team, Organization, RaceClass, Championship, TeamMember, Team>
                         (
-                            (team, organization, raceClass, competition, member) =>
+                            (team, organization, raceClass, championship, member) =>
                             {
                                 var t = teams.FirstOrDefault(x => x.Id == team.Id);
                                 if (t == null)
@@ -146,7 +146,7 @@ namespace RaceBoard.Data.Repositories
 
                                 team.Organization = organization;
                                 team.RaceClass = raceClass;
-                                team.Competition = competition;
+                                team.Championship = championship;
 
                                 if (member != null)
                                     team.Members.Add(member);
@@ -171,21 +171,21 @@ namespace RaceBoard.Data.Repositories
 
             base.AddFilterCriteria(ConditionType.In, "Team", "Id", "ids", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Equal, "Organization", "Id", "idOrganization", searchFilter.Organization?.Id); 
-            base.AddFilterCriteria(ConditionType.Equal, "Competition", "Id", "idCompetition", searchFilter.Competition?.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "Championship", "Id", "idChampionship", searchFilter.Championship?.Id);
             base.AddFilterCriteria(ConditionType.Equal, "RaceClass", "Id", "idRaceClass", searchFilter.RaceClass?.Id);
         }
 
         private void CreateTeam(Team team, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [Team]
-                                ( IdOrganization, IdCompetition, IdRaceClass )
+                                ( IdOrganization, IdChampionship, IdRaceClass )
                             VALUES
-                                ( @idOrganization, @idCompetition, @idRaceClass )";
+                                ( @idOrganization, @idChampionship, @idRaceClass )";
 
             QueryBuilder.AddCommand(sql);
 
             QueryBuilder.AddParameter("idOrganization", team.Organization.Id); 
-            QueryBuilder.AddParameter("idCompetition", team.Competition.Id);
+            QueryBuilder.AddParameter("idChampionship", team.Championship.Id);
             QueryBuilder.AddParameter("idRaceClass", team.RaceClass.Id);
 
             QueryBuilder.AddReturnLastInsertedId();
@@ -196,12 +196,12 @@ namespace RaceBoard.Data.Repositories
         private void UpdateTeam(Team team, ITransactionalContext? context = null)
         {
             string sql = @" UPDATE [Team] SET
-                                IdCompetition = @idCompetition,
+                                IdChampionship = @idChampionship,
                                 IdRaceClass = @idRaceClass";
 
             QueryBuilder.AddCommand(sql);
 
-            QueryBuilder.AddParameter("idCompetition", team.Competition.Id);
+            QueryBuilder.AddParameter("idChampionship", team.Championship.Id);
             QueryBuilder.AddParameter("idRaceClass", team.RaceClass.Id);
 
             QueryBuilder.AddParameter("id", team.Id);

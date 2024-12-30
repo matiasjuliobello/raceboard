@@ -1,6 +1,5 @@
 ﻿using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Interfaces;
-using Format = RaceBoard.Domain.Format;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Domain;
 

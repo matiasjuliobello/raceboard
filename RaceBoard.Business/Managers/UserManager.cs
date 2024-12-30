@@ -10,6 +10,7 @@ using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 using RaceBoard.Translations.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Enums = RaceBoard.Common.Enums;
 
 namespace RaceBoard.Business.Managers
 {
@@ -19,6 +20,7 @@ namespace RaceBoard.Business.Managers
         private readonly int _passwordResetTokenLifetime;
 
         private readonly IUserRepository _userRepository;
+        private readonly IUserSettingsRepository _userSettingsRepository;
         private readonly ICustomValidator<User> _userValidator;
         private readonly ICustomValidator<UserPassword> _userPasswordValidator;
         private readonly ICryptographyHelper _cryptographyHelper;
@@ -29,6 +31,7 @@ namespace RaceBoard.Business.Managers
         public UserManager
             (
                 IUserRepository userRepository,
+                IUserSettingsRepository userSettingsRepository,
                 ICustomValidator<User> userValidator,
                 ICustomValidator<UserPassword> userPasswordValidator,
                 ICryptographyHelper cryptographyHelper,
@@ -38,6 +41,7 @@ namespace RaceBoard.Business.Managers
             ) : base(translator)
         {
             _userRepository = userRepository;
+            _userSettingsRepository = userSettingsRepository;
             _userValidator = userValidator;
             _userPasswordValidator = userPasswordValidator;
             _cryptographyHelper = cryptographyHelper;
@@ -99,12 +103,22 @@ namespace RaceBoard.Business.Managers
 
                 _userRepository.Create(user, context);
 
+                var userSettings = new UserSettings()
+                {
+                    User        = new User() { Id = user.Id },
+                    TimeZone    = new Domain.TimeZone() { Id = 1 },
+                    Language    = new Domain.Language() { Id = (int)Enums.Language.Spanish },
+                    DateFormat  = new DateFormat() { Id = 3 }
+                };
+                _userSettingsRepository.Create(userSettings, context);
+
                 context.Confirm();
             }
             catch (Exception)
             {
                 if (context != null)
                     context.Cancel();
+
                 throw;
             }
         }

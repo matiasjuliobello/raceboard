@@ -1,4 +1,4 @@
-﻿namespace RaceBoard.Domain.Format
+﻿namespace RaceBoard.Domain
 {
     public class DateFormat
     {

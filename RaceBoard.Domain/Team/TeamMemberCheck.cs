@@ -7,7 +7,7 @@ namespace RaceBoard.Domain
         public int Id { get; set; }
         public TeamMember TeamMember { get; set; }
         //public Person Person { get; set; }
-        public Competition Competition { get; set; }
+        public Championship Championship { get; set; }
         public TeamMemberCheckType CheckType { get; set; }
         public DateTimeOffset CheckTime { get; set; }
     }

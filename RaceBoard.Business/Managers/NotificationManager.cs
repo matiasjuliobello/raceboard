@@ -28,7 +28,7 @@ namespace RaceBoard.Business.Managers
             bool.TryParse(configuration["Messaging_Enabled"], out _enabled);
         }
 
-        public async Task SendNotifications(string title, string message, int idCompetition, int[] idsRaceClasses)
+        public async Task SendNotifications(string title, string message, int idChampionship, int[] idsRaceClasses)
         {
             if (!_enabled)
                 return;
@@ -42,7 +42,7 @@ namespace RaceBoard.Business.Managers
             var allRaceClassIds = _raceClassManager.Get().Results.Select(x => x.Id).ToArray();
             if (allRaceClassIds.Length == idsRaceClasses.Length)
             {
-                idTarget = $"{idCompetition}";
+                idTarget = $"{idChampionship}";
 
                 targetRaceClassIds = allRaceClassIds;
             }
@@ -59,7 +59,7 @@ namespace RaceBoard.Business.Managers
                 var notification = new Notification()
                 {
                     NotificationType = Messaging.Providers.NotificationType.Topic,
-                    IdTarget = idTarget != null ? idTarget : $"{idCompetition}_{idsRaceClass}",
+                    IdTarget = idTarget != null ? idTarget : $"{idChampionship}_{idsRaceClass}",
                     Title = title,
                     Message = message,
                     ImageFileUrl = null

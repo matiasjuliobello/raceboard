@@ -43,9 +43,9 @@ namespace RaceBoard.Business.Validators
             //    .WithMessage(Translate("IdOrganizationIsRequired"))
             //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
-            RuleFor(x => x.Competition.Id)
+            RuleFor(x => x.Championship.Id)
                 .NotEmpty()
-                .WithMessage(Translate("IdCompetitionIsRequired"))
+                .WithMessage(Translate("IdChampionshipIsRequired"))
                 .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
 
 

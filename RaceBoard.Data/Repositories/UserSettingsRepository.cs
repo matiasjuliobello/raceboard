@@ -45,15 +45,16 @@ namespace RaceBoard.Data.Repositories
         public void Create(UserSettings userSettings, ITransactionalContext? context = null)
         {
             string sql = $@"INSERT INTO [UserSettings] 
-                                ( IdUser, IdLanguage, IdTimeZone )
+                                ( IdUser, IdLanguage, IdTimeZone, IdDateFormat )
                             VALUES
-                                ( @idUser, @idLanguage, @idTimeZone )";
+                                ( @idUser, @idLanguage, @idTimeZone, @idDateFormat )";
 
             QueryBuilder.AddCommand(sql);
 
             QueryBuilder.AddParameter("idUser", userSettings.User.Id);
             QueryBuilder.AddParameter("idLanguage", userSettings.Language.Id);
             QueryBuilder.AddParameter("idTimeZone", userSettings.TimeZone.Id);
+            QueryBuilder.AddParameter("idDateFormat", userSettings.DateFormat.Id);
 
             QueryBuilder.AddReturnLastInsertedId();
 
@@ -65,7 +66,8 @@ namespace RaceBoard.Data.Repositories
             string sql = $@"UPDATE [UserSettings]
                             SET
                                 IdLanguage = @idLanguage,
-                                IdTimeZone = @idTimeZone";
+                                IdTimeZone = @idTimeZone,
+                                IdDateFormat = @idDateFormat";
 
             QueryBuilder.AddCommand(sql);
 
@@ -74,6 +76,7 @@ namespace RaceBoard.Data.Repositories
 
             QueryBuilder.AddParameter("idLanguage", userSettings.Language.Id);
             QueryBuilder.AddParameter("idTimeZone", userSettings.TimeZone.Id);
+            QueryBuilder.AddParameter("idDateFormat", userSettings.DateFormat.Id);
 
             base.ExecuteAndGetRowsAffected(context);
         }
@@ -103,10 +106,10 @@ namespace RaceBoard.Data.Repositories
                             [DateFormat].Id [Id],
                             [DateFormat].Format [Format]
                         FROM UserSettings
-                        LEFT JOIN [User] ON [User].Id = [UserSettings].IdUser
-                        LEFT JOIN Language ON [Language].Id = [UserSettings].IdLanguage
-                        LEFT JOIN TimeZone ON [TimeZone].Id = [UserSettings].IdTimeZone
-                        LEFT JOIN DateFormat ON [DateFormat].Id = [UserSettings].IdDateFormat";
+                        LEFT JOIN [User]        ON [User].Id = [UserSettings].IdUser
+                        LEFT JOIN [Language]    ON [Language].Id = [UserSettings].IdLanguage
+                        LEFT JOIN [TimeZone]    ON [TimeZone].Id = [UserSettings].IdTimeZone
+                        LEFT JOIN [DateFormat]  ON [DateFormat].Id = [UserSettings].IdDateFormat";
 
             QueryBuilder.AddCommand(sql);
 

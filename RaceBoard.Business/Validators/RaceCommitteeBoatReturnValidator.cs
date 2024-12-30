@@ -6,14 +6,14 @@ using RaceBoard.Domain;
 
 namespace RaceBoard.Business.Validators
 {
-    public class RaceCommitteeBoatReturnValidator : AbstractCustomValidator<CommitteeBoatReturn>
+    public class RaceCommitteeBoatReturnValidator : AbstractCustomValidator<ChampionshipBoatReturn>
     {
-        private readonly ICommitteeBoatReturnRepository _committeeBoatReturnRepository;
+        private readonly IChampionshipCommitteeBoatReturnRepository _committeeBoatReturnRepository;
 
         public RaceCommitteeBoatReturnValidator
             (
                 ITranslator translator,
-                ICommitteeBoatReturnRepository committeeBoatReturnRepository
+                IChampionshipCommitteeBoatReturnRepository committeeBoatReturnRepository
             )
             : base(translator)
         {

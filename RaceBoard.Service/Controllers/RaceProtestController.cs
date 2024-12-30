@@ -13,7 +13,7 @@ using RaceBoard.Translations.Interfaces;
 
 namespace RaceBoard.Service.Controllers
 {
-    [Route("api/competitions")]
+    [Route("api/championships")]
     [ApiController]
     public class RaceProtestController : AbstractController<RaceProtestController>
     {

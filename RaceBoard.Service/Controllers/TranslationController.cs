@@ -34,7 +34,9 @@ namespace RaceBoard.Service.Controllers
         [AllowAnonymous]
         public ActionResult<List<TranslationResponse>> Get()
         {
-            string language = base.GetRequestLanguage() ?? "es-AR"; //_translator.CurrentLanguage
+            string language = base.GetRequestLanguage(); //_translator.CurrentLanguagev
+            if (string.IsNullOrEmpty(language))
+                language = "en-US";
 
             var data = _translationProvider.Get(language);
 

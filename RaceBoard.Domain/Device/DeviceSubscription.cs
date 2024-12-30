@@ -3,7 +3,7 @@
     public class DeviceSubscription
     {
         public Device Device { get; set; }
-        public Competition Competition { get; set; }
+        public Championship Championship { get; set; }
         public List<RaceClass> RaceClasses { get; set; }
 
         public DeviceSubscription()

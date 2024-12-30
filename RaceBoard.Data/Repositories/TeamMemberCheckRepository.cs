@@ -107,7 +107,7 @@ namespace RaceBoard.Data.Repositories
                             INNER JOIN [TeamMemberCheckType] [TeamMemberCheckType] ON [TeamMemberCheckType].Id = [Team_MemberCheck].IdCheckType
                             LEFT JOIN [Team_Member] [Team_Member] ON [Team_Member].Id = [Team_MemberCheck].IdTeamMember
                             LEFT JOIN [Team] [Team] ON [Team].Id = [Team_Member].IdTeam
-                            LEFT JOIN [Competition] [Competition] ON [Competition].Id = [Team].IdCompetition                            
+                            LEFT JOIN [Championship] [Championship] ON [Championship].Id = [Team].IdChampionship                            
                             LEFT JOIN [TeamMemberRole] [TeamMemberRole] ON [TeamMemberRole].Id = [Team_Member].IdTeamMemberRole
                             LEFT JOIN [Person] [Person] ON [Person].Id = [Team_Member].IdPerson";
 
@@ -156,7 +156,7 @@ namespace RaceBoard.Data.Repositories
             if (searchFilter == null)
                 return;
 
-            base.AddFilterCriteria(ConditionType.Equal, "[Competition]", "Id", "idCompetition", searchFilter.Competition?.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "[Championship]", "Id", "idChampionship", searchFilter.Championship?.Id);
             base.AddFilterCriteria(ConditionType.Equal, "[Team]", "Id", "idTeam", searchFilter.Team?.Id);
             base.AddFilterCriteria(ConditionType.In, "[Team]", "IdRaceClass", "idsRaceClasses", searchFilter?.RaceClasses?.Select(x => x.Id));
             base.AddFilterCriteria(ConditionType.GreaterOrEqualThan, "[Team_MemberCheck]", "CheckTime", "dateFrom", searchFilter?.DateFrom?.UtcDateTime);

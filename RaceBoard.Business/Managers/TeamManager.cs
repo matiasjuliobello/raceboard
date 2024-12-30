@@ -6,27 +6,37 @@ using RaceBoard.Translations.Interfaces;
 using RaceBoard.Domain;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Common.Exceptions;
-using RaceBoard.Common.Enums;
 using RaceBoard.Business.Validators.Interfaces;
+using RaceBoard.Common.Helpers.Interfaces;
+using RaceBoard.Common.Enums;
+using Enums = RaceBoard.Domain.Enums;
 
 namespace RaceBoard.Business.Managers
 {
     public class TeamManager : AbstractManager, ITeamManager
     {
         private readonly ITeamRepository _teamRepository;
+        private readonly ITeamMemberRepository _teamMemberRepository;
         private readonly ICustomValidator<Team> _teamValidator;
+        private readonly IDateTimeHelper _dateTimeHelper;
 
         #region Constructors
 
         public TeamManager
             (
                 ITeamRepository teamRepository,
+                ITeamMemberRepository teamMemberRepository,
                 ICustomValidator<Team> teamValidator,
+                IDateTimeHelper dateTimeHelper,
                 ITranslator translator
             ) : base(translator)
         {
             _teamRepository = teamRepository;
+            _teamMemberRepository = teamMemberRepository;
+
             _teamValidator = teamValidator;
+
+            _dateTimeHelper = dateTimeHelper;
         }
 
         #endregion
@@ -51,6 +61,8 @@ namespace RaceBoard.Business.Managers
         {
             _teamValidator.SetTransactionalContext(context);
 
+            var currentDate = _dateTimeHelper.GetCurrentTimestamp();
+
             if (!_teamValidator.IsValid(team, Scenario.Create))
                 throw new FunctionalException(ErrorType.ValidationError, _teamValidator.Errors);
 
@@ -60,12 +72,24 @@ namespace RaceBoard.Business.Managers
             try
             {
                 _teamRepository.Create(team, context);
-                
-                _teamRepository.ConfirmTransactionalContext(context);
+
+                var teamMember = new TeamMember()
+                {
+                    IsActive = true,
+                    JoinDate = currentDate,
+                    Team = team,
+                    User = team.CreationUser,
+                    Role = new TeamMemberRole() { Id = (int)Enums.TeamMemberRole.Leader }
+                };
+                _teamMemberRepository.Add(teamMember, context);
+
+                context.Confirm();
             }
             catch (Exception)
             {
-                _teamRepository.CancelTransactionalContext(context);
+                if (context != null)
+                    context.Cancel();
+                
                 throw;
             }
         }

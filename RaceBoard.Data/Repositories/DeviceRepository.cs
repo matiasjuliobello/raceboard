@@ -17,10 +17,10 @@ namespace RaceBoard.Data.Repositories
             //{ "Organization.Name", "[Organization].Name" },
             //{ "RaceClass.Id", "[RaceClass].Id" },
             //{ "RaceClass.Name", "[RaceClass].Name"},
-            //{ "Competition.Id", "[Competition].Id" },
-            //{ "Competition.Name", "[Competition].Name"},
-            //{ "Competition.StartDate", "[Competition].StartDate"},
-            //{ "Competition.EndDate", "[Competition].EndDate"}
+            //{ "Championship.Id", "[Championship].Id" },
+            //{ "Championship.Name", "[Championship].Name"},
+            //{ "Championship.StartDate", "[Championship].StartDate"},
+            //{ "Championship.EndDate", "[Championship].EndDate"}
         };
 
         #endregion

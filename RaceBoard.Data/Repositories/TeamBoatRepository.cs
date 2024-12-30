@@ -68,10 +68,10 @@ namespace RaceBoard.Data.Repositories
                                 (
                                  SELECT [Team_Boat].Id FROM [Team_Boat] [Team_Boat]
                                  INNER JOIN [Team] [Team] ON [Team].Id = [Team_Boat].IdTeam
-                                 INNER JOIN [Competition] [Competition] ON [Competition].Id = [Team].IdCompetition
+                                 INNER JOIN [Championship] [Championship] ON [Championship].Id = [Team].IdChampionship
                                  WHERE
                                   [Team_Boat].IdBoat = @idBoat 
-                                 AND [Team].IdCompetition = (SELECT IdCompetition FROM [Team] WHERE Id = @idTeam )
+                                 AND [Team].IdChampionship = (SELECT IdChampionship FROM [Team] WHERE Id = @idTeam )
                                  AND IIF([Team_Boat].Id = @idTeamBoat, 0, 1) = 1
                                 ) [x]
                                ), 1, 0)";

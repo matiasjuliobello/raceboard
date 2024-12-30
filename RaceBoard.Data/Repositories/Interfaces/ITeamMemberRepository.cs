@@ -10,7 +10,7 @@ namespace RaceBoard.Data.Repositories.Interfaces
         void CancelTransactionalContext(ITransactionalContext context);
         bool Exists(int id, ITransactionalContext? context = null);
         bool ExistsDuplicate(TeamMember teamMember, ITransactionalContext? context = null);
-        bool HasMemberInAnotherCompetitionTeam(TeamMember teamMember, ITransactionalContext? context = null);
+        bool HasMemberInAnotherChampionshipTeam(TeamMember teamMember, ITransactionalContext? context = null);
         bool HasParticipationOnRace(TeamMember teamMember, ITransactionalContext? context = null);
         bool HasDuplicatedRole(TeamMember teamMember, ITransactionalContext? context = null);
         PaginatedResult<TeamMember> Get(TeamMemberSearchFilter searchFilter, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);

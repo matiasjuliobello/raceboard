@@ -21,29 +21,29 @@ namespace RaceBoard.Data.Repositories
 
         #region IUserAccessRepository implementation
 
-        public UserAccess Get(int idUser, int idCompetition, ITransactionalContext? context = null)
+        public UserAccess Get(int idUser, int idChampionship, ITransactionalContext? context = null)
         {
-            return this.GetUserAccess(idUser, idCompetition, context);
+            return this.GetUserAccess(idUser, idChampionship, context);
         }
 
         public void Create(UserAccess userAccess, ITransactionalContext? context = null)
         {
-            string sql = $@"INSERT INTO [User_Competition]
+            string sql = $@"INSERT INTO [User_Championship]
                             ( 
-                                IdUser, IdRole, IdCompetition
+                                IdUser, IdRole, IdChampionship
                             )
                             VALUES
                             (
                                 @idUser,
                                 @idRole
-                                @idCompetition
+                                @idChampionship
                             )";
 
             QueryBuilder.AddCommand(sql);
 
             QueryBuilder.AddParameter("idUser", userAccess.User.Id);
             QueryBuilder.AddParameter("idRole", (object)userAccess.Role.Id);
-            QueryBuilder.AddParameter("idCompetition", userAccess.Competition.Id);
+            QueryBuilder.AddParameter("idChampionship", userAccess.Championship.Id);
 
             QueryBuilder.AddReturnLastInsertedId();
 
@@ -52,30 +52,30 @@ namespace RaceBoard.Data.Repositories
 
         public int Delete(int id, ITransactionalContext? context = null)
         {
-            return base.Delete("[User_Competition]", id);
+            return base.Delete("[User_Championship]", id);
         }
 
         #endregion
 
         #region Private Methods
 
-        private UserAccess GetUserAccess(int idUser, int idCompetition, ITransactionalContext? context = null)
+        private UserAccess GetUserAccess(int idUser, int idChampionship, ITransactionalContext? context = null)
         {
             string sql = $@"
                            SELECT 
-                                [User_Competition].Id [Id],
+                                [User_Championship].Id [Id],
                                 [Role].Id [Id],
                                 [Role].Name [Name],
-                                [Competition].Id [Id],
-                                [Competition].Name [Name]
-                            FROM [User_Competition] [User_Competition]
-                            INNER JOIN [User] ON [User].Id = [User_Competition].IdUser
-                            INNER JOIN [Role] ON [Role].Id = [User_Competition].IdRole
-                            INNER JOIN [Competition] ON [Competition].Id = [User_Competition].IdCompetition";
+                                [Championship].Id [Id],
+                                [Championship].Name [Name]
+                            FROM [User_Championship] [User_Championship]
+                            INNER JOIN [User] ON [User].Id = [User_Championship].IdUser
+                            INNER JOIN [Role] ON [Role].Id = [User_Championship].IdRole
+                            INNER JOIN [Championship] ON [Championship].Id = [User_Championship].IdChampionship";
 
             QueryBuilder.AddCommand(sql);
 
-            ProcessSearchFilter(idUser, idCompetition);
+            ProcessSearchFilter(idUser, idChampionship);
 
             var userAccesses = new List<UserAccess>();
 
@@ -83,13 +83,13 @@ namespace RaceBoard.Data.Repositories
                 (
                     (x) =>
                     {
-                        userAccesses = x.Read<UserAccess, User, Role, Competition, UserAccess>
+                        userAccesses = x.Read<UserAccess, User, Role, Championship, UserAccess>
                         (
-                            (userAccess, user, userRole, competition) =>
+                            (userAccess, user, userRole, championship) =>
                             {
                                 userAccess.User = user;
                                 userAccess.Role = userRole;
-                                userAccess.Competition = competition;
+                                userAccess.Championship = championship;
 
                                 return userAccess;
                             },
@@ -102,10 +102,10 @@ namespace RaceBoard.Data.Repositories
             return userAccesses.FirstOrDefault();
         }
 
-        private void ProcessSearchFilter(int idUser, int idCompetition)
+        private void ProcessSearchFilter(int idUser, int idChampionship)
         {
-            base.AddFilterCriteria(ConditionType.Equal, "User_Competition", "IdUser", "idUser", idUser);
-            base.AddFilterCriteria(ConditionType.Equal, "User_Competition", "IdCompetition", "idCompetition", idCompetition);
+            base.AddFilterCriteria(ConditionType.Equal, "User_Championship", "IdUser", "idUser", idUser);
+            base.AddFilterCriteria(ConditionType.Equal, "User_Championship", "IdChampionship", "idChampionship", idChampionship);
         }
 
         #endregion

@@ -85,17 +85,17 @@ public class TeamMemberRepository : AbstractRepository, ITeamMemberRepository
         return base.Execute<bool>(context);
     }
 
-    public bool HasMemberInAnotherCompetitionTeam(TeamMember teamMember, ITransactionalContext? context = null)
+    public bool HasMemberInAnotherChampionshipTeam(TeamMember teamMember, ITransactionalContext? context = null)
     {
         // string query = @"	SELECT 
         //               1
         //              FROM [Team_Contestant] [Team_Contestant] 
         //              INNER JOIN [Team] [Team] ON [Team].Id = [Team_Contestant].IdTeam
-        //              INNER JOIN [Competition] [Competition] ON [Competition].Id = [Team].IdCompetition
+        //              INNER JOIN [Championship] [Championship] ON [Championship].Id = [Team].IdChampionship
         //              WHERE 
-        //               [Competition].Id =	(	
-        //	                    SELECT IdCompetition FROM [Team_Contestant] 
-        //	                    INNER JOIN [Competition] [Competition] ON [Competition].Id = [Team].IdCompetition
+        //               [Championship].Id =	(	
+        //	                    SELECT IdChampionship FROM [Team_Contestant] 
+        //	                    INNER JOIN [Championship] [Championship] ON [Championship].Id = [Team].IdChampionship
         //	                    WHERE [Team_Contestant].Id = @idTeamContestant AND [Team_Contestant].IdPerson = @idPerson
         //)";
 

@@ -16,7 +16,7 @@ using RaceBoard.DTOs.User.Request;
 using RaceBoard.DTOs.User.Response;
 using RaceBoard.DTOs.User.Response.Settings;
 using RaceBoard.Translations.Entities;
-using RaceBoard.DTOs.Competition.Request;
+using RaceBoard.DTOs.Championship.Request;
 using RaceBoard.DTOs.Organization.Request;
 using RaceBoard.DTOs.Boat.Request;
 using RaceBoard.DTOs.RaceClass.Request;
@@ -30,7 +30,7 @@ using RaceBoard.DTOs.MedicalInsurance.Response;
 using RaceBoard.DTOs.Person.Response;
 using RaceBoard.DTOs.Country.Response;
 using RaceBoard.DTOs.Boat.Response;
-using RaceBoard.DTOs.Competition.Response;
+using RaceBoard.DTOs.Championship.Response;
 using RaceBoard.DTOs.City.Response;
 using RaceBoard.DTOs.Organization.Response;
 using RaceBoard.DTOs.TeamMemberRole.Response;
@@ -89,7 +89,8 @@ namespace RaceBoard.Service.Mappings
 
             CreateMap<UserSettingsRequest, UserSettings>()
                 .ForMember(dest => dest.Language, opt => opt.MapFrom(src => CreateObject<Domain.Language>(src.IdLanguage)))
-                .ForMember(dest => dest.TimeZone, opt => opt.MapFrom(src => CreateObject<TimeZone>(src.IdTimeZone)));
+                .ForMember(dest => dest.TimeZone, opt => opt.MapFrom(src => CreateObject<Domain.TimeZone>(src.IdTimeZone)))
+                .ForMember(dest => dest.DateFormat, opt => opt.MapFrom(src => CreateObject<Domain.DateFormat>(src.IdDateFormat)));
 
             CreateMap<UserIdentificationRequest, UserIdentification>()
                 .ForMember(x => x.User, opt => opt.MapFrom(x => CreateObject<User>(x.IdUser)))
@@ -122,7 +123,7 @@ namespace RaceBoard.Service.Mappings
             CreateMap<CitySearchFilterRequest, CitySearchFilter>()
                 .ForMember(dest => dest.Country, opt => opt.MapFrom(src => CreateObject<Country>(src.IdCountry)));
 
-            CreateMap<CompetitionRequest, Competition>()
+            CreateMap<ChampionshipRequest, Championship>()
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => CreateObject<City>(src.IdCity)))
                 .ForMember(t => t.Organizations, opt =>
                 {
@@ -130,25 +131,25 @@ namespace RaceBoard.Service.Mappings
                     opt.MapFrom(s => s.IdsOrganization.ToList());
                 });
 
-            CreateMap<CompetitionSearchFilterRequest, CompetitionSearchFilter>()
+            CreateMap<ChampionshipSearchFilterRequest, ChampionshipSearchFilter>()
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => CreateObject<City>(src.IdCity)));
-            CreateMap<CompetitionMemberInvitationRequest, CompetitionMemberInvitation>()
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
+            CreateMap<ChampionshipMemberInvitationRequest, ChampionshipMemberInvitation>()
+                .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => CreateObject<Role>(src.IdRole)))
                 .ForMember(dest => dest.User, opt => opt.MapFrom(src => CreateObject<User>(src.IdUser)));
 
-            CreateMap<CompetitionGroupRequest, CompetitionGroup>()
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)));
+            CreateMap<ChampionshipGroupRequest, ChampionshipGroup>()
+                .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)));
 
-            CreateMap<CompetitionSearchFilterRequest, CompetitionSearchFilter>()
+            CreateMap<ChampionshipSearchFilterRequest, ChampionshipSearchFilter>()
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => CreateObject<City>(src.IdCity)))
                 .ForMember(dest => dest.Organizations, opt => opt.MapFrom(src => CreateObject<Organization>(src.IdsOrganization)));
 
-            CreateMap<CompetitionNotificationRequest, CompetitionNotification>()
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)));
+            CreateMap<ChampionshipNotificationRequest, ChampionshipNotification>()
+                .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)));
 
-            CreateMap<CompetitionNotificationSearchFilterRequest, CompetitionNotificationSearchFilter>()
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)));
+            CreateMap<ChampionshipNotificationSearchFilterRequest, ChampionshipNotificationSearchFilter>()
+                .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)));
 
             CreateMap<InvitationRequest, Invitation>();
 
@@ -179,39 +180,39 @@ namespace RaceBoard.Service.Mappings
             CreateMap<RaceClassSearchFilterRequest, RaceClassSearchFilter>();
 
             CreateMap<RaceRequest, Race>()
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
+                .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
                 .ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)));
             CreateMap<RaceSearchFilterRequest, RaceSearchFilter>()
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
+                .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
                 .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
 
             CreateMap<RaceProtestRequest, RaceProtest>()
                 .ForMember(dest => dest.Race, opt => opt.MapFrom(src => CreateObject<Race>(src.IdRace)))
                 .ForMember(dest => dest.TeamMember, opt => opt.MapFrom(src => CreateObject<TeamMember>(src.IdTeamMember)));
 
-            CreateMap<CommitteeBoatReturnRequest, CommitteeBoatReturn>()
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
+            CreateMap<ChampionshipBoatReturnRequest, ChampionshipBoatReturn>()
+                .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
                 .ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)));
 
-            CreateMap<CommitteeBoatReturnSearchFilterRequest, CommitteeBoatReturnSearchFilter>()
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
+            CreateMap<ChampionshipBoatReturnSearchFilterRequest, ChampionshipBoatReturnSearchFilter>()
+                .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
                 .ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)));
 
-            CreateMap<CompetitionFileRequest, CompetitionFile>()
+            CreateMap<ChampionshipFileRequest, ChampionshipFile>()
                 .ForMember(dest => dest.FileType, opt => opt.MapFrom(src => CreateObject<FileType>(src.IdFileType)))
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)));
+                .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)));
                 //.ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)));
 
-            CreateMap<CompetitionFileSearchFilterRequest, CompetitionFileSearchFilter>()
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
+            CreateMap<ChampionshipFileSearchFilterRequest, ChampionshipFileSearchFilter>()
+                .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
                 .ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)))
                 .ForMember(dest => dest.FileType, opt => opt.MapFrom(src => CreateObject<FileType>(src.IdFileType)));
 
-            CreateMap<CompetitionNotificationRequest, CompetitionNotification>()
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)));
+            CreateMap<ChampionshipNotificationRequest, ChampionshipNotification>()
+                .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)));
 
-            CreateMap<CompetitionNotificationSearchFilterRequest, CompetitionNotificationSearchFilter>()
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
+            CreateMap<ChampionshipNotificationSearchFilterRequest, ChampionshipNotificationSearchFilter>()
+                .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
                 .ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)));
 
             CreateMap<BloodTypeSearchFilterRequest, BloodTypeSearchFilter>();
@@ -229,11 +230,11 @@ namespace RaceBoard.Service.Mappings
             CreateMap<TeamMemberRoleSearchFilterRequest, TeamMemberRoleSearchFilter>();
 
             CreateMap<TeamRequest, Team>()
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
+                .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
                 .ForMember(dest => dest.Organization, opt => opt.MapFrom(src => CreateObject<Organization>(src.IdOrganization)))
                 .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
             CreateMap<TeamSearchFilterRequest, TeamSearchFilter>()
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
+                .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
                 .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
 
             CreateMap<TeamMemberSearchFilterRequest, TeamMemberSearchFilter>()
@@ -252,24 +253,24 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)));
 
             CreateMap<TeamCheckRequest, TeamMemberCheck>()
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
+                .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
                 .ForMember(dest => dest.CheckType, opt => opt.MapFrom(src => CreateEnum<Enums.TeamMemberCheckType>(src.IdCheckType)));
 
             CreateMap<TeamCheckSearchFilterRequest, TeamCheckSearchFilter>()
                 .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)))
                 .ForMember(dest => dest.CheckType, opt => opt.MapFrom(src => CreateEnum<Enums.TeamMemberCheckType>(src.IdCheckType)))
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
+                .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
                 .ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)));
 
             CreateMap<FlagSearchFilterRequest, FlagSearchFilter>();
 
-            CreateMap<CompetitionFlagGroupRequest, CompetitionFlagGroup>()
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)));
+            CreateMap<ChampionshipFlagGroupRequest, ChampionshipFlagGroup>()
+                .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)));
 
-            CreateMap<CompetitionFlagRequest, CompetitionFlag>()
+            CreateMap<ChampionshipFlagRequest, ChampionshipFlag>()
                 .ForMember(dest => dest.Flag, opt => opt.MapFrom(src => CreateObject<Flag>(src.IdFlag)));
 
-            CreateMap<CompetitionFlagSearchFilterRequest, CompetitionFlagSearchFilter>()
+            CreateMap<ChampionshipFlagSearchFilterRequest, ChampionshipFlagSearchFilter>()
                 .ForMember(dest => dest.Flag, opt => opt.MapFrom(src => CreateObject<Flag>(src.IdFlag)))
                 .ForMember(dest => dest.Person, opt => opt.MapFrom(src => CreateObject<Person>(src.IdPerson)));
 
@@ -281,7 +282,7 @@ namespace RaceBoard.Service.Mappings
 
             CreateMap<DeviceSubscriptionRequest, DeviceSubscription>()
                 .ForMember(dest => dest.Device, opt => opt.MapFrom(src => CreateObject<Device>(src.IdDevice)))
-                .ForMember(dest => dest.Competition, opt => opt.MapFrom(src => CreateObject<Competition>(src.IdCompetition)))
+                .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
                 .ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)));
 
 
@@ -346,22 +347,22 @@ namespace RaceBoard.Service.Mappings
 
             CreateMap<Boat, BoatResponse>();
 
-            CreateMap<Competition, CompetitionResponse>();
-            CreateMap<Competition, CompetitionSimpleResponse>();
-            CreateMap<CompetitionGroup, CompetitionGroupResponse>();
-            CreateMap<CompetitionNotification, CompetitionNotificationResponse>();
-            CreateMap<CommitteeBoatReturn, CommitteeBoatReturnResponse>();
-            CreateMap<CompetitionFile, CompetitionFileResponse>();
-            //CreateMap<CompetitionRaceClass, CompetitionRaceClassResponse>();
-            CreateMap<CompetitionMember, CompetitionMemberResponse>();
-            CreateMap<CompetitionMemberInvitation, CompetitionMemberInvitationResponse>();
+            CreateMap<Championship, ChampionshipResponse>();
+            CreateMap<Championship, ChampionshipSimpleResponse>();
+            CreateMap<ChampionshipGroup, ChampionshipGroupResponse>();
+            CreateMap<ChampionshipNotification, ChampionshipNotificationResponse>();
+            CreateMap<ChampionshipBoatReturn, ChampionshipBoatReturnResponse>();
+            CreateMap<ChampionshipFile, ChampionshipFileResponse>();
+            //CreateMap<ChampionshipRaceClass, ChampionshipRaceClassResponse>();
+            CreateMap<ChampionshipMember, ChampionshipMemberResponse>();
+            CreateMap<ChampionshipMemberInvitation, ChampionshipMemberInvitationResponse>();
 
 
             CreateMap<TeamMemberRole, TeamMemberRoleResponse>();
 
             CreateMap<Flag, FlagResponse>();
-            CreateMap<CompetitionFlag, CompetitionFlagResponse>();
-            CreateMap<CompetitionFlagGroup, CompetitionFlagGroupResponse>();
+            CreateMap<ChampionshipFlag, ChampionshipFlagResponse>();
+            CreateMap<ChampionshipFlagGroup, ChampionshipFlagGroupResponse>();
 
             CreateMap<RaceCategory, RaceCategoryResponse>();
             CreateMap<RaceClass, RaceClassResponse>();
