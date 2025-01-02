@@ -17,8 +17,9 @@ namespace RaceBoard.Business.Managers
             public MedicalInsuranceManager
                 (
                     IMedicalInsuranceRepository medicalInsuranceRepository,
-                    ITranslator translator
-                ) : base(translator)
+                    ITranslator translator,
+                    IRequestContextManager requestContextManager
+                ) : base(requestContextManager, translator)
             {
                 _medicalInsuranceRepository = medicalInsuranceRepository;
             }

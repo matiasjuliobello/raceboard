@@ -26,8 +26,8 @@ namespace RaceBoard.Service.Controllers
                 ITranslator translator,
                 ITeamMemberRoleManager teamMemberRoleManager,
                 ISessionHelper sessionHelper,
-                IRequestContextHelper requestContextHelper
-            ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
+                IRequestContextManager requestContextManager
+            ) : base(mapper, logger, translator, sessionHelper, requestContextManager)
         {
             _teamMemberRoleManager = teamMemberRoleManager;
         }

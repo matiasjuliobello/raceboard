@@ -1,20 +1,19 @@
 ﻿using RaceBoard.Business.Managers.Interfaces;
-using RaceBoard.Common.Helpers.Interfaces;
-using RaceBoard.Domain;
-using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Common.Exceptions;
+using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common;
+using RaceBoard.Domain;
 
-namespace RaceBoard.Service.Helpers
+namespace RaceBoard.Business.Managers
 {
-    public class RequestContextHelper : IRequestContextHelper
+    public class RequestContextManager : IRequestContextManager
     {
         private readonly IHttpHeaderHelper _httpHeaderHelper;
         private readonly IUserManager _userManager;
 
         private readonly RequestContext _requestContext;
 
-        public RequestContextHelper(IHttpHeaderHelper httpHeaderHelper, IUserManager userManager)
+        public RequestContextManager(IHttpHeaderHelper httpHeaderHelper, IUserManager userManager)
         {
             _httpHeaderHelper = httpHeaderHelper;
             _userManager = userManager;

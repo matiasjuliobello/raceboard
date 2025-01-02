@@ -19,6 +19,7 @@ namespace RaceBoard.Business.Managers
         private readonly IOrganizationMemberRepository _organizationMemberRepository;
         private readonly ICustomValidator<Organization> _organizationValidator;
         private readonly IDateTimeHelper _dateTimeHelper;
+        private readonly IAuthorizationManager _authorizationManager;
 
         #region Constructors
 
@@ -28,13 +29,16 @@ namespace RaceBoard.Business.Managers
                 IOrganizationMemberRepository organizationMemberRepository,
                 ICustomValidator<Organization> organizationValidator,
                 IDateTimeHelper dateTimeHelper,
+                IRequestContextManager requestContextManager,
+                IAuthorizationManager authorizationManager,
                 ITranslator translator
-            ) : base(translator)
+            ) : base(requestContextManager, translator)
         {
             _organizationRepository = organizationRepository;
             _organizationMemberRepository = organizationMemberRepository;
             _organizationValidator = organizationValidator;
             _dateTimeHelper = dateTimeHelper;
+            _authorizationManager = authorizationManager;
         }
 
         #endregion
@@ -57,6 +61,9 @@ namespace RaceBoard.Business.Managers
 
         public void Create(Organization organization, ITransactionalContext? context = null)
         {
+            var contextUser = base.GetContextUser();
+            _authorizationManager.ValidatePermission(Enums.Action.Organization_Create, 0, contextUser.Id);
+
             _organizationValidator.SetTransactionalContext(context);
 
             if (!_organizationValidator.IsValid(organization, Scenario.Create))
@@ -94,6 +101,9 @@ namespace RaceBoard.Business.Managers
 
         public void Update(Organization organization, ITransactionalContext? context = null)
         {
+            var contextUser = base.GetContextUser();
+            _authorizationManager.ValidatePermission(Enums.Action.Organization_Update, organization.Id, contextUser.Id);
+
             _organizationValidator.SetTransactionalContext(context);
 
             if (!_organizationValidator.IsValid(organization, Scenario.Update))
@@ -118,6 +128,9 @@ namespace RaceBoard.Business.Managers
 
         public void Delete(int id, ITransactionalContext? context = null)
         {
+            var contextUser = base.GetContextUser();
+            _authorizationManager.ValidatePermission(Enums.Action.Organization_Delete, id, contextUser.Id);
+
             var organization = this.Get(id, context);
 
             _organizationValidator.SetTransactionalContext(context);

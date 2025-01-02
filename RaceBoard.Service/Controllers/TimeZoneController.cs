@@ -22,8 +22,8 @@ namespace RaceBoard.Service.Controllers
                 ITranslator translator,
                 ITimeZoneManager timeZoneManager,
                 ISessionHelper sessionHelper,
-                IRequestContextHelper requestContextHelper
-            ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
+                IRequestContextManager requestContextManager
+            ) : base(mapper, logger, translator, sessionHelper, requestContextManager)
         {
             _timeZoneManager = timeZoneManager;
         }

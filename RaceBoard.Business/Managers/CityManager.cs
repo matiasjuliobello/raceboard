@@ -17,8 +17,9 @@ namespace RaceBoard.Business.Managers
         public CityManager
             (
                 ICityRepository cityRepository,
+                IRequestContextManager requestContextManager,
                 ITranslator translator
-            ) : base(translator)
+            ) : base(requestContextManager, translator)
         {
             _cityRepository = cityRepository;
         }

@@ -1,9 +1,9 @@
 ﻿using RaceBoard.Common;
 using RaceBoard.Domain;
 
-namespace RaceBoard.Service.Helpers.Interfaces
+namespace RaceBoard.Business.Managers.Interfaces
 {
-    public interface IRequestContextHelper
+    public interface IRequestContextManager
     {
         RequestContext GetContext();
         User GetUser();

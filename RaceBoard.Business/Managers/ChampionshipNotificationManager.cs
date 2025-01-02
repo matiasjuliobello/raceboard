@@ -12,6 +12,8 @@ using RaceBoard.Data.Repositories;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 using RaceBoard.Translations.Interfaces;
+using System;
+using Enums = RaceBoard.Domain.Enums;
 
 namespace RaceBoard.Business.Managers
 {
@@ -20,6 +22,7 @@ namespace RaceBoard.Business.Managers
         private readonly IChampionshipNotificationRepository _championshipNotificationRepository;
         private readonly ICustomValidator<ChampionshipNotification> _championshipNotificationValidator;
         private readonly IDateTimeHelper _dateTimeHelper;
+        private readonly IAuthorizationManager _authorizationManager;
 
         #region Constructors
 
@@ -28,12 +31,15 @@ namespace RaceBoard.Business.Managers
                 IChampionshipNotificationRepository championshipNotificationRepository,
                 ICustomValidator<ChampionshipNotification> championshipNotificationValidator,
                 ITranslator translator,
-                IDateTimeHelper dateTimeHelper
-            ) : base(translator)
+                IRequestContextManager requestContextManager,
+                IDateTimeHelper dateTimeHelper,
+                IAuthorizationManager authorizationManager
+            ) : base(requestContextManager, translator)
         {
             _championshipNotificationRepository = championshipNotificationRepository;
             _championshipNotificationValidator = championshipNotificationValidator;
             _dateTimeHelper = dateTimeHelper;
+            _authorizationManager = authorizationManager;
         }
 
         #endregion
@@ -60,6 +66,9 @@ namespace RaceBoard.Business.Managers
 
         public void Create(ChampionshipNotification championshipNotification, ITransactionalContext? context = null)
         {
+            var contextUser = base.GetContextUser();
+            _authorizationManager.ValidatePermission(Enums.Action.ChampionshipNotification_Create, championshipNotification.Championship.Id, contextUser.Id);
+
             championshipNotification.CreationDate = _dateTimeHelper.GetCurrentTimestamp();
             
             _championshipNotificationValidator.SetTransactionalContext(context);
@@ -89,6 +98,9 @@ namespace RaceBoard.Business.Managers
         public void Delete(int id, ITransactionalContext? context = null)
         {
             var championshipNotification = this.Get(id, context);
+
+            var contextUser = base.GetContextUser();
+            _authorizationManager.ValidatePermission(Enums.Action.ChampionshipNotification_Delete, championshipNotification.Championship.Id, contextUser.Id);
 
             _championshipNotificationValidator.SetTransactionalContext(context);
 

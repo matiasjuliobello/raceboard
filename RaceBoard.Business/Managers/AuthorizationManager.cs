@@ -34,6 +34,16 @@ namespace RaceBoard.Business.Managers
 
         private Dictionary<Enums.Action, int[]> _permissions = new Dictionary<Enums.Action, int[]>
         {
+            { Enums.Action.Organization_Get, _allRoles },
+            { Enums.Action.Organization_Create, new int[] { (int)Enums.UserRole.Manager } },
+            { Enums.Action.Organization_Update, new int[] { (int)Enums.UserRole.Manager } },
+            { Enums.Action.Organization_Delete, new int[] { (int)Enums.UserRole.Manager } },
+
+            { Enums.Action.OrganizationMember_Get, _allRoles },
+            { Enums.Action.OrganizationMember_Create, new int[] { (int)Enums.UserRole.Manager } },
+            { Enums.Action.OrganizationMember_Update, new int[] { (int)Enums.UserRole.Manager } },
+            { Enums.Action.OrganizationMember_Delete, new int[] { (int)Enums.UserRole.Manager } },
+
             { Enums.Action.Championship_Get, _allRoles },
             { Enums.Action.Championship_Create, new int[] { (int)Enums.UserRole.Manager } },
             { Enums.Action.Championship_Update, new int[] { (int)Enums.UserRole.Manager } },
@@ -100,6 +110,7 @@ namespace RaceBoard.Business.Managers
 
         protected enum Entity
         {
+            Unparented = 0,
             Organization = 1,
             Championship = 2,
             Team = 3
@@ -114,8 +125,9 @@ namespace RaceBoard.Business.Managers
                 IChampionshipMemberRepository championshipMemberRepository,
                 ITeamMemberRepository teamMemberRepository,
                 ICustomValidator<RolePermissions> rolePermissionValidator,
+                IRequestContextManager requestContextManager,
                 ITranslator translator
-            ) : base(translator)
+            ) : base(requestContextManager, translator)
         {
             _authorizationRepository = authorizationRepository;
             _rolePermissionValidator = rolePermissionValidator;
@@ -144,29 +156,62 @@ namespace RaceBoard.Business.Managers
             return _authorizationRepository.GetRolePermissions(idRole, context);
         }
 
-        private Entity GetEntity(Enums.Action action)
+        private Entity GetParentEntity(Enums.Action action)
         {
-            if (action.ToString().StartsWith(Entity.Organization.ToString()))
-                return Entity.Organization;
+            //if (action.ToString().StartsWith(Entity.Organization.ToString()))
+            //    return Entity.Organization;
 
-            if (action.ToString().StartsWith(Entity.Championship.ToString()))
-                return Entity.Championship;
+            //if (action.ToString().StartsWith(Entity.Championship.ToString()))
+            //    return Entity.Championship;
 
-            if (action.ToString().StartsWith(Entity.Team.ToString()))
-                return Entity.Team;
+            //if (action.ToString().StartsWith(Entity.Team.ToString()))
+            //    return Entity.Team;
 
-            return default(Entity);
+            Entity parent = Entity.Unparented;
+
+            bool isCreate = action.ToString().EndsWith("_Create") ? true : false;
+
+            string entity = action.ToString().Replace("_Get", "").Replace("_Create", "").Replace("_Update", "").Replace("_Delete", "");
+
+            if (entity.Contains(Entity.Organization.ToString()))
+            {
+                if (entity.Replace(Entity.Organization.ToString(), "").Length == 0 && isCreate)
+                    parent = Entity.Unparented;
+                else
+                    parent = Entity.Organization;
+            }
+            if (entity.Contains(Entity.Championship.ToString()))
+            {
+                if (entity.Replace(Entity.Championship.ToString(), "").Length == 0 && isCreate)
+                    parent = Entity.Organization;
+                else
+                    parent = Entity.Championship;
+            }
+            if (entity.Contains(Entity.Team.ToString()))
+            {
+                if (entity.Replace(Entity.Team.ToString(), "").Length == 0 && isCreate)
+                    parent = Entity.Championship;
+                else
+                    parent = Entity.Team;
+            }
+
+            return parent;
         }
 
         public void ValidatePermission(Enums.Action action, int idEntity, int idUser)
         {
             dynamic? record = null;
 
-            Entity module = this.GetEntity(action);
+            Entity parent = this.GetParentEntity(action);
+
+            if (parent == Entity.Unparented)
+            {
+                return;
+            }
 
             var user = new User() { Id = idUser };
 
-            if (module == Entity.Organization)
+            if (parent == Entity.Organization)
             {
                 var searchFilter = new OrganizationMemberSearchFilter()
                 {
@@ -177,18 +222,18 @@ namespace RaceBoard.Business.Managers
                 record = _organizationMemberRepository.Get(searchFilter).Results.FirstOrDefault();
             }
 
-            if (module == Entity.Championship)
+            if (parent == Entity.Championship)
             {
-                var searchFilter = new ChampionshipMemberSearchFilter()
+                var memberSearchFilter = new ChampionshipMemberSearchFilter()
                 {
                     Championship = new Championship() { Id = idEntity },
                     User = user,
                     IsActive = true
                 };
-                record = _championshipMemberRepository.Get(searchFilter).Results.FirstOrDefault();
+                record = _championshipMemberRepository.Get(memberSearchFilter).Results.FirstOrDefault();
             }
 
-            if (module == Entity.Team)
+            if (parent == Entity.Team)
             {
                 var searchFilter = new TeamMemberSearchFilter()
                 {
@@ -199,7 +244,6 @@ namespace RaceBoard.Business.Managers
                 record = _teamMemberRepository.Get(searchFilter).Results.FirstOrDefault();
             }
 
-            // ojo acá !! porque al crear una Organization es lógico que no haya un Organization_Member
             if (record == null)
                 throw new FunctionalException(Common.Enums.ErrorType.Forbidden, base.Translate("NeedPermissions"));
 

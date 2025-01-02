@@ -40,8 +40,8 @@ namespace RaceBoard.Service.Controllers
                 IPersonManager personManager,
                 ISecurityTicketHelper securityTicketHelper,
                 ISessionHelper sessionHelper,
-                IRequestContextHelper requestContextHelper
-            ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
+                IRequestContextManager requestContextManager
+            ) : base(mapper, logger, translator, sessionHelper, requestContextManager)
         {
             _authenticationManager = authenticationManager;
             _securityTicketHelper = securityTicketHelper;

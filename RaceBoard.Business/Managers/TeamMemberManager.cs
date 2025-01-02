@@ -11,6 +11,7 @@ using RaceBoard.Data.Repositories;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 using RaceBoard.Translations.Interfaces;
+using Enums = RaceBoard.Domain.Enums;
 
 namespace RaceBoard.Business.Managers
 {
@@ -25,6 +26,7 @@ namespace RaceBoard.Business.Managers
         private readonly IStringHelper _stringHelper;
         private readonly ICryptographyHelper _cryptographyHelper;
         private readonly IMailManager _mailManager;
+        private readonly IAuthorizationManager _authorizationManager;
 
         private const int _INVITATION_TOKEN_LENGTH = 32;
 
@@ -41,9 +43,11 @@ namespace RaceBoard.Business.Managers
                 IMailManager mailManager,
                 ICustomValidator<TeamMember> teamMemberValidator,
                 ICustomValidator<TeamMemberInvitation> teamMemberInvitationValidator,
+                IRequestContextManager requestContextManager,
+                IAuthorizationManager authorizationManager,
                 ITranslator translator
                 
-            ) : base(translator)
+            ) : base(requestContextManager, translator)
         {
             _teamMemberRepository = teamMemberRepository;
             _personRepository = personRepository;
@@ -54,6 +58,7 @@ namespace RaceBoard.Business.Managers
             _mailManager = mailManager;
             _teamMemberValidator = teamMemberValidator;
             _teamMemberInvitationValidator = teamMemberInvitationValidator;
+            _authorizationManager = authorizationManager;
         }
 
         #endregion
@@ -100,6 +105,9 @@ namespace RaceBoard.Business.Managers
 
         public void AddInvitation(TeamMemberInvitation teamMemberInvitation, ITransactionalContext? context = null)
         {
+            var contextUser = base.GetContextUser();
+            _authorizationManager.ValidatePermission(Enums.Action.TeamMember_Create, teamMemberInvitation.Team.Id, contextUser.Id);
+
             if (context == null)
                 context = _teamMemberRepository.GetTransactionalContext(TransactionContextScope.Internal);
 
@@ -139,6 +147,9 @@ namespace RaceBoard.Business.Managers
 
         public void UpdateInvitation(TeamMemberInvitation teamMemberInvitation, ITransactionalContext? context = null)
         {
+            //var contextUser = base.GetContextUser();
+            //_authorizationManager.ValidatePermission(Enums.Action.TeamMember_Update, teamMemberInvitation.Team.Id, contextUser.Id);
+
             var invitations = _teamMemberRepository.GetInvitations(new TeamMemberInvitationSearchFilter() { Token = teamMemberInvitation.Invitation.Token });
             if (invitations.Results.Count() == 0)
                 throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
@@ -184,10 +195,13 @@ namespace RaceBoard.Business.Managers
 
         public void Remove(int id, ITransactionalContext? context = null)
         {
+            var teamMember = this.Get(id, context);
+
+            var contextUser = base.GetContextUser();
+            _authorizationManager.ValidatePermission(Enums.Action.TeamMember_Delete, teamMember.Team.Id, contextUser.Id);
+
             if (context == null)
                 context = _teamMemberRepository.GetTransactionalContext(TransactionContextScope.Internal);
-
-            var teamMember = this.Get(id, context);
 
             _teamMemberValidator.SetTransactionalContext(context);
 
@@ -221,10 +235,13 @@ namespace RaceBoard.Business.Managers
 
         public void RemoveInvitation(int id, ITransactionalContext? context = null)
         {
+            var teamMemberInvitation = this.GetInvitation(id, context);
+
+            var contextUser = base.GetContextUser();
+            _authorizationManager.ValidatePermission(Enums.Action.TeamMember_Delete, teamMemberInvitation.Team.Id, contextUser.Id);
+
             if (context == null)
                 context = _teamMemberRepository.GetTransactionalContext(TransactionContextScope.Internal);
-
-            var teamMemberInvitation = this.GetInvitation(id, context);
 
             _teamMemberInvitationValidator.SetTransactionalContext(context);
 

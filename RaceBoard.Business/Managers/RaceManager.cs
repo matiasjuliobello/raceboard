@@ -30,8 +30,9 @@ namespace RaceBoard.Business.Managers
                 ICustomValidator<Race> raceValidator,
                 ICustomValidator<RaceProtest> raceProtestValidator,
                 IDateTimeHelper dateTimeHelper,
+                IRequestContextManager requestContextManager,
                 ITranslator translator
-            ) : base(translator)
+            ) : base(requestContextManager, translator)
         {
             _raceRepository = raceRepository;
             _raceProtestRepository = raceProtestRepository;

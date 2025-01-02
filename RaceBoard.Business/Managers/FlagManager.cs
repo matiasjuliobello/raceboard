@@ -17,8 +17,9 @@ namespace RaceBoard.Business.Managers
         public FlagManager
             (
                 IFlagRepository flagRepository,
+                IRequestContextManager requestContextManager,
                 ITranslator translator
-            ) : base(translator)
+            ) : base(requestContextManager, translator)
         {
             _flagRepository = flagRepository;
         }

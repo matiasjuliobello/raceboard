@@ -6,6 +6,7 @@ using RaceBoard.Translations.Interfaces;
 using RaceBoard.DTOs.Notification.Request;
 using RaceBoard.Messaging.Interfaces;
 using RaceBoard.Messaging.Entities;
+using RaceBoard.Business.Managers.Interfaces;
 
 namespace RaceBoard.Service.Controllers
 {
@@ -14,7 +15,7 @@ namespace RaceBoard.Service.Controllers
     public class NotificationController : AbstractController<NotificationController>
     {
         private readonly INotificationProvider _notificationProvider;
-        private readonly IRequestContextHelper _requestContextHelper;
+        private readonly IRequestContextManager _requestContextManager;
 
         public NotificationController
             (
@@ -23,10 +24,10 @@ namespace RaceBoard.Service.Controllers
                 ITranslator translator,
                 INotificationProvider notificationProvider,
                 ISessionHelper sessionHelper,
-                IRequestContextHelper requestContextHelper
-            ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
+                IRequestContextManager requestContextManager
+            ) : base(mapper, logger, translator, sessionHelper, requestContextManager)
         {
-            _requestContextHelper = requestContextHelper;
+            _requestContextManager = requestContextManager;
             _notificationProvider = notificationProvider;
         }
 

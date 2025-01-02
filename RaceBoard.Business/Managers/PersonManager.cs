@@ -8,6 +8,7 @@ using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Business.Validators.Interfaces;
 using RaceBoard.Common.Enums;
 using RaceBoard.Common.Exceptions;
+using System;
 
 namespace RaceBoard.Business.Managers
 {
@@ -22,8 +23,9 @@ namespace RaceBoard.Business.Managers
             (
                 IPersonRepository personRepository,
                 ICustomValidator<Person> personValidator,
+                IRequestContextManager requestContextManager,
                 ITranslator translator
-            ) : base(translator)
+            ) : base(requestContextManager, translator)
         {
             _personRepository = personRepository;
             _personValidator = personValidator;
@@ -87,6 +89,11 @@ namespace RaceBoard.Business.Managers
 
         public void Update(Person person, ITransactionalContext? context = null)
         {
+            var contextUser = base.GetContextUser();
+            if (contextUser.Id != person.User.Id)
+                throw new FunctionalException(ErrorType.Forbidden, base.Translate("NeedPermissions"));
+
+
             _personValidator.SetTransactionalContext(context);
 
             if (!_personValidator.IsValid(person, Scenario.Update))
@@ -113,6 +120,10 @@ namespace RaceBoard.Business.Managers
         public void Delete(int id, ITransactionalContext? context = null)
         {
             var person = this.Get(id, context);
+
+            var contextUser = base.GetContextUser();
+            if (contextUser.Id != person.User.Id)
+                throw new FunctionalException(ErrorType.Forbidden, base.Translate("NeedPermissions"));
 
             _personValidator.SetTransactionalContext(context);
 

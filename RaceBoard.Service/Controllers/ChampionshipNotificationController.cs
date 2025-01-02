@@ -28,8 +28,8 @@ namespace RaceBoard.Service.Controllers
                 IChampionshipNotificationManager championshipNotificationManager,                
                 INotificationManager notificationManager,
                 ISessionHelper sessionHelper,
-                IRequestContextHelper requestContextHelper
-            ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
+                IRequestContextManager requestContextManager
+            ) : base(mapper, logger, translator, sessionHelper, requestContextManager)
         {
             _championshipNotificationManager = championshipNotificationManager;
             _notificationManager = notificationManager;

@@ -286,6 +286,9 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("Boat"),
                 new Tuple<string, string>(Languages.English, "Boat"),
                 new Tuple<string, string>(Languages.Spanish, "Barco"));
+            AddText(AddTranslation("Boats"),
+                new Tuple<string, string>(Languages.English, "Boats"),
+                new Tuple<string, string>(Languages.Spanish, "Barcos"));
             AddText(AddTranslation("SailNumber"),
                 new Tuple<string, string>(Languages.English, "Sail number"),
                 new Tuple<string, string>(Languages.Spanish, "Número de vela"));
@@ -372,32 +375,35 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.Spanish, "Crear notificación"));
 
             AddText(AddTranslation("IdIsRequired"),
-                new Tuple<string, string>(Languages.English, "Id is a required field"),
+                new Tuple<string, string>(Languages.English, "Id is required"),
                 new Tuple<string, string>(Languages.Spanish, "Falta el campo identificador del registro"));
             AddText(AddTranslation("NameIsRequired"),
-                new Tuple<string, string>(Languages.English, "Name is a required field"),
+                new Tuple<string, string>(Languages.English, "Name is required"),
                 new Tuple<string, string>(Languages.Spanish, "Se debe indicar un nombre"));
             AddText(AddTranslation("NameIsTooShort"),
                 new Tuple<string, string>(Languages.English, "Name is too short"),
                 new Tuple<string, string>(Languages.Spanish, "El nombre es demasiado corto"));
+            AddText(AddTranslation("SailNumberIsRequired"),
+                new Tuple<string, string>(Languages.English, "Sail number is required"),
+                new Tuple<string, string>(Languages.Spanish, "El número de vela es requerido"));
             AddText(AddTranslation("IdOrganizationIsRequired"),
-                new Tuple<string, string>(Languages.English, "Club is a required field"),
+                new Tuple<string, string>(Languages.English, "Club is required"),
                 new Tuple<string, string>(Languages.Spanish, "Se debe indicar un club"));
             AddText(AddTranslation("IdChampionshipIsRequired"),
-                new Tuple<string, string>(Languages.English, "Championship is a required field"),
+                new Tuple<string, string>(Languages.English, "Championship is required"),
                 new Tuple<string, string>(Languages.Spanish, "Se debe indicar una campeonato"));
             AddText(AddTranslation("IdMemberIsRequired"),
-                new Tuple<string, string>(Languages.English, "Member is a required field"),
+                new Tuple<string, string>(Languages.English, "Member is required"),
                 new Tuple<string, string>(Languages.Spanish, "Se debe indicar un integrante"));
             AddText(AddTranslation("IdRoleIsRequired"),
-                new Tuple<string, string>(Languages.English, "Role is a required field"),
+                new Tuple<string, string>(Languages.English, "Role is required"),
                 new Tuple<string, string>(Languages.Spanish, "Se debe indicar un rol"));
             AddText(AddTranslation("IdBoatIsRequired"),
                 new Tuple<string, string>(Languages.English, "You must select a boat"),
                 new Tuple<string, string>(Languages.Spanish, "Se debe indicar un barco"));            
             AddText(AddTranslation("IdRaceClassIsRequired"),
-                new Tuple<string, string>(Languages.English, "Race class is a required field"),
-                new Tuple<string, string>(Languages.Spanish, "Se debe indicar una clase de carrera"));
+                new Tuple<string, string>(Languages.English, "Race class is required"),
+                new Tuple<string, string>(Languages.Spanish, "Se debe indicar una clase"));
             AddText(AddTranslation("RequiredField"),
                 new Tuple<string, string>(Languages.English, "Required field"),
                 new Tuple<string, string>(Languages.Spanish, "Campo requerido"));
@@ -620,6 +626,13 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("CreateNewTeam"),
                 new Tuple<string, string>(Languages.English, "Create new team"),
                 new Tuple<string, string>(Languages.Spanish, "Crear nuevo equipo"));
+            AddText(AddTranslation("CreateNewBoat"),
+                new Tuple<string, string>(Languages.English, "Create new boat"),
+                new Tuple<string, string>(Languages.Spanish, "Crear nuevo barco"));
+            AddText(AddTranslation("NoClassBoatsYet"),
+                new Tuple<string, string>(Languages.English, "No class boat has been created yet"),
+                new Tuple<string, string>(Languages.Spanish, "Aún no se ha dado de alta a ningún barco de la clase"));
+
             AddText(AddTranslation("WelcomeToRaceBoard"),
                 new Tuple<string, string>(Languages.English, "Welcome to RaceBoard"),
                 new Tuple<string, string>(Languages.Spanish, "Bienvenido a RaceBoard"));

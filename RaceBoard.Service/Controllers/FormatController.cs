@@ -21,8 +21,8 @@ namespace RaceBoard.Service.Controllers
                 ITranslator translator,
                 IFormatManager FormatManager,
                 ISessionHelper sessionHelper,
-                IRequestContextHelper requestContextHelper
-            ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
+                IRequestContextManager requestContextManager
+            ) : base(mapper, logger, translator, sessionHelper, requestContextManager)
         {
             _formatManager = FormatManager;
         }

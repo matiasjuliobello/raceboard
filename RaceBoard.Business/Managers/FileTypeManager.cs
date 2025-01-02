@@ -17,8 +17,9 @@ namespace RaceBoard.Business.Managers
         public FileTypeManager
             (
                 IFileTypeRepository fileTypeRepository,
+                IRequestContextManager requestContextManager,
                 ITranslator translator
-            ) : base(translator)
+            ) : base(requestContextManager, translator)
         {
             _fileTypeRepository = fileTypeRepository;
         }

@@ -31,6 +31,8 @@ namespace RaceBoard.Business.Managers
         private readonly IDateTimeHelper _dateTimeHelper;
         private readonly IFileHelper _fileHelper;
 
+        private readonly IAuthorizationManager _authorizationManager;
+
         #region Constructors
 
         public ChampionshipManager
@@ -45,9 +47,11 @@ namespace RaceBoard.Business.Managers
                 IChampionshipCommitteeBoatReturnRepository committeeBoatReturnRepository,
                 ICustomValidator<ChampionshipBoatReturn> committeeBoatReturnValidator,
                 IDateTimeHelper dateTimeHelper,
+                IRequestContextManager requestContextManager,
                 IFileHelper fileHelper,
-                ITranslator translator
-            ) : base(translator)
+                ITranslator translator,
+                IAuthorizationManager authorizationManager
+            ) : base(requestContextManager, translator)
         {
             _championshipRepository = championshipRepository;
             _championshipMemberRepository = championshipMemberRepository;
@@ -60,6 +64,7 @@ namespace RaceBoard.Business.Managers
             _committeeBoatReturnValidator = committeeBoatReturnValidator;
             _dateTimeHelper = dateTimeHelper;
             _fileHelper = fileHelper;
+            _authorizationManager = authorizationManager;
         }
 
         #endregion
@@ -86,6 +91,9 @@ namespace RaceBoard.Business.Managers
 
         public void Create(Championship championship, ITransactionalContext? context = null)
         {
+            var contextUser = base.GetContextUser();
+            _authorizationManager.ValidatePermission(Enums.Action.Championship_Create, championship.Organizations[0].Id, contextUser.Id);
+
             if (context == null)
                 context = _championshipRepository.GetTransactionalContext(TransactionContextScope.Internal);
 
@@ -134,6 +142,10 @@ namespace RaceBoard.Business.Managers
 
         public void Update(Championship championship, ITransactionalContext? context = null)
         {
+            var contextUser = base.GetContextUser();
+            _authorizationManager.ValidatePermission(Enums.Action.Championship_Update, championship.Id, contextUser.Id);
+
+
             if (context == null)
                 context = _championshipRepository.GetTransactionalContext(TransactionContextScope.Internal);
 
@@ -167,6 +179,11 @@ namespace RaceBoard.Business.Managers
         public void Delete(int id, ITransactionalContext? context = null)
         {
             var championship = this.Get(id, context);
+
+            var contextUser = base.GetContextUser();
+
+            _authorizationManager.ValidatePermission(Enums.Action.Championship_Delete, id, contextUser.Id);
+
 
             _championshipValidator.SetTransactionalContext(context);
 

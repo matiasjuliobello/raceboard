@@ -13,6 +13,7 @@ using RaceBoard.Data;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 using RaceBoard.Translations.Interfaces;
+using Enums = RaceBoard.Domain.Enums;
 
 namespace RaceBoard.Business.Managers
 {
@@ -28,6 +29,7 @@ namespace RaceBoard.Business.Managers
         private readonly IStringHelper _stringHelper;
         private readonly ICryptographyHelper _cryptographyHelper;
         private readonly IMailManager _mailManager;
+        private readonly IAuthorizationManager _authorizationManager;
 
         private const int _INVITATION_TOKEN_LENGTH = 32;
 
@@ -45,8 +47,10 @@ namespace RaceBoard.Business.Managers
                 IDateTimeHelper dateTimeHelper,
                 IStringHelper stringHelper,
                 ICryptographyHelper cryptographyHelper,
-                IMailManager mailManager
-            ) : base(translator)
+                IRequestContextManager requestContextManager,
+                IMailManager mailManager,
+                IAuthorizationManager authorizationManager
+            ) : base(requestContextManager, translator)
         {
             _championshipMemberRepository = championshipMemberRepository;
             _userRepository = userRepository;
@@ -58,6 +62,7 @@ namespace RaceBoard.Business.Managers
             _stringHelper = stringHelper;
             _cryptographyHelper = cryptographyHelper;
             _mailManager = mailManager;
+            _authorizationManager = authorizationManager;
         }
 
         #endregion
@@ -104,6 +109,9 @@ namespace RaceBoard.Business.Managers
 
         public void AddInvitation(ChampionshipMemberInvitation championshipMemberInvitation, ITransactionalContext? context = null)
         {
+            var contextUser = base.GetContextUser();
+            _authorizationManager.ValidatePermission(Enums.Action.ChampionshipMember_Create, championshipMemberInvitation.Championship.Id, contextUser.Id);
+
             if (context == null)
                 context = _championshipMemberRepository.GetTransactionalContext(TransactionContextScope.Internal);
 
@@ -144,6 +152,9 @@ namespace RaceBoard.Business.Managers
 
         public void UpdateInvitation(ChampionshipMemberInvitation championshipMemberInvitation, ITransactionalContext? context = null)
         {
+            //var contextUser = base.GetContextUser();
+            //_authorizationManager.ValidatePermission(Enums.Action.ChampionshipMember_Update, championshipMemberInvitation.Championship.Id, contextUser.Id);
+
             var invitations = _championshipMemberRepository.GetInvitations(new ChampionshipMemberInvitationSearchFilter() { Token = championshipMemberInvitation.Invitation.Token });
             if (invitations.Results.Count() == 0)
                 throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
@@ -190,10 +201,13 @@ namespace RaceBoard.Business.Managers
 
         public void Remove(int id, ITransactionalContext? context = null)
         {
+            var championshipMember = this.Get(id, context);
+
+            var contextUser = base.GetContextUser();
+            _authorizationManager.ValidatePermission(Enums.Action.ChampionshipMember_Delete, championshipMember.Championship.Id, contextUser.Id);
+
             if (context == null)
                 context = _championshipMemberRepository.GetTransactionalContext(TransactionContextScope.Internal);
-
-            var championshipMember = this.Get(id, context);
 
             _championshipMemberValidator.SetTransactionalContext(context);
 
@@ -227,10 +241,13 @@ namespace RaceBoard.Business.Managers
 
         public void RemoveInvitation(int id, ITransactionalContext? context = null)
         {
+            var championshipMemberInvitation = this.GetInvitation(id, context);
+
+            var contextUser = base.GetContextUser();
+            _authorizationManager.ValidatePermission(Enums.Action.ChampionshipMember_Delete, championshipMemberInvitation.Championship.Id, contextUser.Id);
+
             if (context == null)
                 context = _championshipMemberRepository.GetTransactionalContext(TransactionContextScope.Internal);
-
-            var championshipMemberInvitation = this.GetInvitation(id, context);
 
             _championshipMemberInvitationValidator.SetTransactionalContext(context);
 

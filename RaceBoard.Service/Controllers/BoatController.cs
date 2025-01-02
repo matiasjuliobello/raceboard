@@ -28,8 +28,8 @@ namespace RaceBoard.Service.Controllers
                 ITranslator translator,
                 IBoatManager boatManager,
                 ISessionHelper sessionHelper,
-                IRequestContextHelper requestContextHelper
-            ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
+                IRequestContextManager requestContextManager
+            ) : base(mapper, logger, translator, sessionHelper, requestContextManager)
         {
             _boatManager = boatManager;
         }

@@ -1,16 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using RaceBoard.Business.Managers;
 using RaceBoard.Business.Managers.Interfaces;
-using RaceBoard.Common.Exceptions;
-using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
 using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
 using RaceBoard.DTOs.Championship.Request;
 using RaceBoard.DTOs.Championship.Response;
-using RaceBoard.Service.Attributes;
 using RaceBoard.Service.Controllers.Abstract;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Translations.Interfaces;
@@ -22,27 +18,21 @@ namespace RaceBoard.Service.Controllers
     public class ChampionshipFileController : AbstractController<ChampionshipFileController>
     {
         private readonly IChampionshipFileManager _championshipFileManager;
-        private readonly IAuthorizationManager _authorizationManager;
         private readonly INotificationManager _notificationManager;
-        private readonly IDateTimeHelper _dateTimeHelper;
 
         public ChampionshipFileController
             (
                 IMapper mapper,
                 ILogger<ChampionshipFileController> logger,
                 ITranslator translator,
-                IAuthorizationManager autorhizationManager,
                 IChampionshipFileManager championshipFileManager,
                 INotificationManager notificationManager,
-                IDateTimeHelper dateTimeHelper,
                 ISessionHelper sessionHelper,
-                IRequestContextHelper requestContextHelper
-            ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
+                IRequestContextManager requestContextManager
+            ) : base(mapper, logger, translator, sessionHelper, requestContextManager)
         {
             _championshipFileManager = championshipFileManager;
-            _authorizationManager = autorhizationManager;
             _notificationManager = notificationManager;
-            _dateTimeHelper = dateTimeHelper;
         }
 
         [HttpGet("{id}/files")]
@@ -69,10 +59,6 @@ namespace RaceBoard.Service.Controllers
         [HttpPost("files")]
         public ActionResult<int> Create(IFormFile file, [FromForm] ChampionshipFileRequest championshipFileUploadRequest)
         {
-            var currentUser = base.GetUserFromRequestContext();
-            _authorizationManager.ValidatePermission(Domain.Enums.Action.ChampionshipFile_Create, championshipFileUploadRequest.IdChampionship, currentUser.Id);
-
-
             var validationResult = ValidateBadRequestMessage(file, championshipFileUploadRequest);
             if (!validationResult.success)
             {

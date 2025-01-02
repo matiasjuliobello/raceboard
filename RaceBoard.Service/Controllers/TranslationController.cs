@@ -5,6 +5,7 @@ using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Translations.Interfaces;
 using RaceBoard.DTOs.Translation.Response;
 using Microsoft.AspNetCore.Authorization;
+using RaceBoard.Business.Managers.Interfaces;
 
 
 namespace RaceBoard.Service.Controllers
@@ -23,8 +24,8 @@ namespace RaceBoard.Service.Controllers
                 ITranslator translator,
                 ITranslationProvider translationProvider,
                 ISessionHelper sessionHelper,
-                IRequestContextHelper requestContextHelper
-            ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
+                IRequestContextManager requestContextManager
+            ) : base(mapper, logger, translator, sessionHelper, requestContextManager)
         {
             _translator = translator;
             _translationProvider = translationProvider;

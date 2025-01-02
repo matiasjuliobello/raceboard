@@ -29,6 +29,7 @@ namespace RaceBoard.Business.Managers
         public UserPasswordResetManager
             (
                 IUserManager userManager,
+                IRequestContextManager requestContextManager,
                 IUserPasswordResetRepository userPasswordResetRepository,
                 ICustomValidator<UserPasswordReset> userPasswordResetValidator,
                 ICryptographyHelper cryptographyHelper,
@@ -37,7 +38,7 @@ namespace RaceBoard.Business.Managers
                 ITranslator translator,
                 IConfiguration configuration
             )
-            : base(translator)
+            : base(requestContextManager, translator)
         {
             _userManager = userManager;
             _cryptographyHelper = cryptographyHelper;

@@ -28,8 +28,9 @@ namespace RaceBoard.Business.Managers
                 ITeamMemberRepository teamMemberRepository,
                 ICustomValidator<Team> teamValidator,
                 IDateTimeHelper dateTimeHelper,
+                IRequestContextManager requestContextManager,
                 ITranslator translator
-            ) : base(translator)
+            ) : base(requestContextManager, translator)
         {
             _teamRepository = teamRepository;
             _teamMemberRepository = teamMemberRepository;

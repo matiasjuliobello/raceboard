@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using RaceBoard.Business.Managers;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Common.Exceptions;
-using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
 using RaceBoard.DTOs._Pagination.Request;
@@ -22,10 +20,8 @@ namespace RaceBoard.Service.Controllers
     {
         private readonly IChampionshipFlagManager _championshipFlagManager;
         private readonly IChampionshipManager _championshipManager;
-        private readonly IAuthorizationManager _authorizationManager;
         private readonly IFlagManager _flagManager;
         private readonly INotificationManager _notificationManager;
-        private readonly IDateTimeHelper _dateTimeHelper;
 
         public ChampionshipFlagController
             (
@@ -34,20 +30,16 @@ namespace RaceBoard.Service.Controllers
                 ITranslator translator,
                 IChampionshipFlagManager championshipFlagManager,
                 IChampionshipManager championshipManager,
-                IAuthorizationManager authorizationManager,
                 IFlagManager flagManager,
                 INotificationManager notificationManager,
-                IDateTimeHelper dateTimeHelper,
                 ISessionHelper sessionHelper,
-                IRequestContextHelper requestContextHelper
-            ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
+                IRequestContextManager requestContextManager
+            ) : base(mapper, logger, translator, sessionHelper, requestContextManager)
         {
             _championshipFlagManager = championshipFlagManager;
             _championshipManager = championshipManager;
             _flagManager = flagManager;
             _notificationManager = notificationManager;
-            _authorizationManager = authorizationManager;
-            _dateTimeHelper = dateTimeHelper;
         }
 
         [HttpGet("{id}/flags")]
@@ -72,38 +64,7 @@ namespace RaceBoard.Service.Controllers
         [HttpPost("flags")]
         public ActionResult<int> RaiseFlags([FromBody] ChampionshipFlagGroupRequest championshipFlagGroupRequest)
         {
-            var currentUser = base.GetUserFromRequestContext();
-            _authorizationManager.ValidatePermission(Domain.Enums.Action.ChampionshipFlag_Create, championshipFlagGroupRequest.IdChampionship, currentUser.Id);
-
-
             var championshipFlagGroup = _mapper.Map<ChampionshipFlagGroup>(championshipFlagGroupRequest);
-
-            var currentTime = _dateTimeHelper.GetCurrentTimestamp();
-            //var currentUser = base.GetUserFromRequestContext();
-
-            int? hoursToLower = championshipFlagGroupRequest.Flags[0].HoursToLower;
-            int? minuteToLower = championshipFlagGroupRequest.Flags[0].MinutesToLower;
-
-            foreach (var championshipFlag in championshipFlagGroup.Flags)
-            {
-                championshipFlag.User = new User() { Id = currentUser.Id };
-                championshipFlag.Raising = currentTime;
-
-                if (hoursToLower != null)
-                {
-                    if (championshipFlag.Lowering == null)
-                        championshipFlag.Lowering = championshipFlag.Raising;
-
-                    championshipFlag.Lowering = championshipFlag.Lowering.Value.AddHours(hoursToLower.Value);
-                }
-                if (minuteToLower != null)
-                {
-                    if (championshipFlag.Lowering == null)
-                        championshipFlag.Lowering = championshipFlag.Raising;
-
-                    championshipFlag.Lowering = championshipFlag.Lowering.Value.AddMinutes(minuteToLower.Value);
-                }
-            }
 
             _championshipFlagManager.RaiseFlags(championshipFlagGroup);
 
@@ -131,15 +92,6 @@ namespace RaceBoard.Service.Controllers
         {
             var championshipFlagGroup = _mapper.Map<ChampionshipFlagGroup>(championshipFlagGroupRequest);
 
-            var currentTime = _dateTimeHelper.GetCurrentTimestamp();
-            var currentUser = base.GetUserFromRequestContext();
-
-            foreach (var championshipFlag in championshipFlagGroup.Flags)
-            {
-                championshipFlag.User = new User() { Id = currentUser.Id };
-                championshipFlag.Lowering = currentTime;
-            }
-
             _championshipFlagManager.LowerFlags(championshipFlagGroup);
 
             return Ok();
@@ -148,6 +100,8 @@ namespace RaceBoard.Service.Controllers
         //[HttpDelete("flags/{idChampionshipFlagGroup}")]
         //public ActionResult DeleteFlags([FromRoute] int idChampionshipFlagGroup)
         //{
+        //    var currentUser = base.GetUserFromRequestContext();
+        //    _authorizationManager.ValidatePermission(Domain.Enums.Action.ChampionshipFlag_Delete, championshipFlagGroupRequest.IdChampionship, currentUser.Id);
         //    _championshipFlagManager.RemoveFlags(idChampionshipFlagGroup);
 
         //    return Ok();

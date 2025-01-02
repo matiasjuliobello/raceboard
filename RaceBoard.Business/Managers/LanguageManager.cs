@@ -1,4 +1,5 @@
 ﻿using RaceBoard.Business.Managers.Abstract;
+using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Data;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Translations.Interfaces;
@@ -16,8 +17,9 @@ namespace RaceBoard.Business.Managers
         public LanguageManager
             (
                 ILanguageRepository languageRepository,
+                IRequestContextManager requestContextManager,
                 ITranslator translator
-            ) : base(translator)
+            ) : base(requestContextManager, translator)
         {
             _languageRepository = languageRepository;
         }

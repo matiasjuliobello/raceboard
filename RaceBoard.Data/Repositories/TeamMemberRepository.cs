@@ -445,6 +445,9 @@ public class TeamMemberRepository : AbstractRepository, ITeamMemberRepository
     {
         base.AddFilterCriteria(ConditionType.In, "Team_Member", "Id", "id", searchFilter.Ids);
         base.AddFilterCriteria(ConditionType.Equal, "Team_Member", "IdTeam", "idTeam", searchFilter.Team?.Id);
+        base.AddFilterCriteria(ConditionType.Equal, "Team_Member", "idUser", "idUser", searchFilter.User?.Id);
+        base.AddFilterCriteria(ConditionType.Equal, "Team_Member", "IsActive", "isActive", searchFilter.IsActive);
+
     }
 
     private void ProcessInvitationSearchFilter(TeamMemberInvitationSearchFilter searchFilter)

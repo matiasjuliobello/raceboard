@@ -13,6 +13,7 @@ using RaceBoard.Data;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 using RaceBoard.Translations.Interfaces;
+using Enums = RaceBoard.Domain.Enums;
 
 namespace RaceBoard.Business.Managers
 {
@@ -28,6 +29,7 @@ namespace RaceBoard.Business.Managers
         private readonly IStringHelper _stringHelper;
         private readonly ICryptographyHelper _cryptographyHelper;
         private readonly IMailManager _mailManager;
+        private readonly IAuthorizationManager _authorizationManager;
 
         private const int _INVITATION_TOKEN_LENGTH = 32;
 
@@ -45,8 +47,10 @@ namespace RaceBoard.Business.Managers
                 IDateTimeHelper dateTimeHelper,
                 IStringHelper stringHelper,
                 ICryptographyHelper cryptographyHelper,
+                IRequestContextManager requestContextManager,
+                IAuthorizationManager authorizationManager,
                 IMailManager mailManager
-            ) : base(translator)
+            ) : base(requestContextManager, translator)
         {
             _organizationMemberRepository = organizationMemberRepository;
             _userRepository = userRepository;
@@ -58,6 +62,7 @@ namespace RaceBoard.Business.Managers
             _stringHelper = stringHelper;
             _cryptographyHelper = cryptographyHelper;
             _mailManager = mailManager;
+            _authorizationManager = authorizationManager;
         }
 
         #endregion
@@ -104,6 +109,9 @@ namespace RaceBoard.Business.Managers
 
         public void AddInvitation(OrganizationMemberInvitation organizationMemberInvitation, ITransactionalContext? context = null)
         {
+            var contextUser = base.GetContextUser();
+            _authorizationManager.ValidatePermission(Enums.Action.OrganizationMember_Create, organizationMemberInvitation.Organization.Id, contextUser.Id);
+
             if (context == null)
                 context = _organizationMemberRepository.GetTransactionalContext(TransactionContextScope.Internal);
 
@@ -144,6 +152,8 @@ namespace RaceBoard.Business.Managers
 
         public void UpdateInvitation(OrganizationMemberInvitation organizationMemberInvitation, ITransactionalContext? context = null)
         {
+            //var contextUser = base.GetContextUser();
+            //_authorizationManager.ValidatePermission(Enums.Action.OrganizationMember_Update, organizationMemberInvitation.Organization.Id, contextUser.Id);
             var invitations = _organizationMemberRepository.GetInvitations(new OrganizationMemberInvitationSearchFilter() { Token = organizationMemberInvitation.Invitation.Token });
             if (invitations.Results.Count() == 0)
                 throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
@@ -190,10 +200,13 @@ namespace RaceBoard.Business.Managers
 
         public void Remove(int id, ITransactionalContext? context = null)
         {
+            var organizationMember = this.Get(id);
+
+            var contextUser = base.GetContextUser();
+            _authorizationManager.ValidatePermission(Enums.Action.OrganizationMember_Delete, organizationMember.Organization.Id, contextUser.Id);
+
             if (context == null)
                 context = _organizationMemberRepository.GetTransactionalContext(TransactionContextScope.Internal);
-
-            var organizationMember = this.Get(id, context);
 
             _organizationMemberValidator.SetTransactionalContext(context);
 
@@ -227,6 +240,9 @@ namespace RaceBoard.Business.Managers
 
         public void RemoveInvitation(int id, ITransactionalContext? context = null)
         {
+            var contextUser = base.GetContextUser();
+            _authorizationManager.ValidatePermission(Enums.Action.OrganizationMember_Delete, 0, contextUser.Id);
+
             if (context == null)
                 context = _organizationMemberRepository.GetTransactionalContext(TransactionContextScope.Internal);
 

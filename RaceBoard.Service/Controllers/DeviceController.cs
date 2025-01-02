@@ -15,7 +15,7 @@ namespace RaceBoard.Service.Controllers
     public class DeviceController : AbstractController<DeviceController>
     {
         private readonly IDeviceManager _deviceManager;
-        private readonly IRequestContextHelper _requestContextHelper;
+        private readonly IRequestContextManager _requestContextManager;
 
         public DeviceController
             (
@@ -24,11 +24,11 @@ namespace RaceBoard.Service.Controllers
                 ITranslator translator,
                 IDeviceManager deviceManager,
                 ISessionHelper sessionHelper,
-                IRequestContextHelper requestContextHelper
-            ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
+                IRequestContextManager requestContextManager
+            ) : base(mapper, logger, translator, sessionHelper, requestContextManager)
         {
             _deviceManager = deviceManager;
-            _requestContextHelper = requestContextHelper;
+            _requestContextManager = requestContextManager;
         }
 
         [HttpPost()]

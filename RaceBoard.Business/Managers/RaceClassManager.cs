@@ -18,8 +18,9 @@ namespace RaceBoard.Business.Managers
         public RaceClassManager
             (
                 IRaceClassRepository raceClassRepository,
-                ITranslator translator
-            ) : base(translator)
+                ITranslator translator,
+                IRequestContextManager requestContextManager
+            ) : base(requestContextManager, translator)
         {
             _raceClassRepository = raceClassRepository;
         }

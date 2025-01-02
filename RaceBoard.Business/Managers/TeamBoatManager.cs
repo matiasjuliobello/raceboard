@@ -8,6 +8,7 @@ using RaceBoard.Data;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 using RaceBoard.Translations.Interfaces;
+using Enums = RaceBoard.Domain.Enums;
 
 namespace RaceBoard.Business.Managers
 {
@@ -15,6 +16,7 @@ namespace RaceBoard.Business.Managers
     {
         private readonly ITeamBoatRepository _teamBoatRepository;
         private readonly ICustomValidator<TeamBoat> _teamBoatValidator;
+        private readonly IAuthorizationManager _authorizationManager;
 
         #region Constructors
 
@@ -22,11 +24,14 @@ namespace RaceBoard.Business.Managers
             (
                 ITeamBoatRepository teamBoatRepository,
                 ICustomValidator<TeamBoat> teamBoatValidator,
+                IRequestContextManager requestContextManager,
+                IAuthorizationManager authorizationManager,
                 ITranslator translator
-            ) : base(translator)
+            ) : base(requestContextManager, translator)
         {
             _teamBoatRepository = teamBoatRepository;
             _teamBoatValidator = teamBoatValidator;
+            _authorizationManager = authorizationManager;
         }
 
         #endregion
@@ -49,6 +54,10 @@ namespace RaceBoard.Business.Managers
 
         public void Create(TeamBoat teamBoat, ITransactionalContext? context = null)
         {
+            var contextUser = base.GetContextUser();
+            _authorizationManager.ValidatePermission(Enums.Action.TeamBoat_Create, teamBoat.Team.Id, contextUser.Id);
+
+
             _teamBoatValidator.SetTransactionalContext(context);
 
             if (!_teamBoatValidator.IsValid(teamBoat, Scenario.Create))
@@ -72,6 +81,9 @@ namespace RaceBoard.Business.Managers
 
         public void Update(TeamBoat teamBoat, ITransactionalContext? context = null)
         {
+            var contextUser = base.GetContextUser();
+            _authorizationManager.ValidatePermission(Enums.Action.TeamBoat_Update, teamBoat.Team.Id, contextUser.Id);
+
             _teamBoatValidator.SetTransactionalContext(context);
 
             if (!_teamBoatValidator.IsValid(teamBoat, Scenario.Update))
@@ -97,13 +109,17 @@ namespace RaceBoard.Business.Managers
         {
             var teamBoat = this.Get(id, context);
 
+            var contextUser = base.GetContextUser();
+            _authorizationManager.ValidatePermission(Enums.Action.TeamBoat_Delete, teamBoat.Team.Id, contextUser.Id);
+
+            if (context == null)
+                context = _teamBoatRepository.GetTransactionalContext(TransactionContextScope.Internal);
+
             _teamBoatValidator.SetTransactionalContext(context);
 
             if (!_teamBoatValidator.IsValid(teamBoat, Scenario.Delete))
                 throw new FunctionalException(ErrorType.ValidationError, _teamBoatValidator.Errors);
 
-            if (context == null)
-                context = _teamBoatRepository.GetTransactionalContext(TransactionContextScope.Internal);
 
             try
             {

@@ -17,8 +17,9 @@ namespace RaceBoard.Business.Managers
         public RoleManager
             (
                 IRoleRepository roleRepository,
+                IRequestContextManager requestContextManager,
                 ITranslator translator
-            ) : base(translator)
+            ) : base(requestContextManager, translator)
         {
             _roleRepository = roleRepository;
         }

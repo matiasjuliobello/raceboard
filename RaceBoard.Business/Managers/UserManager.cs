@@ -38,7 +38,8 @@ namespace RaceBoard.Business.Managers
                 IStringHelper stringHelper,
                 ITranslator translator,
                 IConfiguration configuration
-            ) : base(translator)
+                //IRequestContextManager requestContextManager
+            ) : base(null, translator)
         {
             _userRepository = userRepository;
             _userSettingsRepository = userSettingsRepository;

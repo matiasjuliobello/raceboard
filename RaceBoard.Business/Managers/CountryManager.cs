@@ -17,8 +17,9 @@ namespace RaceBoard.Business.Managers
         public CountryManager
             (
                 ICountryRepository countryRepository,
+                IRequestContextManager requestContextManager,
                 ITranslator translator
-            ) : base(translator)
+            ) : base(requestContextManager, translator)
         {
             _countryRepository = countryRepository;
         }

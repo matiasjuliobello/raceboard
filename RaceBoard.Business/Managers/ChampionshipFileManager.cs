@@ -1,16 +1,12 @@
 ﻿using Microsoft.Extensions.Configuration;
 using RaceBoard.Business.Managers.Abstract;
 using RaceBoard.Business.Managers.Interfaces;
-using RaceBoard.Business.Validators;
 using RaceBoard.Business.Validators.Interfaces;
 using RaceBoard.Common.Enums;
 using RaceBoard.Common.Exceptions;
-using RaceBoard.Common.Extensions;
-using RaceBoard.Common.Helpers;
 using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data;
-using RaceBoard.Data.Repositories;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 using RaceBoard.FileStorage.Interfaces;
@@ -23,30 +19,33 @@ namespace RaceBoard.Business.Managers
     {
         private readonly IChampionshipFileRepository _championshipFileRepository;
         private readonly ICustomValidator<ChampionshipFile> _championshipFileValidator;
-        private readonly IDateTimeHelper _dateTimeHelper;
 
         private readonly IFileHelper _fileHelper;
         private readonly IFileRepository _fileRepository;
+
+        private readonly IAuthorizationManager _authorizationManager;
 
         #region Constructors
 
         public ChampionshipFileManager
             (
                 IChampionshipFileRepository championshipFileRepository,
+                IAuthorizationManager authorizationManager,
                 ICustomValidator<ChampionshipFile> championshipFileValidator,
                 ITranslator translator,
                 IDateTimeHelper dateTimeHelper,
                 IFileHelper fileHelper,
                 IFileStorageProvider fileStorageProvider,
                 IFileRepository fileRepository,
-                IConfiguration configuration
-            ) : base(translator)
+                IConfiguration configuration,
+                IRequestContextManager requestContextManager
+            ) : base(requestContextManager, translator)
         {
             _championshipFileRepository = championshipFileRepository;
             _championshipFileValidator = championshipFileValidator;
-            _dateTimeHelper = dateTimeHelper;
             _fileHelper = fileHelper;
             _fileRepository = fileRepository;
+            _authorizationManager = authorizationManager;
         }
 
         #endregion
@@ -60,6 +59,9 @@ namespace RaceBoard.Business.Managers
 
         public ChampionshipFile Get(int id, ITransactionalContext? context = null)
         {
+            //var contextUser = base.GetContextUser();
+            //_authorizationManager.ValidatePermission(Domain.Enums.Action.ChampionshipFile_Get, id, contextUser.Id);
+
             var searchFilter = new ChampionshipFileSearchFilter() { Ids = new int[] { id } };
 
             var championshipFiles = _championshipFileRepository.Get(searchFilter: searchFilter, paginationFilter: null, sorting: null, context);
@@ -73,6 +75,10 @@ namespace RaceBoard.Business.Managers
 
         public void Create(ChampionshipFile championshipFile, ITransactionalContext? context = null)
         {
+            var contextUser = base.GetContextUser();
+
+            _authorizationManager.ValidatePermission(Domain.Enums.Action.ChampionshipFile_Create, championshipFile.Championship.Id, contextUser.Id);
+
             if (context == null)
                 context = _championshipFileRepository.GetTransactionalContext(TransactionContextScope.Internal);
 
@@ -106,6 +112,10 @@ namespace RaceBoard.Business.Managers
         public void Delete(int id, ITransactionalContext? context = null)
         {
             var championshipFile = this.Get(id, context);
+
+            var contextUser = base.GetContextUser();
+
+            _authorizationManager.ValidatePermission(Domain.Enums.Action.ChampionshipFile_Delete, championshipFile.Championship.Id, contextUser.Id);
 
             //_championshipValidator.SetTransactionalContext(context);
 

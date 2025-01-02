@@ -30,8 +30,8 @@ namespace RaceBoard.Service.Controllers
                 ITranslator translator,
                 IUserSettingsManager userSettingsManager,
                 ISessionHelper sessionHelper,                
-                IRequestContextHelper requestContextHelper
-            ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
+                IRequestContextManager requestContextManager
+            ) : base(mapper, logger, translator, sessionHelper, requestContextManager)
         {
             _userSettingsManager = userSettingsManager;
         }

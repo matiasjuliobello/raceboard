@@ -28,8 +28,8 @@
 //                ITranslator translator,
 //                IRaceManager raceManager,
 //                ISessionHelper sessionHelper,
-//                IRequestContextHelper requestContextHelper
-//            ) : base(mapper, logger, translator, sessionHelper, requestContextHelper)
+//                IRequestContextManager requestContextManager
+//            ) : base(mapper, logger, translator, sessionHelper, requestContextManager)
 //        {
 //            _raceManager = raceManager;
 //        }

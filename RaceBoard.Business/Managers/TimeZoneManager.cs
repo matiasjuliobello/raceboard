@@ -16,8 +16,9 @@ namespace RaceBoard.Business.Managers
         public TimeZoneManager
             (
                 ITimeZoneRepository timeZoneRepository,
+                IRequestContextManager requestContextManager,
                 ITranslator translator
-            ) : base(translator)
+            ) : base(requestContextManager, translator)
         {
             _timeZoneRepository = timeZoneRepository;
         }

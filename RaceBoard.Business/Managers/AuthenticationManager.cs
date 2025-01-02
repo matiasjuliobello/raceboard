@@ -19,10 +19,11 @@ namespace RaceBoard.Business.Managers
         public AuthenticationManager
             (
                 IAuthenticationRepository authenticationRepository,
+                IRequestContextManager requestContextManager,
                 ICryptographyHelper cryptographyHelper,
                 ITranslator translator
             ) 
-            : base(translator)
+            : base(requestContextManager, translator)
         {
             _authenticationRepository = authenticationRepository;
             _cryptographyHelper = cryptographyHelper;

@@ -27,8 +27,9 @@ namespace RaceBoard.Business.Managers
                 IDeviceSubscriptionRepository deviceSubscriptionRepository,
                 ITranslator translator,
                 IDateTimeHelper dateTimeHelper,
+                IRequestContextManager requestContextManager,
                 IConfiguration configuration
-            ) : base(translator)
+            ) : base(requestContextManager, translator)
         {
             _deviceRepository = deviceRepository;
             _deviceSubscriptionRepository = deviceSubscriptionRepository;

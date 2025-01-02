@@ -8,6 +8,8 @@ using RaceBoard.Service.Swagger;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Service.Helpers;
 using RaceBoard.Common;
+using RaceBoard.Business.Managers.Interfaces;
+using RaceBoard.Business.Managers;
 
 namespace RaceBoard.Service
 {
@@ -59,7 +61,7 @@ namespace RaceBoard.Service
 
             services.ConfigureIoC(_configuration);
             services.AddTransient<IAuthorizationActionFilter, AuthorizationFilter>();
-            services.AddScoped<IRequestContextHelper, RequestContextHelper>();
+            services.AddScoped<IRequestContextManager, RequestContextManager>();
             services.AddScoped<ICorrelationIdGenerator, CorrelationIdGenerator>();
             services.AddScoped<ISessionHelper, SessionHelper>();
 
