@@ -54,8 +54,10 @@ using TimeZone = RaceBoard.Domain.TimeZone;
 using Action = RaceBoard.Domain.Action;
 using Enums = RaceBoard.Domain.Enums;
 using RaceBoard.Messaging.Entities;
-using RaceBoard.Messaging.Providers;
+using MessagingEnums = RaceBoard.Messaging.Providers;
 using RaceBoard.DTOs.Invitation.Response;
+using RaceBoard.DTOs.ChangeRequest.Request;
+using RaceBoard.DTOs.ChangeRequest.Response;
 
 namespace RaceBoard.Service.Mappings
 {
@@ -275,7 +277,7 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Person, opt => opt.MapFrom(src => CreateObject<Person>(src.IdPerson)));
 
             CreateMap<NotificationRequest, Notification>()
-                .ForMember(dest => dest.NotificationType, opt => opt.MapFrom(src => (NotificationType)src.IdNotificationType));
+                .ForMember(dest => dest.NotificationType, opt => opt.MapFrom(src => (MessagingEnums.NotificationType)src.IdNotificationType));
 
             CreateMap<DeviceRequest, Device>()
                 .ForMember(dest => dest.Platform, opt => opt.MapFrom(src => CreateObject<Platform>(src.IdPlatform)));
@@ -285,6 +287,20 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
                 .ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)));
 
+            CreateMap<ChangeRequestRequest, ChangeRequest>()
+                //.ForMember(dest => dest.Status, opt => opt.MapFrom(src => (Enums.RequestStatus)src.IdRequestStatus))
+                //.ForMember(dest => dest.RequestUser, opt => opt.MapFrom(src => CreateObject<User>(src.IdRequestUser)))
+                .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)));
+
+            CreateMap<EquipmentChangeRequestRequest, EquipmentChangeRequest>()
+                .IncludeBase<ChangeRequestRequest, ChangeRequest>();
+
+            CreateMap<CrewChangeRequestRequest, CrewChangeRequest>()
+                .IncludeBase<ChangeRequestRequest, ChangeRequest>()
+                .ForMember(dest => dest.ReplacedUser, opt => opt.MapFrom(src => CreateObject<User>(src.IdReplacedUser)));
+
+            CreateMap<ChangeRequestSearchFilterRequest, ChangeRequestSearchFilter>()
+                .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)));
 
             #endregion
 
@@ -376,6 +392,10 @@ namespace RaceBoard.Service.Mappings
             CreateMap<TeamBoat, TeamBoatResponse>();
             CreateMap<DeviceSubscription, DeviceSubscriptionResponse>();
 
+            CreateMap<RequestStatus, RequestStatusResponse>();
+            CreateMap<ChangeRequest, ChangeRequestResponse>();
+            CreateMap<CrewChangeRequest, CrewChangeRequestResponse>();
+            CreateMap<EquipmentChangeRequest, EquipmentChangeRequestResponse>();
 
             #endregion
         }

@@ -91,7 +91,8 @@ namespace RaceBoard.Service.Controllers.Abstract
                 CreationUser = currentUser,
                 CreationDate = currentDate,
                 Content = uploadedFile.Content,
-                Name = uploadedFile.UniqueFilename
+                Name = uploadedFile.UniqueFilename,
+                Description = uploadedFile.Filename
             };
         }
     }

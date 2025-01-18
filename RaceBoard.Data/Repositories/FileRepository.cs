@@ -14,8 +14,8 @@ namespace RaceBoard.Data.Repositories
         private readonly Dictionary<string, string> _columnsMapping = new()
         {
             { "Id", "[File].Id" },
-            { "PhysicalName", "[File].PhysicalName" },
-            { "IdCreationUser", "[File].IdCreationUser"},
+            { "Description", "[File].Description" },
+            { "Name", "[File].Name" },
             { "CreationDate", "[File].CreationDate"}
         };
 
@@ -33,12 +33,14 @@ namespace RaceBoard.Data.Repositories
 
         public PaginatedResult<Domain.File> Get(FileSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
-            return this.GetFiles(id: null, searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
+            return this.GetFiles(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
         }
 
         public Domain.File? Get(int id, ITransactionalContext? context = null)
         {
-            return this.GetFiles(id: id, searchFilter: null, paginationFilter: null, sorting: null, context: context).Results.FirstOrDefault();
+            var searchFilter = new FileSearchFilter() {  Ids = new int[] { id } };
+
+            return this.GetFiles(searchFilter, paginationFilter: null, sorting: null, context: context).Results.FirstOrDefault();
         }
 
         public void Create(Domain.File file, ITransactionalContext? context = null)
@@ -60,33 +62,24 @@ namespace RaceBoard.Data.Repositories
 
         #region Private Methods
 
-        private PaginatedResult<Domain.File> GetFiles(int? id, FileSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        private PaginatedResult<Domain.File> GetFiles(FileSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             string sql = $@"SELECT
 	                            [File].Id [Id],	  
-	                            [File].[UniqueFileName] [UniqueFileName],
-	                            [File].[FileName] [FileName],
+	                            [File].[Description] [Description],
+	                            [File].[Name] [Name],
                                 [File].Path [Path],
-	                            [File].StartDate [StartDate],
-	                            [File].EndDate [EndDate],
+	                            [File].CreationDate [CreationDate],
 	                            [User].Id [Id],
-	                            [User].Firstname [Firstname],
-	                            [User].Lastname [Lastname],
-	                            [FileType].Id [Id],
-	                            [FileType].Name [Name],
-	                            [Role].Id [Id],
-	                            [Role].Name [Name]
+                                [Person].Id [Id],
+	                            [Person].Firstname [Firstname],
+	                            [Person].Lastname [Lastname]
                             FROM [File] [File]
-                            INNER JOIN [FileType] [FileType] ON [FileType].Id = [File].IdType
-                            INNER JOIN [Role] [Role] ON [Role].Id = [File].IdRole";
+                            INNER JOIN [User] [User] ON [User].Id = [File].IdCreationUser
+                            INNER JOIN [User_Person] [User_Person] ON [User_Person].IdUser = [User].Id
+                            INNER JOIN [Person] [Person] ON [Person].Id = [User_Person].IdPerson";
 
             QueryBuilder.AddCommand(sql);
-
-            if (id.HasValue)
-            {
-                QueryBuilder.AddCondition($"[File].Id = @id");
-                QueryBuilder.AddParameter("id", id.Value);
-            }
 
             this.ProcessSearchFilter(searchFilter);
 
@@ -99,20 +92,15 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<Domain.File, User, FileType, Domain.File>
+                        return reader.Read<Domain.File, User, Person, Domain.File>
                         (
-                            (file, user, fileType) =>
+                            (file, user, person) =>
                             {
-                                //var userFile = files.FirstOrDefault(x => x.User.Id == user.Id && x.StartDate == file.StartDate);
-                                //if (userFile == null)
-                                //{
-                                //    userFile = file;
-                                //    userFile.User = user;
+                                person.User = user;
 
-                                //    files.Add(userFile);
-                                //}
+                                file.CreationUser = user;
 
-                                //userFile.Type = fileType;
+                                files.Add(file);
 
                                 return file;
                             },
@@ -188,7 +176,7 @@ namespace RaceBoard.Data.Repositories
             //    QueryBuilder.AddParameter("endDate", searchFilter.EndDate.Value.Date);
             //}
 
-            //base.AddFilterCriteria(ConditionType.In, "File", "Id", "id", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.In, "[File]", "Id", "id", searchFilter.Ids);
         }
 
         #endregion

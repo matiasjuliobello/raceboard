@@ -84,6 +84,7 @@ namespace RaceBoard.Service
                             .WithOrigins(_cors_allowed_origins)
                             .AllowAnyMethod()
                             .AllowAnyHeader()
+                            .WithExposedHeaders("Content-Disposition")
                     )
                 );
         }

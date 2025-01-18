@@ -64,6 +64,8 @@ namespace RaceBoard.IoC
             services.AddScoped<IFileTypeManager, FileTypeManager>();
             services.AddScoped<INotificationManager, NotificationManager>();
             services.AddScoped<IMailManager, MailManager>();
+            services.AddScoped<IChangeRequestManager, ChangeRequestManager>();
+            services.AddScoped<IFileManager, FileManager>();
             #endregion
 
             #region Validators
@@ -91,6 +93,8 @@ namespace RaceBoard.IoC
             services.AddTransient<ICustomValidator<TeamMemberInvitation>, TeamMemberInvitationValidator>();
             services.AddTransient<ICustomValidator<TeamBoat>, TeamBoatValidator>();
             services.AddTransient<ICustomValidator<TeamMemberCheck>, TeamCheckValidator>();
+            services.AddTransient<ICustomValidator<EquipmentChangeRequest>, EquipmentChangeRequestValidator>();
+            services.AddTransient<ICustomValidator<CrewChangeRequest>, CrewChangeRequestValidator>();
             #endregion
 
             #region Repositories
@@ -134,6 +138,8 @@ namespace RaceBoard.IoC
             services.AddScoped<IFlagRepository, FlagRepository>();
             services.AddScoped<ILanguageRepository, LanguageRepository>();
             services.AddScoped<IFormatRepository, FormatRepository>();
+            services.AddScoped<IEquipmentChangeRequestRepository, EquipmentChangeRequestRepository>();
+            services.AddScoped<ICrewChangeRequestRepository, CrewChangeRequestRepository>();
             #endregion
 
             #region Helpers

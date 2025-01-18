@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 using RaceBoard.Translations.Entities;
 using RaceBoard.Translations.Interfaces;
 using System.Diagnostics.Metrics;
@@ -65,9 +66,9 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.English, "The data you are looking for was not found"),
                 new Tuple<string, string>(Languages.Spanish, "No se encontraron los datos que estás buscando"));
 
-            AddText(AddTranslation("MySettings"),
-                new Tuple<string, string>(Languages.English, "My settings"),
-                new Tuple<string, string>(Languages.Spanish, "Mi configuración"));
+            AddText(AddTranslation("Settings"),
+                new Tuple<string, string>(Languages.English, "Settings"),
+                new Tuple<string, string>(Languages.Spanish, "Configuración"));
             AddText(AddTranslation("PersonalData"),
                 new Tuple<string, string>(Languages.English, "Personal data"),
                 new Tuple<string, string>(Languages.Spanish, "Datos personales"));
@@ -104,9 +105,9 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("ChangePreferences"),
                 new Tuple<string, string>(Languages.English, "Change preferences"),
                 new Tuple<string, string>(Languages.Spanish, "Cambiar preferencias"));
-            AddText(AddTranslation("SavePreferences"),
-                new Tuple<string, string>(Languages.English, "Save preferences"),
-                new Tuple<string, string>(Languages.Spanish, "Guardar preferencias"));
+            AddText(AddTranslation("SaveSettings"),
+                new Tuple<string, string>(Languages.English, "Save settings"),
+                new Tuple<string, string>(Languages.Spanish, "Guardar configuración"));
             AddText(AddTranslation("Hello!Welcome"),
                 new Tuple<string, string>(Languages.English, "Hello! Welcome"),
                 new Tuple<string, string>(Languages.Spanish, "Hola! Bienvenido"));
@@ -771,9 +772,16 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("SetChampionshipDates"),
                 new Tuple<string, string>(Languages.English, "Set championship dates"),
                 new Tuple<string, string>(Languages.Spanish, "Indicar fechas del campeonato"));
-            
 
-
+            AddText(AddTranslation("Download"),
+                new Tuple<string, string>(Languages.English, "Download"),
+                new Tuple<string, string>(Languages.Spanish, "Descargar"));
+            AddText(AddTranslation("DownloadFile"),
+                new Tuple<string, string>(Languages.English, "Download file"),
+                new Tuple<string, string>(Languages.Spanish, "Descargar archivo"));
+            AddText(AddTranslation("FileDownloaded"),
+                new Tuple<string, string>(Languages.English, "File downloaded"),
+                new Tuple<string, string>(Languages.Spanish, "Archivo descargado"));
             AddText(AddTranslation("File"),
                 new Tuple<string, string>(Languages.English, "File"),
                 new Tuple<string, string>(Languages.Spanish, "Archivo"));
@@ -927,6 +935,111 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("Crew"),
                 new Tuple<string, string>(Languages.English, "Crew"),
                 new Tuple<string, string>(Languages.Spanish, "Tripulante"));
+
+
+            AddText(AddTranslation("NoHearingRequestsYet"),
+                new Tuple<string, string>(Languages.English, "No hearing requests yet"),
+                new Tuple<string, string>(Languages.Spanish, "Aún no se han pedido audiencias"));
+            AddText(AddTranslation("NoEquipmentChangeRequestsYet"),
+                new Tuple<string, string>(Languages.English, "No equipment change requests yet"),
+                new Tuple<string, string>(Languages.Spanish, "Aún no se han pedido cambios de equipamiento"));
+            AddText(AddTranslation("NoCrewChangeRequestsYet"),
+                new Tuple<string, string>(Languages.English, "No crew change requests yet"),
+                new Tuple<string, string>(Languages.Spanish, "Aún no se han pedido cambios de tripulación"));
+
+
+            AddText(AddTranslation("EquipmentChangeRequest"),
+                new Tuple<string, string>(Languages.English, "Equipment change request"),
+                new Tuple<string, string>(Languages.Spanish, "Pedidos de cambio de equipamiento"));
+            AddText(AddTranslation("EquipmentChangeRequests"),
+                new Tuple<string, string>(Languages.English, "Equipment change requests"),
+                new Tuple<string, string>(Languages.Spanish, "Pedidos de cambio de equipamiento"));
+
+            AddText(AddTranslation("HearingRequest"),
+                new Tuple<string, string>(Languages.English, "Hearing request"),
+                new Tuple<string, string>(Languages.Spanish, "Pedido de audiencia"));
+            AddText(AddTranslation("HearingRequests"),
+                new Tuple<string, string>(Languages.English, "Hearing requests"),
+                new Tuple<string, string>(Languages.Spanish, "Pedidos de audiencia"));
+
+            AddText(AddTranslation("CrewChangeRequest"),
+                new Tuple<string, string>(Languages.English, "Crew change request"),
+                new Tuple<string, string>(Languages.Spanish, "Pedido de cambio de tripulación"));
+            AddText(AddTranslation("CrewChangeRequests"),
+                new Tuple<string, string>(Languages.English, "Crew change requests"),
+                new Tuple<string, string>(Languages.Spanish, "Pedidos de cambio de tripulación"));
+
+            AddText(AddTranslation("Request"),
+                new Tuple<string, string>(Languages.English, "Request"),
+                new Tuple<string, string>(Languages.Spanish, "Solicitar"));
+            AddText(AddTranslation("SubmitHearingRequest"),
+                new Tuple<string, string>(Languages.English, "Submit hearing request"),
+                new Tuple<string, string>(Languages.Spanish, "Enviar pedido de cambio"));
+            AddText(AddTranslation("RequestedBy"),
+                new Tuple<string, string>(Languages.English, "Requested by"),
+                new Tuple<string, string>(Languages.Spanish, "Solicitado por"));
+            AddText(AddTranslation("ReplacedMember"),
+                new Tuple<string, string>(Languages.English, "Replaced member"),
+                new Tuple<string, string>(Languages.Spanish, "Tripulante reemplazado"));
+            AddText(AddTranslation("ChangeRequested"),
+                new Tuple<string, string>(Languages.English, "Change requested"),
+                new Tuple<string, string>(Languages.Spanish, "Cambio solicitado"));
+            AddText(AddTranslation("ReasonOfChange"),
+                new Tuple<string, string>(Languages.English, "Reason of change"),
+                new Tuple<string, string>(Languages.Spanish, "Razón del cambio"));
+            AddText(AddTranslation("ReplacementFullname"),
+                new Tuple<string, string>(Languages.English, "Replacement fullname"),
+                new Tuple<string, string>(Languages.Spanish, "Nombre completo del reemplazante"));
+            AddText(AddTranslation("AttachFile"),
+                new Tuple<string, string>(Languages.English, "Attach file"),
+                new Tuple<string, string>(Languages.Spanish, "Adjuntar archivo"));
+            AddText(AddTranslation("AttachedFile"),
+                new Tuple<string, string>(Languages.English, "Attached file"),
+                new Tuple<string, string>(Languages.Spanish, "Archivo adjunto"));
+            AddText(AddTranslation("Optional"),
+                new Tuple<string, string>(Languages.English, "Optional"),
+                new Tuple<string, string>(Languages.Spanish, "Opcional"));
+            AddText(AddTranslation("RequestDate"),
+                new Tuple<string, string>(Languages.English, "Request date"),
+                new Tuple<string, string>(Languages.Spanish, "Fecha de solicitud"));
+            AddText(AddTranslation("ResolutionDate"),
+                new Tuple<string, string>(Languages.English, "Resolution date"),
+                new Tuple<string, string>(Languages.Spanish, "Fecha de resolución"));
+            AddText(AddTranslation("ResolutionComments"),
+                new Tuple<string, string>(Languages.English, "Resolution comments"),
+                new Tuple<string, string>(Languages.Spanish, "Comentarios"));
+
+            AddText(AddTranslation("Submitted"),
+                new Tuple<string, string>(Languages.English, "Submitted"),
+                new Tuple<string, string>(Languages.Spanish, "Enviado"));
+            AddText(AddTranslation("Deliberating"),
+                new Tuple<string, string>(Languages.English, "Deliberating"),
+                new Tuple<string, string>(Languages.Spanish, "Deliberando"));
+            AddText(AddTranslation("Solved"),
+                new Tuple<string, string>(Languages.English, "Solved"),
+                new Tuple<string, string>(Languages.Spanish, "Resuelto"));
+            AddText(AddTranslation("Granted"),
+                new Tuple<string, string>(Languages.English, "Granted"),
+                new Tuple<string, string>(Languages.Spanish, "Concedido"));
+            AddText(AddTranslation("Denied"),
+                new Tuple<string, string>(Languages.English, "Denied"),
+                new Tuple<string, string>(Languages.Spanish, "Rechazado"));
+
+            AddText(AddTranslation("RequestHasBeenSubmitted.NowInQueueToBeSolved"),
+                new Tuple<string, string>(Languages.English, "Request has been submitted. Now in queue to be solved.."),
+                new Tuple<string, string>(Languages.Spanish, "La solicitud ha sido enviada. Ahora en espera por ser resuelta.."));
+            AddText(AddTranslation("RequestIsBeingDeliberated.TheAuthoritiesWillSoonReachAVerdict"),
+                new Tuple<string, string>(Languages.English, "Request is being deliberated. The authorities will soon reach a verdict."),
+                new Tuple<string, string>(Languages.Spanish, "La solicitud está siendo deliberada. Las autoridades pronto llegarán a un veredicto."));
+            AddText(AddTranslation("RequestHasBeenSolved"),
+                new Tuple<string, string>(Languages.English, "Request has been solved"),
+                new Tuple<string, string>(Languages.Spanish, "La solicitud ha sido resuelta."));
+            AddText(AddTranslation("RequestHasBeenGranted.TheChangeIsAllowed"),
+                new Tuple<string, string>(Languages.English, "Request has been granted. The change is allowed."),
+                new Tuple<string, string>(Languages.Spanish, "La solicitud ha sido aprobada. El cambio está permitido."));
+            AddText(AddTranslation("RequestHasBeenRejected.TheChangeIsNotAllowed"),
+                new Tuple<string, string>(Languages.English, "Request has been rejected. The change is not allowed"),
+                new Tuple<string, string>(Languages.Spanish, "La solicitud ha sido rechazada. El cambio NO está permitido."));
         }
 
         private Translation AddTranslation(string key)

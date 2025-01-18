@@ -75,6 +75,16 @@
         TeamMemberCheckInOut_Get = 53,
         TeamMemberCheckInOut_Create = 54,
         TeamMemberCheckInOut_Update = 55,
-        TeamMemberCheckInOut_Delete = 56
+        TeamMemberCheckInOut_Delete = 56,
+
+        TeamEquipmentChangeRequest_Get = 57,
+        TeamEquipmentChangeRequest_Create = 58,
+        TeamEquipmentChangeRequest_Update = 59,
+        TeamEquipmentChangeRequest_Delete = 60,
+
+        TeamCrewChangeRequest_Get = 61,
+        TeamCrewChangeRequest_Create = 62,
+        TeamCrewChangeRequest_Update = 63,
+        TeamCrewChangeRequest_Delete = 64
     }
 }

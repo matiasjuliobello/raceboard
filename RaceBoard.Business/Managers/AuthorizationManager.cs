@@ -104,6 +104,16 @@ namespace RaceBoard.Business.Managers
             { Enums.Action.TeamMemberCheckInOut_Create, new int[] { (int)Enums.UserRole.Manager, (int)Enums.UserRole.Auxiliary } },
             { Enums.Action.TeamMemberCheckInOut_Update, new int[] { (int)Enums.TeamMemberRole.Leader } },
             { Enums.Action.TeamMemberCheckInOut_Delete, new int[] { (int)Enums.TeamMemberRole.Leader } },
+
+            { Enums.Action.TeamEquipmentChangeRequest_Get, _allRoles },
+            { Enums.Action.TeamEquipmentChangeRequest_Create, new int[] { (int)Enums.TeamMemberRole.Leader } },
+            { Enums.Action.TeamEquipmentChangeRequest_Update, new int[] { (int)Enums.TeamMemberRole.Leader } },
+            { Enums.Action.TeamEquipmentChangeRequest_Delete, new int[] { (int)Enums.TeamMemberRole.Leader } },
+
+            { Enums.Action.TeamCrewChangeRequest_Get, _allRoles },
+            { Enums.Action.TeamCrewChangeRequest_Create, new int[] { (int)Enums.TeamMemberRole.Leader } },
+            { Enums.Action.TeamCrewChangeRequest_Update, new int[] { (int)Enums.TeamMemberRole.Leader } },
+            { Enums.Action.TeamCrewChangeRequest_Delete, new int[] { (int)Enums.TeamMemberRole.Leader } },
         };
 
         #endregion
