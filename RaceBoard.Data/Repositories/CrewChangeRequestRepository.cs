@@ -102,24 +102,25 @@ namespace RaceBoard.Data.Repositories
 	                            [RequestStatus].Id [Id],
 	                            [RequestStatus].[Name] [Name],
 	                            [Team].Id [Id],
-                                [RaceClass].Id [Id],
-                                [RaceClass].Name [Name],
                                 [RequestPerson].Id [Id],
 	                            [RequestPerson].Firstname [Firstname],
 	                            [RequestPerson].Lastname [Lastname],
                                 [ReplacedPerson].Id [Id],
 	                            [ReplacedPerson].Firstname [Firstname],
-	                            [ReplacedPerson].Lastname [Lastname]
+	                            [ReplacedPerson].Lastname [Lastname],
+                                [ReplacedUser].Id [Id],
+                                [File].Id [Id],
+                                [File].Description [Description]
                             FROM [CrewChangeRequest] [CrewChangeRequest]
                             INNER JOIN [Team] [Team] ON [Team].Id = [CrewChangeRequest].IdTeam
-                            INNER JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Team].IdRaceClass
                             INNER JOIN [RequestStatus] [RequestStatus] ON [RequestStatus].Id = [CrewChangeRequest].IdRequestStatus
                             INNER JOIN [User] [RequestUser]  ON [RequestUser].Id  = [CrewChangeRequest].IdRequestUser
                             INNER JOIN [User_Person] [User_Person1] ON [User_Person1].IdUser = [RequestUser].Id
                             INNER JOIN [Person] [RequestPerson] ON [RequestPerson].Id = [User_Person1].IdPerson
                             INNER JOIN [User] [ReplacedUser]  ON [ReplacedUser].Id  = [CrewChangeRequest].IdRequestUser
                             INNER JOIN [User_Person] [User_Person2] ON [User_Person2].IdUser = [ReplacedUser].Id
-                            INNER JOIN [Person] [ReplacedPerson] ON [ReplacedPerson].Id = [User_Person2].IdPerson";
+                            INNER JOIN [Person] [ReplacedPerson] ON [ReplacedPerson].Id = [User_Person2].IdPerson
+                            LEFT JOIN [File] [File] ON [File].Id = [CrewChangeRequest].IdFile";
 
             QueryBuilder.AddCommand(sql);
 
@@ -134,22 +135,23 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<CrewChangeRequest, RequestStatus, Team, RaceClass, Person, Person, CrewChangeRequest>
+                        return reader.Read<CrewChangeRequest, RequestStatus, Team, Person, Person, User, RaceBoard.Domain.File, CrewChangeRequest>
                         (
-                            (crewChangeRequest, requestStatus, team, raceClass, requestPerson, replacedPerson) =>
+                            (crewChangeRequest, requestStatus, team, requestPerson, replacedPerson, replacedUser, file) =>
                             {
-                                team.RaceClass = raceClass;
-
                                 crewChangeRequest.Team = team;
                                 crewChangeRequest.Status = requestStatus;
                                 crewChangeRequest.RequestPerson = requestPerson;
+                                crewChangeRequest.ReplacedUser = replacedUser;
                                 crewChangeRequest.ReplacedPerson = replacedPerson;
+
+                                crewChangeRequest.File = file;
 
                                 crewChangeRequests.Add(crewChangeRequest);
 
                                 return crewChangeRequest;
                             },
-                            splitOn: "Id, Id, Id, Id, Id, Id"
+                            splitOn: "Id, Id, Id, Id, Id, Id, Id"
                         ).AsList();
                     },
                     context

@@ -64,7 +64,7 @@ namespace RaceBoard.IoC
             services.AddScoped<IFileTypeManager, FileTypeManager>();
             services.AddScoped<INotificationManager, NotificationManager>();
             services.AddScoped<IMailManager, MailManager>();
-            services.AddScoped<IChangeRequestManager, ChangeRequestManager>();
+            services.AddScoped<IRequestManager, RequestManager>();
             services.AddScoped<IFileManager, FileManager>();
             #endregion
 

@@ -15,21 +15,21 @@ namespace RaceBoard.Service.Controllers
 {
     [Route("api/requests")]
     [ApiController]
-    public class ChangeRequestController : AbstractController<ChangeRequestController>
+    public class RequestController : AbstractController<RequestController>
     {
-        private readonly IChangeRequestManager _changeRequestManager;
+        private readonly IRequestManager _requestManager;
 
-        public ChangeRequestController
+        public RequestController
             (
                 IMapper mapper,
-                ILogger<ChangeRequestController> logger,
+                ILogger<RequestController> logger,
                 ITranslator translator,
-                IChangeRequestManager changeRequestManager,
+                IRequestManager requestManager,
                 ISessionHelper sessionHelper,
                 IRequestContextManager requestContextManager
             ) : base(mapper, logger, translator, sessionHelper, requestContextManager)
         {
-            _changeRequestManager = changeRequestManager;
+            _requestManager = requestManager;
         }
 
         [HttpGet("crew-change")]
@@ -39,7 +39,7 @@ namespace RaceBoard.Service.Controllers
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
             var sorting = _mapper.Map<Sorting>(sortingRequest);
 
-            var changeRequests = _changeRequestManager.GetCrewChangeRequests(searchFilter, paginationFilter, sorting);
+            var changeRequests = _requestManager.GetCrewChangeRequests(searchFilter, paginationFilter, sorting);
 
             var response = _mapper.Map<PaginatedResultResponse<CrewChangeRequestResponse>>(changeRequests);
 
@@ -53,7 +53,7 @@ namespace RaceBoard.Service.Controllers
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
             var sorting = _mapper.Map<Sorting>(sortingRequest);
 
-            var changeRequests = _changeRequestManager.GetEquipmentChangeRequests(searchFilter, paginationFilter, sorting);
+            var changeRequests = _requestManager.GetEquipmentChangeRequests(searchFilter, paginationFilter, sorting);
 
             var response = _mapper.Map<PaginatedResultResponse<EquipmentChangeRequestResponse>>(changeRequests);
 
@@ -63,9 +63,19 @@ namespace RaceBoard.Service.Controllers
         [HttpGet("equipment-change/{id}")]
         public ActionResult<EquipmentChangeRequestResponse> GetEquipmentChangeRequest(int id)
         {
-            var changeRequest = _changeRequestManager.GetEquipmentChangeRequest(id);
+            var changeRequest = _requestManager.GetEquipmentChangeRequest(id);
 
             var response = _mapper.Map<EquipmentChangeRequestResponse>(changeRequest);
+
+            return Ok(response);
+        }
+
+        [HttpGet("crew-change/{id}")]
+        public ActionResult<CrewChangeRequestResponse> GetCrewChangeRequest(int id)
+        {
+            var changeRequest = _requestManager.GetCrewChangeRequest(id);
+
+            var response = _mapper.Map<CrewChangeRequestResponse>(changeRequest);
 
             return Ok(response);
         }
@@ -79,7 +89,7 @@ namespace RaceBoard.Service.Controllers
             if (uploadedFile != null)
                 changeRequest.File = base.CreateFileInstance(uploadedFile);
 
-            _changeRequestManager.CreateEquipmentChangeRequest(changeRequest);
+            _requestManager.CreateEquipmentChangeRequest(changeRequest);
 
             return Ok(changeRequest.Id);
         }
@@ -91,12 +101,9 @@ namespace RaceBoard.Service.Controllers
 
             var uploadedFile = _mapper.Map<IFormFile, FileUpload>(file);
             if (uploadedFile != null)
-            {
                 changeRequest.File = base.CreateFileInstance(uploadedFile);
-                changeRequest.File.Description = "";
-            }
 
-            _changeRequestManager.CreateCrewChangeRequest(changeRequest);
+            _requestManager.CreateCrewChangeRequest(changeRequest);
 
             return Ok(changeRequest.Id);
         }

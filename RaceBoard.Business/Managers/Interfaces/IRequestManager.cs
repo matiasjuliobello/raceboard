@@ -5,7 +5,7 @@ using RaceBoard.Domain;
 
 namespace RaceBoard.Business.Managers.Interfaces
 {
-    public interface IChangeRequestManager
+    public interface IRequestManager
     {
         PaginatedResult<EquipmentChangeRequest> GetEquipmentChangeRequests(ChangeRequestSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
         EquipmentChangeRequest GetEquipmentChangeRequest(int id, ITransactionalContext? context = null);

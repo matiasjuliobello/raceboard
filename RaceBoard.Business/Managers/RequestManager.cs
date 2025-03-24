@@ -15,7 +15,7 @@ using Enums = RaceBoard.Domain.Enums;
 
 namespace RaceBoard.Business.Managers
 {
-    public class ChangeRequestManager : AbstractManager, IChangeRequestManager
+    public class RequestManager : AbstractManager, IRequestManager
     {
         private readonly IAuthorizationManager _authorizationManager;
 
@@ -31,7 +31,7 @@ namespace RaceBoard.Business.Managers
 
         #region Constructors
 
-        public ChangeRequestManager
+        public RequestManager
             (
                 IAuthorizationManager authorizationManager,
                 IEquipmentChangeRequestRepository equipmentChangeRequestRepository,
@@ -152,7 +152,15 @@ namespace RaceBoard.Business.Managers
 
         public CrewChangeRequest GetCrewChangeRequest(int id, ITransactionalContext? context = null)
         {
-            throw new NotImplementedException();
+            var searchFilter = new ChangeRequestSearchFilter() { Ids = new[] { id } };
+
+            var changeRequests = _crewChangeRequestRepository.Get(searchFilter, paginationFilter: null, sorting: null, context: context);
+
+            var changeRequest = changeRequests.Results.FirstOrDefault();
+            if (changeRequest == null)
+                throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
+
+            return changeRequest;
         }
 
         public PaginatedResult<CrewChangeRequest> GetCrewChangeRequests(ChangeRequestSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
@@ -189,6 +197,5 @@ namespace RaceBoard.Business.Managers
         }
 
         #endregion
-
     }
 }
