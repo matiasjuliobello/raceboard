@@ -7,6 +7,8 @@ using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
 using RaceBoard.DTOs.ChangeRequest.Request;
 using RaceBoard.DTOs.ChangeRequest.Response;
+using RaceBoard.DTOs.HearingRequest.Request;
+using RaceBoard.DTOs.HearingRequest.Response;
 using RaceBoard.Service.Controllers.Abstract;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Translations.Interfaces;
@@ -32,7 +34,9 @@ namespace RaceBoard.Service.Controllers
             _requestManager = requestManager;
         }
 
-        [HttpGet("crew-change")]
+        #region Crew Changes
+
+        [HttpGet("crew-changes")]
         public ActionResult<PaginatedResultResponse<CrewChangeRequestResponse>> GetCrewChangeRequests([FromQuery] ChangeRequestSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<ChangeRequestSearchFilter>(searchFilterRequest);
@@ -46,31 +50,7 @@ namespace RaceBoard.Service.Controllers
             return Ok(response);
         }
 
-        [HttpGet("equipment-change")]
-        public ActionResult<PaginatedResultResponse<EquipmentChangeRequestResponse>> GetEquipmentChangeRequests([FromQuery] ChangeRequestSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
-        {
-            var searchFilter = _mapper.Map<ChangeRequestSearchFilter>(searchFilterRequest);
-            var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
-            var sorting = _mapper.Map<Sorting>(sortingRequest);
-
-            var changeRequests = _requestManager.GetEquipmentChangeRequests(searchFilter, paginationFilter, sorting);
-
-            var response = _mapper.Map<PaginatedResultResponse<EquipmentChangeRequestResponse>>(changeRequests);
-
-            return Ok(response);
-        }
-
-        [HttpGet("equipment-change/{id}")]
-        public ActionResult<EquipmentChangeRequestResponse> GetEquipmentChangeRequest(int id)
-        {
-            var changeRequest = _requestManager.GetEquipmentChangeRequest(id);
-
-            var response = _mapper.Map<EquipmentChangeRequestResponse>(changeRequest);
-
-            return Ok(response);
-        }
-
-        [HttpGet("crew-change/{id}")]
+        [HttpGet("crew-changes/{id}")]
         public ActionResult<CrewChangeRequestResponse> GetCrewChangeRequest(int id)
         {
             var changeRequest = _requestManager.GetCrewChangeRequest(id);
@@ -80,21 +60,7 @@ namespace RaceBoard.Service.Controllers
             return Ok(response);
         }
 
-        [HttpPost("equipment-change")]
-        public ActionResult<int> SubmitEquipmentChangeRequest(IFormFile file, [FromForm] EquipmentChangeRequestRequest equipmentChangeRequestRequest)
-        {
-            var changeRequest = _mapper.Map<EquipmentChangeRequest>(equipmentChangeRequestRequest);
-
-            var uploadedFile = _mapper.Map<IFormFile, FileUpload>(file);
-            if (uploadedFile != null)
-                changeRequest.File = base.CreateFileInstance(uploadedFile);
-
-            _requestManager.CreateEquipmentChangeRequest(changeRequest);
-
-            return Ok(changeRequest.Id);
-        }
-
-        [HttpPost("crew-change")]
+        [HttpPost("crew-changes")]
         public ActionResult<int> SubmitCrewChangeRequest(IFormFile file, [FromForm] CrewChangeRequestRequest crewChangeRequestRequest)
         {
             var changeRequest = _mapper.Map<CrewChangeRequest>(crewChangeRequestRequest);
@@ -108,23 +74,87 @@ namespace RaceBoard.Service.Controllers
             return Ok(changeRequest.Id);
         }
 
-        //[HttpPut()]
-        //public ActionResult Update(ChangeRequestRequest changeRequestRequest)
-        //{
-        //    var changeRequest = _mapper.Map<ChangeRequest>(changeRequestRequest);
+        #endregion
 
-        //    _changeRequestManager.Update(changeRequest);
+        #region Equipment Changes
 
-        //    return Ok();
-        //}
+        [HttpGet("equipment-changes")]
+        public ActionResult<PaginatedResultResponse<EquipmentChangeRequestResponse>> GetEquipmentChangeRequests([FromQuery] ChangeRequestSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
+        {
+            var searchFilter = _mapper.Map<ChangeRequestSearchFilter>(searchFilterRequest);
+            var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
+            var sorting = _mapper.Map<Sorting>(sortingRequest);
 
-        //[HttpDelete("{id}")]
-        //public ActionResult Delete([FromRoute] int id)
-        //{
-        //    _changeRequestManager.Delete(id);
+            var changeRequests = _requestManager.GetEquipmentChangeRequests(searchFilter, paginationFilter, sorting);
 
-        //    return Ok();
-        //}
+            var response = _mapper.Map<PaginatedResultResponse<EquipmentChangeRequestResponse>>(changeRequests);
+
+            return Ok(response);
+        }
+
+        [HttpGet("equipment-changes/{id}")]
+        public ActionResult<EquipmentChangeRequestResponse> GetEquipmentChangeRequest(int id)
+        {
+            var changeRequest = _requestManager.GetEquipmentChangeRequest(id);
+
+            var response = _mapper.Map<EquipmentChangeRequestResponse>(changeRequest);
+
+            return Ok(response);
+        }
+
+        [HttpPost("equipment-changes")]
+        public ActionResult<int> SubmitEquipmentChangeRequest(IFormFile file, [FromForm] EquipmentChangeRequestRequest equipmentChangeRequestRequest)
+        {
+            var changeRequest = _mapper.Map<EquipmentChangeRequest>(equipmentChangeRequestRequest);
+
+            var uploadedFile = _mapper.Map<IFormFile, FileUpload>(file);
+            if (uploadedFile != null)
+                changeRequest.File = base.CreateFileInstance(uploadedFile);
+
+            _requestManager.CreateEquipmentChangeRequest(changeRequest);
+
+            return Ok(changeRequest.Id);
+        }
+
+        #endregion
+
+        #region Hearings
+
+        [HttpGet("hearings")]
+        public ActionResult<PaginatedResultResponse<HearingRequestResponse>> GetHearingRequests([FromQuery] HearingRequestSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
+        {
+            var searchFilter = _mapper.Map<HearingRequestSearchFilter>(searchFilterRequest);
+            var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
+            var sorting = _mapper.Map<Sorting>(sortingRequest);
+
+            var changeRequests = _requestManager.GetHearingRequests(searchFilter, paginationFilter, sorting);
+
+            var response = _mapper.Map<PaginatedResultResponse<HearingRequestResponse>>(changeRequests);
+
+            return Ok(response);
+        }
+
+        [HttpGet("hearings/{id}")]
+        public ActionResult<HearingRequestResponse> GetHearingRequest(int id)
+        {
+            var changeRequest = _requestManager.GetHearingRequest(id);
+
+            var response = _mapper.Map<HearingRequestResponse>(changeRequest);
+
+            return Ok(response);
+        }
+
+        [HttpPost("hearings")]
+        public ActionResult<int> CreateHearingRequest([FromBody] HearingRequestRequest hearingRequestRequest)
+        {
+            var hearingRequest = _mapper.Map<HearingRequest>(hearingRequestRequest);
+
+            _requestManager.CreateHearingRequest(hearingRequest);
+
+            return Ok(hearingRequest.Id);
+        }
+
+        #endregion
 
         #region Private Methods
 

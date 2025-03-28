@@ -1,6 +1,6 @@
 ﻿namespace RaceBoard.Domain
 {
-    public class RequestStatus
+    public class HearingRequestStatus
     {
         public int Id { get; set; }
         public string Name { get; set; }

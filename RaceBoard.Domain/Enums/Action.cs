@@ -85,6 +85,11 @@
         TeamCrewChangeRequest_Get = 61,
         TeamCrewChangeRequest_Create = 62,
         TeamCrewChangeRequest_Update = 63,
-        TeamCrewChangeRequest_Delete = 64
+        TeamCrewChangeRequest_Delete = 64,
+
+        TeamHearingRequest_Get = 65,
+        TeamHearingRequest_Create = 66,
+        TeamHearingRequest_Update = 67,
+        TeamHearingRequest_Delete = 68
     }
 }

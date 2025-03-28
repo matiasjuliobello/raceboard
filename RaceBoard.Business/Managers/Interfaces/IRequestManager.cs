@@ -16,5 +16,10 @@ namespace RaceBoard.Business.Managers.Interfaces
         CrewChangeRequest GetCrewChangeRequest(int id, ITransactionalContext? context = null);
         void CreateCrewChangeRequest(CrewChangeRequest crewChangeRequest, ITransactionalContext? context = null);
         void UpdateCrewChangeRequest(CrewChangeRequest crewChangeRequest, ITransactionalContext? context = null);
+
+        PaginatedResult<HearingRequest> GetHearingRequests(HearingRequestSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
+        HearingRequest GetHearingRequest(int id, ITransactionalContext? context = null);
+        void CreateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null);
+        void UpdateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null);
     }
 }

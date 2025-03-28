@@ -127,7 +127,7 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<EquipmentChangeRequest, RequestStatus, Team, RaceClass, Person, RaceBoard.Domain.File, EquipmentChangeRequest>
+                        return reader.Read<EquipmentChangeRequest, ChangeRequestStatus, Team, RaceClass, Person, RaceBoard.Domain.File, EquipmentChangeRequest>
                         (
                             (equipmentChangeRequest, requestStatus, team, raceClass, requestPerson, file) =>
                             {

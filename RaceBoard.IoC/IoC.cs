@@ -95,6 +95,7 @@ namespace RaceBoard.IoC
             services.AddTransient<ICustomValidator<TeamMemberCheck>, TeamCheckValidator>();
             services.AddTransient<ICustomValidator<EquipmentChangeRequest>, EquipmentChangeRequestValidator>();
             services.AddTransient<ICustomValidator<CrewChangeRequest>, CrewChangeRequestValidator>();
+            services.AddTransient<ICustomValidator<HearingRequest>, HearingRequestValidator>();
             #endregion
 
             #region Repositories
@@ -140,6 +141,7 @@ namespace RaceBoard.IoC
             services.AddScoped<IFormatRepository, FormatRepository>();
             services.AddScoped<IEquipmentChangeRequestRepository, EquipmentChangeRequestRepository>();
             services.AddScoped<ICrewChangeRequestRepository, CrewChangeRequestRepository>();
+            services.AddScoped<IHearingRequestRepository, HearingRequestRepository>();
             #endregion
 
             #region Helpers

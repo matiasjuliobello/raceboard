@@ -58,6 +58,8 @@ using MessagingEnums = RaceBoard.Messaging.Providers;
 using RaceBoard.DTOs.Invitation.Response;
 using RaceBoard.DTOs.ChangeRequest.Request;
 using RaceBoard.DTOs.ChangeRequest.Response;
+using RaceBoard.DTOs.HearingRequest.Request;
+using RaceBoard.DTOs.HearingRequest.Response;
 
 namespace RaceBoard.Service.Mappings
 {
@@ -165,7 +167,7 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Organization, opt => opt.MapFrom(src => CreateObject<Organization>(src.IdOrganization)))
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => CreateObject<Role>(src.IdRole)))
                 .ForMember(dest => dest.User, opt => opt.MapFrom(src => CreateObject<User>(src.IdUser)));
-            
+
 
             CreateMap<BoatRequest, Boat>()
                 .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
@@ -203,7 +205,7 @@ namespace RaceBoard.Service.Mappings
             CreateMap<ChampionshipFileRequest, ChampionshipFile>()
                 .ForMember(dest => dest.FileType, opt => opt.MapFrom(src => CreateObject<FileType>(src.IdFileType)))
                 .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)));
-                //.ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)));
+            //.ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)));
 
             CreateMap<ChampionshipFileSearchFilterRequest, ChampionshipFileSearchFilter>()
                 .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
@@ -302,6 +304,19 @@ namespace RaceBoard.Service.Mappings
             CreateMap<ChangeRequestSearchFilterRequest, ChangeRequestSearchFilter>()
                 .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)));
 
+            CreateMap<HearingRequestSearchFilterRequest, HearingRequestSearchFilter>()
+                .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)))
+                .ForMember(dest => dest.RequestUser, opt => opt.MapFrom(src => CreateObject<User>(src.IdRequestUser)));
+            CreateMap<HearingRequestRequest, HearingRequest>()
+                .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => CreateObject<HearingRequestStatus>(src.IdHearingRequestStatus)))
+                .ForMember(dest => dest.Type, opt => opt.MapFrom(src => CreateObject<HearingRequestType>(src.IdHearingRequestType)));
+            CreateMap<HearingRequestProtestorRequest, HearingRequestProtestor>();
+            CreateMap<HearingRequestProtestorNoticeRequest, HearingRequestProtestorNotice>();
+            CreateMap<HearingRequestProtesteesRequest, HearingRequestProtestees>();
+            CreateMap<HearingRequestProtesteeRequest, HearingRequestProtestee>();
+            CreateMap<HearingRequestIncidentRequest, HearingRequestIncident>();
+
             #endregion
 
             #region Responses
@@ -385,17 +400,24 @@ namespace RaceBoard.Service.Mappings
             CreateMap<Race, RaceResponse>();
 
             CreateMap<Team, TeamResponse>();
-            CreateMap<Team, TeamSimpleResponse>(); 
+            CreateMap<Team, TeamSimpleResponse>();
             CreateMap<TeamMember, TeamMemberResponse>();
             CreateMap<TeamMemberInvitation, TeamMemberInvitationResponse>();
             CreateMap<TeamMemberCheck, TeamMemberCheckResponse>();
             CreateMap<TeamBoat, TeamBoatResponse>();
             CreateMap<DeviceSubscription, DeviceSubscriptionResponse>();
 
-            CreateMap<RequestStatus, RequestStatusResponse>();
+            CreateMap<ChangeRequestStatus, RequestStatusResponse>();
             CreateMap<ChangeRequest, ChangeRequestResponse>();
             CreateMap<CrewChangeRequest, CrewChangeRequestResponse>();
             CreateMap<EquipmentChangeRequest, EquipmentChangeRequestResponse>();
+
+            CreateMap<HearingRequest, HearingRequestResponse>();
+            CreateMap<HearingRequestStatus, HearingRequestStatusResponse>();
+            CreateMap<HearingRequestType, HearingRequestTypeResponse>();
+            CreateMap<HearingRequestProtestor, HearingRequestProtestorResponse>();
+            CreateMap<HearingRequestProtestees, HearingRequestProtesteesResponse>();
+            CreateMap<HearingRequestProtestee, HearingRequestProtesteeResponse>();
 
             #endregion
         }
