@@ -1,5 +1,6 @@
 ﻿using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
+using System;
 
 namespace RaceBoard.Data.Repositories.Interfaces
 {
@@ -16,6 +17,8 @@ namespace RaceBoard.Data.Repositories.Interfaces
 
         PaginatedResult<HearingRequest> Get(HearingRequestSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
         HearingRequest? Get(int id, ITransactionalContext? context = null);
+        HearingRequestProtestees GetProtestees(int id, ITransactionalContext ? context = null);
+        HearingRequestIncident GetIncident(int id, ITransactionalContext ? context = null);
 
         void Create(HearingRequest hearingRequest, ITransactionalContext? context = null);
         void CreateProtestor(HearingRequest hearingRequest, ITransactionalContext? context = null);

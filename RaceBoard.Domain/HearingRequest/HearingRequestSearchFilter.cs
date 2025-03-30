@@ -3,6 +3,7 @@
     public class HearingRequestSearchFilter
     {
         public int[]? Ids { get; set; }
+        public Championship? Championship { get; set; }
         public Team? Team { get; set; }
         public Enums.RequestStatus? Status { get; set; }
         public Enums.HearingRequestType? Type { get; set; }

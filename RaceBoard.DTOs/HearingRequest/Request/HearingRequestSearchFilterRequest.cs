@@ -2,8 +2,9 @@
 {
     public class HearingRequestSearchFilterRequest
     {
-        public int[] Ids { get; set; }
-        public int IdTeam { get; set; }
+        public int IdChampionship { get; set; }
+        public int[]? Ids { get; set; }
+        public int? IdTeam { get; set; }
         public DateTimeOffset CreationDate { get; set; }
         //public int? IdStatus { get; set; }
         //public int? IdType { get; set; }

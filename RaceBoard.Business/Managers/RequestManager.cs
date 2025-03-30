@@ -143,6 +143,24 @@ namespace RaceBoard.Business.Managers
 
         #region Equipment Change Request
 
+        public EquipmentChangeRequest GetEquipmentChangeRequest(int id, ITransactionalContext? context = null)
+        {
+            var searchFilter = new ChangeRequestSearchFilter() { Ids = new[] { id } };
+
+            var changeRequests = _equipmentChangeRequestRepository.Get(searchFilter, paginationFilter: null, sorting: null, context: context);
+
+            var changeRequest = changeRequests.Results.FirstOrDefault();
+            if (changeRequest == null)
+                throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
+
+            return changeRequest;
+        }
+
+        public PaginatedResult<EquipmentChangeRequest> GetEquipmentChangeRequests(ChangeRequestSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        {
+            return _equipmentChangeRequestRepository.Get(searchFilter, paginationFilter, sorting);
+        }
+
         public void CreateEquipmentChangeRequest(EquipmentChangeRequest equipmentChangeRequest, ITransactionalContext? context = null)
         {
             var contextUser = base.GetContextUser();
@@ -192,27 +210,29 @@ namespace RaceBoard.Business.Managers
             throw new NotImplementedException();
         }
 
-        public EquipmentChangeRequest GetEquipmentChangeRequest(int id, ITransactionalContext? context = null)
-        {
-            var searchFilter = new ChangeRequestSearchFilter() { Ids = new[] { id } };
-
-            var changeRequests = _equipmentChangeRequestRepository.Get(searchFilter, paginationFilter: null, sorting: null, context: context);
-
-            var changeRequest = changeRequests.Results.FirstOrDefault();
-            if (changeRequest == null)
-                throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
-
-            return changeRequest;
-        }
-
-        public PaginatedResult<EquipmentChangeRequest> GetEquipmentChangeRequests(ChangeRequestSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
-        {
-            return _equipmentChangeRequestRepository.Get(searchFilter, paginationFilter, sorting);
-        }
-
         #endregion
 
         #region Hearing Request
+
+        public PaginatedResult<HearingRequest> GetHearingRequests(HearingRequestSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        {
+            return _hearingRequestRepository.Get(searchFilter, paginationFilter, sorting);
+        }
+
+        public HearingRequest GetHearingRequest(int id, ITransactionalContext? context = null)
+        {
+            var hearing = _hearingRequestRepository.Get(id, context);
+            if (hearing == null)
+                throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
+
+            var protestees = _hearingRequestRepository.GetProtestees(id, context: context);
+            hearing.Protestees = protestees;
+
+            var incident = _hearingRequestRepository.GetIncident(id, context: context);
+            hearing.Incident = incident;
+
+            return hearing;
+        }
 
         public void CreateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null)
         {
@@ -248,20 +268,10 @@ namespace RaceBoard.Business.Managers
                     context.Cancel();
 
                 throw;
-            }            
+            }
         }
 
         public void UpdateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public PaginatedResult<HearingRequest> GetHearingRequests(HearingRequestSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public HearingRequest GetHearingRequest(int id, ITransactionalContext? context = null)
         {
             throw new NotImplementedException();
         }

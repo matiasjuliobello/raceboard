@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
+using RaceBoard.Translations.Entities;
 using RaceBoard.Common;
 using RaceBoard.Common.Helpers.Pagination;
-using RaceBoard.Domain;
+using RaceBoard.DTOs;
 using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
 using RaceBoard.DTOs.Authentication.Response;
@@ -15,7 +16,6 @@ using RaceBoard.DTOs.Translation.Response;
 using RaceBoard.DTOs.User.Request;
 using RaceBoard.DTOs.User.Response;
 using RaceBoard.DTOs.User.Response.Settings;
-using RaceBoard.Translations.Entities;
 using RaceBoard.DTOs.Championship.Request;
 using RaceBoard.DTOs.Organization.Request;
 using RaceBoard.DTOs.Boat.Request;
@@ -42,24 +42,24 @@ using RaceBoard.DTOs.RaceClass.Response;
 using RaceBoard.DTOs.Race.Response;
 using RaceBoard.DTOs.Team.Request;
 using RaceBoard.DTOs.Team.Response;
-using RaceBoard.DTOs;
 using RaceBoard.DTOs.City.Request;
 using RaceBoard.DTOs.Country.Request;
 using RaceBoard.DTOs.Format.Response;
 using RaceBoard.DTOs.Notification.Request;
 using RaceBoard.DTOs.Device.Request;
 using RaceBoard.DTOs.Device.Response;
-using File = RaceBoard.Domain.File;
-using TimeZone = RaceBoard.Domain.TimeZone;
-using Action = RaceBoard.Domain.Action;
-using Enums = RaceBoard.Domain.Enums;
-using RaceBoard.Messaging.Entities;
-using MessagingEnums = RaceBoard.Messaging.Providers;
 using RaceBoard.DTOs.Invitation.Response;
 using RaceBoard.DTOs.ChangeRequest.Request;
 using RaceBoard.DTOs.ChangeRequest.Response;
 using RaceBoard.DTOs.HearingRequest.Request;
 using RaceBoard.DTOs.HearingRequest.Response;
+using RaceBoard.Domain;
+using File = RaceBoard.Domain.File;
+using TimeZone = RaceBoard.Domain.TimeZone;
+using Action = RaceBoard.Domain.Action;
+using Enums = RaceBoard.Domain.Enums;
+using MessagingEnums = RaceBoard.Messaging.Providers;
+using RaceBoard.Messaging.Entities;
 
 namespace RaceBoard.Service.Mappings
 {
@@ -305,6 +305,7 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)));
 
             CreateMap<HearingRequestSearchFilterRequest, HearingRequestSearchFilter>()
+                .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
                 .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)))
                 .ForMember(dest => dest.RequestUser, opt => opt.MapFrom(src => CreateObject<User>(src.IdRequestUser)));
             CreateMap<HearingRequestRequest, HearingRequest>()
@@ -416,8 +417,10 @@ namespace RaceBoard.Service.Mappings
             CreateMap<HearingRequestStatus, HearingRequestStatusResponse>();
             CreateMap<HearingRequestType, HearingRequestTypeResponse>();
             CreateMap<HearingRequestProtestor, HearingRequestProtestorResponse>();
+            CreateMap<HearingRequestProtestorNotice, HearingRequestProtestorNoticeResponse>();
             CreateMap<HearingRequestProtestees, HearingRequestProtesteesResponse>();
             CreateMap<HearingRequestProtestee, HearingRequestProtesteeResponse>();
+            CreateMap<HearingRequestIncident, HearingRequestIncidentResponse>();
 
             #endregion
         }

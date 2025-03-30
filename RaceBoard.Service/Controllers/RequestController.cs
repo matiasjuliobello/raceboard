@@ -124,6 +124,10 @@ namespace RaceBoard.Service.Controllers
         public ActionResult<PaginatedResultResponse<HearingRequestResponse>> GetHearingRequests([FromQuery] HearingRequestSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<HearingRequestSearchFilter>(searchFilterRequest);
+
+            if (searchFilter.Championship == null || searchFilter.Championship.Id == 0)
+                return ReturnBadRequestResponse("ChampionshipIsRequired");
+
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
             var sorting = _mapper.Map<Sorting>(sortingRequest);
 

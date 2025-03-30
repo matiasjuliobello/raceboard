@@ -1,6 +1,6 @@
-﻿namespace RaceBoard.Domain
+﻿namespace RaceBoard.DTOs.HearingRequest.Response
 {
-    public class HearingRequestIncident
+    public class HearingRequestIncidentResponse
     {
         public int Id { get; set; }
         public TimeSpan Time { get; set; }

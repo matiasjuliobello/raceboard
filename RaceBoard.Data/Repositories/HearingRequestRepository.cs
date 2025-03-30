@@ -1,9 +1,12 @@
 ﻿using Dapper;
+using Newtonsoft.Json.Linq;
+using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
+using static Dapper.SqlMapper;
 
 namespace RaceBoard.Data.Repositories
 {
@@ -13,19 +16,23 @@ namespace RaceBoard.Data.Repositories
 
         private readonly Dictionary<string, string> _columnsMapping = new()
         {
-            { "Id", "[HearingRequest].Id" },
-            { "ChangeReason", "[HearingRequest].ChangeReason" },
-            { "CreationDate", "[HearingRequest].CreationDate" },
-            { "ResolutionDate", "[HearingRequest].ResolutionDate" },
-            { "ResolutionComments", "[HearingRequest].ResolutionComments"},
-            { "Status.Id", "[RequestStatus].Id" },
-            { "Status.Name", "[RequestStatus].Name"},
-            { "Team.Id", "[Team].Id" },
-            { "Team.RaceClass.Id", "[RaceClass].Id" },
-            { "Team.RaceClass.Name", "[RaceClass].Name"},
-            { "RequestPerson.Id", "[RequestPerson].Id"},
-            { "RequestPerson.Firstname", "[RequestPerson].Firstname"},
-            { "RequestPerson.Lastname", "[RequestPerson].Lastname"}
+            { "Id", "[Hearing].Id" },
+            { "CreationDate", "[Hearing].CreationDate" },
+            { "RaceNumber", "[Hearing].RaceNumber" },
+            { "Status.Id", "[Hearing].IdRequestStatus" },
+            { "Status.Name", "[Hearing].IdRequestStatus" },
+            { "Type.Id", "[Hearing].IdRequestType" },
+            { "Type.Name", "[Hearing].IdRequestType" },
+            { "Protestor.User.Id", "[ProtestorUser].Id" },
+            { "Protestor.Person.Id", "[ProtestorPerson].Id" },
+            { "Protestor.Person.Firstname", "[ProtestorPerson].Firstname" },
+            { "Protestor.Person.Lastname", "[ProtestorPerson].Lastname" },
+            { "Protestor.Boat.Id", "[ProtestorBoat].Id" },
+            { "Protestor.Boat.Name", "[ProtestorBoat].Name"},
+            { "Protestor.Boat.SailNumber", "[ProtestorBoat].SailNumber" },
+            { "Team.Id", "[ProtestorTeam].Id" },
+            { "Team.RaceClass.Id", "[ProtestorTeamRaceClass].Id" },
+            { "Team.RaceClass.Name", "[ProtestorTeamRaceClass].Name"}
         };
 
         #endregion
@@ -77,6 +84,15 @@ namespace RaceBoard.Data.Repositories
             return this.GetHearingRequests(searchFilter: searchFilter, paginationFilter: null, sorting: null, context: context).Results.FirstOrDefault();
         }
 
+        public HearingRequestProtestees GetProtestees(int id, ITransactionalContext? context = null)
+        {
+            return this.GetHearingRequestProtestees(id, context);
+        }
+        public HearingRequestIncident GetIncident(int id, ITransactionalContext? context = null)
+        {
+            return this.GetHearingRequestIncident(id, context);
+        }
+
         public void Create(HearingRequest hearingRequest, ITransactionalContext? context = null)
         {
             this.CreateHearingRequest(hearingRequest, context);
@@ -114,31 +130,47 @@ namespace RaceBoard.Data.Repositories
 
         private PaginatedResult<HearingRequest> GetHearingRequests(HearingRequestSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
+            QueryBuilder.AddCommand("SELECT Id [Id], Name [Name] FROM [HearingRequestType]");
+            List<HearingRequestType> hearingRequestTypes = base.GetMultipleResults<HearingRequestType>().ToList();
+
+            QueryBuilder.AddCommand("SELECT Id [Id], Name [Name] FROM [RequestStatus]");
+            List<HearingRequestStatus> hearingRequestStatuses = base.GetMultipleResults<HearingRequestStatus>().ToList();
+
             string sql = $@"SELECT
-                                [HearingRequest].Id [Id],
-                                [HearingRequest].ChangeReason [ChangeReason],
-                                [HearingRequest].ChangeRequested [ChangeRequested],
-                                [HearingRequest].CreationDate [CreationDate],
-                                [HearingRequest].ResolutionDate [ResolutionDate],
-                                [HearingRequest].ResolutionComments [ResolutionComments],
-	                            [RequestStatus].Id [Id],
-	                            [RequestStatus].[Name] [Name],
-	                            [Team].Id [Id],
-                                [RaceClass].Id [Id],
-                                [RaceClass].Name [Name],
-                                [RequestPerson].Id [Id],
-	                            [RequestPerson].Firstname [Firstname],
-	                            [RequestPerson].Lastname [Lastname],
-                                [File].Id [Id],
-                                [File].Description [Description]
-                            FROM [HearingRequest] [HearingRequest]
-                            INNER JOIN [Team] [Team] ON [Team].Id = [HearingRequest].IdTeam
-                            INNER JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Team].IdRaceClass
-                            INNER JOIN [RequestStatus] [RequestStatus] ON [RequestStatus].Id = [HearingRequest].IdRequestStatus
-                            INNER JOIN [User] [RequestUser]  ON [RequestUser].Id  = [HearingRequest].IdRequestUser
-                            INNER JOIN [User_Person] [User_Person1] ON [User_Person1].IdUser = [RequestUser].Id
-                            INNER JOIN [Person] [RequestPerson] ON [RequestPerson].Id = [User_Person1].IdPerson
-                            LEFT JOIN [File] [File] ON [File].Id = [HearingRequest].IdFile";
+                                [Hearing].Id [Id],                                
+                                [Hearing].IdRequestStatus,
+                                [Hearing].IdHearingRequestType,
+                                [Hearing].CreationDate,
+                                [Hearing].RaceNumber,
+                                [ProtestorUser].Id [Id],
+                                [ProtestorPerson].Id [Id],
+                                [ProtestorPerson].Firstname [Firstname],
+                                [ProtestorPerson].Lastname [Lastname],
+                                [ProtestorTeam].Id [Id],
+                                [ProtestorTeamRaceClass].Id [Id],
+                                [ProtestorTeamRaceClass].Name [Name],
+                                [ProtestorBoat].Id [Id],
+                                [ProtestorBoat].Name [Name],
+                                [ProtestorBoat].SailNumber [SailNumber],
+                                [ProtestorNotice].Id [Id],                                
+                                [ProtestorNotice].Hailing [Hailing],
+                                [ProtestorNotice].HailingWordsUsed [HailingWordsUsed],
+                                [ProtestorNotice].HailingWhen [HailingWhen],
+                                [ProtestorNotice].RedFlag [RedFlag],
+                                [ProtestorNotice].RedFlagWhen [RedFlagWhen],
+                                [ProtestorNotice].Other [Other],
+                                [ProtestorNotice].OtherWhen [OtherWhen],
+                                [ProtestorNotice].OtherWhere [OtherWhere],
+                                [ProtestorNotice].OtherHow [OtherHow]
+                            FROM [HearingRequest] [Hearing]
+                            INNER JOIN [HearingRequest_Protestor] [Protestor]               ON [Protestor].IdHearingRequest = [Hearing].Id
+                            INNER JOIN [HearingRequest_ProtestorNotice] [ProtestorNotice]   ON [ProtestorNotice].IdHearingRequest = [Hearing].Id                            
+                            INNER JOIN [User] [ProtestorUser]                               ON [ProtestorUser].Id = [Hearing].IdRequestUser
+                            INNER JOIN [User_Person] [User_Person]                          ON [ProtestorUser].Id = [User_Person].IdUser
+                            INNER JOIN [Person] [ProtestorPerson]                           ON [ProtestorPerson].Id = [User_Person].IdPerson
+                            INNER JOIN [Boat] [ProtestorBoat]                               ON [ProtestorBoat].Id = [Protestor].IdBoat
+                            INNER JOIN [Team] [ProtestorTeam]                               ON [ProtestorTeam].Id = [Hearing].IdTeam
+                            INNER JOIN [RaceClass] [ProtestorTeamRaceClass]                 ON [ProtestorTeamRaceClass].Id = [ProtestorTeam].IdRaceClass";
 
             QueryBuilder.AddCommand(sql);
 
@@ -153,21 +185,28 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<HearingRequest, ChangeRequestStatus, Team, RaceClass, Person, RaceBoard.Domain.File, HearingRequest>
+                        return reader.Read<HearingRequest, User, Person, Team, RaceClass, Boat, HearingRequestProtestorNotice, HearingRequest>
                         (
-                            (hearingRequest, requestStatus, team, raceClass, requestPerson, file) =>
+                            (hearingRequest, protestorUser, protestorPerson, protestorTeam, protestorTeamRaceClass, protestorBoat, protestorNotice) =>
                             {
-                                team.RaceClass = raceClass;
+                                var protestor = new HearingRequestProtestor();
+                                protestor.Boat = protestorBoat;
+                                protestor.Notice = protestorNotice;
 
-                                hearingRequest.Team = team;
-                                //hearingRequest.Status = requestStatus;
-                                hearingRequest.RequestPerson = requestPerson;
+                                protestorTeam.RaceClass = protestorTeamRaceClass;
+
+                                hearingRequest.Team = protestorTeam;
+                                hearingRequest.Protestor = protestor;
+                                hearingRequest.RequestUser = protestorUser;
+                                hearingRequest.RequestPerson = protestorPerson;
+                                hearingRequest.Status = hearingRequestStatuses.FirstOrDefault(x => x.Id == hearingRequest.IdRequestStatus);
+                                hearingRequest.Type = hearingRequestTypes.FirstOrDefault(x => x.Id == hearingRequest.IdHearingRequestType);
 
                                 hearingRequests.Add(hearingRequest);
 
                                 return hearingRequest;
                             },
-                            splitOn: "Id, Id, Id, Id, Id, Id"
+                            splitOn: "Id, Id, Id, Id, Id, Id, Id"
                         ).AsList();
                     },
                     context
@@ -178,13 +217,80 @@ namespace RaceBoard.Data.Repositories
             return items;
         }
 
+        private HearingRequestProtestees GetHearingRequestProtestees(int id, ITransactionalContext? context = null)
+        {
+            string sql = $@"SELECT
+                                [Protestee].Id [Id],
+                                [ProtesteeTeamBoat].Id [Id],
+                                [ProtesteeTeam].Id [Id],
+                                [ProtesteeBoat].Id [Id],
+                                [ProtesteeBoat].Name [Name],
+                                [ProtesteeBoat].SailNumber [SailNumber],
+                                [ProtesteeBoatRaceClass].Id [Id],
+                                [ProtesteeBoatRaceClass].Name [Name]
+                            FROM [HearingRequest] [Hearing]
+                            INNER JOIN [HearingRequest_Protestee] [Protestee]    ON [Protestee].IdHearingRequest = [Hearing].Id
+                            INNER JOIN [Team_Boat] [ProtesteeTeamBoat]           ON [ProtesteeTeamBoat].Id = [Protestee].IdTeamBoat
+                            INNER JOIN [Team] [ProtesteeTeam]                    ON [ProtesteeTeam].Id = [ProtesteeTeamBoat].IdTeam
+                            INNER JOIN [Boat] [ProtesteeBoat]                    ON [ProtesteeBoat].Id = [ProtesteeTeamBoat].IdBoat
+                            INNER JOIN [RaceClass] [ProtesteeBoatRaceClass]      ON [ProtesteeBoatRaceClass].Id = [ProtesteeBoat].IdRaceClass";
+
+            QueryBuilder.AddCommand(sql);
+            QueryBuilder.AddCondition("[Hearing].Id = @idHearing");
+            QueryBuilder.AddParameter("idHearing", id);
+
+            var protestees = new HearingRequestProtestees();
+
+            base.GetReader
+                (
+                    (x) =>
+                    {
+                        protestees.Protestees = x.Read<HearingRequestProtestee, TeamBoat, Team, Boat, RaceClass, HearingRequestProtestee>
+                        (
+                            (protestee, teamBoat, team, boat, raceClass) =>
+                            {
+                                boat.RaceClass = raceClass;
+                                teamBoat.Boat = boat;
+                                teamBoat.Team = team;
+                                protestee.TeamBoat = teamBoat;
+
+                                return protestee;
+                            },
+                            splitOn: "Id, Id, Id, Id, Id"
+                        ).ToList();
+                    },
+                    context
+                );
+
+            return protestees;
+        }
+
+        private HearingRequestIncident GetHearingRequestIncident(int id, ITransactionalContext? context = null)
+        {
+            string sql = $@"SELECT
+                                [Incident].Id [Id],
+                                [Incident].Time [Time],
+                                [Incident].Place [Place],
+                                [Incident].BrokenRules [BrokenRules],
+                                [Incident].Witnesses [Witnesses],
+                                [Incident].Details [Details]
+                            FROM [HearingRequest] [Hearing]
+                            INNER JOIN [HearingRequest_Incident] [Incident] ON [Incident].IdHearingRequest = [Hearing].Id";
+
+            QueryBuilder.AddCommand(sql);
+            QueryBuilder.AddCondition("[Hearing].Id = @idHearing");
+            QueryBuilder.AddParameter("idHearing", id);
+
+            return base.GetSingleResult<HearingRequestIncident>(context);
+        }
+
         private void ProcessSearchFilter(HearingRequestSearchFilter? searchFilter)
         {
             if (searchFilter == null)
                 return;
 
-            base.AddFilterCriteria(ConditionType.In, "HearingRequest", "Id", "ids", searchFilter.Ids);
-            base.AddFilterCriteria(ConditionType.Equal, "Team", "Id", "idTeam", searchFilter.Team?.Id);
+            base.AddFilterCriteria(ConditionType.In, "Hearing", "Id", "ids", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Equal, "ProtestorTeam", "IdChampionship", "idChampionship", searchFilter.Championship?.Id);
         }
 
         private void CreateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null)
@@ -276,14 +382,14 @@ namespace RaceBoard.Data.Repositories
         private void CreateHearingRequestProtestee(HearingRequest hearingRequest, HearingRequestProtestee hearingRequestProtestee, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [HearingRequest_Protestee]
-                            ( IdHearingRequest, IdBoat )
+                            ( IdHearingRequest, IdTeamBoat )
                         VALUES
-                            ( @idHearingRequest, @idBoat )";
+                            ( @idHearingRequest, @idTeamBoat )";
 
             QueryBuilder.AddCommand(sql);
 
             QueryBuilder.AddParameter("idHearingRequest", hearingRequest.Id);
-            QueryBuilder.AddParameter("idBoat", hearingRequestProtestee.Boat.Id);
+            QueryBuilder.AddParameter("idTeamBoat", hearingRequestProtestee.TeamBoat.Id);
             
             QueryBuilder.AddReturnLastInsertedId();
 
