@@ -89,7 +89,8 @@ namespace RaceBoard.Mailing.BaseClasses
                 From = new MailAddress(_sender.Email, _sender.Name),
                 Sender = new MailAddress(_sender.Email, _sender.Name),
                 Subject = _subject,
-                Body = _body
+                Body = _body,
+                IsBodyHtml = true
             };
 
             foreach (var recipient in _recipients)

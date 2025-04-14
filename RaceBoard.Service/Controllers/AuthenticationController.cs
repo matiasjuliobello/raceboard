@@ -63,19 +63,19 @@ namespace RaceBoard.Service.Controllers
 
             var user = _userManager.GetByUsername(userLogin.Username);
 
-            var person = _personManager.GetByIdUser(user.Id);
-
             var accessTokenResponse = _mapper.Map<AccessToken, AccessTokenResponse>(accessToken);
             var userResponse = _mapper.Map<User, UserSimpleResponse>(user);
-            var personResponse = _mapper.Map<Person, PersonSimpleResponse>(person);
-
+            
             var response = new UserLoginResponse()
             {
                 AccessToken = accessTokenResponse,
-                User = userResponse,
-                Person = personResponse
+                User = userResponse
             };
-            
+
+            var person = _personManager.GetByIdUser(user.Id);
+            if (person != null)
+                response.Person = _mapper.Map<Person, PersonSimpleResponse>(person);
+
             return Ok(response);
         }
     }

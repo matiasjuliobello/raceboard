@@ -7,7 +7,6 @@ using RaceBoard.Common.Exceptions;
 using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data;
-using RaceBoard.Data.Repositories;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 using RaceBoard.Translations.Interfaces;
@@ -17,7 +16,9 @@ namespace RaceBoard.Business.Managers
 {
     public class TeamMemberManager : AbstractManager, ITeamMemberManager
     {
+        private readonly ITeamRepository _teamRepository;
         private readonly ITeamMemberRepository _teamMemberRepository;
+        private readonly ITeamMemberRoleRepository _teamMemberRoleRepository;
         private readonly IPersonRepository _personRepository;
         private readonly IUserRepository _userRepository;
         private readonly ICustomValidator<TeamMember> _teamMemberValidator;
@@ -25,8 +26,8 @@ namespace RaceBoard.Business.Managers
         private readonly IDateTimeHelper _dateTimeHelper;
         private readonly IStringHelper _stringHelper;
         private readonly ICryptographyHelper _cryptographyHelper;
-        private readonly IMailManager _mailManager;
         private readonly IAuthorizationManager _authorizationManager;
+        private readonly IInvitationManager _invitationManager;
 
         private const int _INVITATION_TOKEN_LENGTH = 32;
 
@@ -34,7 +35,9 @@ namespace RaceBoard.Business.Managers
 
         public TeamMemberManager
             (
+                ITeamRepository teamRepository,
                 ITeamMemberRepository teamMemberRepository,
+                ITeamMemberRoleRepository teamMembeRoleRepository,
                 IPersonRepository personRepository,
                 IUserRepository userRepository,
                 IDateTimeHelper dateTimeHelper,
@@ -45,20 +48,23 @@ namespace RaceBoard.Business.Managers
                 ICustomValidator<TeamMemberInvitation> teamMemberInvitationValidator,
                 IRequestContextManager requestContextManager,
                 IAuthorizationManager authorizationManager,
+                IInvitationManager invitationManager,
                 ITranslator translator
-                
+
             ) : base(requestContextManager, translator)
         {
+            _teamRepository = teamRepository;
             _teamMemberRepository = teamMemberRepository;
+            _teamMemberRoleRepository = teamMembeRoleRepository;
             _personRepository = personRepository;
             _userRepository = userRepository;
             _dateTimeHelper = dateTimeHelper;
             _stringHelper = stringHelper;
             _cryptographyHelper = cryptographyHelper;
-            _mailManager = mailManager;
             _teamMemberValidator = teamMemberValidator;
             _teamMemberInvitationValidator = teamMemberInvitationValidator;
             _authorizationManager = authorizationManager;
+            _invitationManager = invitationManager;
         }
 
         #endregion
@@ -121,18 +127,11 @@ namespace RaceBoard.Business.Managers
             if (teamMemberInvitation.User != null)
                 teamMemberInvitation.Invitation.EmailAddress = _userRepository.GetById(teamMemberInvitation.User.Id).Email;
 
-            var requestUser = _personRepository.GetByIdUser(teamMemberInvitation.RequestUser.Id);
-
             try
             {
                 _teamMemberRepository.CreateInvitation(teamMemberInvitation, context);
 
-                string emailSubject = $"You've invited to join a team";
-                string emailBody = $"You've invited by {requestUser.Fullname} to perform as {teamMemberInvitation.Role.Name} in a team";
-                string emailRecipientAddress = teamMemberInvitation.Invitation.EmailAddress;
-                string emailRecipientName = teamMemberInvitation.Invitation.EmailAddress;
-
-                _mailManager.SendMail(emailSubject, emailBody, emailRecipientAddress, emailRecipientName);
+                _invitationManager.SendTeamInvitation(teamMemberInvitation);
 
                 context.Confirm();
             }

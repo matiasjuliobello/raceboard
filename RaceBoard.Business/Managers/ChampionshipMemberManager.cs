@@ -28,8 +28,8 @@ namespace RaceBoard.Business.Managers
         private readonly IDateTimeHelper _dateTimeHelper;
         private readonly IStringHelper _stringHelper;
         private readonly ICryptographyHelper _cryptographyHelper;
-        private readonly IMailManager _mailManager;
         private readonly IAuthorizationManager _authorizationManager;
+        private readonly IInvitationManager _invitationManager;
 
         private const int _INVITATION_TOKEN_LENGTH = 32;
 
@@ -48,8 +48,8 @@ namespace RaceBoard.Business.Managers
                 IStringHelper stringHelper,
                 ICryptographyHelper cryptographyHelper,
                 IRequestContextManager requestContextManager,
-                IMailManager mailManager,
-                IAuthorizationManager authorizationManager
+                IAuthorizationManager authorizationManager,
+                IInvitationManager invitationManager
             ) : base(requestContextManager, translator)
         {
             _championshipMemberRepository = championshipMemberRepository;
@@ -61,8 +61,8 @@ namespace RaceBoard.Business.Managers
             _dateTimeHelper = dateTimeHelper;
             _stringHelper = stringHelper;
             _cryptographyHelper = cryptographyHelper;
-            _mailManager = mailManager;
             _authorizationManager = authorizationManager;
+            _invitationManager = invitationManager;
         }
 
         #endregion
@@ -89,7 +89,7 @@ namespace RaceBoard.Business.Managers
         {
             var searchFilter = new ChampionshipMemberInvitationSearchFilter()
             {
-                Championship = new Championship() {  Id = idChampionship },
+                Championship = new Championship() { Id = idChampionship },
                 IsPending = isPending
             };
 
@@ -125,19 +125,11 @@ namespace RaceBoard.Business.Managers
             if (championshipMemberInvitation.User != null)
                 championshipMemberInvitation.Invitation.EmailAddress = _userRepository.GetById(championshipMemberInvitation.User.Id).Email;
 
-            var requestUser = _personRepository.GetByIdUser(championshipMemberInvitation.RequestUser.Id);
-            var championship = _championshipRepository.Get(championshipMemberInvitation.Championship.Id)!;
-
             try
             {
                 _championshipMemberRepository.CreateInvitation(championshipMemberInvitation, context);
 
-                string emailSubject = $"You've invited to join '{championship.Name}'";
-                string emailBody = $"You've invited by {requestUser.Fullname} to join '{championship.Name}', to perform as {championshipMemberInvitation.Role.Name}";
-                string emailRecipientAddress = championshipMemberInvitation.Invitation.EmailAddress;
-                string emailRecipientName = championshipMemberInvitation.Invitation.EmailAddress;
-
-                _mailManager.SendMail(emailSubject, emailBody, emailRecipientAddress, emailRecipientName);
+                _invitationManager.SendChampionshipInvitation(championshipMemberInvitation);
 
                 context.Confirm();
             }

@@ -3,6 +3,6 @@
     public class HearingRequestProtesteesResponse
     {
         public int Id { get; set; }
-        public List<HearingRequestProtesteeResponse> Protestee {  get; set; }
+        public List<HearingRequestProtesteeResponse> Protestees {  get; set; }
     }
 }

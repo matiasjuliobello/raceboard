@@ -5,14 +5,18 @@ using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data.Helpers.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System.Data;
-using System.Linq;
 using System.Text;
-using static RaceBoard.Data.Helpers.SqlQueryBuilder;
 
 namespace RaceBoard.Data.Helpers
 {
     public class SqlQueryBuilder : IQueryBuilder
     {
+        protected class ConditionGroup
+        {
+            public string Operator { get; set; }
+            public List<string> Conditions { get; set; }
+        }
+
         #region Private Members
 
         private readonly StringBuilder _query;
@@ -20,7 +24,7 @@ namespace RaceBoard.Data.Helpers
         private readonly StringBuilder _paginationQuery;
 
         private DynamicParameters _parameters;
-        private readonly List<string> _conditions;
+        private readonly List<ConditionGroup> _conditionGroups;
         private readonly List<string> _sorting;
         private readonly List<string> _grouping;
         private IPaginationFilter _paginationFilter;
@@ -51,7 +55,8 @@ namespace RaceBoard.Data.Helpers
             _paginationQuery = new StringBuilder();
 
             _parameters = new DynamicParameters();
-            _conditions = new List<string>();
+            _conditionGroups = new List<ConditionGroup>();
+
             _grouping = new List<string>();
             _sorting = new List<string>();
 
@@ -67,11 +72,34 @@ namespace RaceBoard.Data.Helpers
             _query.AppendLine(command);
         }
 
-        public void AddCondition(string condition, string logicalOperator = LogicalOperator.And)
+        private ConditionGroup BuildConditionGroup(string? logicalOperator = LogicalOperator.And)
         {
-            //_conditions.Add($" {GetLogicalOperator()} {condition} ");
+            return new ConditionGroup()
+            {
+                Operator = logicalOperator ?? LogicalOperator.And,
+                Conditions = new List<string>()
+            };
+        }
 
-            _conditions.Add($" {GetLogicalOperator(logicalOperator)} {condition} ");
+        public void AddConditionGroup(string? logicalOperator = LogicalOperator.And)
+        {
+            var group = this.BuildConditionGroup(logicalOperator);
+
+            _conditionGroups.Add(group);
+        }
+
+        public void AddCondition(string condition, string? logicalOperator = LogicalOperator.And)
+        {
+            var currentGroup = _conditionGroups.LastOrDefault();
+            if (currentGroup == null)
+            {
+                this.AddConditionGroup(logicalOperator);
+                currentGroup = _conditionGroups.First();
+            }
+
+            string filter = $" {GetConditionLogicalOperator(currentGroup, logicalOperator)} {condition}";
+
+            currentGroup.Conditions.Add(filter);
         }
 
         public void AddParameter(string name, object value)
@@ -101,7 +129,7 @@ namespace RaceBoard.Data.Helpers
                 sorting.OrderByClauses = new List<OrderByClause>() { OrderByClause.Default };
 
             var orderByFields = new List<string>();
-            foreach(var orderByClause in sorting.OrderByClauses)
+            foreach (var orderByClause in sorting.OrderByClauses)
             {
                 orderByFields.Add(this.BuildOrderByClause(orderByClause));
             }
@@ -146,9 +174,25 @@ namespace RaceBoard.Data.Helpers
             string sqlOriginalQuery = _query.ToString();
             sb.AppendLine(sqlOriginalQuery);
 
-            string conditionsQuery = "";
-            _conditions.ForEach(x => conditionsQuery += $" {x} ");
-            sb.AppendLine(conditionsQuery);
+            var sbConditions = new StringBuilder();
+
+            for(int i=0; i < _conditionGroups.Count; i++)
+            {
+                var group = _conditionGroups[i];
+
+                string groupConditionsQuery = "";
+                group.Conditions.ForEach(x => groupConditionsQuery += $" {x} ");
+
+                if (groupConditionsQuery.Length == 0)
+                    continue;
+
+                string groupOperator = (i == 0) ? " WHERE " : group.Operator;
+
+                sbConditions.AppendLine($" {groupOperator} ( {groupConditionsQuery} )");
+            }
+
+            string conditionsQuery = sbConditions.ToString();
+            sb.Append(conditionsQuery);
 
             string grouping = this.BuildGroupingClause();
             sb.AppendLine(grouping);
@@ -156,7 +200,7 @@ namespace RaceBoard.Data.Helpers
             string sorting = this.BuildSortingClause();
             sb.AppendLine(sorting);
 
-            if (_paginationQuery.Length > 0 || (_paginationFilter != null &&  _paginationFilter.DisablePagination))
+            if (_paginationQuery.Length > 0 || (_paginationFilter != null && _paginationFilter.DisablePagination))
             {
                 string totalCountQuery = _paginationFilter.GetTotalCountQuery(sqlOriginalQuery, conditionsQuery.RemoveFirstInstanceOfString(SqlConstants.WHERE));
 
@@ -194,9 +238,9 @@ namespace RaceBoard.Data.Helpers
         private void ClearMainQuery()
         {
             _query.Clear();
-            _conditions.Clear();
+            _conditionGroups.Clear();
             _parameters = new DynamicParameters();
-        
+
         }
         private void ClearPagination()
         {
@@ -215,9 +259,9 @@ namespace RaceBoard.Data.Helpers
             _sorting.Clear();
         }
 
-        private string GetLogicalOperator(string logicalOperator = LogicalOperator.And)
+        private string GetConditionLogicalOperator(ConditionGroup conditionGroup, string? logicalOperator = LogicalOperator.And)
         {
-            return _conditions.Any() ? $" {logicalOperator} " : " WHERE ";
+            return conditionGroup.Conditions.Any() ? $" {logicalOperator} " : " ";
         }
 
         private string BuildOrderByClause(OrderByClause orderByClause)

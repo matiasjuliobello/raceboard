@@ -8,6 +8,7 @@ using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
 using RaceBoard.DTOs.Boat.Request;
 using RaceBoard.DTOs.Boat.Response;
+using RaceBoard.DTOs.Person.Response;
 using RaceBoard.DTOs.Race.Response;
 using RaceBoard.Service.Controllers.Abstract;
 using RaceBoard.Service.Helpers.Interfaces;
@@ -33,6 +34,20 @@ namespace RaceBoard.Service.Controllers
         {
             _boatManager = boatManager;
         }
+
+        [HttpGet("search")]
+        public ActionResult<PaginatedResultResponse<BoatResponse>> Search([FromQuery] string searchTerm, [FromQuery] int idRaceClass, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
+        {
+            var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
+            var sorting = _mapper.Map<Sorting>(sortingRequest);
+
+            var data = _boatManager.Search(searchTerm, paginationFilter, sorting);
+
+            var response = _mapper.Map<PaginatedResultResponse<BoatResponse>>(data);
+
+            return Ok(response);
+        }
+
 
         [HttpGet()]
         public ActionResult<PaginatedResultResponse<BoatResponse>> Get([FromQuery] BoatSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)

@@ -60,6 +60,7 @@ using Action = RaceBoard.Domain.Action;
 using Enums = RaceBoard.Domain.Enums;
 using MessagingEnums = RaceBoard.Messaging.Providers;
 using RaceBoard.Messaging.Entities;
+using Microsoft.IdentityModel.Tokens;
 
 namespace RaceBoard.Service.Mappings
 {
@@ -254,7 +255,10 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)))
                 .ForMember(dest => dest.Boat, opt => opt.MapFrom(src => CreateObject<Boat>(src.IdBoat)));
             CreateMap<TeamBoatSearchFilterRequest, TeamBoatSearchFilter>()
-                .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)));
+                .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)))
+                .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)))
+                .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
+                .ForMember(dest => dest.Boat, opt => opt.MapFrom(src => CreateBoat(src)));
 
             CreateMap<TeamCheckRequest, TeamMemberCheck>()
                 .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
@@ -475,6 +479,20 @@ namespace RaceBoard.Service.Mappings
         #endregion
 
         #region Private Methods
+
+        private Boat CreateBoat(TeamBoatSearchFilterRequest searchFilterRequest)
+        {
+            var boat = new Boat();
+
+            if (searchFilterRequest.IdBoat.HasValue)
+                boat.Id = searchFilterRequest.IdBoat.Value;
+            if (!String.IsNullOrEmpty(searchFilterRequest.BoatName))
+                boat.Name = searchFilterRequest.BoatName;
+            if (!String.IsNullOrEmpty(searchFilterRequest.BoatSailNumber))
+                boat.SailNumber = searchFilterRequest.BoatSailNumber;
+
+            return boat;
+        }
 
         private T? CreateObject<T>(int? id) where T : class
         {

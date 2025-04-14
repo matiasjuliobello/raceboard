@@ -4,6 +4,7 @@ using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
+using static RaceBoard.Data.Helpers.SqlQueryBuilder;
 
 namespace RaceBoard.Data.Repositories
 {
@@ -68,6 +69,11 @@ namespace RaceBoard.Data.Repositories
             return base.Execute<bool>(context);
         }
 
+        public PaginatedResult<Boat> Search(string searchTerm, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        {
+            return this.SearchBoats(searchTerm, paginationFilter, sorting, context);
+        }
+
         public PaginatedResult<Boat> Get(BoatSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return this.GetBoats(searchFilter, paginationFilter, sorting, context);
@@ -91,6 +97,51 @@ namespace RaceBoard.Data.Repositories
         #endregion
 
         #region Private Methods
+
+        private PaginatedResult<Boat> SearchBoats(string searchTerm, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        {
+            string sql = $@"SELECT
+	                            [Boat].Id [Id],	                            
+	                            [Boat].Name [Name],
+                                [Boat].SailNumber [SailNumber],
+                                [RaceClass].Id [Id],
+                                [RaceClass].Name [Name]
+                            FROM [Boat] [Boat]
+                            INNER JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Boat].IdRaceClass";
+
+            QueryBuilder.AddCommand(sql);
+            QueryBuilder.AddCondition("[Boat].Name LIKE '%' + @searchTerm + '%'", LogicalOperator.Or);
+            QueryBuilder.AddCondition("[Boat].SailNumber LIKE '%' + @searchTerm + '%'", LogicalOperator.Or);
+            QueryBuilder.AddParameter("searchTerm", searchTerm);
+            QueryBuilder.AddSorting(sorting, _columnsMapping);
+            QueryBuilder.AddPagination(paginationFilter);
+
+            var boats = new List<Boat>();
+
+            PaginatedResult<Boat> items = base.GetPaginatedResults<Boat>
+                (
+                    (reader) =>
+                    {
+                        return reader.Read<Boat, RaceClass, Boat>
+                        (
+                            (boat, raceClass) =>
+                            {
+                                boat.RaceClass = raceClass;
+
+                                boats.Add(boat);
+
+                                return boat;
+                            },
+                            splitOn: "Id, Id"
+                        ).AsList();
+                    },
+                    context
+                );
+
+            items.Results = boats;
+
+            return items;
+        }
 
         private PaginatedResult<Boat> GetBoats(BoatSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {

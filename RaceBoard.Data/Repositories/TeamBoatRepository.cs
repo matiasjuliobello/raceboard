@@ -4,6 +4,7 @@ using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
+using static RaceBoard.Data.Helpers.SqlQueryBuilder;
 
 namespace RaceBoard.Data.Repositories
 {
@@ -84,6 +85,11 @@ namespace RaceBoard.Data.Repositories
             return base.Execute<bool>(context);
         }
 
+        //public PaginatedResult<TeamBoat> SearchTeamBoats(TeamBoatSearchFilter searchFilter, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        //{
+        //    return this.SearchBoats(searchFilter, paginationFilter, sorting, context);
+        //}
+
         public PaginatedResult<TeamBoat> Get(TeamBoatSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return this.GetTeamBoats(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
@@ -115,6 +121,65 @@ namespace RaceBoard.Data.Repositories
 
         #region Private Methods
 
+        //private PaginatedResult<TeamBoat> SearchBoats(TeamBoatSearchFilter searchFilter, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        //{
+        //    string sql = $@"SELECT
+        //                        [Team_Boat].Id [Id],
+        //                        [Team].Id [Id],
+        //                        [Boat].Id [Id],
+        //                        [Boat].Name [Name],
+        //                        [Boat].SailNumber [SailNumber],
+        //                        [RaceClass].Id [Id],
+        //                        [RaceClass].Name [Name],
+        //                        [RaceCategory].Id [Id],
+        //                        [RaceCategory].Name [Name]
+        //                    FROM [Team_Boat] [Team_Boat]
+        //                    INNER JOIN [Team] [Team] ON [Team].Id = [Team_Boat].IdTeam
+        //                    INNER JOIN [Boat] [Boat] ON [Boat].Id = [Team_Boat].IdBoat
+        //                    INNER JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Boat].IdRaceClass
+        //                    INNER JOIN [RaceCategory] [RaceCategory] ON [RaceCategory].Id = [RaceClass].IdRaceCategory";
+
+        //    QueryBuilder.AddCommand(sql);
+
+        //    QueryBuilder.AddCondition("[Boat].Name LIKE '%' + @searchTerm + '%'", LogicalOperator.Or);
+        //    QueryBuilder.AddCondition("[Boat].SailNumber LIKE '%' + @searchTerm + '%'", LogicalOperator.Or);
+        //    QueryBuilder.AddParameter("searchTerm", searchTerm);
+
+        //    QueryBuilder.AddSorting(sorting, _columnsMapping);
+        //    QueryBuilder.AddPagination(paginationFilter);
+
+        //    var teamBoats = new List<TeamBoat>();
+
+        //    PaginatedResult<TeamBoat> items = base.GetPaginatedResults<TeamBoat>
+        //        (
+        //            (reader) =>
+        //            {
+        //                return reader.Read<TeamBoat, Team, Boat, RaceClass, RaceCategory, TeamBoat>
+        //                (
+        //                    (teamBoat, team, boat, raceClass, raceCategory) =>
+        //                    {
+        //                        raceClass.RaceCategory = raceCategory;
+        //                        team.RaceClass = raceClass;
+        //                        boat.RaceClass = raceClass;
+
+        //                        teamBoat.Team = team;
+        //                        teamBoat.Boat = boat;
+
+        //                        teamBoats.Add(teamBoat);
+
+        //                        return teamBoat;
+        //                    },
+        //                    splitOn: "Id, Id, Id, Id, Id"
+        //                ).AsList();
+        //            },
+        //            context
+        //        );
+
+        //    items.Results = teamBoats;
+
+        //    return items;
+        //}
+
         private PaginatedResult<TeamBoat> GetTeamBoats(TeamBoatSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             string sql = $@"SELECT
@@ -126,12 +191,15 @@ namespace RaceBoard.Data.Repositories
                                 [RaceClass].Id [Id],
                                 [RaceClass].Name [Name],
                                 [RaceCategory].Id [Id],
-                                [RaceCategory].Name [Name]
+                                [RaceCategory].Name [Name],
+                                [Championship].Id [Id],
+	                            [Championship].Name [Name]
                             FROM [Team_Boat] [Team_Boat]
                             INNER JOIN [Team] [Team] ON [Team].Id = [Team_Boat].IdTeam
                             INNER JOIN [Boat] [Boat] ON [Boat].Id = [Team_Boat].IdBoat
                             INNER JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Boat].IdRaceClass
-                            INNER JOIN [RaceCategory] [RaceCategory] ON [RaceCategory].Id = [RaceClass].IdRaceCategory";
+                            INNER JOIN [RaceCategory] [RaceCategory] ON [RaceCategory].Id = [RaceClass].IdRaceCategory
+                            INNER JOIN [Championship] [Championship] ON [Championship].Id = [Team].IdChampionship";
 
             QueryBuilder.AddCommand(sql);
 
@@ -146,13 +214,15 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<TeamBoat, Team, Boat, RaceClass, RaceCategory, TeamBoat>
+                        return reader.Read<TeamBoat, Team, Boat, RaceClass, RaceCategory, Championship, TeamBoat>
                         (
-                            (teamBoat, team, boat, raceClass, raceCategory) =>
+                            (teamBoat, team, boat, raceClass, raceCategory, championship) =>
                             {
                                 raceClass.RaceCategory = raceCategory;
-                                team.RaceClass = raceClass;
                                 boat.RaceClass = raceClass;
+                                team.RaceClass = raceClass;
+                                
+                                team.Championship = championship;
 
                                 teamBoat.Team = team;
                                 teamBoat.Boat = boat;
@@ -161,7 +231,7 @@ namespace RaceBoard.Data.Repositories
 
                                 return teamBoat;
                             },
-                            splitOn: "Id, Id, Id, Id, Id"
+                            splitOn: "Id, Id, Id, Id, Id, Id"
                         ).AsList();
                     },
                     context
@@ -177,8 +247,15 @@ namespace RaceBoard.Data.Repositories
             if (searchFilter == null)
                 return;
 
+            base.AddFilterGroup(LogicalOperator.And);
             base.AddFilterCriteria(ConditionType.In, "Team_Boat", "Id", "ids", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Equal, "Team", "Id", "idTeam", searchFilter.Team?.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "Championship", "Id", "idChampionship", searchFilter.Championship?.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "RaceClass", "Id", "idRaceClass", searchFilter.RaceClass?.Id);
+
+            base.AddFilterGroup(LogicalOperator.And);
+            base.AddFilterCriteria(ConditionType.Like, "Boat", "Name", "name", searchFilter.Boat?.Name, LogicalOperator.Or);
+            base.AddFilterCriteria(ConditionType.Like, "Boat", "SailNumber", "sailNumber", searchFilter.Boat?.SailNumber, LogicalOperator.Or);
         }
 
         private void CreateTeamBoat(TeamBoat teamBoat, ITransactionalContext? context = null)

@@ -9,6 +9,7 @@ using RaceBoard.DTOs.ChangeRequest.Request;
 using RaceBoard.DTOs.ChangeRequest.Response;
 using RaceBoard.DTOs.HearingRequest.Request;
 using RaceBoard.DTOs.HearingRequest.Response;
+using RaceBoard.DTOs.Permissions.Response;
 using RaceBoard.Service.Controllers.Abstract;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Translations.Interfaces;
@@ -120,13 +121,26 @@ namespace RaceBoard.Service.Controllers
 
         #region Hearings
 
+        [HttpGet("hearing-types")]
+        public ActionResult<PaginatedResultResponse<HearingRequestTypeResponse>> GetHearingRequestTypes([FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
+        {
+            var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
+            var sorting = _mapper.Map<Sorting>(sortingRequest);
+
+            var data = _requestManager.GetHearingRequestTypes(paginationFilter, sorting);
+
+            var response = _mapper.Map<PaginatedResultResponse<HearingRequestTypeResponse>>(data);
+
+            return Ok(response);
+        }
+
         [HttpGet("hearings")]
         public ActionResult<PaginatedResultResponse<HearingRequestResponse>> GetHearingRequests([FromQuery] HearingRequestSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<HearingRequestSearchFilter>(searchFilterRequest);
 
-            if (searchFilter.Championship == null || searchFilter.Championship.Id == 0)
-                return ReturnBadRequestResponse("ChampionshipIsRequired");
+            //if (searchFilter.Championship == null || searchFilter.Championship.Id == 0)
+            //    return ReturnBadRequestResponse("ChampionshipIsRequired");
 
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
             var sorting = _mapper.Map<Sorting>(sortingRequest);
@@ -156,6 +170,24 @@ namespace RaceBoard.Service.Controllers
             _requestManager.CreateHearingRequest(hearingRequest);
 
             return Ok(hearingRequest.Id);
+        }
+
+        [HttpPut("hearings")]
+        public ActionResult<int> EditHearingRequest([FromBody] HearingRequestRequest hearingRequestRequest)
+        {
+            var hearingRequest = _mapper.Map<HearingRequest>(hearingRequestRequest);
+
+            _requestManager.UpdateHearingRequest(hearingRequest);
+
+            return Ok(hearingRequest.Id);
+        }
+
+        [HttpPost("hearings/{id}/download")]
+        public ActionResult  DownloadHearingReqeust(int id)
+        {
+            _requestManager.RenderHearingRequest(new HearingRequest());
+
+            return Ok();
         }
 
         #endregion

@@ -5,7 +5,9 @@ using RaceBoard.Translations.Interfaces;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Drawing;
+using System.Net;
 using System.Net.NetworkInformation;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.Xml;
 
@@ -1035,6 +1037,9 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.English, "Resolution comments"),
                 new Tuple<string, string>(Languages.Spanish, "Comentarios"));
 
+            AddText(AddTranslation("NotSubmitted"),
+                new Tuple<string, string>(Languages.English, "Not submitted"),
+                new Tuple<string, string>(Languages.Spanish, "Sin enviar"));
             AddText(AddTranslation("Submitted"),
                 new Tuple<string, string>(Languages.English, "Submitted"),
                 new Tuple<string, string>(Languages.Spanish, "Enviado"));
@@ -1066,7 +1071,81 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("RequestHasBeenRejected.TheChangeIsNotAllowed"),
                 new Tuple<string, string>(Languages.English, "Request has been rejected. The change is not allowed"),
                 new Tuple<string, string>(Languages.Spanish, "La solicitud ha sido rechazada. El cambio NO está permitido."));
+
+            AddText(AddTranslation("HearingType"),
+                new Tuple<string, string>(Languages.English, "Hearing type"),
+                new Tuple<string, string>(Languages.Spanish, "Tipo de audiencia."));
+            AddText(AddTranslation("LoadingHearingTypes"),
+                new Tuple<string, string>(Languages.English, "Loading hearing types.."),
+                new Tuple<string, string>(Languages.Spanish, "Cargando tipos de audiencia."));
+            AddText(AddTranslation("Date"),
+                new Tuple<string, string>(Languages.English, "Date"),
+                new Tuple<string, string>(Languages.Spanish, "Fecha"));
+            AddText(AddTranslation("RaceNumber"),
+                new Tuple<string, string>(Languages.English, "Race number"),
+                new Tuple<string, string>(Languages.Spanish, "Número de carrera"));
+            AddText(AddTranslation("PhoneNumber"),
+                new Tuple<string, string>(Languages.English, "Phone number"),
+                new Tuple<string, string>(Languages.Spanish, "Número de teléfono"));
+            AddText(AddTranslation("Address"),
+                new Tuple<string, string>(Languages.English, "Address"),
+                new Tuple<string, string>(Languages.Spanish, "Domicilio"));
+            AddText(AddTranslation("LoudVoice"),
+                new Tuple<string, string>(Languages.English, "Loud voice"),
+                new Tuple<string, string>(Languages.Spanish, "Voz alta"));
+            AddText(AddTranslation("RedFlag"),
+                new Tuple<string, string>(Languages.English, "Red flag"),
+                new Tuple<string, string>(Languages.Spanish, "Bandera roja"));
+            AddText(AddTranslation("Other"),
+                new Tuple<string, string>(Languages.English, "Other"),
+                new Tuple<string, string>(Languages.Spanish, "Otro"));
+            AddText(AddTranslation("Where"),
+                new Tuple<string, string>(Languages.English, "Where"),
+                new Tuple<string, string>(Languages.Spanish, "Dónde"));
+            AddText(AddTranslation("When"),
+                new Tuple<string, string>(Languages.English, "When"),
+                new Tuple<string, string>(Languages.Spanish, "Cuándo"));
+            AddText(AddTranslation("How"),
+                new Tuple<string, string>(Languages.English, "How"),
+                new Tuple<string, string>(Languages.Spanish, "Cómo"));
+            AddText(AddTranslation("WordsUsed"),
+                new Tuple<string, string>(Languages.English, "Words used"),
+                new Tuple<string, string>(Languages.Spanish, "Palabras usadas"));
+            AddText(AddTranslation("NoticingOtherWay"),
+                new Tuple<string, string>(Languages.English, "Noticing other way"),
+                new Tuple<string, string>(Languages.Spanish, "Avisando de otro modo"));
+            AddText(AddTranslation("Time"),
+                new Tuple<string, string>(Languages.English, "Time"),
+                new Tuple<string, string>(Languages.Spanish, "Hora"));
+            AddText(AddTranslation("Place"),
+                new Tuple<string, string>(Languages.English, "Place"),
+                new Tuple<string, string>(Languages.Spanish, "Lugar"));
+            AddText(AddTranslation("BrokenRules"),
+                new Tuple<string, string>(Languages.English, "Broken rules"),
+                new Tuple<string, string>(Languages.Spanish, "Reglas infringidas"));
+            AddText(AddTranslation("Witnesses"),
+                new Tuple<string, string>(Languages.English, "Witnesses"),
+                new Tuple<string, string>(Languages.Spanish, "Testigos"));
+            AddText(AddTranslation("Details"),
+                new Tuple<string, string>(Languages.English, "Details"),
+                new Tuple<string, string>(Languages.Spanish, "Detalles"));
+            AddText(AddTranslation("AreYouSureYouWantToRemove"),
+                new Tuple<string, string>(Languages.English, "Are you sure you want to remove?"),
+                new Tuple<string, string>(Languages.Spanish, "Estás seguro de querer eliminar"));
+            AddText(AddTranslation("Yes"),
+                new Tuple<string, string>(Languages.English, "Yes"),
+                new Tuple<string, string>(Languages.Spanish, "Sí"));
+            AddText(AddTranslation("No"),
+                new Tuple<string, string>(Languages.English, "No"),
+                new Tuple<string, string>(Languages.Spanish, "No"));
+            AddText(AddTranslation("AddProtesteeBoat"),
+                new Tuple<string, string>(Languages.English, "Add protestee boat"),
+                new Tuple<string, string>(Languages.Spanish, "Agregar barco protestado"));
+            AddText(AddTranslation("TypeBoatNameOrSailNumber"),
+                new Tuple<string, string>(Languages.English, "TypeBoatNameOrSailNumber"),
+                new Tuple<string, string>(Languages.Spanish, "Escribir nombre o número de vela"));
         }
+
 
         private Translation AddTranslation(string key)
         {

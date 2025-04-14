@@ -1,4 +1,5 @@
-﻿using RaceBoard.Business.Managers.Abstract;
+﻿using Microsoft.Extensions.Configuration;
+using RaceBoard.Business.Managers.Abstract;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Business.Validators.Interfaces;
 using RaceBoard.Common.Exceptions;
@@ -18,6 +19,8 @@ namespace RaceBoard.Business.Managers
         private readonly IOrganizationMemberRepository _organizationMemberRepository;
         private readonly IChampionshipMemberRepository _championshipMemberRepository;
         private readonly ITeamMemberRepository _teamMemberRepository;
+
+        private readonly bool _validatePermission;
 
         #region Permissions Matrix
 
@@ -136,7 +139,8 @@ namespace RaceBoard.Business.Managers
                 ITeamMemberRepository teamMemberRepository,
                 ICustomValidator<RolePermissions> rolePermissionValidator,
                 IRequestContextManager requestContextManager,
-                ITranslator translator
+                ITranslator translator,
+                IConfiguration configuration
             ) : base(requestContextManager, translator)
         {
             _authorizationRepository = authorizationRepository;
@@ -145,6 +149,8 @@ namespace RaceBoard.Business.Managers
             _organizationMemberRepository = organizationMemberRepository;
             _championshipMemberRepository = championshipMemberRepository;
             _teamMemberRepository = teamMemberRepository;
+
+            _validatePermission = Convert.ToBoolean(configuration["ValidatePermission_Enabled"]);
         }
 
         #endregion
@@ -210,6 +216,9 @@ namespace RaceBoard.Business.Managers
 
         public void ValidatePermission(Enums.Action action, int idEntity, int idUser)
         {
+            if (!_validatePermission)
+                return;
+
             dynamic? record = null;
 
             Entity parent = this.GetParentEntity(action);

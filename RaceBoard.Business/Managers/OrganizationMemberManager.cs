@@ -13,6 +13,7 @@ using RaceBoard.Data;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 using RaceBoard.Translations.Interfaces;
+using System.Text;
 using Enums = RaceBoard.Domain.Enums;
 
 namespace RaceBoard.Business.Managers
@@ -28,8 +29,8 @@ namespace RaceBoard.Business.Managers
         private readonly IDateTimeHelper _dateTimeHelper;
         private readonly IStringHelper _stringHelper;
         private readonly ICryptographyHelper _cryptographyHelper;
-        private readonly IMailManager _mailManager;
         private readonly IAuthorizationManager _authorizationManager;
+        private readonly IInvitationManager _invitationManager;
 
         private const int _INVITATION_TOKEN_LENGTH = 32;
 
@@ -49,7 +50,7 @@ namespace RaceBoard.Business.Managers
                 ICryptographyHelper cryptographyHelper,
                 IRequestContextManager requestContextManager,
                 IAuthorizationManager authorizationManager,
-                IMailManager mailManager
+                IInvitationManager invitationManager
             ) : base(requestContextManager, translator)
         {
             _organizationMemberRepository = organizationMemberRepository;
@@ -61,8 +62,8 @@ namespace RaceBoard.Business.Managers
             _dateTimeHelper = dateTimeHelper;
             _stringHelper = stringHelper;
             _cryptographyHelper = cryptographyHelper;
-            _mailManager = mailManager;
             _authorizationManager = authorizationManager;
+            _invitationManager = invitationManager;
         }
 
         #endregion
@@ -125,19 +126,11 @@ namespace RaceBoard.Business.Managers
             if (organizationMemberInvitation.User != null)
                 organizationMemberInvitation.Invitation.EmailAddress = _userRepository.GetById(organizationMemberInvitation.User.Id).Email;
 
-            var requestUser = _personRepository.GetByIdUser(organizationMemberInvitation.RequestUser.Id);
-            var organization = _organizationRepository.Get(organizationMemberInvitation.Organization.Id)!;
-
             try
             {
                 _organizationMemberRepository.CreateInvitation(organizationMemberInvitation, context);
 
-                string emailSubject = $"You've invited to join '{organization.Name}'";
-                string emailBody = $"You've invited by {requestUser.Fullname} to join '{organization.Name}', to perform as {organizationMemberInvitation.Role.Name}";
-                string emailRecipientAddress = organizationMemberInvitation.Invitation.EmailAddress;
-                string emailRecipientName = organizationMemberInvitation.Invitation.EmailAddress;
-
-                _mailManager.SendMail(emailSubject, emailBody, emailRecipientAddress, emailRecipientName);
+                _invitationManager.SendOrganizationInvitation(organizationMemberInvitation);
 
                 context.Confirm();
             }

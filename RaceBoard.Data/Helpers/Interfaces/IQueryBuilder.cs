@@ -1,12 +1,14 @@
 ﻿using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
+using static RaceBoard.Data.Helpers.SqlQueryBuilder;
 
 namespace RaceBoard.Data.Helpers.Interfaces
 {
     public interface IQueryBuilder
     {
         void AddCommand(string query);
-        void AddCondition(string query, string logicalOperator = "AND");
+        void AddConditionGroup(string? logicalOperator = LogicalOperator.And);
+        void AddCondition(string condition, string? logicalOperator = LogicalOperator.And);
         void AddParameter(string name, object value);
         void AddGrouping(string grouping);
         void AddSorting(string sorting);

@@ -6,6 +6,7 @@ using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
+using RaceBoard.Domain.Enums;
 using static Dapper.SqlMapper;
 
 namespace RaceBoard.Data.Repositories
@@ -84,6 +85,11 @@ namespace RaceBoard.Data.Repositories
             return this.GetHearingRequests(searchFilter: searchFilter, paginationFilter: null, sorting: null, context: context).Results.FirstOrDefault();
         }
 
+        public HearingRequestProtestor GetProtestor(int id, ITransactionalContext? context = null)
+        {
+            return this.GetHearingRequestProtestor(id, context);
+        }
+
         public HearingRequestProtestees GetProtestees(int id, ITransactionalContext? context = null)
         {
             return this.GetHearingRequestProtestees(id, context);
@@ -130,18 +136,76 @@ namespace RaceBoard.Data.Repositories
 
         private PaginatedResult<HearingRequest> GetHearingRequests(HearingRequestSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
-            QueryBuilder.AddCommand("SELECT Id [Id], Name [Name] FROM [HearingRequestType]");
-            List<HearingRequestType> hearingRequestTypes = base.GetMultipleResults<HearingRequestType>().ToList();
-
-            QueryBuilder.AddCommand("SELECT Id [Id], Name [Name] FROM [RequestStatus]");
-            List<HearingRequestStatus> hearingRequestStatuses = base.GetMultipleResults<HearingRequestStatus>().ToList();
-
             string sql = $@"SELECT
                                 [Hearing].Id [Id],                                
-                                [Hearing].IdRequestStatus,
-                                [Hearing].IdHearingRequestType,
                                 [Hearing].CreationDate,
                                 [Hearing].RaceNumber,
+                                [RequestStatus].Id [Id],
+                                [RequestStatus].Name [Name],
+                                [RequestType].Id [Id],
+                                [RequestType].Name [Name],
+                                [RequestUser].Id [Id],
+                                [RequestPerson].Id [Id],
+                                [RequestPerson].Firstname [Firstname],
+                                [RequestPerson].Lastname [Lastname],
+                                [RequestTeam].Id [Id],
+                                [RequestTeamRaceClass].Id [Id],
+                                [RequestTeamRaceClass].Name [Name]
+                            FROM [HearingRequest] [Hearing]
+                            INNER JOIN [HearingRequestType] [RequestType]   ON [RequestType].Id = [Hearing].IdHearingRequestType
+                            INNER JOIN [RequestStatus] [RequestStatus]      ON [RequestStatus].Id = [Hearing].IdRequestStatus                           
+                            INNER JOIN [User] [RequestUser]                 ON [RequestUser].Id = [Hearing].IdRequestUser
+                            INNER JOIN [User_Person] [User_Person]          ON [RequestUser].Id = [User_Person].IdUser
+                            INNER JOIN [Person] [RequestPerson]             ON [RequestPerson].Id = [User_Person].IdPerson
+                            INNER JOIN [Team] [RequestTeam]                 ON [RequestTeam].Id = [Hearing].IdTeam
+                            INNER JOIN [RaceClass] [RequestTeamRaceClass]   ON [RequestTeamRaceClass].Id = [RequestTeam].IdRaceClass";
+
+            QueryBuilder.AddCommand(sql);
+
+            this.ProcessSearchFilter(searchFilter);
+
+            QueryBuilder.AddSorting(sorting, _columnsMapping);
+            QueryBuilder.AddPagination(paginationFilter);
+
+            var hearingRequests = new List<HearingRequest>();
+
+            PaginatedResult<HearingRequest> items = base.GetPaginatedResults<HearingRequest>
+                (
+                    (reader) =>
+                    {
+                        return reader.Read<HearingRequest, HearingRequestStatus, Domain.HearingRequestType, User, Person, Team, RaceClass, HearingRequest>
+                        (
+                            (hearingRequest, status, type, user, person, team, teamRaceClass) =>
+                            {
+
+                                hearingRequest.Status = status;
+                                hearingRequest.Type = type;
+                                hearingRequest.RequestUser = user;
+                                hearingRequest.RequestPerson = person;
+                                hearingRequest.Team = team;
+                                hearingRequest.Team.RaceClass = teamRaceClass;
+
+                                hearingRequests.Add(hearingRequest);
+
+                                return hearingRequest;
+                            },
+                            splitOn: "Id, Id, Id, Id, Id, Id, Id"
+                        ).AsList();
+                    },
+                    context
+                );
+
+            items.Results = hearingRequests;
+
+            return items;
+        }
+
+        private HearingRequestProtestor GetHearingRequestProtestor(int id, ITransactionalContext? context = null)
+        {
+            string sql = $@"SELECT
+                                [Protestor].Id [Id],
+                                [Protestor].Address [Address],
+                                [Protestor].PhoneNumber [PhoneNumber],
                                 [ProtestorUser].Id [Id],
                                 [ProtestorPerson].Id [Id],
                                 [ProtestorPerson].Firstname [Firstname],
@@ -173,48 +237,38 @@ namespace RaceBoard.Data.Repositories
                             INNER JOIN [RaceClass] [ProtestorTeamRaceClass]                 ON [ProtestorTeamRaceClass].Id = [ProtestorTeam].IdRaceClass";
 
             QueryBuilder.AddCommand(sql);
+            QueryBuilder.AddCondition("[Hearing].Id = @idHearing");
+            QueryBuilder.AddParameter("idHearing", id);
 
-            this.ProcessSearchFilter(searchFilter);
+            var protestor = new HearingRequestProtestor();
 
-            QueryBuilder.AddSorting(sorting, _columnsMapping);
-            QueryBuilder.AddPagination(paginationFilter);
-
-            var hearingRequests = new List<HearingRequest>();
-
-            PaginatedResult<HearingRequest> items = base.GetPaginatedResults<HearingRequest>
+            base.GetReader
                 (
-                    (reader) =>
+                    (x) =>
                     {
-                        return reader.Read<HearingRequest, User, Person, Team, RaceClass, Boat, HearingRequestProtestorNotice, HearingRequest>
+                        protestor = x.Read<HearingRequestProtestor, User, Person, Team, RaceClass, Boat, HearingRequestProtestorNotice, HearingRequestProtestor>
                         (
-                            (hearingRequest, protestorUser, protestorPerson, protestorTeam, protestorTeamRaceClass, protestorBoat, protestorNotice) =>
+                            (protestor, user, person, team, raceClass, boat, notice) =>
                             {
-                                var protestor = new HearingRequestProtestor();
-                                protestor.Boat = protestorBoat;
-                                protestor.Notice = protestorNotice;
+                                team.RaceClass = raceClass;
+                                protestor.HearingRequest = new HearingRequest()
+                                {
+                                    Team = team,
+                                    RequestUser = user,
+                                    RequestPerson = person
+                                };
+                                protestor.Boat = boat;
+                                protestor.Notice = notice;
 
-                                protestorTeam.RaceClass = protestorTeamRaceClass;
-
-                                hearingRequest.Team = protestorTeam;
-                                hearingRequest.Protestor = protestor;
-                                hearingRequest.RequestUser = protestorUser;
-                                hearingRequest.RequestPerson = protestorPerson;
-                                hearingRequest.Status = hearingRequestStatuses.FirstOrDefault(x => x.Id == hearingRequest.IdRequestStatus);
-                                hearingRequest.Type = hearingRequestTypes.FirstOrDefault(x => x.Id == hearingRequest.IdHearingRequestType);
-
-                                hearingRequests.Add(hearingRequest);
-
-                                return hearingRequest;
+                                return protestor;
                             },
                             splitOn: "Id, Id, Id, Id, Id, Id, Id"
-                        ).AsList();
+                        ).FirstOrDefault();
                     },
                     context
                 );
 
-            items.Results = hearingRequests;
-
-            return items;
+            return protestor;
         }
 
         private HearingRequestProtestees GetHearingRequestProtestees(int id, ITransactionalContext? context = null)
@@ -290,7 +344,7 @@ namespace RaceBoard.Data.Repositories
                 return;
 
             base.AddFilterCriteria(ConditionType.In, "Hearing", "Id", "ids", searchFilter.Ids);
-            base.AddFilterCriteria(ConditionType.Equal, "ProtestorTeam", "IdChampionship", "idChampionship", searchFilter.Championship?.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "RequestTeam", "IdChampionship", "idChampionship", searchFilter.Championship?.Id);
         }
 
         private void CreateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null)

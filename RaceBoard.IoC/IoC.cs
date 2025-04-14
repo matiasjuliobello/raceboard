@@ -142,6 +142,7 @@ namespace RaceBoard.IoC
             services.AddScoped<IEquipmentChangeRequestRepository, EquipmentChangeRequestRepository>();
             services.AddScoped<ICrewChangeRequestRepository, CrewChangeRequestRepository>();
             services.AddScoped<IHearingRequestRepository, HearingRequestRepository>();
+            services.AddScoped<IHearingRequestTypeRepository, HearingRequestTypeRepository>();
             #endregion
 
             #region Helpers

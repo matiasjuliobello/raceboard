@@ -8,6 +8,7 @@ using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Business.Validators.Interfaces;
 using RaceBoard.Common.Exceptions;
 using RaceBoard.Common.Enums;
+using RaceBoard.Data.Repositories;
 
 namespace RaceBoard.Business.Managers
 {
@@ -33,6 +34,11 @@ namespace RaceBoard.Business.Managers
         #endregion
 
         #region IBoatManager implementation
+
+        public PaginatedResult<Boat> Search(string searchTerm, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        {
+            return _boatRepository.Search(searchTerm, paginationFilter, sorting, context);
+        }
 
         public PaginatedResult<Boat> Get(BoatSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
