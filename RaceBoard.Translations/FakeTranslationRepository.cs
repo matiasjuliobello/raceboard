@@ -1144,6 +1144,16 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("TypeBoatNameOrSailNumber"),
                 new Tuple<string, string>(Languages.English, "TypeBoatNameOrSailNumber"),
                 new Tuple<string, string>(Languages.Spanish, "Escribir nombre o número de vela"));
+
+            AddText(AddTranslation("InvitationEmailLinkText"),
+                new Tuple<string, string>(Languages.English, "Click here to proceed"),
+                new Tuple<string, string>(Languages.Spanish, "Haz click aquí para continuar"));
+            AddText(AddTranslation("TeamMemberInvitationEmailSubject"),
+                new Tuple<string, string>(Languages.English, "You've been invited to join a team"),
+                new Tuple<string, string>(Languages.Spanish, "Te invitaron a unirte a un equipo"));
+            AddText(AddTranslation("TeamMemberInvitationEmailBody"),
+                new Tuple<string, string>(Languages.English, "You've been invited by <b>{0}</b> to join a team in <b>'{1}'</b>, performing as <b>{2}</b>"),
+                new Tuple<string, string>(Languages.Spanish, "Recibiste una invitación de <b>{0}</b> para unirte a un equipo en <b>'{1}'</b>, desempeñándote como <b>{2}</b>"));
         }
 
 

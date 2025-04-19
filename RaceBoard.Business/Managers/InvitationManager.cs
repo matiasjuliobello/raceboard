@@ -106,16 +106,18 @@ namespace RaceBoard.Business.Managers
             var team = _teamRepository.Get(teamMemberInvitation.Team.Id);
             var championship = team!.Championship;
 
-            string emailSubject = $"You've been invited to join a team";
+            string emailSubject = Translate("TeamMemberInvitationEmailSubject");
+            string emailBody = Translate("TeamMemberInvitationEmailBody");
 
             string link = BuildInvitationLink("team", team!.Id, teamMemberInvitation.Invitation);
 
             var emailHtmlContent = new StringBuilder();
             emailHtmlContent.AppendLine("<br />");
-            emailHtmlContent.AppendLine($"You've been invited by <b>{requestUser.Fullname}</b> to join a team in <b>'{championship.Name}'</b>, performing as <b>{teamMemberInvitation.Role.Name}</b>");
+            emailHtmlContent.AppendLine(String.Format(emailBody, requestUser.Fullname, championship.Name, teamMemberInvitation.Role.Name));
             emailHtmlContent.AppendLine("<br /><br /><br />");
             emailHtmlContent.AppendLine(link);
-            string emailBody = emailHtmlContent.ToString();
+            
+            emailBody = emailHtmlContent.ToString();
 
             string emailRecipientAddress = teamMemberInvitation.Invitation.EmailAddress;
             string emailRecipientName = teamMemberInvitation.Invitation.EmailAddress;
@@ -127,7 +129,7 @@ namespace RaceBoard.Business.Managers
 
         private string BuildInvitationLink(string entityName, int entityId, Invitation invitation)
         {
-            return $"<a href='{_baseUrl}?join_{entityName}={entityId}&token={invitation.Token}'>Click here to proceed</a>";
+            return $"<a href='{_baseUrl}?join_{entityName}={entityId}&token={invitation.Token}'>{Translate("InvitationEmailLinkText")}</a>";
         }
 
         #endregion

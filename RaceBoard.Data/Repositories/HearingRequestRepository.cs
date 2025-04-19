@@ -344,6 +344,7 @@ namespace RaceBoard.Data.Repositories
                 return;
 
             base.AddFilterCriteria(ConditionType.In, "Hearing", "Id", "ids", searchFilter.Ids);
+            base.AddFilterCriteria(ConditionType.Equal, "RequestTeam", "Id", "idTeam", searchFilter.Team?.Id);
             base.AddFilterCriteria(ConditionType.Equal, "RequestTeam", "IdChampionship", "idChampionship", searchFilter.Championship?.Id);
         }
 
