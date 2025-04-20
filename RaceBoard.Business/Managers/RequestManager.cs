@@ -406,36 +406,31 @@ namespace RaceBoard.Business.Managers
                     {
                         column.Item().Element(CellStyleTopHeader).Text($"{Translate("Hearing#")}");
                     });
-                    row.ConstantItem(0.5f, Unit.Centimetre).Column(column =>
+                    row.ConstantItem(1.5f, Unit.Centimetre).Column(column =>
                     {
                         var element = column.Item();
 
                         if (_isEmpty)
                         {
-                            column.Item().Element(CellStyleTopHeader).Text(". . . .");
+                            column.Item().Element(CellStyleTopHeader).Text(". . . . . . . . ");
                         }
                         else
                         {
                             column.Item().Element(CellStyleWithValue).Text(_request.RequestNumber.ToString()).Bold();
                         }
                     });
-                    //
-                    row.ConstantItem(0.8f, Unit.Centimetre).Column(column =>
-                    {
-                        column.Item().Element(CellStyleTopHeader).Text(". . . . ");
-                    });
-
-                    row.ConstantItem(1.6f, Unit.Centimetre).Column(column =>
+                   
+                    row.ConstantItem(1.7f, Unit.Centimetre).Column(column =>
                     {
                         column.Item().Element(CellStyleTopHeader).Text(Translate("DateAndTime"));
                     });
-                    row.ConstantItem(1.25f, Unit.Centimetre).Column(column =>
+                    row.ConstantItem(3.35f, Unit.Centimetre).Column(column =>
                     {
                         var element = column.Item();
 
                         if (_isEmpty)
                         {
-                            element.Element(CellStyleTopHeader).Text(". . . . . . . . .");
+                            element.Element(CellStyleTopHeader).Text(". . . . . . . . . . . . . . . . . . . . . ");
                         }
                         else
                         {
@@ -445,14 +440,10 @@ namespace RaceBoard.Business.Managers
                             element.Element(CellStyleWithValue).Text(currentDateAndTime).Bold();
                         }
                     });
-                    row.ConstantItem(2.1f, Unit.Centimetre).Column(column =>
-                    {
-                        column.Item().Element(CellStyleTopHeader).Text(". . . . . . . . . . . .");
-                    });
 
-                    row.ConstantItem(5.9f, Unit.Centimetre).Column(column =>
+                    row.ConstantItem(6.4f, Unit.Centimetre).Column(column =>
                     {
-                        column.Item().Element(CellStyleTopHeader).Text($"{Translate("Signature")} . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ");
+                        column.Item().Element(CellStyleTopHeader).Text($"{Translate("Signature")} . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ");
                     });
                 });
 
@@ -524,12 +515,12 @@ namespace RaceBoard.Business.Managers
 
                     table.Cell().ColumnSpan(4)
                         .Background(_COLOR_GREY).Padding(2)
-                        .Text("1. EVENTO").FontColor(_COLOR_WHITE).Bold();
+                        .Text($"1. {Translate("Event").ToUpper()}").FontColor(_COLOR_WHITE).Bold();
 
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("EVENTO").Bold();
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Autoridad organizadora").Bold();
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Fecha").Bold();
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Regata N°").Bold();
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("Event").ToUpper()).Bold();
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("OrganizingAuthority")).Bold();
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("Date")).Bold();
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("RaceNumber")).Bold();
 
                     table.Cell().Element(CellStyle).Text(ReturnEmptyStringIfNull(_request.Team.Championship.Name));
                     table.Cell().Element(CellStyle).Text(ReturnEmptyStringIfNull(_request.Team.Organization.Name));
@@ -549,26 +540,26 @@ namespace RaceBoard.Business.Managers
                         columns.ConstantColumn(1.0f, Unit.Centimetre);
                     });
 
-                    table.Cell().ColumnSpan(4).Background(_COLOR_GREY).Padding(2).Text("2. TIPO DE AUDIENCIA").FontColor(_COLOR_WHITE).Bold();
+                    table.Cell().ColumnSpan(4).Background(_COLOR_GREY).Padding(2).Text($"2. {Translate("HearingType").ToUpper()}").FontColor(_COLOR_WHITE).Bold();
 
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Protesta de un barco a otro").Bold();
-                    table.Cell().AlignCenter().Text(GetCheckBoxSymbol(false)).FontSize(12);
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Pedido de reparación por barco o comisión de regata").Bold();
-                    table.Cell().AlignCenter().Text(GetCheckBoxSymbol(false)).FontSize(12);
-
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Protesta de comisión de regata a un barco").Bold();
-                    table.Cell().AlignCenter().Text(GetCheckBoxSymbol(false)).FontSize(12);
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Consideración de reparación por com. de protestas").Bold();
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("ProtestFromOneBoatToAnother")).Bold();
+                    table.Cell().AlignCenter().Text(GetCheckBoxSymbol(true)).FontSize(12);
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("RepairRequestByBoatOrRaceCommission")).Bold();
                     table.Cell().AlignCenter().Text(GetCheckBoxSymbol(false)).FontSize(12);
 
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Protesta de comisión de protestas a un barco").Bold();
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("RaceCommissionProtestToABoat")).Bold();
                     table.Cell().AlignCenter().Text(GetCheckBoxSymbol(false)).FontSize(12);
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Pedido de reapertura por barco o comisión de regata").Bold();
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("ConsiderationOfRedressForProtestCommission")).Bold();
+                    table.Cell().AlignCenter().Text(GetCheckBoxSymbol(false)).FontSize(12);
+
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("ProtestCommissionProtestToAShip")).Bold();
+                    table.Cell().AlignCenter().Text(GetCheckBoxSymbol(false)).FontSize(12);
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("RequestForReopeningByBoatOrRaceCommission")).Bold();
                     table.Cell().AlignCenter().Text(GetCheckBoxSymbol(false)).FontSize(12);
 
                     table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("").Bold();
                     table.Cell().AlignCenter().Text("").FontSize(12);
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Consideración de reapertura por com. de protestas").Bold();
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("ConsiderationOfReopeningByProtestCommission")).Bold();
                     table.Cell().AlignCenter().Text(GetCheckBoxSymbol(false)).FontSize(12);
 
                 });
@@ -586,18 +577,18 @@ namespace RaceBoard.Business.Managers
 
                     table.Cell().ColumnSpan(3)
                         .Background(_COLOR_GREY).Padding(2)
-                        .Text("3. BARCO QUE PROTESTA, PIDE REPARACIÓN O REAPERTURA").FontColor(_COLOR_WHITE).Bold();
+                        .Text($"3. {Translate("BoatProtestingAskingForRepairOrReopening").ToUpper()}").FontColor(_COLOR_WHITE).Bold();
 
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Clase").Bold();
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Nombre del barco").Bold();
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Vela N°").Bold();
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("RaceClass")).Bold();
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("BoatName")).Bold();
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("SailNumber")).Bold();
                     table.Cell().Element(CellStyle).Text(ReturnEmptyStringIfNull(_request.Team.RaceClass.Name));
                     table.Cell().Element(CellStyle).Text(ReturnEmptyStringIfNull(_request.Protestor.Boat.Name));
                     table.Cell().Element(CellStyle).Text(ReturnEmptyStringIfNull(_request.Protestor.Boat.SailNumber));
 
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Representado por").Bold();
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Domicilio").Bold();
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Tel.").Bold();
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("RepresentedBy")).Bold();
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("Address")).Bold();
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("PhoneNumber")).Bold();
                     table.Cell().Element(CellStyle).Text(ReturnEmptyStringIfNull(_request.RequestPerson.Fullname));
                     table.Cell().Element(CellStyle).Text(ReturnEmptyStringIfNull(_request.Protestor.Address));
                     table.Cell().Element(CellStyle).Text(ReturnEmptyStringIfNull(_request.Protestor.PhoneNumber));
@@ -616,15 +607,15 @@ namespace RaceBoard.Business.Managers
 
                     table.Cell().ColumnSpan(3)
                         .Background(_COLOR_GREY).Padding(2)
-                        .Text("4. BARCO(S) PROTESTADO(S) O CONSIDERADO(S) PARA UNA REPARACIÓN").FontColor(_COLOR_WHITE).Bold();
+                        .Text($"4. {Translate("BoatsProtestedOrConsideredForRepair").ToUpper()}").FontColor(_COLOR_WHITE).Bold();
 
                     for (int i = 0; i < _request.Protestees.Protestees.Count; i++)
                     {
                         var protestee = _request.Protestees.Protestees[i];
 
-                        table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Clase").Bold();
-                        table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Nombre del barco").Bold();
-                        table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Vela N°").Bold();
+                        table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("RaceClass")).Bold();
+                        table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("BoatName")).Bold();
+                        table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("SailNumber")).Bold();
                         table.Cell().Element(CellStyle).Text(ReturnEmptyStringIfNull(protestee.TeamBoat.Boat.RaceClass.Name));
                         table.Cell().Element(CellStyle).Text(ReturnEmptyStringIfNull(protestee.TeamBoat.Boat.Name));
                         table.Cell().Element(CellStyle).Text(ReturnEmptyStringIfNull(protestee.TeamBoat.Boat.SailNumber));
@@ -641,13 +632,13 @@ namespace RaceBoard.Business.Managers
                         columns.ConstantColumn(11.4f, Unit.Centimetre);
                     });
 
-                    table.Cell().ColumnSpan(2).Background(_COLOR_GREY).Padding(2).Text("5. INCIDENTE").FontColor(_COLOR_WHITE).Bold();
+                    table.Cell().ColumnSpan(2).Background(_COLOR_GREY).Padding(2).Text($"5. {Translate("Incident").ToUpper()}").FontColor(_COLOR_WHITE).Bold();
 
-                    table.Cell().ColumnSpan(2).Element(CellStyleWithNoBorderAndTopPadding).Text("Hora y lugar del incidente").Bold();
+                    table.Cell().ColumnSpan(2).Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("IncidentTimeAndPlace")).Bold();
                     table.Cell().ColumnSpan(2).Element(CellStyle).Text(ReturnEmptyStringIfNull(requestIncidentTime) + _request.Incident.Place);
 
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Reglas que se habrían infringido").Bold();
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Testigos").Bold();
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("RulesThatWouldHaveBeenViolated")).Bold();
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("Witnesses")).Bold();
                     table.Cell().Element(CellStyle).Text(ReturnEmptyStringIfNull(_request.Incident.BrokenRules));
                     table.Cell().Element(CellStyle).Text(ReturnEmptyStringIfNull(_request.Incident.Witnesses));
                 });
@@ -664,23 +655,23 @@ namespace RaceBoard.Business.Managers
                         columns.ConstantColumn(5.4f, Unit.Centimetre);
                     });
 
-                    table.Cell().ColumnSpan(4).Background(_COLOR_GREY).Padding(2).Text("6. AVISO AL PROTESTADO ¿Cómo comunicó Ud. al protestado su intención de protestar?").FontColor(_COLOR_WHITE).Bold();
+                    table.Cell().ColumnSpan(4).Background(_COLOR_GREY).Padding(2).Text($"6. {Translate("ProtestorNotice").ToUpper()}  - {Translate("ProtestorNoticeHowDidYouInformProtestee")}").FontColor(_COLOR_WHITE).Bold();
 
-                    table.Cell().RowSpan(2).Element(CellStyleWithNoBorderAndTopPadding).Text("En voz alta").Bold();
+                    table.Cell().RowSpan(2).Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("LoudVoice")).Bold();
                     table.Cell().RowSpan(2).AlignCenter().Text(GetCheckBoxSymbol(_request.Protestor.Notice.Hailing)).FontSize(12);
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Cuándo?").Bold();
-                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text("Palabra(s) usada(s)").Bold();
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text($"{Translate("When")}?").Bold();
+                    table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("WordsUsed")).Bold();
                     table.Cell().Element(CellStyle).Text(ReturnEmptyStringIfNull(_request.Protestor.Notice.HailingWhen));
                     table.Cell().Element(CellStyle).Text(ReturnEmptyStringIfNull(_request.Protestor.Notice.HailingWordsUsed));
 
-                    table.Cell().RowSpan(2).Element(CellStyleWithNoBorderAndTopPadding).Text("Desplegando una bandera roja").Bold();
+                    table.Cell().RowSpan(2).Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("DisplayingRedFlag")).Bold();
                     table.Cell().RowSpan(2).AlignCenter().Text(GetCheckBoxSymbol(_request.Protestor.Notice.RedFlag)).FontSize(12);
-                    table.Cell().ColumnSpan(2).Element(CellStyleWithNoBorderAndTopPadding).Text("Cuándo?").Bold();
+                    table.Cell().ColumnSpan(2).Element(CellStyleWithNoBorderAndTopPadding).Text($"{Translate("When")}?").Bold();
                     table.Cell().ColumnSpan(2).Element(CellStyle).Text(ReturnEmptyStringIfNull(_request.Protestor.Notice.RedFlagWhen));
 
-                    table.Cell().RowSpan(2).Element(CellStyleWithNoBorderAndTopPadding).Text("Informándole de otro modo").Bold();
+                    table.Cell().RowSpan(2).Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("InformingOtherWay")).Bold();
                     table.Cell().RowSpan(2).AlignCenter().Text(GetCheckBoxSymbol(_request.Protestor.Notice.Other)).FontSize(12);
-                    table.Cell().ColumnSpan(2).Element(CellStyleWithNoBorderAndTopPadding).Text("Aclare cómo").Bold();
+                    table.Cell().ColumnSpan(2).Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("How")).Bold();
                     table.Cell().ColumnSpan(2).Element(CellStyle).Text(ReturnEmptyStringIfNull(_request.Protestor.Notice.OtherHow));
                 });
 
@@ -693,7 +684,7 @@ namespace RaceBoard.Business.Managers
                         columns.ConstantColumn(18.9f, Unit.Centimetre);
                     });
 
-                    table.Cell().Background(_COLOR_GREY).Padding(2).Text("7. DESCRIPCIÓN DEL INCIDENTE").FontColor(_COLOR_WHITE).Bold();
+                    table.Cell().Background(_COLOR_GREY).Padding(2).Text($"7. {Translate("IncidentDescription").ToUpper()}").FontColor(_COLOR_WHITE).Bold();
 
                     if (!string.IsNullOrEmpty(_request.Incident.Details))
                         table.Cell().Height(200).Background(_COLOR_LIGHT_GREY).Text(ReturnEmptyStringIfNull(_request.Incident.Details));

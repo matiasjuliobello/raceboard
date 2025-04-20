@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using RaceBoard.Translations.Entities;
 using RaceBoard.Translations.Interfaces;
@@ -341,7 +342,7 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.Spanish, "Sin informar"));
             AddText(AddTranslation("BoatName"),
                 new Tuple<string, string>(Languages.English, "Boat name"),
-                new Tuple<string, string>(Languages.Spanish, "Nombre de lancha"));
+                new Tuple<string, string>(Languages.Spanish, "Nombre del barco"));
             AddText(AddTranslation("NoCommitteeBoatReturnsYet"),
                 new Tuple<string, string>(Languages.English, "No committee boat returns yet"),
                 new Tuple<string, string>(Languages.Spanish, "Aún no hay vueltas de lancha del comité"));
@@ -352,6 +353,9 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.English, "Committee boat return was removed"),
                 new Tuple<string, string>(Languages.Spanish, "Vuelta de lancha de comité eliminada"));
 
+            AddText(AddTranslation("RepresentedBy"),
+                new Tuple<string, string>(Languages.English, "Represented by"),
+                new Tuple<string, string>(Languages.Spanish, "Representado por"));
 
             AddText(AddTranslation("DeleteNotification"),
                 new Tuple<string, string>(Languages.English, "Delete notification"),
@@ -986,6 +990,11 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.English, "Hearing requests"),
                 new Tuple<string, string>(Languages.Spanish, "Pedidos de audiencia"));
 
+            AddText(AddTranslation("HearingStatus"),
+                new Tuple<string, string>(Languages.English, "Hearing status"),
+                new Tuple<string, string>(Languages.Spanish, "Estado del pedido"));
+            
+
             AddText(AddTranslation("CrewChangeRequest"),
                 new Tuple<string, string>(Languages.English, "Crew change request"),
                 new Tuple<string, string>(Languages.Spanish, "Pedido de cambio de tripulación"));
@@ -1101,13 +1110,27 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("HearingNumber"),
                 new Tuple<string, string>(Languages.English, "Hearing number"),
                 new Tuple<string, string>(Languages.Spanish, "Nro. protesta"));
-
+            AddText(AddTranslation("ProtestComission"),
+                new Tuple<string, string>(Languages.English, "Protests comission"),
+                new Tuple<string, string>(Languages.Spanish, "Comisión de protestas"));
+            AddText(AddTranslation("Protestor"),
+                new Tuple<string, string>(Languages.English, "Protestor"),
+                new Tuple<string, string>(Languages.Spanish, "Protestante"));
+            AddText(AddTranslation("Protestee"),
+                new Tuple<string, string>(Languages.English, "Protestee"),
+                new Tuple<string, string>(Languages.Spanish, "Protestado"));
+            AddText(AddTranslation("Protestees"),
+                new Tuple<string, string>(Languages.English, "Protestees"),
+                new Tuple<string, string>(Languages.Spanish, "Protestados"));
             AddText(AddTranslation("HearingType"),
                 new Tuple<string, string>(Languages.English, "Hearing type"),
                 new Tuple<string, string>(Languages.Spanish, "Tipo de audiencia."));
             AddText(AddTranslation("LoadingHearingTypes"),
                 new Tuple<string, string>(Languages.English, "Loading hearing types.."),
-                new Tuple<string, string>(Languages.Spanish, "Cargando tipos de audiencia."));
+                new Tuple<string, string>(Languages.Spanish, "Cargando tipos de audiencia.."));
+            AddText(AddTranslation("GeneralData"),
+                new Tuple<string, string>(Languages.English, "General data"),
+                new Tuple<string, string>(Languages.Spanish, "Datos generales"));
             AddText(AddTranslation("Date"),
                 new Tuple<string, string>(Languages.English, "Date"),
                 new Tuple<string, string>(Languages.Spanish, "Fecha"));
@@ -1120,15 +1143,21 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("Address"),
                 new Tuple<string, string>(Languages.English, "Address"),
                 new Tuple<string, string>(Languages.Spanish, "Domicilio"));
+            AddText(AddTranslation("ProtestorNotice"),
+                new Tuple<string, string>(Languages.English, "Notice to protestee"),
+                new Tuple<string, string>(Languages.Spanish, "Aviso al protestado"));
+            AddText(AddTranslation("ProtestorNoticeHowDidYouInformProtestee"),
+                new Tuple<string, string>(Languages.English, "How did you inform the protestee of your intention to protest?"),
+                new Tuple<string, string>(Languages.Spanish, "¿Cómo comunicó Ud. al protestado su intención de protestar?"));
             AddText(AddTranslation("LoudVoice"),
-                new Tuple<string, string>(Languages.English, "Loud voice"),
-                new Tuple<string, string>(Languages.Spanish, "Voz alta"));
-            AddText(AddTranslation("RedFlag"),
-                new Tuple<string, string>(Languages.English, "Red flag"),
-                new Tuple<string, string>(Languages.Spanish, "Bandera roja"));
-            AddText(AddTranslation("Other"),
-                new Tuple<string, string>(Languages.English, "Other"),
-                new Tuple<string, string>(Languages.Spanish, "Otro"));
+                new Tuple<string, string>(Languages.English, "Loud voice / hailing"),
+                new Tuple<string, string>(Languages.Spanish, "En voz alta"));
+            AddText(AddTranslation("DisplayingRedFlag"),
+                new Tuple<string, string>(Languages.English, "Displaying a red flag"),
+                new Tuple<string, string>(Languages.Spanish, "Desplegando una bandera roja"));
+            AddText(AddTranslation("InformingOtherWay"),
+                new Tuple<string, string>(Languages.English, "Informing some other way"),
+                new Tuple<string, string>(Languages.Spanish, "Informándole de otro modo"));
             AddText(AddTranslation("Where"),
                 new Tuple<string, string>(Languages.English, "Where"),
                 new Tuple<string, string>(Languages.Spanish, "Dónde"));
@@ -1144,6 +1173,15 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("NoticingOtherWay"),
                 new Tuple<string, string>(Languages.English, "Noticing other way"),
                 new Tuple<string, string>(Languages.Spanish, "Avisando de otro modo"));
+            AddText(AddTranslation("Incident"),
+                new Tuple<string, string>(Languages.English, "Incident"),
+                new Tuple<string, string>(Languages.Spanish, "Incidente"));
+            AddText(AddTranslation("IncidentDescription"),
+                new Tuple<string, string>(Languages.English, "Incident description"),
+                new Tuple<string, string>(Languages.Spanish, "Descripción del incidente"));
+            AddText(AddTranslation("IncidentTimeAndPlace"),
+                new Tuple<string, string>(Languages.English, "Incident time and place"),
+                new Tuple<string, string>(Languages.Spanish, "Hora y lugar del incidente"));
             AddText(AddTranslation("Time"),
                 new Tuple<string, string>(Languages.English, "Time"),
                 new Tuple<string, string>(Languages.Spanish, "Hora"));
@@ -1153,6 +1191,9 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("BrokenRules"),
                 new Tuple<string, string>(Languages.English, "Broken rules"),
                 new Tuple<string, string>(Languages.Spanish, "Reglas infringidas"));
+            AddText(AddTranslation("RulesThatWouldHaveBeenViolated"),
+                new Tuple<string, string>(Languages.English, "Rules that would have been violated"),
+                new Tuple<string, string>(Languages.Spanish, "Reglas que se habrían infringido"));
             AddText(AddTranslation("Witnesses"),
                 new Tuple<string, string>(Languages.English, "Witnesses"),
                 new Tuple<string, string>(Languages.Spanish, "Testigos"));
@@ -1188,8 +1229,52 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("DateAndTime"),
                 new Tuple<string, string>(Languages.English, "Date and time"),
                 new Tuple<string, string>(Languages.Spanish, "Fecha y hora"));
-        }
 
+            AddText(AddTranslation("Event"),
+                new Tuple<string, string>(Languages.English, "Event"),
+                new Tuple<string, string>(Languages.Spanish, "Evento"));
+
+            AddText(AddTranslation("OrganizingAuthority"),
+                new Tuple<string, string>(Languages.English, "Organizing authority"),
+                new Tuple<string, string>(Languages.Spanish, "Autoridad organizadora"));
+
+            AddText(AddTranslation("ProtestFromOneBoatToAnother"),
+                new Tuple<string, string>(Languages.English, "Protest from one boat to another"),
+                new Tuple<string, string>(Languages.Spanish, "Protesta de un barco a otro"));
+
+            AddText(AddTranslation("RepairRequestByBoatOrRaceCommission"),
+                new Tuple<string, string>(Languages.English, "Repair request by boat or race commission"),
+                new Tuple<string, string>(Languages.Spanish, "Pedido de reparación por barco o comisión de regatta"));
+
+            AddText(AddTranslation("RaceCommissionProtestToABoat"),
+                new Tuple<string, string>(Languages.English, "Race commission protest to a boat"),
+                new Tuple<string, string>(Languages.Spanish, "Protesta de comisión de regata a un barco"));
+
+            AddText(AddTranslation("ConsiderationOfRedressForProtestCommission"),
+                new Tuple<string, string>(Languages.English, "Consideration of redress for protest commission"),
+                new Tuple<string, string>(Languages.Spanish, "Consideración de reparación por com.de protestas"));
+
+            AddText(AddTranslation("ProtestCommissionProtestToAShip"),
+                new Tuple<string, string>(Languages.English, "Protest commission protest to a ship"),
+                new Tuple<string, string>(Languages.Spanish, "Protesta de comisión de protestas a un barco"));
+
+            AddText(AddTranslation("RequestForReopeningByBoatOrRaceCommission"),
+                new Tuple<string, string>(Languages.English, "Request for reopening by boat or race commission"),
+                new Tuple<string, string>(Languages.Spanish, "Pedido de reapertura por barco o comisión de regata"));
+
+            AddText(AddTranslation("ConsiderationOfReopeningByProtestCommission"),
+                new Tuple<string, string>(Languages.English, "Consideration of reopening by protest commission"),
+                new Tuple<string, string>(Languages.Spanish, "Consideración de reapertura por com.de protestas"));
+
+            AddText(AddTranslation("BoatProtestingAskingForRepairOrReopening"),
+                new Tuple<string, string>(Languages.English, "Boat protesting, asking for repair or reopening"),
+                new Tuple<string, string>(Languages.Spanish, "Barco que protesta, pide reparación o reapertura"));
+
+            AddText(AddTranslation("BoatsProtestedOrConsideredForRepair"),
+                new Tuple<string, string>(Languages.English, "Boat(s) protested or considered for repair"),
+                new Tuple<string, string>(Languages.Spanish, "Barco(s) protestado(s) o considerado(s) para una reparación"));
+
+        }
 
         private Translation AddTranslation(string key)
         {
