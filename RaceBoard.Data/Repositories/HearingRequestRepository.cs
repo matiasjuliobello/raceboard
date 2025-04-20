@@ -19,6 +19,7 @@ namespace RaceBoard.Data.Repositories
         {
             { "Id", "[Hearing].Id" },
             { "CreationDate", "[Hearing].CreationDate" },
+            { "RequestNumber", "[Hearing].RequestNumber" },
             { "RaceNumber", "[Hearing].RaceNumber" },
             { "Status.Id", "[Hearing].IdRequestStatus" },
             { "Status.Name", "[Hearing].IdRequestStatus" },
@@ -139,6 +140,7 @@ namespace RaceBoard.Data.Repositories
             string sql = $@"SELECT
                                 [Hearing].Id [Id],                                
                                 [Hearing].CreationDate,
+                                [Hearing].RequestNumber [RequestNumber],
                                 [Hearing].RaceNumber,
                                 [RequestStatus].Id [Id],
                                 [RequestStatus].Name [Name],
@@ -351,9 +353,9 @@ namespace RaceBoard.Data.Repositories
         private void CreateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [HearingRequest]
-                            ( IdTeam, IdRequestUser, IdRequestStatus, IdHearingRequestType, CreationDate, RaceNumber )
+                            ( IdTeam, IdRequestUser, IdRequestStatus, IdHearingRequestType, CreationDate, RequestNumber, RaceNumber )
                         VALUES
-                            ( @idTeam, @idRequestUser, @idRequestStatus, @idHearingRequestType, @creationDate, @raceNumber )";
+                            ( @idTeam, @idRequestUser, @idRequestStatus, @idHearingRequestType, @creationDate, @requestNumber, @raceNumber )";
 
             QueryBuilder.AddCommand(sql);
 
@@ -362,6 +364,7 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddParameter("idRequestStatus", hearingRequest.Status.Id);
             QueryBuilder.AddParameter("idHearingRequestType", hearingRequest.Type.Id);
             QueryBuilder.AddParameter("creationDate", hearingRequest.CreationDate);
+            QueryBuilder.AddParameter("requestNumber", hearingRequest.RequestNumber); 
             QueryBuilder.AddParameter("raceNumber", hearingRequest.RaceNumber);
 
             QueryBuilder.AddReturnLastInsertedId();

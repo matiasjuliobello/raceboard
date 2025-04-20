@@ -6,6 +6,7 @@
         public int IdTeam { get; set; }
         public int IdHearingRequestStatus { get; set; } // public Enums.RequestStatus Status { get; set; }
         public int IdHearingRequestType { get; set; }   // public Enums.HearingRequestType Type { get; set; }
+        public int RequestNumber { get; set; }
         public string RaceNumber { get; set; }
         public HearingRequestProtestorRequest Protestor { get; set; }
         public HearingRequestProtesteesRequest Protestees { get; set; }

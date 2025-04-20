@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using RaceBoard.Business.Managers.Interfaces;
+using RaceBoard.Common;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
 using RaceBoard.DTOs._Pagination.Request;
@@ -21,6 +22,7 @@ namespace RaceBoard.Service.Controllers
     public class RequestController : AbstractController<RequestController>
     {
         private readonly IRequestManager _requestManager;
+        private readonly ITeamManager _teamManager;
 
         public RequestController
             (
@@ -28,11 +30,13 @@ namespace RaceBoard.Service.Controllers
                 ILogger<RequestController> logger,
                 ITranslator translator,
                 IRequestManager requestManager,
+                ITeamManager teamManager,
                 ISessionHelper sessionHelper,
                 IRequestContextManager requestContextManager
             ) : base(mapper, logger, translator, sessionHelper, requestContextManager)
         {
             _requestManager = requestManager;
+            _teamManager = teamManager;
         }
 
         #region Crew Changes
@@ -182,12 +186,26 @@ namespace RaceBoard.Service.Controllers
             return Ok(hearingRequest.Id);
         }
 
-        [HttpPost("hearings/{id}/download")]
-        public ActionResult  DownloadHearingReqeust(int id)
+        [HttpGet("hearings/{id}/printable-forms")]
+        public ActionResult GetHearingRequestPrintableForm(int id)
         {
-            _requestManager.RenderHearingRequest(new HearingRequest());
+            HearingRequest hearing = null;
 
-            return Ok();
+            if (id > 0)
+            {
+                hearing = _requestManager.GetHearingRequest(id);
+                hearing.Team = _teamManager.Get(hearing.Team.Id);
+            }
+
+            var fileContent = _requestManager.RenderHearingRequest(hearing!);
+
+            var stream = new MemoryStream(fileContent);
+
+            return new FileStreamResult(stream, CommonValues.MimeTypes.ApplicationOctetStream)
+            {
+                //FileDownloadName = new FileInfo(((FileStream)fileStream).Name).Name
+                FileDownloadName = "Printable Form.pdf"
+            };
         }
 
         #endregion

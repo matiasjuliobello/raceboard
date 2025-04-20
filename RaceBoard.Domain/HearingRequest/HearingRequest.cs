@@ -3,6 +3,7 @@
     public class HearingRequest
     {
         public int Id { get; set; }
+        public int RequestNumber { get; set; }
         public Team Team { get; set; }
         public User RequestUser { get; set; }
         public Person RequestPerson { get; set; }

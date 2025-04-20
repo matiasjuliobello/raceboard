@@ -49,6 +49,23 @@ namespace RaceBoard.Common.Helpers
         {
             return TimeZoneInfo.ConvertTime(dateTimeOffset, timeZone);
         }
+        public DateTimeOffset ApplyTimeZone(DateTimeOffset dateTimeOffset, string timeZoneIdentifier)
+        {
+            TimeZoneInfo? currentUserTimeZone = this.GetTimeZone(timeZoneIdentifier);
+            if (currentUserTimeZone == null)
+                throw new Exception("TimeZoneInfo coult not be identified");
+
+            return this.ApplyTimeZone(dateTimeOffset, currentUserTimeZone);
+        }
+
+        public string GetFormattedTimestamp(DateTimeOffset dateTimeOffset, string timeZoneIdentifier, string format)
+        {
+            var currentUserTimeZone = this.GetTimeZone(timeZoneIdentifier);
+
+            DateTimeOffset timestamp = this.ApplyTimeZone(dateTimeOffset, currentUserTimeZone);
+
+            return timestamp.ToString(format);
+        }
 
         #endregion
     }

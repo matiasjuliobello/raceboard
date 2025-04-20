@@ -23,6 +23,6 @@ namespace RaceBoard.Business.Managers.Interfaces
         void CreateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null);
         void UpdateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null);
 
-        void RenderHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null);
+        byte[] RenderHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null);
     }
 }

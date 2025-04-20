@@ -6,5 +6,7 @@
         TimeZoneInfo GetUtcTimeZone();
         TimeZoneInfo GetTimeZone(string id);
         DateTimeOffset ApplyTimeZone(DateTimeOffset dateTimeOffset, TimeZoneInfo timeZone);
+        DateTimeOffset ApplyTimeZone(DateTimeOffset dateTimeOffset, string timeZoneIdentifier);
+        string GetFormattedTimestamp(DateTimeOffset dateTimeOffset, string timeZoneIdentifier, string format);
     }
 }

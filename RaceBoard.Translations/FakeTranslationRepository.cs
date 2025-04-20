@@ -797,6 +797,12 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("DownloadFile"),
                 new Tuple<string, string>(Languages.English, "Download file"),
                 new Tuple<string, string>(Languages.Spanish, "Descargar archivo"));
+            AddText(AddTranslation("DownloadForm"),
+                new Tuple<string, string>(Languages.English, "Download form"),
+                new Tuple<string, string>(Languages.Spanish, "Descargar formulario"));
+            AddText(AddTranslation("DownloadEmptyForm"),
+                new Tuple<string, string>(Languages.English, "Download empty form"),
+                new Tuple<string, string>(Languages.Spanish, "Descargar formulario vacío"));
             AddText(AddTranslation("FileDownloaded"),
                 new Tuple<string, string>(Languages.English, "File downloaded"),
                 new Tuple<string, string>(Languages.Spanish, "Archivo descargado"));
@@ -1072,6 +1078,30 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.English, "Request has been rejected. The change is not allowed"),
                 new Tuple<string, string>(Languages.Spanish, "La solicitud ha sido rechazada. El cambio NO está permitido."));
 
+            
+            AddText(AddTranslation("ReceivedByRaceOfficer"),
+                new Tuple<string, string>(Languages.English, "Received by race officer:"),
+                new Tuple<string, string>(Languages.Spanish, "Recibido por oficial de regata:"));
+
+            AddText(AddTranslation("Signature"),
+                new Tuple<string, string>(Languages.English, "Signature"),
+                new Tuple<string, string>(Languages.Spanish, "Firma"));
+
+            AddText(AddTranslation("HearingForm"),
+                new Tuple<string, string>(Languages.English, "Hearing form"),
+                new Tuple<string, string>(Languages.Spanish, "Formulario de protesta"));
+            
+            AddText(AddTranslation("AlsoForRepairAndReopenings"),
+                new Tuple<string, string>(Languages.English, "Also for repair and reopenings"),
+                new Tuple<string, string>(Languages.Spanish, "También para pedidos de reparación y de reapertura"));
+
+            AddText(AddTranslation("Hearing#"),
+                new Tuple<string, string>(Languages.English, "Hearing #"),
+                new Tuple<string, string>(Languages.Spanish, "Protesta #"));
+            AddText(AddTranslation("HearingNumber"),
+                new Tuple<string, string>(Languages.English, "Hearing number"),
+                new Tuple<string, string>(Languages.Spanish, "Nro. protesta"));
+
             AddText(AddTranslation("HearingType"),
                 new Tuple<string, string>(Languages.English, "Hearing type"),
                 new Tuple<string, string>(Languages.Spanish, "Tipo de audiencia."));
@@ -1154,6 +1184,10 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("TeamMemberInvitationEmailBody"),
                 new Tuple<string, string>(Languages.English, "You've been invited by <b>{0}</b> to join a team in <b>'{1}'</b>, performing as <b>{2}</b>"),
                 new Tuple<string, string>(Languages.Spanish, "Recibiste una invitación de <b>{0}</b> para unirte a un equipo en <b>'{1}'</b>, desempeñándote como <b>{2}</b>"));
+
+            AddText(AddTranslation("DateAndTime"),
+                new Tuple<string, string>(Languages.English, "Date and time"),
+                new Tuple<string, string>(Languages.Spanish, "Fecha y hora"));
         }
 
 
