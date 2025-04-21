@@ -1,6 +1,6 @@
-﻿namespace RaceBoard.DTOs.Championship.Request
+﻿namespace RaceBoard.DTOs.CommitteeBoatReturn.Request
 {
-    public class ChampionshipBoatReturnRequest
+    public class CommitteeBoatReturnRequest
     {
         public int Id { get; set; }
         public int IdChampionship { get; set; }

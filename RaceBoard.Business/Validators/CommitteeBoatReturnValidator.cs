@@ -1,19 +1,18 @@
 ﻿using RaceBoard.Business.Validators.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
-using RaceBoard.Translations.Interfaces;
-using RaceBoard.Data.Repositories;
 using RaceBoard.Domain;
+using RaceBoard.Translations.Interfaces;
 
 namespace RaceBoard.Business.Validators
 {
-    public class RaceCommitteeBoatReturnValidator : AbstractCustomValidator<ChampionshipBoatReturn>
+    public class CommitteeBoatReturnValidator : AbstractCustomValidator<CommitteeBoatReturn>
     {
-        private readonly IChampionshipCommitteeBoatReturnRepository _committeeBoatReturnRepository;
+        private readonly ICommitteeBoatReturnRepository _committeeBoatReturnRepository;
 
-        public RaceCommitteeBoatReturnValidator
+        public CommitteeBoatReturnValidator
             (
                 ITranslator translator,
-                IChampionshipCommitteeBoatReturnRepository committeeBoatReturnRepository
+                ICommitteeBoatReturnRepository committeeBoatReturnRepository
             )
             : base(translator)
         {

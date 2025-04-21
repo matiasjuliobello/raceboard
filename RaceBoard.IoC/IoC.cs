@@ -88,7 +88,7 @@ namespace RaceBoard.IoC
             services.AddTransient<ICustomValidator<OrganizationMemberInvitation>, OrganizationMemberInvitationValidator>();
             services.AddTransient<ICustomValidator<Race>, RaceValidator>();
             services.AddTransient<ICustomValidator<RaceProtest>, RaceProtestValidator>();
-            services.AddTransient<ICustomValidator<ChampionshipBoatReturn>, RaceCommitteeBoatReturnValidator>();
+            services.AddTransient<ICustomValidator<CommitteeBoatReturn>, CommitteeBoatReturnValidator>();
             services.AddTransient<ICustomValidator<Team>, TeamValidator>();
             services.AddTransient<ICustomValidator<TeamMember>, TeamMemberValidator>();
             services.AddTransient<ICustomValidator<TeamMemberInvitation>, TeamMemberInvitationValidator>();
@@ -128,7 +128,7 @@ namespace RaceBoard.IoC
             services.AddScoped<IRaceCategoryRepository, RaceCategoryRepository>();
             services.AddScoped<IRaceRepository, RaceRepository>();
             services.AddScoped<IRaceProtestRepository, RaceProtestRepository>();
-            services.AddScoped<IChampionshipCommitteeBoatReturnRepository, ChampionshipCommitteeBoatReturnRepository>();
+            services.AddScoped<ICommitteeBoatReturnRepository, CommitteeBoatReturnRepository>();
             services.AddScoped<IPersonRepository, PersonRepository>();
             services.AddScoped<ITeamMemberRoleRepository, TeamMemberRoleRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();

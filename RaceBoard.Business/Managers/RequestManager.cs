@@ -6,7 +6,6 @@ using RaceBoard.Common.Exceptions;
 using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data;
-using RaceBoard.Data.Repositories;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 using RaceBoard.Translations.Interfaces;
@@ -27,6 +26,7 @@ namespace RaceBoard.Business.Managers
         private readonly IHearingRequestRepository _hearingRequestRepository;
         private readonly IHearingRequestTypeRepository _hearingRequestTypeRepository;
         private readonly IFileRepository _fileRepository;
+        private readonly ICommitteeBoatReturnRepository _committeeBoatReturnRepository;
 
         private readonly IUserSettingsManager _userSettingsManager;
 
@@ -56,6 +56,7 @@ namespace RaceBoard.Business.Managers
                 IHearingRequestRepository hearingRequestRepository,
                 IHearingRequestTypeRepository hearingRequestTypeRepository,
                 IFileRepository fileRepository,
+                ICommitteeBoatReturnRepository committeeBoatReturnRepository,
                 IUserSettingsManager userSettingsManager,
                 IFileHelper fileHelper,
                 IDateTimeHelper dateTimeHelper,
@@ -73,6 +74,7 @@ namespace RaceBoard.Business.Managers
             _hearingRequestRepository = hearingRequestRepository;
             _hearingRequestTypeRepository = hearingRequestTypeRepository;
             _fileRepository = fileRepository;
+            _committeeBoatReturnRepository = committeeBoatReturnRepository;
 
             _userSettingsManager = userSettingsManager;
 
@@ -264,12 +266,13 @@ namespace RaceBoard.Business.Managers
         public void CreateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null)
         {
             var contextUser = base.GetContextUser();
+            var currentTimestamp = _dateTimeHelper.GetCurrentTimestamp();
 
             _authorizationManager.ValidatePermission(Enums.Action.TeamHearingRequest_Create, hearingRequest.Team.Id, contextUser.Id);
 
             hearingRequest.Status = new HearingRequestStatus() { Id = (int)Enums.RequestStatus.Submitted };
             hearingRequest.RequestUser = contextUser;
-            hearingRequest.CreationDate = _dateTimeHelper.GetCurrentTimestamp();
+            hearingRequest.CreationDate = currentTimestamp;
 
             _hearingRequestValidator.SetTransactionalContext(context);
 
@@ -287,6 +290,10 @@ namespace RaceBoard.Business.Managers
                 _hearingRequestRepository.CreateProtestees(hearingRequest, context);
                 _hearingRequestRepository.CreateIncident(hearingRequest, context);
 
+                var commiteeBoatReturn = FindCommitteeBoatReturn(hearingRequest.Team.Championship.Id, hearingRequest.Team.RaceClass.Id, hearingRequest.CreationDate, context);
+                if (commiteeBoatReturn != null)
+                    _hearingRequestRepository.CreateCommitteeBoatReturnAssociation(hearingRequest, commiteeBoatReturn, context);
+
                 context.Confirm();
             }
             catch (Exception)
@@ -296,6 +303,32 @@ namespace RaceBoard.Business.Managers
 
                 throw;
             }
+        }
+
+        private CommitteeBoatReturn? FindCommitteeBoatReturn(int idChampionship, int idRaceClass, DateTimeOffset hearingRequestCreationDate, ITransactionalContext? context = null)
+        {
+            CommitteeBoatReturn? committeeBoatReturn = null;
+
+            var searchFilter = new CommitteeBoatReturnSearchFilter()
+            {
+                Championship = new Championship() { Id = idChampionship },
+                RaceClasses = new List<RaceClass>() { { new RaceClass() { Id = idRaceClass } } },
+                ReturnTime = hearingRequestCreationDate
+            };
+
+            var commiteeBoatReturn = _committeeBoatReturnRepository.Get(searchFilter, paginationFilter: null, sorting: null, context).Results
+                .OrderByDescending(x => x.ReturnTime)
+                .FirstOrDefault();
+
+            if (commiteeBoatReturn != null)
+            {
+                TimeSpan timeSpan = hearingRequestCreationDate - commiteeBoatReturn.ReturnTime;
+                if (timeSpan.TotalHours >= 0 && timeSpan.TotalHours <= 1)
+                    committeeBoatReturn = commiteeBoatReturn;
+            }
+                
+
+            return committeeBoatReturn;
         }
 
         public void UpdateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null)
@@ -419,7 +452,7 @@ namespace RaceBoard.Business.Managers
                             column.Item().Element(CellStyleWithValue).Text(_request.RequestNumber.ToString()).Bold();
                         }
                     });
-                   
+
                     row.ConstantItem(1.7f, Unit.Centimetre).Column(column =>
                     {
                         column.Item().Element(CellStyleTopHeader).Text(Translate("DateAndTime"));

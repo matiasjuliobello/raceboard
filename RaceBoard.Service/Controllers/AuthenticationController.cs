@@ -74,7 +74,7 @@ namespace RaceBoard.Service.Controllers
 
             var person = _personManager.GetByIdUser(user.Id);
             if (person != null)
-                response.Person = _mapper.Map<Person, PersonSimpleResponse>(person);
+                response.Person = _mapper.Map<Person, PersonResponse>(person);
 
             return Ok(response);
         }

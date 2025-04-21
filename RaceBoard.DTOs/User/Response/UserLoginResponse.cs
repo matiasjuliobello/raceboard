@@ -6,7 +6,7 @@ namespace RaceBoard.DTOs.User.Response
     public class UserLoginResponse
     {
         public UserSimpleResponse User { get; set; }
-        public PersonSimpleResponse Person { get; set; }
+        public PersonResponse Person { get; set; }
         public AccessTokenResponse AccessToken { get; set; }
     }
 }

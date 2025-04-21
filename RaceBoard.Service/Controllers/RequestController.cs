@@ -10,7 +10,6 @@ using RaceBoard.DTOs.ChangeRequest.Request;
 using RaceBoard.DTOs.ChangeRequest.Response;
 using RaceBoard.DTOs.HearingRequest.Request;
 using RaceBoard.DTOs.HearingRequest.Response;
-using RaceBoard.DTOs.Permissions.Response;
 using RaceBoard.Service.Controllers.Abstract;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Translations.Interfaces;
@@ -171,6 +170,8 @@ namespace RaceBoard.Service.Controllers
         {
             var hearingRequest = _mapper.Map<HearingRequest>(hearingRequestRequest);
 
+            hearingRequest.Team = _teamManager.Get(hearingRequest.Team.Id);
+
             _requestManager.CreateHearingRequest(hearingRequest);
 
             return Ok(hearingRequest.Id);
@@ -189,22 +190,24 @@ namespace RaceBoard.Service.Controllers
         [HttpGet("hearings/{id}/printable-forms")]
         public ActionResult GetHearingRequestPrintableForm(int id)
         {
-            HearingRequest hearing = null;
+            HearingRequest hearingRequest = null;
+
+            string hearingNumber = "";
 
             if (id > 0)
             {
-                hearing = _requestManager.GetHearingRequest(id);
-                hearing.Team = _teamManager.Get(hearing.Team.Id);
+                hearingRequest = _requestManager.GetHearingRequest(id);
+                hearingRequest.Team = _teamManager.Get(hearingRequest.Team.Id);
+                hearingNumber = $" #{hearingRequest.RequestNumber}";
             }
 
-            var fileContent = _requestManager.RenderHearingRequest(hearing!);
+            var fileContent = _requestManager.RenderHearingRequest(hearingRequest!);
 
             var stream = new MemoryStream(fileContent);
 
             return new FileStreamResult(stream, CommonValues.MimeTypes.ApplicationOctetStream)
             {
-                //FileDownloadName = new FileInfo(((FileStream)fileStream).Name).Name
-                FileDownloadName = "Printable Form.pdf"
+                FileDownloadName = $"{Translate("HearingRequest").ToUpper()}{hearingNumber}.pdf"
             };
         }
 

@@ -12,7 +12,9 @@ namespace RaceBoard.DTOs.Person.Response
         public string Lastname { get; set; }
         public DateTimeOffset BirthDate { get; set; }
         public string EmailAddress { get; set; }
-        public string ContactPhone { get; set; }
+        public string Address { get; set; }
+        public string PhoneNumber{ get; set; }
+        public string EmergencyContactPhoneNumber { get; set; }
         public UserSimpleResponse User { get; set; }
         public CountryResponse Country { get; set; }
         public BloodTypeResponse BloodType { get; set; }

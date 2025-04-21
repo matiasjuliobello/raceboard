@@ -599,9 +599,15 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("BirthDate"),
                 new Tuple<string, string>(Languages.English, "Birth date"),
                 new Tuple<string, string>(Languages.Spanish, "Fecha de nacimiento"));
-            AddText(AddTranslation("ContactPhone"),
-                new Tuple<string, string>(Languages.English, "Contact phone"),
-                new Tuple<string, string>(Languages.Spanish, "Teléfono de contacto"));
+            AddText(AddTranslation("Address"),
+                new Tuple<string, string>(Languages.English, "Address"),
+                new Tuple<string, string>(Languages.Spanish, "Domicilio"));
+            AddText(AddTranslation("PhoneNumber"),
+                new Tuple<string, string>(Languages.English, "Phone number"),
+                new Tuple<string, string>(Languages.Spanish, "Número de teléfono"));
+            AddText(AddTranslation("EmergencyContactPhoneNumber"),
+                new Tuple<string, string>(Languages.English, "Emergency contact phone number"),
+                new Tuple<string, string>(Languages.Spanish, "Número de teléfono de contacto de emergencia"));
             AddText(AddTranslation("BloodType"),
                 new Tuple<string, string>(Languages.English, "Blood type"),
                 new Tuple<string, string>(Languages.Spanish, "Tipo de sangre"));
@@ -1137,12 +1143,6 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("RaceNumber"),
                 new Tuple<string, string>(Languages.English, "Race number"),
                 new Tuple<string, string>(Languages.Spanish, "Número de carrera"));
-            AddText(AddTranslation("PhoneNumber"),
-                new Tuple<string, string>(Languages.English, "Phone number"),
-                new Tuple<string, string>(Languages.Spanish, "Número de teléfono"));
-            AddText(AddTranslation("Address"),
-                new Tuple<string, string>(Languages.English, "Address"),
-                new Tuple<string, string>(Languages.Spanish, "Domicilio"));
             AddText(AddTranslation("ProtestorNotice"),
                 new Tuple<string, string>(Languages.English, "Notice to protestee"),
                 new Tuple<string, string>(Languages.Spanish, "Aviso al protestado"));

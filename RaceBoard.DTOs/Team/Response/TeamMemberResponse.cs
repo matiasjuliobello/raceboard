@@ -10,7 +10,7 @@ namespace RaceBoard.DTOs.Team.Response
         public int Id { get; set; }
         public TeamSimpleResponse Team { get; set; }
         public UserSimpleResponse User { get; set; }
-        public PersonSimpleResponse Person { get; set; }
+        public PersonResponse Person { get; set; }
         //public RoleResponse Role { get; set; }
         public TeamMemberRoleResponse Role { get; set; }
         public bool IsActive { get; set; }

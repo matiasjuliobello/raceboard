@@ -61,6 +61,7 @@ using Enums = RaceBoard.Domain.Enums;
 using MessagingEnums = RaceBoard.Messaging.Providers;
 using RaceBoard.Messaging.Entities;
 using Microsoft.IdentityModel.Tokens;
+using RaceBoard.DTOs.CommitteeBoatReturn.Request;
 
 namespace RaceBoard.Service.Mappings
 {
@@ -195,11 +196,11 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Race, opt => opt.MapFrom(src => CreateObject<Race>(src.IdRace)))
                 .ForMember(dest => dest.TeamMember, opt => opt.MapFrom(src => CreateObject<TeamMember>(src.IdTeamMember)));
 
-            CreateMap<ChampionshipBoatReturnRequest, ChampionshipBoatReturn>()
+            CreateMap<CommitteeBoatReturnRequest, CommitteeBoatReturn>()
                 .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
                 .ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)));
 
-            CreateMap<ChampionshipBoatReturnSearchFilterRequest, ChampionshipBoatReturnSearchFilter>()
+            CreateMap<CommitteeBoatReturnSearchFilterRequest, CommitteeBoatReturnSearchFilter>()
                 .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
                 .ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)));
 
@@ -387,7 +388,7 @@ namespace RaceBoard.Service.Mappings
             CreateMap<Championship, ChampionshipSimpleResponse>();
             CreateMap<ChampionshipGroup, ChampionshipGroupResponse>();
             CreateMap<ChampionshipNotification, ChampionshipNotificationResponse>();
-            CreateMap<ChampionshipBoatReturn, ChampionshipBoatReturnResponse>();
+            CreateMap<CommitteeBoatReturn, ChampionshipBoatReturnResponse>();
             CreateMap<ChampionshipFile, ChampionshipFileResponse>();
             //CreateMap<ChampionshipRaceClass, ChampionshipRaceClassResponse>();
             CreateMap<ChampionshipMember, ChampionshipMemberResponse>();

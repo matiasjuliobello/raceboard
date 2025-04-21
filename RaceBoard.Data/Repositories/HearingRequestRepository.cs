@@ -1,12 +1,9 @@
 ﻿using Dapper;
-using Newtonsoft.Json.Linq;
-using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
-using RaceBoard.Domain.Enums;
 using static Dapper.SqlMapper;
 
 namespace RaceBoard.Data.Repositories
@@ -129,6 +126,11 @@ namespace RaceBoard.Data.Repositories
         public void CreateIncident(HearingRequest hearingRequest, ITransactionalContext? context = null)
         {
             this.CreateHearingRequestIncident(hearingRequest, context);
+        }
+
+        public void CreateCommitteeBoatReturnAssociation(HearingRequest hearingRequest, CommitteeBoatReturn commiteeBoatReturn, ITransactionalContext? context = null)
+        {
+            this.CreateHearingRequestCommitteeBoatReturn(hearingRequest, commiteeBoatReturn, context);
         }
 
         #endregion
@@ -452,6 +454,23 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddReturnLastInsertedId();
 
             hearingRequestProtestee.Id = base.Execute<int>(context);
+        }
+
+        private void CreateHearingRequestCommitteeBoatReturn(HearingRequest hearingRequest, CommitteeBoatReturn commiteeBoatReturn, ITransactionalContext? context = null)
+        {
+            string sql = @" INSERT INTO [HearingRequest_CommitteeBoatReturn]
+                            ( IdHearingRequest, IdCommitteeBoatReturn )
+                        VALUES
+                            ( @idHearingRequest, @idCommitteeBoatReturn )";
+
+            QueryBuilder.AddCommand(sql);
+
+            QueryBuilder.AddParameter("idHearingRequest", hearingRequest.Id);
+            QueryBuilder.AddParameter("idCommitteeBoatReturn", commiteeBoatReturn.Id);
+
+            QueryBuilder.AddReturnLastInsertedId();
+
+            hearingRequest.Incident.Id = base.Execute<int>(context);
         }
 
         #endregion

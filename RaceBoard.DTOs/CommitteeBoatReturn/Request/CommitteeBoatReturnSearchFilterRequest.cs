@@ -1,6 +1,6 @@
-﻿namespace RaceBoard.DTOs.Championship.Request
+﻿namespace RaceBoard.DTOs.CommitteeBoatReturn.Request
 {
-    public class ChampionshipBoatReturnSearchFilterRequest
+    public class CommitteeBoatReturnSearchFilterRequest
     {
         public int[]? Ids { get; set; }
         public int? IdChampionship { get; set; }

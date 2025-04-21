@@ -5,10 +5,11 @@ using RaceBoard.Data.Helpers.SqlBulkHelper;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
+using static RaceBoard.Data.Helpers.SqlQueryBuilder;
 
 namespace RaceBoard.Data.Repositories
 {
-    public class ChampionshipCommitteeBoatReturnRepository : AbstractRepository, IChampionshipCommitteeBoatReturnRepository
+    public class CommitteeBoatReturnRepository : AbstractRepository, ICommitteeBoatReturnRepository
     {
         public class BulkChampionshipCommitteeBoatReturnRaceClass
         {
@@ -42,7 +43,7 @@ namespace RaceBoard.Data.Repositories
 
         #region Constructors
 
-        public ChampionshipCommitteeBoatReturnRepository
+        public CommitteeBoatReturnRepository
             (
                 IContextResolver contextResolver,
                 IQueryBuilder queryBuilder,
@@ -71,17 +72,17 @@ namespace RaceBoard.Data.Repositories
             base.CancelTransactionalContext(context);
         }
 
-        public PaginatedResult<ChampionshipBoatReturn> Get(ChampionshipBoatReturnSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        public PaginatedResult<CommitteeBoatReturn> Get(CommitteeBoatReturnSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return this.GetCommitteeBoatReturns(searchFilter, paginationFilter, sorting, context);
         }
 
-        public void Create(ChampionshipBoatReturn raceCommitteeBoatReturn, ITransactionalContext? context = null)
+        public void Create(CommitteeBoatReturn raceCommitteeBoatReturn, ITransactionalContext? context = null)
         {
             this.CreateCommitteeBoatReturn(raceCommitteeBoatReturn, context);
         }
 
-        public void AssociateRaceClasses(ChampionshipBoatReturn raceCommitteeBoatReturn, ITransactionalContext? context = null)
+        public void AssociateRaceClasses(CommitteeBoatReturn raceCommitteeBoatReturn, ITransactionalContext? context = null)
         {
             if (raceCommitteeBoatReturn.RaceClasses == null || raceCommitteeBoatReturn.RaceClasses.Count == 0)
                 return;
@@ -113,7 +114,7 @@ namespace RaceBoard.Data.Repositories
 
         #region Private Methods
 
-        private PaginatedResult<ChampionshipBoatReturn> GetCommitteeBoatReturns(ChampionshipBoatReturnSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        private PaginatedResult<CommitteeBoatReturn> GetCommitteeBoatReturns(CommitteeBoatReturnSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             string sql = $@"SELECT
                                 [CommitteeBoatReturn].Id [Id],
@@ -135,13 +136,13 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddSorting(sorting, _columnsMapping);
             QueryBuilder.AddPagination(paginationFilter);
 
-            var committeeBoatReturns = new List<ChampionshipBoatReturn>();
+            var committeeBoatReturns = new List<CommitteeBoatReturn>();
 
-            PaginatedResult<ChampionshipBoatReturn> items = base.GetPaginatedResults<ChampionshipBoatReturn>
+            PaginatedResult<CommitteeBoatReturn> items = base.GetPaginatedResults<CommitteeBoatReturn>
                 (
                     (reader) =>
                     {
-                        return reader.Read<ChampionshipBoatReturn, Championship, RaceClass, ChampionshipBoatReturn>
+                        return reader.Read<CommitteeBoatReturn, Championship, RaceClass, CommitteeBoatReturn>
                         (
                             (committeeBoatReturn, championship, raceClass) =>
                             {
@@ -170,7 +171,7 @@ namespace RaceBoard.Data.Repositories
             return items;
         }
 
-        private void ProcessSearchFilter(ChampionshipBoatReturnSearchFilter? searchFilter = null)
+        private void ProcessSearchFilter(CommitteeBoatReturnSearchFilter? searchFilter = null)
         {
             if (searchFilter == null)
                 return;
@@ -178,9 +179,24 @@ namespace RaceBoard.Data.Repositories
             base.AddFilterCriteria(ConditionType.In, "CommitteeBoatReturn", "Id", "ids", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Equal, "Championship", "Id", "idChampionship", searchFilter.Championship?.Id);
             base.AddFilterCriteria(ConditionType.In, "RaceClass", "Id", "idRaceClass", searchFilter.RaceClasses?.Select(x => x.Id));
+
+            if (searchFilter.ReturnTime.HasValue)
+            {
+                //base.AddFilterGroup(LogicalOperator.And);
+                var date = searchFilter.ReturnTime.Value.Date;
+                var offset = searchFilter.ReturnTime.Value.Offset;
+
+                var startDate = new DateTimeOffset(date.Year, date.Month, date.Day, 0, 0, 0, offset);
+                var endDate = new DateTimeOffset(date.Year, date.Month, date.Day, 23, 59, 59, offset);
+
+                base.AddFilterCriteria(ConditionType.GreaterOrEqualThan, "CommitteeBoatReturn", "ReturnTime", "startDate", startDate);
+                base.AddFilterCriteria(ConditionType.LessOrEqualThan, "CommitteeBoatReturn", "ReturnTime", "endDate", endDate);
+            }
+            //base.AddFilterCriteria(ConditionType.Like, "Boat", "Name", "name", searchFilter.Boat?.Name, LogicalOperator.Or);
+            //base.AddFilterCriteria(ConditionType.Like, "Boat", "SailNumber", "sailNumber", searchFilter.Boat?.SailNumber, LogicalOperator.Or);
         }
 
-        private void CreateCommitteeBoatReturn(ChampionshipBoatReturn raceCommitteeBoatReturn, ITransactionalContext? context = null)
+        private void CreateCommitteeBoatReturn(CommitteeBoatReturn raceCommitteeBoatReturn, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [CommitteeBoatReturn]
                                 ( IdChampionship, ReturnTime, [Name] )

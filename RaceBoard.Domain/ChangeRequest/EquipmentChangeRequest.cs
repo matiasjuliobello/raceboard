@@ -1,5 +1,4 @@
-﻿
-namespace RaceBoard.Domain
+﻿namespace RaceBoard.Domain
 {
     public class EquipmentChangeRequest : ChangeRequest
     {

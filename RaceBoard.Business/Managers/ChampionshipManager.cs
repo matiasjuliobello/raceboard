@@ -10,7 +10,6 @@ using RaceBoard.Business.Validators.Interfaces;
 using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Enums;
 using Enums = RaceBoard.Domain.Enums;
-using RaceBoard.Data.Repositories;
 
 namespace RaceBoard.Business.Managers
 {
@@ -21,9 +20,9 @@ namespace RaceBoard.Business.Managers
         private readonly IChampionshipMemberRepository _championshipMemberRepository; 
         private readonly IFileRepository _fileRepository;
         private readonly IUserAccessRepository _userAccessRepository;
-        private readonly IChampionshipCommitteeBoatReturnRepository _committeeBoatReturnRepository;
+        private readonly ICommitteeBoatReturnRepository _committeeBoatReturnRepository;
         
-        private readonly ICustomValidator<ChampionshipBoatReturn> _committeeBoatReturnValidator;
+        private readonly ICustomValidator<CommitteeBoatReturn> _committeeBoatReturnValidator;
 
         private readonly ICustomValidator<Championship> _championshipValidator;
         private readonly ICustomValidator<ChampionshipGroup> _championshipGroupValidator;
@@ -44,8 +43,8 @@ namespace RaceBoard.Business.Managers
                 IUserAccessRepository userAccessRepository,
                 ICustomValidator<Championship> championshipValidator,
                 ICustomValidator<ChampionshipGroup> championshipGroupValidator,
-                IChampionshipCommitteeBoatReturnRepository committeeBoatReturnRepository,
-                ICustomValidator<ChampionshipBoatReturn> committeeBoatReturnValidator,
+                ICommitteeBoatReturnRepository committeeBoatReturnRepository,
+                ICustomValidator<CommitteeBoatReturn> committeeBoatReturnValidator,
                 IDateTimeHelper dateTimeHelper,
                 IRequestContextManager requestContextManager,
                 IFileHelper fileHelper,
@@ -294,12 +293,12 @@ namespace RaceBoard.Business.Managers
             }
         }
 
-        public PaginatedResult<ChampionshipBoatReturn> GetCommitteeBoatReturns(ChampionshipBoatReturnSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        public PaginatedResult<CommitteeBoatReturn> GetCommitteeBoatReturns(CommitteeBoatReturnSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return _committeeBoatReturnRepository.Get(searchFilter, paginationFilter, sorting, context);
         }
 
-        public void CreateCommitteeBoatReturn(ChampionshipBoatReturn committeeBoatReturn, ITransactionalContext? context = null)
+        public void CreateCommitteeBoatReturn(CommitteeBoatReturn committeeBoatReturn, ITransactionalContext? context = null)
         {
             committeeBoatReturn.ReturnTime = _dateTimeHelper.GetCurrentTimestamp();
 
@@ -332,7 +331,7 @@ namespace RaceBoard.Business.Managers
             if (context == null)
                 context = _committeeBoatReturnRepository.GetTransactionalContext(TransactionContextScope.Internal);
 
-            var searchFilter = new ChampionshipBoatReturnSearchFilter() { Ids = new int[] { id } };
+            var searchFilter = new CommitteeBoatReturnSearchFilter() { Ids = new int[] { id } };
             var committeeBoatReturn = this.GetCommitteeBoatReturns(searchFilter, paginationFilter: null, sorting: null, context);
 
             //_committeeBoatReturnValidator.SetTransactionalContext(context);

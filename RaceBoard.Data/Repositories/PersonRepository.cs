@@ -196,7 +196,9 @@ namespace RaceBoard.Data.Repositories
 	                            [Person].Firstname [Firstname],
                                 [Person].Lastname [Lastname],
                                 [Person].BirthDate [BirthDate],
-                                [Person].ContactPhone [ContactPhone],
+                                [Person].Address [Address],
+                                [Person].PhoneNumber [PhoneNumber], 
+                                [Person].EmergencyContactPhoneNumber [EmergencyContactPhoneNumber],
                                 [User].Id [Id],
                                 [User].Username [Username],
                                 [User].Email [Email],
@@ -265,9 +267,9 @@ namespace RaceBoard.Data.Repositories
         private void CreatePerson(Person person, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [Person]
-                                ( IdCountry, IdBloodType, IdMedicalInsurance, FirstName, LastName, BirthDate, ContactPhone )
+                                ( IdCountry, IdBloodType, IdMedicalInsurance, FirstName, LastName, BirthDate, Address, PhoneNumber, EmergencyContactPhoneNumber )
                             VALUES
-                                ( @idCountry, @idBloodType, @idMedicalInsurance, @firstname, @lastname, @birthDate, @contactPhone )";
+                                ( @idCountry, @idBloodType, @idMedicalInsurance, @firstname, @lastname, @birthDate, @address, @phoneNumber, @emergencyContactPhoneNumber )";
 
             QueryBuilder.AddCommand(sql);
 
@@ -277,7 +279,9 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddParameter("firstname", person.Firstname);
             QueryBuilder.AddParameter("lastname", person.Lastname);
             QueryBuilder.AddParameter("birthDate", person.BirthDate);
-            QueryBuilder.AddParameter("contactPhone", person.ContactPhone);
+            QueryBuilder.AddParameter("address", person.Address);
+            QueryBuilder.AddParameter("phoneNumber", person.PhoneNumber);
+            QueryBuilder.AddParameter("emergencyContactPhoneNumber", person.EmergencyContactPhoneNumber);
 
             QueryBuilder.AddReturnLastInsertedId();
 
@@ -293,7 +297,9 @@ namespace RaceBoard.Data.Repositories
                                 Firstname = @firstname,
                                 Lastname = @lastname,
                                 BirthDate = @birthDate,
-                                ContactPhone = @contactPhone";
+                                Address = @address,
+                                PhoneNumber = @phoneNumber,
+                                EmergencyContactPhoneNumber = @emergencyContactPhoneNumber";
 
             QueryBuilder.AddCommand(sql);
 
@@ -303,7 +309,9 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddParameter("firstname", person.Firstname);
             QueryBuilder.AddParameter("lastname", person.Lastname);
             QueryBuilder.AddParameter("birthDate", person.BirthDate);
-            QueryBuilder.AddParameter("contactPhone", person.ContactPhone);
+            QueryBuilder.AddParameter("address", person.Address);
+            QueryBuilder.AddParameter("phoneNumber", person.PhoneNumber);
+            QueryBuilder.AddParameter("emergencyContactPhoneNumber", person.EmergencyContactPhoneNumber);
 
             QueryBuilder.AddParameter("id", person.Id);
             QueryBuilder.AddCondition("Id = @id");

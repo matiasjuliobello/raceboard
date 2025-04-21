@@ -1,6 +1,5 @@
 ﻿using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
-using System;
 
 namespace RaceBoard.Data.Repositories.Interfaces
 {
@@ -26,5 +25,6 @@ namespace RaceBoard.Data.Repositories.Interfaces
         void CreateProtestorNotice(HearingRequest hearingRequest, ITransactionalContext? context = null);
         void CreateProtestees(HearingRequest hearingRequest, ITransactionalContext? context = null);
         void CreateIncident(HearingRequest hearingRequest, ITransactionalContext? context = null);
+        void CreateCommitteeBoatReturnAssociation(HearingRequest hearingRequest, CommitteeBoatReturn commiteeBoatReturn, ITransactionalContext? context = null);
     }
 }

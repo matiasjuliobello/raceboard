@@ -1,6 +1,6 @@
 ﻿namespace RaceBoard.Domain
 {
-    public class ChampionshipBoatReturn
+    public class CommitteeBoatReturn
     {
         public int Id { get; set; }
         public Championship Championship { get; set; }
@@ -8,9 +8,9 @@
         public DateTimeOffset ReturnTime { get; set; }
         public string Name { get; set; }
 
-        public ChampionshipBoatReturn()
+        public CommitteeBoatReturn()
         {
-            this.RaceClasses = new List<RaceClass>();
+            RaceClasses = new List<RaceClass>();
         }
     }
 }

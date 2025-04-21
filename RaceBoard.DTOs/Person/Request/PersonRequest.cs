@@ -10,6 +10,8 @@
         public string Firstname { get; set; }
         public string Lastname { get; set; }
         public DateTimeOffset? BirthDate { get; set; }
-        public string? ContactPhone { get; set; }
+        public string? Address { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? EmergencyContactPhoneNumbeer { get; set; }
     }
 }
