@@ -263,6 +263,11 @@ namespace RaceBoard.Business.Managers
             return hearing;
         }
 
+        public CommitteeBoatReturn GetHearingRequestAssociatedCommitteeBoatReturn(int id, ITransactionalContext? context = null)
+        {
+            return _hearingRequestRepository.GetAssociatedCommitteeBoatReturn(id, context);
+        }
+
         public void CreateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null)
         {
             var contextUser = base.GetContextUser();

@@ -8,5 +8,6 @@ namespace RaceBoard.DTOs.Boat.Response
         public RaceClassResponse RaceClass { get; set; }
         public string Name { get; set; }
         public string SailNumber { get; set; }
+        public string HullNumber { get; set; }
     }
 }

@@ -17,6 +17,7 @@ namespace RaceBoard.Data.Repositories
             { "Id", "[Boat].Id" },
             { "Name", "[Boat].Name" },
             { "SailNumber", "[Boat].SailNumber"},
+            { "HullNumber", "[Boat].HullNumber"},
             { "RaceClass.Id", "[RaceClass].Id" },
             { "RaceClass.Name", "[RaceClass].Name" },
             { "RaceCategory.Id", "[RaceCategory].Id" },
@@ -57,13 +58,14 @@ namespace RaceBoard.Data.Repositories
 
         public bool ExistsDuplicate(Boat boat, ITransactionalContext? context = null)
         {
-            string condition = "[SailNumber] = @sailNumber AND [IdRaceClass] = @idRaceClass";
+            string condition = "[IdRaceClass] = @idRaceClass AND [SailNumber] = @sailNumber AND [HullNumber] = @hullNumber";
 
             string existsQuery = base.GetExistsDuplicateQuery("[Boat]", condition, "Id", "@id");
 
             QueryBuilder.AddCommand(existsQuery);
-            QueryBuilder.AddParameter("sailNumber", boat.SailNumber);
             QueryBuilder.AddParameter("idRaceClass", boat.RaceClass.Id);
+            QueryBuilder.AddParameter("sailNumber", boat.SailNumber);
+            QueryBuilder.AddParameter("hullNumber", boat.HullNumber);
             QueryBuilder.AddParameter("id", boat.Id);
 
             return base.Execute<bool>(context);
@@ -104,6 +106,7 @@ namespace RaceBoard.Data.Repositories
 	                            [Boat].Id [Id],	                            
 	                            [Boat].Name [Name],
                                 [Boat].SailNumber [SailNumber],
+                                [Boat].HullNumber [HullNumber],
                                 [RaceClass].Id [Id],
                                 [RaceClass].Name [Name]
                             FROM [Boat] [Boat]
@@ -112,6 +115,7 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddCommand(sql);
             QueryBuilder.AddCondition("[Boat].Name LIKE '%' + @searchTerm + '%'", LogicalOperator.Or);
             QueryBuilder.AddCondition("[Boat].SailNumber LIKE '%' + @searchTerm + '%'", LogicalOperator.Or);
+            QueryBuilder.AddCondition("[Boat].HullNumber LIKE '%' + @searchTerm + '%'", LogicalOperator.Or);
             QueryBuilder.AddParameter("searchTerm", searchTerm);
             QueryBuilder.AddSorting(sorting, _columnsMapping);
             QueryBuilder.AddPagination(paginationFilter);
@@ -149,6 +153,7 @@ namespace RaceBoard.Data.Repositories
                                 [Boat].Id [Id],
                                 [Boat].Name [Name],
                                 [Boat].SailNumber [SailNumber],
+                                [Boat].HullNumber [HullNumber],
                                 [RaceClass].Id [Id],
                                 [RaceClass].Name [Name],
                                 [RaceCategory].Id [Id],
@@ -202,20 +207,22 @@ namespace RaceBoard.Data.Repositories
             base.AddFilterCriteria(ConditionType.Equal, "[RaceCategory]", "IdRaceCategory", "idRaceCategory", searchFilter.RaceCategory?.Id);
             base.AddFilterCriteria(ConditionType.Like, "[Boat]", "Name", "name", searchFilter.Name);
             base.AddFilterCriteria(ConditionType.Like, "[Boat]", "SailNumber", "sailNumber", searchFilter.SailNumber);
+            base.AddFilterCriteria(ConditionType.Like, "[Boat]", "HullNumber", "hullNumber", searchFilter.HullNumber);
         }
 
         private void CreateBoat(Boat boat, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [Boat]
-                                ( IdRaceClass, Name, SailNumber )
+                                ( IdRaceClass, Name, SailNumber, HullNumber )
                             VALUES
-                                ( @idRaceClass, @name, @sailNumber )";
+                                ( @idRaceClass, @name, @sailNumber, @hullNumber )";
 
             QueryBuilder.AddCommand(sql);
 
             QueryBuilder.AddParameter("idRaceClass", boat.RaceClass.Id);
             QueryBuilder.AddParameter("name", boat.Name);
             QueryBuilder.AddParameter("sailNumber", boat.SailNumber);
+            QueryBuilder.AddParameter("hullNumber", boat.HullNumber);
 
             QueryBuilder.AddReturnLastInsertedId();
 
@@ -226,12 +233,14 @@ namespace RaceBoard.Data.Repositories
         {
             string sql = @" UPDATE [Boat] SET
                                 Name = @name,
-                                SailNumber = @sailNumber";
+                                SailNumber = @sailNumber
+                                HullNumber = @hullNumber";
 
             QueryBuilder.AddCommand(sql);
 
             QueryBuilder.AddParameter("name", boat.Name);
             QueryBuilder.AddParameter("sailNumber", boat.SailNumber);
+            QueryBuilder.AddParameter("hullNumber", boat.HullNumber);
 
             QueryBuilder.AddParameter("id", boat.Id);
             QueryBuilder.AddCondition("Id = @id");

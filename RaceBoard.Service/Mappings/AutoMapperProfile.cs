@@ -62,6 +62,7 @@ using MessagingEnums = RaceBoard.Messaging.Providers;
 using RaceBoard.Messaging.Entities;
 using Microsoft.IdentityModel.Tokens;
 using RaceBoard.DTOs.CommitteeBoatReturn.Request;
+using RaceBoard.DTOs.CommitteeBoatReturn.Response;
 
 namespace RaceBoard.Service.Mappings
 {
@@ -388,7 +389,7 @@ namespace RaceBoard.Service.Mappings
             CreateMap<Championship, ChampionshipSimpleResponse>();
             CreateMap<ChampionshipGroup, ChampionshipGroupResponse>();
             CreateMap<ChampionshipNotification, ChampionshipNotificationResponse>();
-            CreateMap<CommitteeBoatReturn, ChampionshipBoatReturnResponse>();
+            CreateMap<CommitteeBoatReturn, CommitteeBoatReturnResponse>();
             CreateMap<ChampionshipFile, ChampionshipFileResponse>();
             //CreateMap<ChampionshipRaceClass, ChampionshipRaceClassResponse>();
             CreateMap<ChampionshipMember, ChampionshipMemberResponse>();

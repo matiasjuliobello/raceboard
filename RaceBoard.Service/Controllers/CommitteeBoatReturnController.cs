@@ -5,8 +5,8 @@ using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
 using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
-using RaceBoard.DTOs.Championship.Response;
 using RaceBoard.DTOs.CommitteeBoatReturn.Request;
+using RaceBoard.DTOs.CommitteeBoatReturn.Response;
 using RaceBoard.Service.Controllers.Abstract;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Translations.Interfaces;
@@ -33,7 +33,7 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpGet("{id}/committee-boat-returns")]
-        public ActionResult<List<ChampionshipBoatReturnResponse>> Get([FromRoute] int id, [FromQuery] CommitteeBoatReturnSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
+        public ActionResult<List<CommitteeBoatReturnResponse>> Get([FromRoute] int id, [FromQuery] CommitteeBoatReturnSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
             var searchFilter = _mapper.Map<CommitteeBoatReturnSearchFilterRequest, CommitteeBoatReturnSearchFilter>(searchFilterRequest);
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
@@ -43,7 +43,7 @@ namespace RaceBoard.Service.Controllers
 
             var committeeBoatReturns = _championshipManager.GetCommitteeBoatReturns(searchFilter, paginationFilter, sorting);
 
-            var response = _mapper.Map<PaginatedResultResponse<ChampionshipBoatReturnResponse>>(committeeBoatReturns);
+            var response = _mapper.Map<PaginatedResultResponse<CommitteeBoatReturnResponse>>(committeeBoatReturns);
 
 
 

@@ -4,6 +4,8 @@ using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
+using System;
+using System.Text;
 using static Dapper.SqlMapper;
 
 namespace RaceBoard.Data.Repositories
@@ -92,9 +94,15 @@ namespace RaceBoard.Data.Repositories
         {
             return this.GetHearingRequestProtestees(id, context);
         }
+
         public HearingRequestIncident GetIncident(int id, ITransactionalContext? context = null)
         {
             return this.GetHearingRequestIncident(id, context);
+        }
+
+        public CommitteeBoatReturn GetAssociatedCommitteeBoatReturn(int id, ITransactionalContext? context = null)
+        {
+            return this.GetHearingRequestAssociatedCommitteeBoatReturn(id, context);
         }
 
         public void Create(HearingRequest hearingRequest, ITransactionalContext? context = null)
@@ -117,7 +125,7 @@ namespace RaceBoard.Data.Repositories
             if (hearingRequest.Protestees == null)
                 return;
 
-            foreach(var protestee in hearingRequest.Protestees.Protestees)
+            foreach (var protestee in hearingRequest.Protestees.Protestees)
             {
                 this.CreateHearingRequestProtestee(hearingRequest, protestee, context);
             }
@@ -177,7 +185,7 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<HearingRequest, HearingRequestStatus, Domain.HearingRequestType, User, Person, Team, RaceClass, HearingRequest>
+                        return reader.Read<HearingRequest, HearingRequestStatus, HearingRequestType, User, Person, Team, RaceClass, HearingRequest>
                         (
                             (hearingRequest, status, type, user, person, team, teamRaceClass) =>
                             {
@@ -198,6 +206,50 @@ namespace RaceBoard.Data.Repositories
                     },
                     context
                 );
+
+            sql = $@"SELECT
+                        [HearingRequest_CommitteeBoatReturn].[Id],
+                        [Hearing].Id [Id], 
+	                    [CommitteeBoatReturn].Id [Id],
+	                    [CommitteeBoatReturn].ReturnTime [ReturnTime],
+	                    [CommitteeBoatReturn].Name [Name]
+                    FROM [HearingRequest] [Hearing]
+                    INNER JOIN [HearingRequest_CommitteeBoatReturn] [HearingRequest_CommitteeBoatReturn] ON [HearingRequest_CommitteeBoatReturn].IdHearingRequest = [Hearing].Id
+                    INNER JOIN [CommitteeBoatReturn] [CommitteeBoatReturn] ON [CommitteeBoatReturn].Id = [HearingRequest_CommitteeBoatReturn].IdCommitteeBoatReturn";
+
+            QueryBuilder.AddCommand(sql);
+            QueryBuilder.AddCondition("[Hearing].Id IN @idHearings");
+            QueryBuilder.AddParameter("idHearings", hearingRequests.Select(x => x.Id));
+
+            var committeeBoatReturns = new List<HearingRequestCommitteeBoatReturn>();
+            QueryBuilder.AddPagination(paginationFilter);
+            base.GetPaginatedResults<HearingRequestCommitteeBoatReturn>
+               (
+                   (reader) =>
+                   {
+                       return reader.Read<HearingRequestCommitteeBoatReturn, HearingRequest, CommitteeBoatReturn, HearingRequestCommitteeBoatReturn>
+                       (
+                           (hearingRequestCommitteeBoatReturn, hearingRequest, committeeBoatReturn) =>
+                           {
+                               hearingRequestCommitteeBoatReturn.HearingRequest = hearingRequest;
+                               hearingRequestCommitteeBoatReturn.CommitteeBoatReturn = committeeBoatReturn;
+
+                               committeeBoatReturns.Add(hearingRequestCommitteeBoatReturn);
+
+                               return hearingRequestCommitteeBoatReturn;
+                           },
+                           splitOn: "Id, Id, Id"
+                       ).AsList();
+                   },
+                   context
+               );
+
+            foreach (var item in hearingRequests)
+            {
+                var committeeBoatReturnAssociation = committeeBoatReturns.FirstOrDefault(x => x.HearingRequest.Id == item.Id);
+                if (committeeBoatReturnAssociation != null)
+                    item.CommitteeBoatReturn = committeeBoatReturnAssociation.CommitteeBoatReturn;
+            }
 
             items.Results = hearingRequests;
 
@@ -342,6 +394,23 @@ namespace RaceBoard.Data.Repositories
             return base.GetSingleResult<HearingRequestIncident>(context);
         }
 
+        private CommitteeBoatReturn GetHearingRequestAssociatedCommitteeBoatReturn(int id, ITransactionalContext? context = null)
+        {
+            string sql = $@"SELECT
+	                            [CommitteeBoatReturn].Id [Id],
+	                            [CommitteeBoatReturn].ReturnTime [ReturnTime],
+	                            [CommitteeBoatReturn].Name [Name]
+                            FROM [HearingRequest] [Hearing]
+                            INNER JOIN [HearingRequest_CommitteeBoatReturn] [HearingRequest_CommitteeBoatReturn] ON [HearingRequest_CommitteeBoatReturn].IdHearingRequest = [Hearing].Id
+                            INNER JOIN [CommitteeBoatReturn] [CommitteeBoatReturn] ON [CommitteeBoatReturn].Id = [HearingRequest_CommitteeBoatReturn].IdCommitteeBoatReturn";
+
+            QueryBuilder.AddCommand(sql);
+            QueryBuilder.AddCondition("[Hearing].Id = @idHearing");
+            QueryBuilder.AddParameter("idHearing", id);
+
+            return base.GetSingleResult<CommitteeBoatReturn>(context);
+        }
+
         private void ProcessSearchFilter(HearingRequestSearchFilter? searchFilter)
         {
             if (searchFilter == null)
@@ -354,10 +423,17 @@ namespace RaceBoard.Data.Repositories
 
         private void CreateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null)
         {
-            string sql = @" INSERT INTO [HearingRequest]
+            string req = @$"SELECT
+                            COALESCE(MAX(RequestNumber)+1, 1)
+                        FROM [HearingRequest]
+                        INNER JOIN [Team] [Team] ON [Team].Id = [HearingRequest].IdTeam
+                        INNER JOIN [Championship] [Championship] ON [Championship].Id = [Team].IdChampionship
+                        WHERE [Championship].Id = {hearingRequest.Team.Championship.Id}";
+
+            string sql = $@" INSERT INTO [HearingRequest]
                             ( IdTeam, IdRequestUser, IdRequestStatus, IdHearingRequestType, CreationDate, RequestNumber, RaceNumber )
                         VALUES
-                            ( @idTeam, @idRequestUser, @idRequestStatus, @idHearingRequestType, @creationDate, @requestNumber, @raceNumber )";
+                            ( @idTeam, @idRequestUser, @idRequestStatus, @idHearingRequestType, @creationDate, ({req}), @raceNumber )";
 
             QueryBuilder.AddCommand(sql);
 
@@ -366,7 +442,6 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddParameter("idRequestStatus", hearingRequest.Status.Id);
             QueryBuilder.AddParameter("idHearingRequestType", hearingRequest.Type.Id);
             QueryBuilder.AddParameter("creationDate", hearingRequest.CreationDate);
-            QueryBuilder.AddParameter("requestNumber", hearingRequest.RequestNumber); 
             QueryBuilder.AddParameter("raceNumber", hearingRequest.RaceNumber);
 
             QueryBuilder.AddReturnLastInsertedId();
@@ -450,7 +525,7 @@ namespace RaceBoard.Data.Repositories
 
             QueryBuilder.AddParameter("idHearingRequest", hearingRequest.Id);
             QueryBuilder.AddParameter("idTeamBoat", hearingRequestProtestee.TeamBoat.Id);
-            
+
             QueryBuilder.AddReturnLastInsertedId();
 
             hearingRequestProtestee.Id = base.Execute<int>(context);

@@ -19,6 +19,7 @@ namespace RaceBoard.Data.Repositories.Interfaces
         HearingRequestProtestor GetProtestor(int id, ITransactionalContext? context = null);
         HearingRequestProtestees GetProtestees(int id, ITransactionalContext ? context = null);
         HearingRequestIncident GetIncident(int id, ITransactionalContext ? context = null);
+        CommitteeBoatReturn GetAssociatedCommitteeBoatReturn(int id, ITransactionalContext? context = null);
 
         void Create(HearingRequest hearingRequest, ITransactionalContext? context = null);
         void CreateProtestor(HearingRequest hearingRequest, ITransactionalContext? context = null);

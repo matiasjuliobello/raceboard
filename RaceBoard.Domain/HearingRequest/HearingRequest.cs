@@ -16,5 +16,6 @@
         public HearingRequestProtestor Protestor { get; set; }
         public HearingRequestProtestees Protestees { get; set; }
         public HearingRequestIncident Incident { get; set; }
+        public CommitteeBoatReturn CommitteeBoatReturn { get; set; }
     }
 }

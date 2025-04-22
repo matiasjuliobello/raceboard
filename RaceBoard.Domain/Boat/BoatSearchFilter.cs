@@ -7,5 +7,6 @@
         public RaceCategory? RaceCategory { get; set; }
         public string? Name { get; set; }
         public string? SailNumber { get; set; }
+        public string? HullNumber { get; set; }
     }
 }

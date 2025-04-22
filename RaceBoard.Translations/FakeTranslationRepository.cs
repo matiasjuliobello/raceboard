@@ -6,6 +6,7 @@ using RaceBoard.Translations.Interfaces;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Reflection;
@@ -303,6 +304,9 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("SailNumber"),
                 new Tuple<string, string>(Languages.English, "Sail number"),
                 new Tuple<string, string>(Languages.Spanish, "Número de vela"));
+            AddText(AddTranslation("HullNumber"),
+                new Tuple<string, string>(Languages.English, "Hull number"),
+                new Tuple<string, string>(Languages.Spanish, "Número de casco"));
             AddText(AddTranslation("NoBoatsAssignedYet"),
                 new Tuple<string, string>(Languages.English, "No boats assigned yet"),
                 new Tuple<string, string>(Languages.Spanish, "Aún no se asignó ningún barco"));
@@ -1274,6 +1278,22 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.English, "Boat(s) protested or considered for repair"),
                 new Tuple<string, string>(Languages.Spanish, "Barco(s) protestado(s) o considerado(s) para una reparación"));
 
+            AddText(AddTranslation("Term"),
+                new Tuple<string, string>(Languages.English, "Term"),
+                new Tuple<string, string>(Languages.Spanish, "Término"));
+            AddText(AddTranslation("IsOnTime"),
+                new Tuple<string, string>(Languages.English, "On time"),
+                new Tuple<string, string>(Languages.Spanish, "En término"));
+            AddText(AddTranslation("IsOutOfTime"),
+                new Tuple<string, string>(Languages.English, "Out of time"),
+                new Tuple<string, string>(Languages.Spanish, "Fuera de término"));
+
+            AddText(AddTranslation("CommitteeBoatReturnAt"),
+                new Tuple<string, string>(Languages.English, "Committee boat '{0}' return at {1}"),
+                new Tuple<string, string>(Languages.Spanish, "Vuelta de lancha de comité '{0}' a las {1}"));
+            AddText(AddTranslation("RequestMadeAfterTimeLimitExpiration"),
+                new Tuple<string, string>(Languages.English, "Request was made after expiration of allowed time limit"),
+                new Tuple<string, string>(Languages.Spanish, "La solicitud se realizó vencido el límite de tiempo permitido"));
         }
 
         private Translation AddTranslation(string key)
