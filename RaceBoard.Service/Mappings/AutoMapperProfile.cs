@@ -60,7 +60,6 @@ using Action = RaceBoard.Domain.Action;
 using Enums = RaceBoard.Domain.Enums;
 using MessagingEnums = RaceBoard.Messaging.Providers;
 using RaceBoard.Messaging.Entities;
-using Microsoft.IdentityModel.Tokens;
 using RaceBoard.DTOs.CommitteeBoatReturn.Request;
 using RaceBoard.DTOs.CommitteeBoatReturn.Response;
 
@@ -488,10 +487,15 @@ namespace RaceBoard.Service.Mappings
 
             if (searchFilterRequest.IdBoat.HasValue)
                 boat.Id = searchFilterRequest.IdBoat.Value;
+            
             if (!String.IsNullOrEmpty(searchFilterRequest.BoatName))
                 boat.Name = searchFilterRequest.BoatName;
+            
             if (!String.IsNullOrEmpty(searchFilterRequest.BoatSailNumber))
                 boat.SailNumber = searchFilterRequest.BoatSailNumber;
+
+            if (!String.IsNullOrEmpty(searchFilterRequest.BoatHullNumber))
+                boat.HullNumber = searchFilterRequest.BoatHullNumber;
 
             return boat;
         }

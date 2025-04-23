@@ -19,6 +19,7 @@ namespace RaceBoard.Data.Repositories
             { "Boat.Id", "[Boat].Id" },
             { "Boat.Name", "[Boat].Name"},
             { "Boat.SailNumber", "[Boat].SailNumber"},
+            { "Boat.HullNumber", "[Boat].HullNumber"},
             { "Boat.RaceClass.Id", "[RaceClass].Id" },
             { "Boat.RaceClass.Name", "[RaceClass].Name"},
             { "Boat.RaceClass.RaceCategory.Id", "[RaceCategory].Id"},
@@ -188,6 +189,7 @@ namespace RaceBoard.Data.Repositories
                                 [Boat].Id [Id],
                                 [Boat].Name [Name],
                                 [Boat].SailNumber [SailNumber],
+                                [Boat].HullNumber [HullNumber],
                                 [RaceClass].Id [Id],
                                 [RaceClass].Name [Name],
                                 [RaceCategory].Id [Id],
@@ -256,6 +258,7 @@ namespace RaceBoard.Data.Repositories
             base.AddFilterGroup(LogicalOperator.And);
             base.AddFilterCriteria(ConditionType.Like, "Boat", "Name", "name", searchFilter.Boat?.Name, LogicalOperator.Or);
             base.AddFilterCriteria(ConditionType.Like, "Boat", "SailNumber", "sailNumber", searchFilter.Boat?.SailNumber, LogicalOperator.Or);
+            base.AddFilterCriteria(ConditionType.Like, "Boat", "HullNumber", "hullNumber", searchFilter.Boat?.HullNumber, LogicalOperator.Or);
         }
 
         private void CreateTeamBoat(TeamBoat teamBoat, ITransactionalContext? context = null)

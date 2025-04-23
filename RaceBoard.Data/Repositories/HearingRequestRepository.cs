@@ -31,6 +31,7 @@ namespace RaceBoard.Data.Repositories
             { "Protestor.Boat.Id", "[ProtestorBoat].Id" },
             { "Protestor.Boat.Name", "[ProtestorBoat].Name"},
             { "Protestor.Boat.SailNumber", "[ProtestorBoat].SailNumber" },
+            { "Protestor.Boat.HullNumber", "[ProtestorBoat].HullNumber" },
             { "Team.Id", "[ProtestorTeam].Id" },
             { "Team.RaceClass.Id", "[ProtestorTeamRaceClass].Id" },
             { "Team.RaceClass.Name", "[ProtestorTeamRaceClass].Name"}
@@ -336,6 +337,7 @@ namespace RaceBoard.Data.Repositories
                                 [ProtesteeBoat].Id [Id],
                                 [ProtesteeBoat].Name [Name],
                                 [ProtesteeBoat].SailNumber [SailNumber],
+                                [ProtesteeBoat].HullNumber [HullNumber],
                                 [ProtesteeBoatRaceClass].Id [Id],
                                 [ProtesteeBoatRaceClass].Name [Name]
                             FROM [HearingRequest] [Hearing]

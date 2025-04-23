@@ -32,6 +32,7 @@ namespace RaceBoard.Data.Repositories
             { "Check.Id", "[Check].Id" },
             { "Check.Name", "[Check].Name"},
             { "Check.SailNumber", "[Check].SailNumber"},
+            { "Check.HullNumber", "[Check].HullNumber"},
             { "Check.RaceClass.Id", "[RaceClass].Id" },
             { "Check.RaceClass.Name", "[RaceClass].Name"},
             { "Check.RaceClass.RaceCategory.Id", "[RaceCategory].Id"},

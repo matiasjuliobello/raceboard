@@ -9,5 +9,6 @@
         public int? IdBoat {  get; set; }
         public string? BoatName { get; set; }
         public string? BoatSailNumber { get; set; }
+        public string? BoatHullNumber { get; set; }
     }
 }
