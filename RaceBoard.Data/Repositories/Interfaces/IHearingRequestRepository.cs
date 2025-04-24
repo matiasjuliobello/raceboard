@@ -22,6 +22,7 @@ namespace RaceBoard.Data.Repositories.Interfaces
         CommitteeBoatReturn GetAssociatedCommitteeBoatReturn(int id, ITransactionalContext? context = null);
 
         void Create(HearingRequest hearingRequest, ITransactionalContext? context = null);
+        void Update(HearingRequest hearingRequest, ITransactionalContext? context = null);
         void CreateProtestor(HearingRequest hearingRequest, ITransactionalContext? context = null);
         void CreateProtestorNotice(HearingRequest hearingRequest, ITransactionalContext? context = null);
         void CreateProtestees(HearingRequest hearingRequest, ITransactionalContext? context = null);

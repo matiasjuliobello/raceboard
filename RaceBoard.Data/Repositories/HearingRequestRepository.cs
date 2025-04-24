@@ -111,6 +111,11 @@ namespace RaceBoard.Data.Repositories
             this.CreateHearingRequest(hearingRequest, context);
         }
 
+        public void Update(HearingRequest hearingRequest, ITransactionalContext? context = null)
+        {
+            this.UpdateHearingRequest(hearingRequest, context);
+        }
+
         public void CreateProtestor(HearingRequest hearingRequest, ITransactionalContext? context = null)
         {
             this.CreateHearingRequestProtestor(hearingRequest, context);
@@ -450,6 +455,22 @@ namespace RaceBoard.Data.Repositories
 
             hearingRequest.Id = base.Execute<int>(context);
         }
+
+        private void UpdateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null)
+        {
+            string sql = $@"UPDATE [HearingRequest] SET
+                                IdRequestStatus = @idRequestStatus";
+
+            QueryBuilder.AddCommand(sql);
+
+            QueryBuilder.AddParameter("idRequestStatus", hearingRequest.Status.Id);
+
+            QueryBuilder.AddParameter("id", hearingRequest.Id);
+            QueryBuilder.AddCondition("Id = @id");
+
+            base.ExecuteAndGetRowsAffected(context);
+        }
+
 
         private void CreateHearingRequestProtestor(HearingRequest hearingRequest, ITransactionalContext? context = null)
         {

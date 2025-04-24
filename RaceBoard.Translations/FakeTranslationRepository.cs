@@ -139,6 +139,9 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.English, "Main"),
                 new Tuple<string, string>(Languages.Spanish, "Principal"));
 
+            AddText(AddTranslation("LoadingGenders.."),
+                new Tuple<string, string>(Languages.English, "Loading genders.."),
+                new Tuple<string, string>(Languages.Spanish, "Cargando géneros.."));
             AddText(AddTranslation("LoadingCountries.."),
                 new Tuple<string, string>(Languages.English, "Loading countries.."),
                 new Tuple<string, string>(Languages.Spanish, "Cargando países.."));
@@ -487,6 +490,10 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.English, "Password must have at least {0} uppercase letter(s)"),
                 new Tuple<string, string>(Languages.Spanish, "El password debe contener al menos {0} mayúscula(s)"));
 
+            AddText(AddTranslation("Gender"),
+                new Tuple<string, string>(Languages.English, "Gender"),
+                new Tuple<string, string>(Languages.Spanish, "Género"));
+
             AddText(AddTranslation("Country"),
                 new Tuple<string, string>(Languages.English, "Country"),
                 new Tuple<string, string>(Languages.Spanish, "País"));
@@ -757,6 +764,9 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("Edit"),
                 new Tuple<string, string>(Languages.English, "Edit"),
                 new Tuple<string, string>(Languages.Spanish, "Modificar"));
+            AddText(AddTranslation("Update"),
+                new Tuple<string, string>(Languages.English, "Update"),
+                new Tuple<string, string>(Languages.Spanish, "Actualizar"));
             AddText(AddTranslation("Remove"),
                 new Tuple<string, string>(Languages.English, "Remove"),
                 new Tuple<string, string>(Languages.Spanish, "Eliminar"));

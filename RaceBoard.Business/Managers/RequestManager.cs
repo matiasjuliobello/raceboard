@@ -25,6 +25,7 @@ namespace RaceBoard.Business.Managers
         private readonly ICrewChangeRequestRepository _crewChangeRequestRepository;
         private readonly IHearingRequestRepository _hearingRequestRepository;
         private readonly IHearingRequestTypeRepository _hearingRequestTypeRepository;
+        private readonly IHearingRequestStatusRepository _hearingRequestStatusRepository;
         private readonly IFileRepository _fileRepository;
         private readonly ICommitteeBoatReturnRepository _committeeBoatReturnRepository;
 
@@ -55,6 +56,7 @@ namespace RaceBoard.Business.Managers
                 ICrewChangeRequestRepository crewChangeRequestRepository,
                 IHearingRequestRepository hearingRequestRepository,
                 IHearingRequestTypeRepository hearingRequestTypeRepository,
+                IHearingRequestStatusRepository hearingRequestStatusRepository,
                 IFileRepository fileRepository,
                 ICommitteeBoatReturnRepository committeeBoatReturnRepository,
                 IUserSettingsManager userSettingsManager,
@@ -73,6 +75,7 @@ namespace RaceBoard.Business.Managers
             _equipmentChangeRequestRepository = equipmentChangeRequestRepository;
             _hearingRequestRepository = hearingRequestRepository;
             _hearingRequestTypeRepository = hearingRequestTypeRepository;
+            _hearingRequestStatusRepository = hearingRequestStatusRepository;
             _fileRepository = fileRepository;
             _committeeBoatReturnRepository = committeeBoatReturnRepository;
 
@@ -240,6 +243,11 @@ namespace RaceBoard.Business.Managers
             return _hearingRequestTypeRepository.Get(paginationFilter, sorting);
         }
 
+        public PaginatedResult<HearingRequestStatus> GetHearingRequestStatuses(PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        {
+            return _hearingRequestStatusRepository.Get(paginationFilter, sorting);
+        }
+
         public PaginatedResult<HearingRequest> GetHearingRequests(HearingRequestSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return _hearingRequestRepository.Get(searchFilter, paginationFilter, sorting);
@@ -339,16 +347,21 @@ namespace RaceBoard.Business.Managers
         public void UpdateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null)
         {
             var contextUser = base.GetContextUser();
+            var currentTimestamp = _dateTimeHelper.GetCurrentTimestamp();
 
-            _authorizationManager.ValidatePermission(Enums.Action.TeamHearingRequest_Create, hearingRequest.Team.Id, contextUser.Id);
+            //_authorizationManager.ValidatePermission(Enums.Action.TeamHearingRequest_Update, hearingRequest.Team.Id, contextUser.Id);
 
-            hearingRequest.Status = new HearingRequestStatus() { Id = (int)Enums.RequestStatus.Submitted };
+            if (hearingRequest.Status.Id == (int)Enums.RequestStatus.Submitted)
+            {
+                hearingRequest.Status = new HearingRequestStatus() { Id = (int)Enums.RequestStatus.Deliberating };
+            }
+
+
             hearingRequest.RequestUser = contextUser;
-            hearingRequest.CreationDate = _dateTimeHelper.GetCurrentTimestamp();
 
             _hearingRequestValidator.SetTransactionalContext(context);
 
-            if (!_hearingRequestValidator.IsValid(hearingRequest, Scenario.Create))
+            if (!_hearingRequestValidator.IsValid(hearingRequest, Scenario.Update))
                 throw new FunctionalException(ErrorType.ValidationError, _hearingRequestValidator.Errors);
 
             if (context == null)
@@ -356,11 +369,11 @@ namespace RaceBoard.Business.Managers
 
             try
             {
-                _hearingRequestRepository.Create(hearingRequest, context);
-                _hearingRequestRepository.CreateProtestor(hearingRequest, context);
-                _hearingRequestRepository.CreateProtestorNotice(hearingRequest, context);
-                _hearingRequestRepository.CreateProtestees(hearingRequest, context);
-                _hearingRequestRepository.CreateIncident(hearingRequest, context);
+                _hearingRequestRepository.Update(hearingRequest, context);
+                //_hearingRequestRepository.CreateProtestor(hearingRequest, context);
+                //_hearingRequestRepository.CreateProtestorNotice(hearingRequest, context);
+                //_hearingRequestRepository.CreateProtestees(hearingRequest, context);
+                //_hearingRequestRepository.CreateIncident(hearingRequest, context);
 
                 context.Confirm();
             }

@@ -62,6 +62,7 @@ using MessagingEnums = RaceBoard.Messaging.Providers;
 using RaceBoard.Messaging.Entities;
 using RaceBoard.DTOs.CommitteeBoatReturn.Request;
 using RaceBoard.DTOs.CommitteeBoatReturn.Response;
+using RaceBoard.DTOs.Gender.Response;
 
 namespace RaceBoard.Service.Mappings
 {
@@ -226,6 +227,7 @@ namespace RaceBoard.Service.Mappings
             CreateMap<MedicalInsuranceSearchFilterRequest, MedicalInsuranceSearchFilter>();
 
             CreateMap<PersonRequest, Person>()
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => CreateObject<Gender>(src.IdGender)))
                 .ForMember(dest => dest.User, opt => opt.MapFrom(src => CreateObject<User>(src.IdUser)))
                 .ForMember(dest => dest.Country, opt => opt.MapFrom(src => CreateObject<Country>(src.IdCountry)))
                 .ForMember(dest => dest.BloodType, opt => opt.MapFrom(src => CreateObject<BloodType>(src.IdBloodType)))
@@ -351,6 +353,8 @@ namespace RaceBoard.Service.Mappings
             CreateMap<User, UserSimpleResponse>();
 
             CreateMap<Role, RoleResponse>();
+
+            CreateMap<Gender, GenderResponse>();
 
             CreateMap<File, FileResponse>();
             CreateMap<FileType, FileTypeResponse>();

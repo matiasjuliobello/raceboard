@@ -4,6 +4,7 @@ using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Common;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
+using RaceBoard.Domain.Enums;
 using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
 using RaceBoard.DTOs.ChangeRequest.Request;
@@ -134,6 +135,22 @@ namespace RaceBoard.Service.Controllers
             var data = _requestManager.GetHearingRequestTypes(paginationFilter, sorting);
 
             var response = _mapper.Map<PaginatedResultResponse<HearingRequestTypeResponse>>(data);
+
+            return Ok(response);
+        }
+
+        [HttpGet("hearing-statuses")]
+        public ActionResult<PaginatedResultResponse<HearingRequestStatusResponse>> GetHearingRequestStatuses([FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
+        {
+            var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
+            var sorting = _mapper.Map<Sorting>(sortingRequest);
+
+            var data = _requestManager.GetHearingRequestStatuses(paginationFilter, sorting);
+
+            data.Results = data.Results.Where(x => x.Id != (int)RequestStatus.Solved);
+            data.TotalRecords = data.Results.Count();
+
+            var response = _mapper.Map<PaginatedResultResponse<HearingRequestStatusResponse>>(data);
 
             return Ok(response);
         }

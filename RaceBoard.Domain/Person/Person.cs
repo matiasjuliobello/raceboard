@@ -4,9 +4,11 @@
     {
         public int Id { get; set; }
         public User User { get; set; }
+        public Gender? Gender { get; set; }
         public Country? Country { get; set; }
         public BloodType? BloodType { get; set; }
         public MedicalInsurance? MedicalInsurance { get; set; }
+        public string MedicalInsuranceNumber { get; set; }
         public string Firstname { get; set; }
         public string Lastname { get; set; }
         public DateTimeOffset? BirthDate { get; set; }
