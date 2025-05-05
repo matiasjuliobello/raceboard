@@ -14,6 +14,7 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using System;
+using RaceBoard.Data.Repositories;
 
 namespace RaceBoard.Business.Managers
 {
@@ -259,14 +260,15 @@ namespace RaceBoard.Business.Managers
             if (hearing == null)
                 throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
 
-            var protestor = _hearingRequestRepository.GetProtestor(id, context: context);
-            hearing.Protestor = protestor;
+            hearing.Protestor = _hearingRequestRepository.GetProtestor(id, context: context);
+            hearing.Protestees = _hearingRequestRepository.GetProtestees(id, context: context);
+            hearing.Incident = _hearingRequestRepository.GetIncident(id, context: context);
 
-            var protestees = _hearingRequestRepository.GetProtestees(id, context: context);
-            hearing.Protestees = protestees;
-
-            var incident = _hearingRequestRepository.GetIncident(id, context: context);
-            hearing.Incident = incident;
+            hearing.Withdrawal = _hearingRequestRepository.GetWithdrawal(id, context: context);
+            hearing.Lodgement = _hearingRequestRepository.GetLodgement(id, context: context);
+            hearing.Attendees = _hearingRequestRepository.GetAttendees(id, context: context);
+            hearing.Validity = _hearingRequestRepository.GetValidity(id, context: context);
+            hearing.Resolution = _hearingRequestRepository.GetResolution(id, context: context);
 
             return hearing;
         }
@@ -349,15 +351,9 @@ namespace RaceBoard.Business.Managers
             var contextUser = base.GetContextUser();
             var currentTimestamp = _dateTimeHelper.GetCurrentTimestamp();
 
-            //_authorizationManager.ValidatePermission(Enums.Action.TeamHearingRequest_Update, hearingRequest.Team.Id, contextUser.Id);
+            _authorizationManager.ValidatePermission(Enums.Action.TeamHearingRequest_Create, hearingRequest.Team.Id, contextUser.Id);
 
-            if (hearingRequest.Status.Id == (int)Enums.RequestStatus.Submitted)
-            {
-                hearingRequest.Status = new HearingRequestStatus() { Id = (int)Enums.RequestStatus.Deliberating };
-            }
-
-
-            hearingRequest.RequestUser = contextUser;
+            //hearingRequest.Status = new HearingRequestStatus() { Id = (int)Enums.RequestStatus.Deliberating };
 
             _hearingRequestValidator.SetTransactionalContext(context);
 
@@ -369,11 +365,13 @@ namespace RaceBoard.Business.Managers
 
             try
             {
-                _hearingRequestRepository.Update(hearingRequest, context);
-                //_hearingRequestRepository.CreateProtestor(hearingRequest, context);
-                //_hearingRequestRepository.CreateProtestorNotice(hearingRequest, context);
-                //_hearingRequestRepository.CreateProtestees(hearingRequest, context);
-                //_hearingRequestRepository.CreateIncident(hearingRequest, context);
+                _hearingRequestRepository.UpdateStatus(hearingRequest, context);
+
+                _hearingRequestRepository.CreateRequestWithdrawal(hearingRequest, context);
+                _hearingRequestRepository.CreateRequestLodgement(hearingRequest, context);
+                _hearingRequestRepository.CreateRequestAttendees(hearingRequest, context);
+                _hearingRequestRepository.CreateRequestValidity(hearingRequest, context);
+                _hearingRequestRepository.CreateRequestResolution(hearingRequest, context);
 
                 context.Confirm();
             }

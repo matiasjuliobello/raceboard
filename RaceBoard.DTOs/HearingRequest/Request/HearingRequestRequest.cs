@@ -11,5 +11,11 @@
         public HearingRequestProtestorRequest Protestor { get; set; }
         public HearingRequestProtesteesRequest Protestees { get; set; }
         public HearingRequestIncidentRequest Incident { get; set; }
+
+        public HearingRequestWithdrawalRequest Withdrawal { get; set; }
+        public HearingRequestLodgementRequest Lodgement { get; set; }
+        public HearingRequestAttendeesRequest Attendees { get; set; }
+        public HearingRequestValidityRequest Validity { get; set; }
+        public HearingRequestResolutionRequest Resolution { get; set; }
     }
 }

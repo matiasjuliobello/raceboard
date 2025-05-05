@@ -324,6 +324,16 @@ namespace RaceBoard.Service.Mappings
             CreateMap<HearingRequestProtesteesRequest, HearingRequestProtestees>();
             CreateMap<HearingRequestProtesteeRequest, HearingRequestProtestee>();
             CreateMap<HearingRequestIncidentRequest, HearingRequestIncident>();
+            CreateMap<HearingRequestWithdrawalRequest, HearingRequestWithdrawal>();
+            CreateMap<HearingRequestLodgementRequest, HearingRequestLodgement>()
+                .ForMember(t => t.Deadline, opt =>
+                {
+                    opt.PreCondition(s => s.Deadline?.Trim().Length > 0);
+                    opt.MapFrom(s => TimeSpan.Parse(s.Deadline));
+                });
+            CreateMap<HearingRequestAttendeesRequest, HearingRequestAttendees>();
+            CreateMap<HearingRequestValidityRequest, HearingRequestValidity>();
+            CreateMap<HearingRequestResolutionRequest, HearingRequestResolution>();
 
             #endregion
 
@@ -430,6 +440,11 @@ namespace RaceBoard.Service.Mappings
             CreateMap<HearingRequestProtestees, HearingRequestProtesteesResponse>();
             CreateMap<HearingRequestProtestee, HearingRequestProtesteeResponse>();
             CreateMap<HearingRequestIncident, HearingRequestIncidentResponse>();
+            CreateMap<HearingRequestWithdrawal, HearingRequestWithdrawalResponse>();
+            CreateMap<HearingRequestLodgement, HearingRequestLodgementResponse>();
+            CreateMap<HearingRequestAttendees, HearingRequestAttendeesResponse>();
+            CreateMap<HearingRequestValidity, HearingRequestValidityResponse>();
+            CreateMap<HearingRequestResolution, HearingRequestResolutionResponse>();
 
             #endregion
         }

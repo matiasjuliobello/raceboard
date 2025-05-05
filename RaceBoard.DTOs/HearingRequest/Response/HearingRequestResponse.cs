@@ -20,5 +20,11 @@ namespace RaceBoard.DTOs.HearingRequest.Response
         public HearingRequestProtesteesResponse Protestees { get; set; }
         public HearingRequestIncidentResponse Incident { get; set; }
         public CommitteeBoatReturnResponse CommitteeBoatReturn { get; set; }
+
+        public HearingRequestWithdrawalResponse Withdrawal { get; set; }
+        public HearingRequestLodgementResponse Lodgement { get; set; }
+        public HearingRequestAttendeesResponse Attendees { get; set; }
+        public HearingRequestValidityResponse Validity { get; set; }
+        public HearingRequestResolutionResponse Resolution { get; set; }
     }
 }

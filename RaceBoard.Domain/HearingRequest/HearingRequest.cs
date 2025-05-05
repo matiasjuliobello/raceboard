@@ -17,5 +17,11 @@
         public HearingRequestProtestees Protestees { get; set; }
         public HearingRequestIncident Incident { get; set; }
         public CommitteeBoatReturn CommitteeBoatReturn { get; set; }
+
+        public HearingRequestWithdrawal Withdrawal {  get; set; }
+        public HearingRequestLodgement Lodgement { get; set; }
+        public HearingRequestAttendees Attendees { get; set; }
+        public HearingRequestValidity Validity { get; set; }
+        public HearingRequestResolution Resolution {  get; set; }
     }
 }

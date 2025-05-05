@@ -106,14 +106,39 @@ namespace RaceBoard.Data.Repositories
             return this.GetHearingRequestAssociatedCommitteeBoatReturn(id, context);
         }
 
+        public HearingRequestWithdrawal GetWithdrawal(int id, ITransactionalContext? context = null)
+        {
+            return this.GetHearingRequestWithdrawal(id, context);
+        }
+
+        public HearingRequestLodgement GetLodgement(int id, ITransactionalContext? context = null)
+        {
+            return this.GetHearingRequestLodgement(id, context);
+        }
+
+        public HearingRequestAttendees GetAttendees(int id, ITransactionalContext? context = null)
+        {
+            return this.GetHearingRequestAttendees(id, context);
+        }
+
+        public HearingRequestValidity GetValidity(int id, ITransactionalContext? context = null)
+        {
+            return this.GetHearingRequestValidity(id, context);
+        }
+
+        public HearingRequestResolution GetResolution(int id, ITransactionalContext? context = null)
+        {
+            return this.GetHearingRequestResolution(id, context);
+        }
+
         public void Create(HearingRequest hearingRequest, ITransactionalContext? context = null)
         {
             this.CreateHearingRequest(hearingRequest, context);
         }
 
-        public void Update(HearingRequest hearingRequest, ITransactionalContext? context = null)
+        public void UpdateStatus(HearingRequest hearingRequest, ITransactionalContext? context = null)
         {
-            this.UpdateHearingRequest(hearingRequest, context);
+            this.UpdateHearingRequestStatus(hearingRequest, context);
         }
 
         public void CreateProtestor(HearingRequest hearingRequest, ITransactionalContext? context = null)
@@ -145,6 +170,31 @@ namespace RaceBoard.Data.Repositories
         public void CreateCommitteeBoatReturnAssociation(HearingRequest hearingRequest, CommitteeBoatReturn commiteeBoatReturn, ITransactionalContext? context = null)
         {
             this.CreateHearingRequestCommitteeBoatReturn(hearingRequest, commiteeBoatReturn, context);
+        }
+
+        public void CreateRequestWithdrawal(HearingRequest hearingRequest, ITransactionalContext? context = null)
+        {
+            this.CreateHearingRequestWithdrawal(hearingRequest, context);
+        }
+
+        public void CreateRequestLodgement(HearingRequest hearingRequest, ITransactionalContext? context = null)
+        {
+            this.CreateHearingRequestLodgement(hearingRequest, context);
+        }
+
+        public void CreateRequestAttendees(HearingRequest hearingRequest, ITransactionalContext? context = null)
+        {
+            this.CreateHearingRequestAttendees(hearingRequest, context);
+        }
+
+        public void CreateRequestValidity(HearingRequest hearingRequest, ITransactionalContext? context = null)
+        {
+            this.CreateHearingRequestValidity(hearingRequest, context);
+        }
+
+        public void CreateRequestResolution(HearingRequest hearingRequest, ITransactionalContext? context = null)
+        {
+            this.CreateHearingRequestResolution(hearingRequest, context);
         }
 
         #endregion
@@ -418,6 +468,99 @@ namespace RaceBoard.Data.Repositories
             return base.GetSingleResult<CommitteeBoatReturn>(context);
         }
 
+        private HearingRequestWithdrawal GetHearingRequestWithdrawal(int id, ITransactionalContext? context = null)
+        {
+            string sql = $@"SELECT
+                                [Withdrawal].Id [Id],
+                                [Withdrawal].IsRequested [IsRequested],
+                                [Withdrawal].IsAuthorized [IsAuthorized]
+                            FROM [HearingRequest] [Hearing]
+                            INNER JOIN [HearingRequest_Withdrawal] [Withdrawal] ON [Withdrawal].IdHearingRequest = [Hearing].Id";
+
+            QueryBuilder.AddCommand(sql);
+            QueryBuilder.AddCondition("[Hearing].Id = @idHearing");
+            QueryBuilder.AddParameter("idHearing", id);
+
+            return base.GetSingleResult<HearingRequestWithdrawal>(context);
+        }
+
+        private HearingRequestLodgement GetHearingRequestLodgement(int id, ITransactionalContext? context = null)
+        {
+            string sql = $@"SELECT
+                            [Lodgement].Id [Id],
+                            [Lodgement].Deadline [Deadline],
+                            [Lodgement].IsInTerm [IsInTerm],
+	                        [Lodgement].HasExtension [HasExtension]
+                        FROM [HearingRequest] [Hearing]
+                        INNER JOIN [HearingRequest_Lodgement] [Lodgement] ON [Lodgement].IdHearingRequest = [Hearing].Id";
+
+            QueryBuilder.AddCommand(sql);
+            QueryBuilder.AddCondition("[Hearing].Id = @idHearing");
+            QueryBuilder.AddParameter("idHearing", id);
+
+            return base.GetSingleResult<HearingRequestLodgement>(context);
+        }
+
+        private HearingRequestAttendees GetHearingRequestAttendees(int id, ITransactionalContext? context = null)
+        {
+            string sql = $@"SELECT
+                            [Attendees].Id [Id],
+                            [Attendees].Protestors [Protestors],
+                            [Attendees].Protestees [Protestees],
+	                        [Attendees].Witnesses [Witnesses],
+	                        [Attendees].Interpreters [Interpreters]
+                        FROM [HearingRequest] [Hearing]
+                        INNER JOIN [HearingRequest_Attendees] [Attendees] ON [Attendees].IdHearingRequest = [Hearing].Id";
+
+            QueryBuilder.AddCommand(sql);
+            QueryBuilder.AddCondition("[Hearing].Id = @idHearing");
+            QueryBuilder.AddParameter("idHearing", id);
+
+            return base.GetSingleResult<HearingRequestAttendees>(context);
+        }
+
+        private HearingRequestValidity GetHearingRequestValidity(int id, ITransactionalContext? context = null)
+        {
+            string sql = $@"SELECT
+                                [Validity].Id [Id],
+	                            [Validity].IsInterestedPartyObjection,		[Validity].InterestedPartyObjectionObservations,
+	                            [Validity].DidProtestIdentifyIncident,		[Validity].ProtestIdentifyObservations,
+	                            [Validity].WasObjectionSaidAloud,			[Validity].ObjectionSaidAloudObservations,
+	                            [Validity].DidProtestorGiveNotice,			[Validity].ProtestorGiveNoticeObservations,
+	                            [Validity].WasRedFlagWasDisplayed,			[Validity].RedFlagWasDisplayedObservations,
+	                            [Validity].WasRedFlagSeenByRaceCommission,	[Validity].RedFlagSeenByRaceCommissionObservations,
+	                            [Validity].IsValidProtest
+                            FROM [HearingRequest] [Hearing]
+                            INNER JOIN [HearingRequest_Validity] [Validity] ON [Validity].IdHearingRequest = [Hearing].Id";
+
+            QueryBuilder.AddCommand(sql);
+            QueryBuilder.AddCondition("[Hearing].Id = @idHearing");
+            QueryBuilder.AddParameter("idHearing", id);
+
+            return base.GetSingleResult<HearingRequestValidity>(context);
+        }
+
+        private HearingRequestResolution GetHearingRequestResolution(int id, ITransactionalContext? context = null)
+        {
+            string sql = $@"SELECT
+                                [Resolution].Id [Id],
+	                            [Resolution].CommissionAcceptsShipSchematic [CommissionAcceptsShipSchematic],
+	                            [Resolution].CommissionAttachesOwnSchematic [CommissionAttachesOwnSchematic],
+	                            [Resolution].Comments [Comments],
+	                            [Resolution].Dismissed [Dismissed],
+	                            [Resolution].ProtestedBoatsAreDisqualified [ProtestedBoatsAreDisqualified],
+	                            [Resolution].PenaltiesAreAssessed [PenaltiesAreAssessed],
+	                            [Resolution].PenaltiesDescription [PenaltiesDescription]
+                            FROM [HearingRequest] [Hearing]
+                            INNER JOIN [HearingRequest_Resolution] [Resolution] ON [Resolution].IdHearingRequest = [Hearing].Id";
+
+            QueryBuilder.AddCommand(sql);
+            QueryBuilder.AddCondition("[Hearing].Id = @idHearing");
+            QueryBuilder.AddParameter("idHearing", id);
+
+            return base.GetSingleResult<HearingRequestResolution>(context);
+        }
+
         private void ProcessSearchFilter(HearingRequestSearchFilter? searchFilter)
         {
             if (searchFilter == null)
@@ -456,7 +599,7 @@ namespace RaceBoard.Data.Repositories
             hearingRequest.Id = base.Execute<int>(context);
         }
 
-        private void UpdateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null)
+        private void UpdateHearingRequestStatus(HearingRequest hearingRequest, ITransactionalContext? context = null)
         {
             string sql = $@"UPDATE [HearingRequest] SET
                                 IdRequestStatus = @idRequestStatus";
@@ -470,7 +613,6 @@ namespace RaceBoard.Data.Repositories
 
             base.ExecuteAndGetRowsAffected(context);
         }
-
 
         private void CreateHearingRequestProtestor(HearingRequest hearingRequest, ITransactionalContext? context = null)
         {
@@ -569,6 +711,149 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddReturnLastInsertedId();
 
             hearingRequest.Incident.Id = base.Execute<int>(context);
+        }
+
+        private void CreateHearingRequestWithdrawal(HearingRequest hearingRequest, ITransactionalContext? context = null)
+        {
+            string sql = @" INSERT INTO [HearingRequest_Withdrawal]
+                            ( IdHearingRequest, IsRequested, IsAuthorized )
+                        VALUES
+                            ( @idHearingRequest, @isRequested, @isAuthorized )";
+
+            QueryBuilder.AddCommand(sql);
+
+            QueryBuilder.AddParameter("idHearingRequest", hearingRequest.Id);
+            QueryBuilder.AddParameter("isRequested", hearingRequest.Withdrawal.IsRequested);
+            QueryBuilder.AddParameter("isAuthorized", hearingRequest.Withdrawal.IsAuthorized);
+
+            QueryBuilder.AddReturnLastInsertedId();
+
+            hearingRequest.Withdrawal.Id = base.Execute<int>(context);
+        }
+
+        private void CreateHearingRequestLodgement(HearingRequest hearingRequest, ITransactionalContext? context = null)
+        {
+            string sql = @" INSERT INTO [HearingRequest_Lodgement]
+                            ( IdHearingRequest, Deadline, IsInTerm, HasExtension )
+                        VALUES
+                            ( @idHearingRequest, @deadline, @isInTerm, @hasExtension )";
+
+            QueryBuilder.AddCommand(sql);
+
+            var lodgement = hearingRequest.Lodgement;
+
+            QueryBuilder.AddParameter("idHearingRequest", hearingRequest.Id);
+            QueryBuilder.AddParameter("deadline", lodgement.Deadline);
+            QueryBuilder.AddParameter("isInTerm", lodgement.IsInTerm);
+            QueryBuilder.AddParameter("hasExtension", lodgement.HasExtension);
+
+            QueryBuilder.AddReturnLastInsertedId();
+
+            hearingRequest.Lodgement.Id = base.Execute<int>(context);
+        }
+
+        private void CreateHearingRequestAttendees(HearingRequest hearingRequest, ITransactionalContext? context = null)
+        {
+            string sql = @" INSERT INTO [HearingRequest_Attendees]
+                            ( IdHearingRequest, Protestors, Protestees, Witnesses, Interpreters )
+                        VALUES
+                            ( @idHearingRequest, @protestors, @protestees, @witnesses, @interpreters )";
+
+            QueryBuilder.AddCommand(sql);
+
+            var attendees = hearingRequest.Attendees;
+
+            QueryBuilder.AddParameter("idHearingRequest", hearingRequest.Id);
+            QueryBuilder.AddParameter("protestors", attendees.Protestors);
+            QueryBuilder.AddParameter("protestees", attendees.Protestees);
+            QueryBuilder.AddParameter("witnesses", attendees.Witnesses);
+            QueryBuilder.AddParameter("interpreters", attendees.Interpreters);
+
+            QueryBuilder.AddReturnLastInsertedId();
+
+            hearingRequest.Attendees.Id = base.Execute<int>(context);
+        }
+
+        private void CreateHearingRequestValidity(HearingRequest hearingRequest, ITransactionalContext? context = null)
+        {
+            string sql = @" INSERT INTO [HearingRequest_Validity]
+                            (
+                                IdHearingRequest, 
+                                IsInterestedPartyObjection, InterestedPartyObjectionObservations, 
+                                DidProtestIdentifyIncident, ProtestIdentifyObservations,
+                                WasObjectionSaidAloud, ObjectionSaidAloudObservations,
+                                DidProtestorGiveNotice, ProtestorGiveNoticeObservations,
+                                WasRedFlagWasDisplayed, RedFlagWasDisplayedObservations,
+                                WasRedFlagSeenByRaceCommission, RedFlagSeenByRaceCommissionObservations,
+                                IsValidProtest
+                            )
+                        VALUES
+                            (
+                                @idHearingRequest, 
+                                @isInterestedPartyObjection, @interestedPartyObjectionObservations, 
+                                @didProtestIdentifyIncident, @protestIdentifyObservations,
+                                @wasObjectionSaidAloud, @objectionSaidAloudObservations,
+                                @didProtestorGiveNotice, @protestorGiveNoticeObservations,
+                                @wasRedFlagWasDisplayed, @redFlagWasDisplayedObservations,
+                                @wasRedFlagSeenByRaceCommission, @redFlagSeenByRaceCommissionObservations,
+                                @isValidProtest
+                            )";
+
+            QueryBuilder.AddCommand(sql);
+
+            var validity = hearingRequest.Validity;
+
+            QueryBuilder.AddParameter("idHearingRequest", hearingRequest.Id);
+            QueryBuilder.AddParameter("@isInterestedPartyObjection", validity.IsInterestedPartyObjection);
+            QueryBuilder.AddParameter("@interestedPartyObjectionObservations", validity.InterestedPartyObjectionObservations);
+            QueryBuilder.AddParameter("@didProtestIdentifyIncident", validity.DidProtestIdentifyIncident);
+            QueryBuilder.AddParameter("@protestIdentifyObservations", validity.ProtestIdentifyObservations);
+            QueryBuilder.AddParameter("@wasObjectionSaidAloud", validity.WasObjectionSaidAloud);
+            QueryBuilder.AddParameter("@objectionSaidAloudObservations", validity.ObjectionSaidAloudObservations);
+            QueryBuilder.AddParameter("@didProtestorGiveNotice", validity.DidProtestorGiveNotice);
+            QueryBuilder.AddParameter("@protestorGiveNoticeObservations", validity.ProtestorGiveNoticeObservations);
+            QueryBuilder.AddParameter("@wasRedFlagWasDisplayed", validity.WasRedFlagWasDisplayed);
+            QueryBuilder.AddParameter("@redFlagWasDisplayedObservations", validity.RedFlagWasDisplayedObservations);
+            QueryBuilder.AddParameter("@wasRedFlagSeenByRaceCommission", validity.WasRedFlagSeenByRaceCommission);
+            QueryBuilder.AddParameter("@redFlagSeenByRaceCommissionObservations", validity.RedFlagSeenByRaceCommissionObservations);
+            QueryBuilder.AddParameter("@isValidProtest", validity.IsValidProtest);
+
+            QueryBuilder.AddReturnLastInsertedId();
+
+            hearingRequest.Validity.Id = base.Execute<int>(context);
+        }
+
+        private void CreateHearingRequestResolution(HearingRequest hearingRequest, ITransactionalContext? context = null)
+        {
+            string sql = @" INSERT INTO [HearingRequest_Resolution]
+                            (
+                                IdHearingRequest,
+                                CommissionAcceptsShipSchematic, CommissionAttachesOwnSchematic, Comments, Dismissed,
+                                ProtestedBoatsAreDisqualified, PenaltiesAreAssessed, PenaltiesDescription
+                            )
+                        VALUES
+                            ( 
+                                @idHearingRequest, 
+                                @commissionAcceptsShipSchematic, @commissionAttachesOwnSchematic, @comments, @dismissed, 
+                                @protestedBoatsAreDisqualified, @penaltiesAreAssessed, @penaltiesDescription
+                            )";
+
+            QueryBuilder.AddCommand(sql);
+
+            var resolution = hearingRequest.Resolution;
+
+            QueryBuilder.AddParameter("idHearingRequest", hearingRequest.Id);
+            QueryBuilder.AddParameter("commissionAcceptsShipSchematic", resolution.CommissionAcceptsShipSchematic);
+            QueryBuilder.AddParameter("commissionAttachesOwnSchematic", resolution.CommissionAttachesOwnSchematic);
+            QueryBuilder.AddParameter("comments", resolution.Comments);
+            QueryBuilder.AddParameter("dismissed", resolution.Dismissed);
+            QueryBuilder.AddParameter("protestedBoatsAreDisqualified", resolution.ProtestedBoatsAreDisqualified);
+            QueryBuilder.AddParameter("penaltiesAreAssessed", resolution.PenaltiesAreAssessed);
+            QueryBuilder.AddParameter("penaltiesDescription", resolution.PenaltiesDescription);
+
+            QueryBuilder.AddReturnLastInsertedId();
+
+            hearingRequest.Resolution.Id = base.Execute<int>(context);
         }
 
         #endregion

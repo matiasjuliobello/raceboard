@@ -200,6 +200,8 @@ namespace RaceBoard.Service.Controllers
         {
             var hearingRequest = _mapper.Map<HearingRequest>(hearingRequestRequest);
 
+            hearingRequest.Team = _teamManager.Get(hearingRequest.Team.Id);
+
             _requestManager.UpdateHearingRequest(hearingRequest);
 
             return Ok(hearingRequest.Id);
