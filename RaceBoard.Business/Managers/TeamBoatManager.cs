@@ -55,7 +55,7 @@ namespace RaceBoard.Business.Managers
         public void Create(TeamBoat teamBoat, ITransactionalContext? context = null)
         {
             var contextUser = base.GetContextUser();
-            _authorizationManager.ValidatePermission(Enums.Action.TeamBoat_Create, teamBoat.Team.Id, contextUser.Id);
+            _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamBoat_Create, teamBoat.Team.Id);
 
 
             _teamBoatValidator.SetTransactionalContext(context);
@@ -82,7 +82,7 @@ namespace RaceBoard.Business.Managers
         public void Update(TeamBoat teamBoat, ITransactionalContext? context = null)
         {
             var contextUser = base.GetContextUser();
-            _authorizationManager.ValidatePermission(Enums.Action.TeamBoat_Update, teamBoat.Team.Id, contextUser.Id);
+            _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamBoat_Update, teamBoat.Team.Id);
 
             _teamBoatValidator.SetTransactionalContext(context);
 
@@ -110,7 +110,7 @@ namespace RaceBoard.Business.Managers
             var teamBoat = this.Get(id, context);
 
             var contextUser = base.GetContextUser();
-            _authorizationManager.ValidatePermission(Enums.Action.TeamBoat_Delete, teamBoat.Team.Id, contextUser.Id);
+            _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamBoat_Delete, teamBoat.Team.Id);
 
             if (context == null)
                 context = _teamBoatRepository.GetTransactionalContext(TransactionContextScope.Internal);

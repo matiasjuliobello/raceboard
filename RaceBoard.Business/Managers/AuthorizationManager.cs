@@ -22,6 +22,15 @@ namespace RaceBoard.Business.Managers
 
         private readonly bool _validatePermission;
 
+        public enum Entity
+        {
+            Unparented = 0,
+            Organization = 1,
+            Championship = 2,
+            Team = 3
+        }
+
+
         #region Permissions Matrix
 
         private static int[] _allRoles = new int[]
@@ -117,17 +126,14 @@ namespace RaceBoard.Business.Managers
             { Enums.Action.TeamCrewChangeRequest_Create, new int[] { (int)Enums.TeamMemberRole.Leader } },
             { Enums.Action.TeamCrewChangeRequest_Update, new int[] { (int)Enums.TeamMemberRole.Leader } },
             { Enums.Action.TeamCrewChangeRequest_Delete, new int[] { (int)Enums.TeamMemberRole.Leader } },
+
+            { Enums.Action.TeamHearingRequest_Get, _allRoles },
+            { Enums.Action.TeamHearingRequest_Create, new int[] { (int)Enums.TeamMemberRole.Leader } },
+            { Enums.Action.TeamHearingRequest_Update, new int[] { (int)Enums.UserRole.Jury } },
+            { Enums.Action.TeamHearingRequest_Delete, new int[] { (int)Enums.TeamMemberRole.Leader } },
         };
 
         #endregion
-
-        protected enum Entity
-        {
-            Unparented = 0,
-            Organization = 1,
-            Championship = 2,
-            Team = 3
-        }
 
         #region Constructors
 
@@ -214,23 +220,20 @@ namespace RaceBoard.Business.Managers
             return parent;
         }
 
-        public void ValidatePermission(Enums.Action action, int idEntity, int idUser)
+        public void ValidatePermission(int idUser, Enums.Action action, int idEntity, Entity? entity = null)
         {
-            if (!_validatePermission)
-                return;
-
             dynamic? record = null;
-
-            Entity parent = this.GetParentEntity(action);
-
-            if (parent == Entity.Unparented)
-            {
-                return;
-            }
 
             var user = new User() { Id = idUser };
 
-            if (parent == Entity.Organization)
+            if (!_validatePermission)
+                return;
+
+            var parentEntity = entity != null ? entity.Value : this.GetParentEntity(action);
+            if (parentEntity == Entity.Unparented)
+                return;
+
+            if (parentEntity == Entity.Organization)
             {
                 var searchFilter = new OrganizationMemberSearchFilter()
                 {
@@ -241,7 +244,7 @@ namespace RaceBoard.Business.Managers
                 record = _organizationMemberRepository.Get(searchFilter).Results.FirstOrDefault();
             }
 
-            if (parent == Entity.Championship)
+            if (parentEntity == Entity.Championship)
             {
                 var memberSearchFilter = new ChampionshipMemberSearchFilter()
                 {
@@ -252,7 +255,7 @@ namespace RaceBoard.Business.Managers
                 record = _championshipMemberRepository.Get(memberSearchFilter).Results.FirstOrDefault();
             }
 
-            if (parent == Entity.Team)
+            if (parentEntity == Entity.Team)
             {
                 var searchFilter = new TeamMemberSearchFilter()
                 {
@@ -263,15 +266,17 @@ namespace RaceBoard.Business.Managers
                 record = _teamMemberRepository.Get(searchFilter).Results.FirstOrDefault();
             }
 
+            var forbiddenException = new FunctionalException(Common.Enums.ErrorType.Forbidden, base.Translate("NeedPermissions"));
+
             if (record == null)
-                throw new FunctionalException(Common.Enums.ErrorType.Forbidden, base.Translate("NeedPermissions"));
+                throw forbiddenException;
 
             int idRole = record.Role.Id;
 
             int[] idsRole = _permissions[action];
 
             if (!idsRole.Contains(idRole))
-                throw new FunctionalException(Common.Enums.ErrorType.Forbidden, base.Translate("NeedPermissions"));
+                throw forbiddenException;
         }
 
         #endregion

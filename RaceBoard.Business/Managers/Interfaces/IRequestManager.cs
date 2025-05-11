@@ -19,11 +19,15 @@ namespace RaceBoard.Business.Managers.Interfaces
 
         PaginatedResult<HearingRequestType> GetHearingRequestTypes(PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
         PaginatedResult<HearingRequestStatus> GetHearingRequestStatuses(PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
+
         PaginatedResult<HearingRequest> GetHearingRequests(HearingRequestSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
         HearingRequest GetHearingRequest(int id, ITransactionalContext? context = null);
-        void CreateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null);
-        void UpdateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null);
-        byte[] RenderHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null);
         CommitteeBoatReturn GetHearingRequestAssociatedCommitteeBoatReturn(int id, ITransactionalContext? context = null);
+
+        void SubmitHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null);
+        void ChangeHearingRequestStatus(HearingRequest hearingRequest, ITransactionalContext? context = null);
+        void CloseHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null);
+
+        byte[] RenderHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null);
     }
 }

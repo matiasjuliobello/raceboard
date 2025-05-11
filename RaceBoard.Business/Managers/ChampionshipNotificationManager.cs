@@ -67,7 +67,7 @@ namespace RaceBoard.Business.Managers
         public void Create(ChampionshipNotification championshipNotification, ITransactionalContext? context = null)
         {
             var contextUser = base.GetContextUser();
-            _authorizationManager.ValidatePermission(Enums.Action.ChampionshipNotification_Create, championshipNotification.Championship.Id, contextUser.Id);
+            _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.ChampionshipNotification_Create, championshipNotification.Championship.Id);
 
             championshipNotification.CreationDate = _dateTimeHelper.GetCurrentTimestamp();
             
@@ -100,7 +100,7 @@ namespace RaceBoard.Business.Managers
             var championshipNotification = this.Get(id, context);
 
             var contextUser = base.GetContextUser();
-            _authorizationManager.ValidatePermission(Enums.Action.ChampionshipNotification_Delete, championshipNotification.Championship.Id, contextUser.Id);
+            _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.ChampionshipNotification_Delete, championshipNotification.Championship.Id);
 
             _championshipNotificationValidator.SetTransactionalContext(context);
 

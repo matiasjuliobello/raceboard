@@ -112,7 +112,7 @@ namespace RaceBoard.Business.Managers
         public void AddInvitation(TeamMemberInvitation teamMemberInvitation, ITransactionalContext? context = null)
         {
             var contextUser = base.GetContextUser();
-            _authorizationManager.ValidatePermission(Enums.Action.TeamMember_Create, teamMemberInvitation.Team.Id, contextUser.Id);
+            _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamMember_Create, teamMemberInvitation.Team.Id);
 
             if (context == null)
                 context = _teamMemberRepository.GetTransactionalContext(TransactionContextScope.Internal);
@@ -197,7 +197,7 @@ namespace RaceBoard.Business.Managers
             var teamMember = this.Get(id, context);
 
             var contextUser = base.GetContextUser();
-            _authorizationManager.ValidatePermission(Enums.Action.TeamMember_Delete, teamMember.Team.Id, contextUser.Id);
+            _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamMember_Delete, teamMember.Team.Id);
 
             if (context == null)
                 context = _teamMemberRepository.GetTransactionalContext(TransactionContextScope.Internal);
@@ -237,7 +237,7 @@ namespace RaceBoard.Business.Managers
             var teamMemberInvitation = this.GetInvitation(id, context);
 
             var contextUser = base.GetContextUser();
-            _authorizationManager.ValidatePermission(Enums.Action.TeamMember_Delete, teamMemberInvitation.Team.Id, contextUser.Id);
+            _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamMember_Delete, teamMemberInvitation.Team.Id);
 
             if (context == null)
                 context = _teamMemberRepository.GetTransactionalContext(TransactionContextScope.Internal);

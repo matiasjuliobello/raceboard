@@ -115,7 +115,7 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.Spanish, "Cambiar preferencias"));
             AddText(AddTranslation("ChangeSettings"),
                 new Tuple<string, string>(Languages.English, "Change settings"),
-                new Tuple<string, string>(Languages.Spanish, "Cambiar configuración"));
+                new Tuple<string, string>(Languages.Spanish, "Cambiar configuración"));            
             AddText(AddTranslation("SaveSettings"),
                 new Tuple<string, string>(Languages.English, "Save settings"),
                 new Tuple<string, string>(Languages.Spanish, "Guardar configuración"));
@@ -1304,6 +1304,24 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("RequestMadeAfterTimeLimitExpiration"),
                 new Tuple<string, string>(Languages.English, "Request was made after expiration of allowed time limit"),
                 new Tuple<string, string>(Languages.Spanish, "La solicitud se realizó vencido el límite de tiempo permitido"));
+
+            AddText(AddTranslation("InvalidStatus"),
+                new Tuple<string, string>(Languages.English, "Invalid status"),
+                new Tuple<string, string>(Languages.Spanish, "Estado inválido"));
+
+            AddText(AddTranslation("ChangeStatus"),
+                new Tuple<string, string>(Languages.English, "Change status"),
+                new Tuple<string, string>(Languages.Spanish, "Cambiar estado"));
+
+            
+            AddText(AddTranslation("ParticipantsWillBeNotified"),
+                new Tuple<string, string>(Languages.English, "Participants will be notified"),
+                new Tuple<string, string>(Languages.Spanish, "Los participantes serán notificados"));
+
+            AddText(AddTranslation("StartToDeliberate"),
+                new Tuple<string, string>(Languages.English, "Start to deliberate"),
+                new Tuple<string, string>(Languages.Spanish, "Comenzar a deliberar"));
+            
         }
 
         private Translation AddTranslation(string key)

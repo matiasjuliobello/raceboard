@@ -550,7 +550,9 @@ namespace RaceBoard.Data.Repositories
 	                            [Resolution].Dismissed [Dismissed],
 	                            [Resolution].ProtestedBoatsAreDisqualified [ProtestedBoatsAreDisqualified],
 	                            [Resolution].PenaltiesAreAssessed [PenaltiesAreAssessed],
-	                            [Resolution].PenaltiesDescription [PenaltiesDescription]
+	                            [Resolution].PenaltiesDescription [PenaltiesDescription],
+                                [Resolution].CommissionChairmanAndOthers [CommissionChairmanAndOthers],
+                                [Resolution].ResolutionDate [ResolutionDate]
                             FROM [HearingRequest] [Hearing]
                             INNER JOIN [HearingRequest_Resolution] [Resolution] ON [Resolution].IdHearingRequest = [Hearing].Id";
 
@@ -829,13 +831,15 @@ namespace RaceBoard.Data.Repositories
                             (
                                 IdHearingRequest,
                                 CommissionAcceptsShipSchematic, CommissionAttachesOwnSchematic, Comments, Dismissed,
-                                ProtestedBoatsAreDisqualified, PenaltiesAreAssessed, PenaltiesDescription
+                                ProtestedBoatsAreDisqualified, PenaltiesAreAssessed, PenaltiesDescription,
+                                CommissionChairmanAndOthers, ResolutionDate
                             )
                         VALUES
                             ( 
                                 @idHearingRequest, 
                                 @commissionAcceptsShipSchematic, @commissionAttachesOwnSchematic, @comments, @dismissed, 
-                                @protestedBoatsAreDisqualified, @penaltiesAreAssessed, @penaltiesDescription
+                                @protestedBoatsAreDisqualified, @penaltiesAreAssessed, @penaltiesDescription,
+                                @commissionChairmanAndOthers, @resolutionDate
                             )";
 
             QueryBuilder.AddCommand(sql);
@@ -850,6 +854,8 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddParameter("protestedBoatsAreDisqualified", resolution.ProtestedBoatsAreDisqualified);
             QueryBuilder.AddParameter("penaltiesAreAssessed", resolution.PenaltiesAreAssessed);
             QueryBuilder.AddParameter("penaltiesDescription", resolution.PenaltiesDescription);
+            QueryBuilder.AddParameter("commissionChairmanAndOthers", resolution.CommissionChairmanAndOthers); 
+            QueryBuilder.AddParameter("resolutionDate", resolution.ResolutionDate);
 
             QueryBuilder.AddReturnLastInsertedId();
 

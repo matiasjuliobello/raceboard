@@ -11,5 +11,7 @@
         public bool ProtestedBoatsAreDisqualified { get; set; }
         public bool PenaltiesAreAssessed { get; set; }
         public string PenaltiesDescription { get; set; }
+        public string CommissionChairmanAndOthers { get; set; }
+        public DateTimeOffset ResolutionDate { get; set; }
     }
 }

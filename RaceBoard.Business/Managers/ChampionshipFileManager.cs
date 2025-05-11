@@ -77,7 +77,7 @@ namespace RaceBoard.Business.Managers
         {
             var contextUser = base.GetContextUser();
 
-            _authorizationManager.ValidatePermission(Domain.Enums.Action.ChampionshipFile_Create, championshipFile.Championship.Id, contextUser.Id);
+            _authorizationManager.ValidatePermission(contextUser.Id, Domain.Enums.Action.ChampionshipFile_Create, championshipFile.Championship.Id);
 
             if (context == null)
                 context = _championshipFileRepository.GetTransactionalContext(TransactionContextScope.Internal);
@@ -115,7 +115,7 @@ namespace RaceBoard.Business.Managers
 
             var contextUser = base.GetContextUser();
 
-            _authorizationManager.ValidatePermission(Domain.Enums.Action.ChampionshipFile_Delete, championshipFile.Championship.Id, contextUser.Id);
+            _authorizationManager.ValidatePermission(contextUser.Id, Domain.Enums.Action.ChampionshipFile_Delete, championshipFile.Championship.Id);
 
             //_championshipValidator.SetTransactionalContext(context);
 

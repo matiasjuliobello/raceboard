@@ -13,8 +13,6 @@ using Enums = RaceBoard.Domain.Enums;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using System;
-using RaceBoard.Data.Repositories;
 
 namespace RaceBoard.Business.Managers
 {
@@ -100,7 +98,7 @@ namespace RaceBoard.Business.Managers
         {
             var contextUser = base.GetContextUser();
 
-            _authorizationManager.ValidatePermission(Enums.Action.TeamCrewChangeRequest_Create, crewChangeRequest.Team.Id, contextUser.Id);
+            _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamCrewChangeRequest_Create, crewChangeRequest.Team.Id);
 
             crewChangeRequest.Status = new ChangeRequestStatus() { Id = (int)Enums.RequestStatus.Submitted };
             crewChangeRequest.RequestUser = contextUser;
@@ -189,7 +187,7 @@ namespace RaceBoard.Business.Managers
         public void CreateEquipmentChangeRequest(EquipmentChangeRequest equipmentChangeRequest, ITransactionalContext? context = null)
         {
             var contextUser = base.GetContextUser();
-            _authorizationManager.ValidatePermission(Enums.Action.TeamEquipmentChangeRequest_Create, equipmentChangeRequest.Team.Id, contextUser.Id);
+            _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamEquipmentChangeRequest_Create, equipmentChangeRequest.Team.Id);
 
             equipmentChangeRequest.Status = new ChangeRequestStatus() { Id = (int)Enums.RequestStatus.Submitted };
             equipmentChangeRequest.RequestUser = contextUser;
@@ -278,27 +276,27 @@ namespace RaceBoard.Business.Managers
             return _hearingRequestRepository.GetAssociatedCommitteeBoatReturn(id, context);
         }
 
-        public void CreateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null)
+        public void SubmitHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null)
         {
-            var contextUser = base.GetContextUser();
-            var currentTimestamp = _dateTimeHelper.GetCurrentTimestamp();
-
-            _authorizationManager.ValidatePermission(Enums.Action.TeamHearingRequest_Create, hearingRequest.Team.Id, contextUser.Id);
-
-            hearingRequest.Status = new HearingRequestStatus() { Id = (int)Enums.RequestStatus.Submitted };
-            hearingRequest.RequestUser = contextUser;
-            hearingRequest.CreationDate = currentTimestamp;
-
-            _hearingRequestValidator.SetTransactionalContext(context);
-
-            if (!_hearingRequestValidator.IsValid(hearingRequest, Scenario.Create))
-                throw new FunctionalException(ErrorType.ValidationError, _hearingRequestValidator.Errors);
-
-            if (context == null)
-                context = _hearingRequestRepository.GetTransactionalContext(TransactionContextScope.Internal);
-
             try
             {
+                var contextUser = base.GetContextUser();
+                var currentTimestamp = _dateTimeHelper.GetCurrentTimestamp();
+
+                _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamHearingRequest_Create, hearingRequest.Team.Id);
+
+                hearingRequest.Status = new HearingRequestStatus() { Id = (int)Enums.RequestStatus.Submitted };
+                hearingRequest.RequestUser = contextUser;
+                hearingRequest.CreationDate = currentTimestamp;
+
+                _hearingRequestValidator.SetTransactionalContext(context);
+
+                if (!_hearingRequestValidator.IsValid(hearingRequest, Scenario.Create))
+                    throw new FunctionalException(ErrorType.ValidationError, _hearingRequestValidator.Errors);
+
+                if (context == null)
+                    context = _hearingRequestRepository.GetTransactionalContext(TransactionContextScope.Internal);
+
                 _hearingRequestRepository.Create(hearingRequest, context);
                 _hearingRequestRepository.CreateProtestor(hearingRequest, context);
                 _hearingRequestRepository.CreateProtestorNotice(hearingRequest, context);
@@ -320,51 +318,62 @@ namespace RaceBoard.Business.Managers
             }
         }
 
-        private CommitteeBoatReturn? FindCommitteeBoatReturn(int idChampionship, int idRaceClass, DateTimeOffset hearingRequestCreationDate, ITransactionalContext? context = null)
+        public void ChangeHearingRequestStatus(HearingRequest hearingRequest, ITransactionalContext? context = null)
         {
-            CommitteeBoatReturn? committeeBoatReturn = null;
-
-            var searchFilter = new CommitteeBoatReturnSearchFilter()
-            {
-                Championship = new Championship() { Id = idChampionship },
-                RaceClasses = new List<RaceClass>() { { new RaceClass() { Id = idRaceClass } } },
-                ReturnTime = hearingRequestCreationDate
-            };
-
-            var commiteeBoatReturn = _committeeBoatReturnRepository.Get(searchFilter, paginationFilter: null, sorting: null, context).Results
-                .OrderByDescending(x => x.ReturnTime)
-                .FirstOrDefault();
-
-            if (commiteeBoatReturn != null)
-            {
-                TimeSpan timeSpan = hearingRequestCreationDate - commiteeBoatReturn.ReturnTime;
-                if (timeSpan.TotalHours >= 0 && timeSpan.TotalHours <= 1)
-                    committeeBoatReturn = commiteeBoatReturn;
-            }
-                
-
-            return committeeBoatReturn;
-        }
-
-        public void UpdateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null)
-        {
-            var contextUser = base.GetContextUser();
-            var currentTimestamp = _dateTimeHelper.GetCurrentTimestamp();
-
-            _authorizationManager.ValidatePermission(Enums.Action.TeamHearingRequest_Create, hearingRequest.Team.Id, contextUser.Id);
-
-            //hearingRequest.Status = new HearingRequestStatus() { Id = (int)Enums.RequestStatus.Deliberating };
-
-            _hearingRequestValidator.SetTransactionalContext(context);
-
-            if (!_hearingRequestValidator.IsValid(hearingRequest, Scenario.Update))
-                throw new FunctionalException(ErrorType.ValidationError, _hearingRequestValidator.Errors);
-
-            if (context == null)
-                context = _hearingRequestRepository.GetTransactionalContext(TransactionContextScope.Internal);
-
             try
             {
+                var contextUser = base.GetContextUser();
+                var currentTimestamp = _dateTimeHelper.GetCurrentTimestamp();
+
+                if (contextUser.Role.Id != (int)Enums.UserRole.Jury)
+                    throw new FunctionalException(Common.Enums.ErrorType.Forbidden, base.Translate("NeedPermissions"));
+
+                _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamHearingRequest_Update, hearingRequest.Team.Championship.Id, AuthorizationManager.Entity.Championship);
+
+                if (context == null)
+                    context = _hearingRequestRepository.GetTransactionalContext(TransactionContextScope.Internal);
+
+                _hearingRequestValidator.SetTransactionalContext(context);
+
+                if (hearingRequest.Status.Id != (int)Enums.RequestStatus.Deliberating)
+                    throw new FunctionalException(ErrorType.ValidationError, Translate("InvalidStatus"));
+
+                _hearingRequestRepository.UpdateStatus(hearingRequest, context);
+
+                context.Confirm();
+            }
+            catch (Exception)
+            {
+                if (context != null)
+                    context.Cancel();
+
+                throw;
+            }
+        }
+
+        public void CloseHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null)
+        {
+            try
+            {
+                var contextUser = base.GetContextUser();
+                var currentTimestamp = _dateTimeHelper.GetCurrentTimestamp();
+
+                if (contextUser.Role.Id == (int)Enums.UserRole.Jury)
+                    _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamHearingRequest_Update, hearingRequest.Team.Championship.Id, AuthorizationManager.Entity.Championship);
+                else
+                    _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamHearingRequest_Update, hearingRequest.Team.Id);
+
+                hearingRequest.Resolution.ResolutionDate = currentTimestamp;
+
+                if (context == null)
+                    context = _hearingRequestRepository.GetTransactionalContext(TransactionContextScope.Internal);
+
+                _hearingRequestValidator.SetTransactionalContext(context);
+
+                // TODO: check Status can only be either Approved or Rejected
+                if (!_hearingRequestValidator.IsValid(hearingRequest, Scenario.Update))
+                    throw new FunctionalException(ErrorType.ValidationError, _hearingRequestValidator.Errors);
+
                 _hearingRequestRepository.UpdateStatus(hearingRequest, context);
 
                 _hearingRequestRepository.CreateRequestWithdrawal(hearingRequest, context);
@@ -423,6 +432,34 @@ namespace RaceBoard.Business.Managers
         #endregion
 
         #endregion
+
+        #region Private Methods
+
+        private CommitteeBoatReturn? FindCommitteeBoatReturn(int idChampionship, int idRaceClass, DateTimeOffset hearingRequestCreationDate, ITransactionalContext? context = null)
+        {
+            CommitteeBoatReturn? committeeBoatReturn = null;
+
+            var searchFilter = new CommitteeBoatReturnSearchFilter()
+            {
+                Championship = new Championship() { Id = idChampionship },
+                RaceClasses = new List<RaceClass>() { { new RaceClass() { Id = idRaceClass } } },
+                ReturnTime = hearingRequestCreationDate
+            };
+
+            var commiteeBoatReturn = _committeeBoatReturnRepository.Get(searchFilter, paginationFilter: null, sorting: null, context).Results
+                .OrderByDescending(x => x.ReturnTime)
+                .FirstOrDefault();
+
+            if (commiteeBoatReturn != null)
+            {
+                TimeSpan timeSpan = hearingRequestCreationDate - commiteeBoatReturn.ReturnTime;
+                if (timeSpan.TotalHours >= 0 && timeSpan.TotalHours <= 1)
+                    committeeBoatReturn = commiteeBoatReturn;
+            }
+
+
+            return committeeBoatReturn;
+        }
 
         private void AddHeader(IContainer container)
         {
@@ -784,5 +821,7 @@ namespace RaceBoard.Business.Managers
                 Incident = new HearingRequestIncident() { Place = "", Witnesses = "", BrokenRules = "", Details = "" }
             };
         }
+
+        #endregion
     }
 }

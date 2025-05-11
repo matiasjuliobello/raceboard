@@ -59,7 +59,7 @@ namespace RaceBoard.Business.Managers
         public void RaiseFlags(ChampionshipFlagGroup championshipFlagGroup, ITransactionalContext? context = null)
         {
             var contextUser = base.GetContextUser();
-            _authorizationManager.ValidatePermission(Domain.Enums.Action.ChampionshipFlag_Create, championshipFlagGroup.Championship.Id, contextUser.Id);
+            _authorizationManager.ValidatePermission(contextUser.Id, Domain.Enums.Action.ChampionshipFlag_Create, championshipFlagGroup.Championship.Id);
 
             var currentTime = _dateTimeHelper.GetCurrentTimestamp();
 
@@ -117,7 +117,7 @@ namespace RaceBoard.Business.Managers
         public void LowerFlags(ChampionshipFlagGroup championshipFlagGroup, ITransactionalContext? context = null)
         {
             var contextUser = base.GetContextUser();
-            _authorizationManager.ValidatePermission(Domain.Enums.Action.ChampionshipFlag_Update, championshipFlagGroup.Championship.Id, contextUser.Id);
+            _authorizationManager.ValidatePermission(contextUser.Id, Domain.Enums.Action.ChampionshipFlag_Update, championshipFlagGroup.Championship.Id);
 
             var currentTime = _dateTimeHelper.GetCurrentTimestamp();
 

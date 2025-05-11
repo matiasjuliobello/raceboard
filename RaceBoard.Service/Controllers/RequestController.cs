@@ -184,25 +184,37 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpPost("hearings")]
-        public ActionResult<int> CreateHearingRequest([FromBody] HearingRequestRequest hearingRequestRequest)
+        public ActionResult<int> SubmitHearingRequest([FromBody] HearingRequestRequest hearingRequestRequest)
         {
             var hearingRequest = _mapper.Map<HearingRequest>(hearingRequestRequest);
 
             hearingRequest.Team = _teamManager.Get(hearingRequest.Team.Id);
 
-            _requestManager.CreateHearingRequest(hearingRequest);
+            _requestManager.SubmitHearingRequest(hearingRequest);
+
+            return Ok(hearingRequest.Id);
+        }
+
+        [HttpPut("hearings/change-status")]
+        public ActionResult<int> ChangeHearingRequestStatus([FromBody] HearingRequestRequest hearingRequestRequest)
+        {
+            var hearingRequest = _mapper.Map<HearingRequest>(hearingRequestRequest);
+
+            hearingRequest.Team = _teamManager.Get(hearingRequest.Team.Id);
+
+            _requestManager.ChangeHearingRequestStatus(hearingRequest);
 
             return Ok(hearingRequest.Id);
         }
 
         [HttpPut("hearings")]
-        public ActionResult<int> EditHearingRequest([FromBody] HearingRequestRequest hearingRequestRequest)
+        public ActionResult<int> CloseHearingRequest([FromBody] HearingRequestRequest hearingRequestRequest)
         {
             var hearingRequest = _mapper.Map<HearingRequest>(hearingRequestRequest);
 
             hearingRequest.Team = _teamManager.Get(hearingRequest.Team.Id);
 
-            _requestManager.UpdateHearingRequest(hearingRequest);
+            _requestManager.CloseHearingRequest(hearingRequest);
 
             return Ok(hearingRequest.Id);
         }

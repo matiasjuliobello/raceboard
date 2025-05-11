@@ -62,7 +62,7 @@ namespace RaceBoard.Business.Managers
         public void Create(Organization organization, ITransactionalContext? context = null)
         {
             var contextUser = base.GetContextUser();
-            _authorizationManager.ValidatePermission(Enums.Action.Organization_Create, 0, contextUser.Id);
+            _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.Organization_Create, 0);
 
             _organizationValidator.SetTransactionalContext(context);
 
@@ -102,7 +102,7 @@ namespace RaceBoard.Business.Managers
         public void Update(Organization organization, ITransactionalContext? context = null)
         {
             var contextUser = base.GetContextUser();
-            _authorizationManager.ValidatePermission(Enums.Action.Organization_Update, organization.Id, contextUser.Id);
+            _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.Organization_Update, organization.Id);
 
             _organizationValidator.SetTransactionalContext(context);
 
@@ -129,7 +129,7 @@ namespace RaceBoard.Business.Managers
         public void Delete(int id, ITransactionalContext? context = null)
         {
             var contextUser = base.GetContextUser();
-            _authorizationManager.ValidatePermission(Enums.Action.Organization_Delete, id, contextUser.Id);
+            _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.Organization_Delete, id);
 
             var organization = this.Get(id, context);
 
