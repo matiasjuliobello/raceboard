@@ -15,6 +15,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "CORS_Allowed_Origins": "http://localhost;http://localhost:4200;http://127.0.0.1:4200;http://localhost:5173;127.0.0.1:5173;http://raceboardfront.runasp.net",
+        "FrontEndUrl": "http://localhost:5173/",
         "BuildId": "1.0",
         "SwaggerEnvironmentServerUrl": "https://wwww.raceboard.com/",
         "ConnectionString_DB": "Server=VAR-9XN8VL3\\LOCAL;Database=RaceBoard;Trusted_Connection=True;",

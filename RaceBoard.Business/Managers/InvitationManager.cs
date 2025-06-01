@@ -1,6 +1,6 @@
-﻿using RaceBoard.Business.Managers.Abstract;
+﻿using Microsoft.Extensions.Configuration;
+using RaceBoard.Business.Managers.Abstract;
 using RaceBoard.Business.Managers.Interfaces;
-using RaceBoard.Data.Repositories;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 using RaceBoard.Translations.Interfaces;
@@ -18,7 +18,7 @@ namespace RaceBoard.Business.Managers
         private readonly IPersonRepository _personRepository;
         private readonly IRoleRepository _roleRepository;
 
-        private string _baseUrl = "";
+        private readonly string _baseUrl = "";
 
         public InvitationManager
             (
@@ -30,7 +30,8 @@ namespace RaceBoard.Business.Managers
                 IOrganizationRepository organizationRepository,
                 IChampionshipRepository championshipRepository,
                 IRoleRepository roleRepository,
-                ITranslator translator
+                ITranslator translator,
+                IConfiguration configuration
             ) : base(requestContextManager, translator)
         {
             _mailManager = mailManager;
@@ -41,7 +42,7 @@ namespace RaceBoard.Business.Managers
             _roleRepository = roleRepository;
             _personRepository = personRepository;
 
-            _baseUrl = "http://localhost:5173/invitations";
+            _baseUrl = Path.Combine(configuration["FrontEndUrl"], "invitations");
         }
 
         public void SendOrganizationInvitation(OrganizationMemberInvitation organizationMemberInvitation)
