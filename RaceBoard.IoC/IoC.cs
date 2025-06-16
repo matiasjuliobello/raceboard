@@ -15,11 +15,18 @@ using RaceBoard.Translations;
 using RaceBoard.Domain;
 using RaceBoard.FileStorage.Interfaces;
 using RaceBoard.FileStorage;
-using RaceBoard.Mailing.Interfaces;
-using RaceBoard.Mailing.Providers;
 using RaceBoard.Data.Helpers.SqlBulkHelper;
 using RaceBoard.Messaging.Interfaces;
 using RaceBoard.Messaging.Providers;
+using RaceBoard.Managers.Interfaces;
+using RaceBoard.Notification.Interfaces;
+using RaceBoard.Business.Factories;
+using RaceBoard.Business.Helpers.Interfaces;
+using RaceBoard.Business.Helpers;
+using RaceBoard.Mailing.Interfaces;
+using RaceBoard.Mailing.Providers;
+using EmailStrategies = RaceBoard.Business.Strategies.Notifications.Email;
+using PushStrategies = RaceBoard.Business.Strategies.Notifications.Push;
 
 namespace RaceBoard.IoC
 {
@@ -62,11 +69,12 @@ namespace RaceBoard.IoC
             services.AddScoped<ILanguageManager, LanguageManager>();
             services.AddScoped<IFormatManager, FormatManager>();
             services.AddScoped<IFileTypeManager, FileTypeManager>();
-            services.AddScoped<INotificationManager, NotificationManager>();
+            services.AddScoped<IPushNotificationManager, PushNotificationManager>();
             services.AddScoped<IMailManager, MailManager>();
             services.AddScoped<IInvitationManager, InvitationManager>();
             services.AddScoped<IRequestManager, RequestManager>();
             services.AddScoped<IFileManager, FileManager>();
+            services.AddScoped<IMemberManager, MemberManager>();
             #endregion
 
             #region Validators
@@ -145,6 +153,7 @@ namespace RaceBoard.IoC
             services.AddScoped<IHearingRequestRepository, HearingRequestRepository>();
             services.AddScoped<IHearingRequestTypeRepository, HearingRequestTypeRepository>();
             services.AddScoped<IHearingRequestStatusRepository, HearingRequestStatusRepository>();
+            services.AddScoped<IMemberRepository, MemberRepository>();
             #endregion
 
             #region Helpers
@@ -160,14 +169,27 @@ namespace RaceBoard.IoC
             services.AddScoped<IDateTimeHelper, DateTimeHelper>();
             services.AddScoped<IFormatHelper, FormatHelper>();
             services.AddScoped<ISqlBulkInsertHelper, SqlBulkInsertHelper>();
+            services.AddScoped<INotificationHelper, NotificationHelper>();
             #endregion
 
             #region Providers
             services.AddScoped<ITranslationProvider, TranslationProvider>();
-            services.AddScoped<INotificationProvider, GoogleFirebaseNotificationProvider>();
             services.AddScoped<IFileStorageProvider, BlobFileStorageProvider>();
             services.AddScoped<IFileStorageProvider, DiskFileStorageProvider>();
             services.AddScoped<IEmailProvider, MailSmtpClientEmailProvider>();
+            services.AddScoped<IPushNotificationProvider, GoogleFirebasePushNotificationProvider>();
+            #endregion
+
+            #region Factories
+
+            //services.AddScoped<INotificationStrategyFactory, EmailNotificationStrategyFactory>();
+            //services.AddScoped<INotificationStrategyFactory, PushNotificationStrategyFactory>();
+            services.AddScoped<INotificationStrategyFactory, NotificationStrategyFactory>();
+
+            services.AddScoped<INotificationStrategy, EmailStrategies.ChampionshipInvitationStrategy>();
+            services.AddScoped<INotificationStrategy, PushStrategies.ChampionshipInvitationStrategy>();
+            //services.AddScoped<INotificationStrategy, EmailStrategies.TeamInvitationStrategy>();
+
             #endregion
 
             services.AddScoped<IContextResolver, ContextResolver>();

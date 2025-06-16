@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using RaceBoard.Business.Helpers.Interfaces;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
@@ -18,7 +19,8 @@ namespace RaceBoard.Service.Controllers
     public class ChampionshipFileController : AbstractController<ChampionshipFileController>
     {
         private readonly IChampionshipFileManager _championshipFileManager;
-        private readonly INotificationManager _notificationManager;
+        //private readonly IPushNotificationManager _pushNotificationManager;
+        private readonly INotificationHelper _notificationHelper;
 
         public ChampionshipFileController
             (
@@ -26,13 +28,15 @@ namespace RaceBoard.Service.Controllers
                 ILogger<ChampionshipFileController> logger,
                 ITranslator translator,
                 IChampionshipFileManager championshipFileManager,
-                INotificationManager notificationManager,
+                //IPushNotificationManager pushNotificationManager,
+                INotificationHelper notificationHelper,
                 ISessionHelper sessionHelper,
                 IRequestContextManager requestContextManager
             ) : base(mapper, logger, translator, sessionHelper, requestContextManager)
         {
             _championshipFileManager = championshipFileManager;
-            _notificationManager = notificationManager;
+            //_pushNotificationManager = pushNotificationManager;
+            _notificationHelper = notificationHelper;
         }
 
         [HttpGet("{id}/files")]
@@ -73,15 +77,15 @@ namespace RaceBoard.Service.Controllers
 
             _championshipFileManager.Create(championshipFile);
 
-            #region Notifications
-            _notificationManager.SendNotifications
-                (
-                    base.Translate("NewFileHasBeenUploaded"),
-                    championshipFile.File.Description,
-                    championshipFile.Championship.Id,
-                    championshipFile.RaceClasses.Select(x => x.Id).ToArray()
-                );
-            #endregion
+            //_pushNotificationManager.Send
+            //    (
+            //        base.Translate("NewFileHasBeenUploaded"),
+            //        championshipFile.File.Description,
+            //        championshipFile.Championship.Id,
+            //        championshipFile.RaceClasses.Select(x => x.Id).ToArray()
+            //    );
+            ////string title, string message, int idChampionship, int[] idsRaceClasses)
+            _notificationHelper.SendNotification(Notification.Enums.NotificationType.Championship_File_Uploaded, championshipFile);
 
             return Ok();
         }

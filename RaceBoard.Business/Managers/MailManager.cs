@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
-using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Mailing.BaseClasses;
 using RaceBoard.Mailing.Interfaces;
+using RaceBoard.Managers.Interfaces;
 
 namespace RaceBoard.Business.Managers
 {
@@ -22,7 +22,7 @@ namespace RaceBoard.Business.Managers
             bool.TryParse(configuration["Mailing_Enabled"], out _enabled);
         }
 
-        public async Task SendMail(string subject, string body, string emailAddress, string fullName)
+        public async Task Send(string subject, string body, string emailAddress, string fullName)
         {
             if (!_enabled)
                 return;

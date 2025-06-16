@@ -1,39 +1,39 @@
 ﻿using Microsoft.Extensions.Configuration;
 using RaceBoard.Business.Managers.Interfaces;
-using RaceBoard.Messaging.Entities;
 using RaceBoard.Messaging.Interfaces;
-using RestSharp;
+using RaceBoard.PushMessaging.Entities;
+using RaceBoard.PushMessaging.Enums;
 
 namespace RaceBoard.Business.Managers
 {
-    public class NotificationManager : INotificationManager
+    public class PushNotificationManager : IPushNotificationManager
     {
-        private readonly INotificationProvider _notificationProvider;
+        private readonly IPushNotificationProvider _pushNotificationProvider;
         private readonly IRaceClassManager _raceClassManager;
 
         private readonly bool _enabled;
 
         private const int _MESSAGE_MAX_LENGTH = 50;
 
-        public NotificationManager
+        public PushNotificationManager
         (
             IConfiguration configuration,
-            INotificationProvider notificationProvider,
+            IPushNotificationProvider pushNotificationProvider,
             IRaceClassManager raceClassManager
         )
         {
-            _notificationProvider = notificationProvider;
+            _pushNotificationProvider = pushNotificationProvider;
             _raceClassManager = raceClassManager;
 
             bool.TryParse(configuration["Messaging_Enabled"], out _enabled);
         }
 
-        public async Task SendNotifications(string title, string message, int idChampionship, int[] idsRaceClasses)
+        public async Task Send(string title, string message, int idChampionship, int[] idsRaceClasses)
         {
             if (!_enabled)
                 return;
 
-            List<Task<RestResponse>> tasks = new List<Task<RestResponse>>();
+            var tasks = new List<Task>();
 
             int[] targetRaceClassIds = new int[] { };
 
@@ -56,31 +56,34 @@ namespace RaceBoard.Business.Managers
 
             Parallel.ForEach(targetRaceClassIds, idsRaceClass =>
             {
-                var notification = new Notification()
+                var notification = new PushNotification()
                 {
-                    NotificationType = Messaging.Providers.NotificationType.Topic,
-                    IdTarget = idTarget != null ? idTarget : $"{idChampionship}_{idsRaceClass}",
-                    Title = title,
-                    Message = message,
-                    ImageFileUrl = null
+                    Data = new PushNotificationData()
+                    {
+                        NotificationType = PushNotificationType.Topic,
+                        IdTarget = idTarget != null ? idTarget : $"{idChampionship}_{idsRaceClass}",
+                        Title = title,
+                        Message = message,
+                        ImageFileUrl = null
+                    }
                 };
 
-                Task<RestResponse> response = _notificationProvider.SendNotification(notification);
+                Task task = _pushNotificationProvider.Send(notification);
 
-                tasks.Add(response);
+                tasks.Add(task);
             });
 
             await Task.WhenAll(tasks);
 
 
-            //List<int> items = new List<int>();
-            //for(int i=0; i < 10; i++)
-            //{
-            //    items.Add(i);
-            //    Thread.Sleep(1000);
-            //}
+            List<int> items = new List<int>();
+            for (int i = 0; i < 10; i++)
+            {
+                items.Add(i);
+                Thread.Sleep(1000);
+            }
 
-            //int count = items.Count;
+            int count = items.Count;
         }
     }
 }

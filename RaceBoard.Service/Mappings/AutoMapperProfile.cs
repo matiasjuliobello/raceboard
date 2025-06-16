@@ -59,10 +59,11 @@ using TimeZone = RaceBoard.Domain.TimeZone;
 using Action = RaceBoard.Domain.Action;
 using Enums = RaceBoard.Domain.Enums;
 using MessagingEnums = RaceBoard.Messaging.Providers;
-using RaceBoard.Messaging.Entities;
 using RaceBoard.DTOs.CommitteeBoatReturn.Request;
 using RaceBoard.DTOs.CommitteeBoatReturn.Response;
 using RaceBoard.DTOs.Gender.Response;
+using RaceBoard.PushMessaging.Entities;
+using RaceBoard.PushMessaging.Enums;
 
 namespace RaceBoard.Service.Mappings
 {
@@ -285,8 +286,8 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Flag, opt => opt.MapFrom(src => CreateObject<Flag>(src.IdFlag)))
                 .ForMember(dest => dest.Person, opt => opt.MapFrom(src => CreateObject<Person>(src.IdPerson)));
 
-            CreateMap<NotificationRequest, Notification>()
-                .ForMember(dest => dest.NotificationType, opt => opt.MapFrom(src => (MessagingEnums.NotificationType)src.IdNotificationType));
+            //CreateMap<NotificationRequest, PushNotification>()
+            //    .ForMember(dest => dest.NotificationType, opt => opt.MapFrom(src => (PushNotificationType)src.IdNotificationType));
 
             CreateMap<DeviceRequest, Device>()
                 .ForMember(dest => dest.Platform, opt => opt.MapFrom(src => CreateObject<Platform>(src.IdPlatform)));

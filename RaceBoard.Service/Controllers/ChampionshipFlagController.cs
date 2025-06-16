@@ -21,7 +21,7 @@ namespace RaceBoard.Service.Controllers
         private readonly IChampionshipFlagManager _championshipFlagManager;
         private readonly IChampionshipManager _championshipManager;
         private readonly IFlagManager _flagManager;
-        private readonly INotificationManager _notificationManager;
+        private readonly IPushNotificationManager _pushNotificationManager;
 
         public ChampionshipFlagController
             (
@@ -31,7 +31,7 @@ namespace RaceBoard.Service.Controllers
                 IChampionshipFlagManager championshipFlagManager,
                 IChampionshipManager championshipManager,
                 IFlagManager flagManager,
-                INotificationManager notificationManager,
+                IPushNotificationManager pushNotificationManager,
                 ISessionHelper sessionHelper,
                 IRequestContextManager requestContextManager
             ) : base(mapper, logger, translator, sessionHelper, requestContextManager)
@@ -39,7 +39,7 @@ namespace RaceBoard.Service.Controllers
             _championshipFlagManager = championshipFlagManager;
             _championshipManager = championshipManager;
             _flagManager = flagManager;
-            _notificationManager = notificationManager;
+            _pushNotificationManager = pushNotificationManager;
         }
 
         [HttpGet("{id}/flags")]
@@ -75,7 +75,7 @@ namespace RaceBoard.Service.Controllers
             var championshipGroups = _championshipManager.GetGroups(championshipFlagGroup.Championship.Id);
             int[] idsRaceClasses = championshipGroups.SelectMany(x => x.RaceClasses.Select(y => y.Id)).ToArray();
 
-            _notificationManager.SendNotifications
+            _pushNotificationManager.Send
                 (
                     base.Translate("NewFlagsHoisted"),
                     listOfFlagNames,

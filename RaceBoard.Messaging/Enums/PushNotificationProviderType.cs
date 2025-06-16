@@ -1,6 +1,6 @@
 ﻿namespace RaceBoard.Messaging.Enums
 {
-    public enum NotificationProviderType
+    public enum PushNotificationProviderType
     {
         GoogleFirebase = 1
     }

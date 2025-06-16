@@ -15,8 +15,8 @@ namespace RaceBoard.Mailing.Providers
             public string Html { get; set; }
         }
 
-        public MailSmtpClientEmailProvider(IConfiguration configuration) 
-            : base(configuration) 
+        public MailSmtpClientEmailProvider(IConfiguration configuration)
+            : base(configuration)
         {
         }
 
@@ -55,7 +55,7 @@ namespace RaceBoard.Mailing.Providers
 
         private List<MailSenderContent> BuildContentForBulkDelivery()
         {
-            throw new NotImplementedException();   
+            throw new NotImplementedException();
         }
 
 

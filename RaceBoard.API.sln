@@ -23,7 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RaceBoard.FileStorage", "Ra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RaceBoard.Mailing", "RaceBoard.Mailing\RaceBoard.Mailing.csproj", "{3AC920C7-4F91-4F4C-BFE1-E91B385080C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaceBoard.Messaging", "RaceBoard.Messaging\RaceBoard.Messaging.csproj", "{FB4A42D4-54DA-490E-95E8-5FDD820E8E20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RaceBoard.PushMessaging", "RaceBoard.Messaging\RaceBoard.PushMessaging.csproj", "{FB4A42D4-54DA-490E-95E8-5FDD820E8E20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaceBoard.Notification", "RaceBoard.Notification\RaceBoard.Notification.csproj", "{9D8E7F23-30CB-4CC7-9E8F-5E4097079836}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,10 @@ Global
 		{FB4A42D4-54DA-490E-95E8-5FDD820E8E20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB4A42D4-54DA-490E-95E8-5FDD820E8E20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB4A42D4-54DA-490E-95E8-5FDD820E8E20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D8E7F23-30CB-4CC7-9E8F-5E4097079836}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D8E7F23-30CB-4CC7-9E8F-5E4097079836}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D8E7F23-30CB-4CC7-9E8F-5E4097079836}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D8E7F23-30CB-4CC7-9E8F-5E4097079836}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

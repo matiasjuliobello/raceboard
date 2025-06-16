@@ -52,7 +52,12 @@
         "EmailProvider_SMTP_Port": "587",
         "EmailProvider_SMTP_SSL": "true",
         "EmailProvider_SMTP_Username": "matias.julio.bello@gmail.com",
-        "EmailProvider_SMTP_Password": "ktyb vdpt bsjx ijjn"
+        "EmailProvider_SMTP_Password": "ktyb vdpt bsjx ijjn",
+
+        "Google_Credentials_Scope": "https://www.googleapis.com/auth/firebase.messaging",
+        "Google_Firebase_Credentials_FilePath": "C:\\Matias.Bello\\Race Board\\SourceCode\\credentials.json",
+        "Google_Firebase_ApiBaseUrl": "https://fcm.googleapis.com/v1",
+        "Google_Firebase_ProjectId": "raceboard-b3663"
 
         //[Mail Relay]
         //"EmailProvider_SenderEmailAddress": "raceboard@ipzmarketing.com",

@@ -43,7 +43,7 @@ namespace RaceBoard.Business.Managers
                 IDateTimeHelper dateTimeHelper,
                 IStringHelper stringHelper,
                 ICryptographyHelper cryptographyHelper,
-                IMailManager mailManager,
+                //IMailManager mailManager,
                 ICustomValidator<TeamMember> teamMemberValidator,
                 ICustomValidator<TeamMemberInvitation> teamMemberInvitationValidator,
                 IRequestContextManager requestContextManager,

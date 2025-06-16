@@ -1,13 +1,7 @@
 ﻿using Newtonsoft.Json;
 
-namespace RaceBoard.Messaging.Providers
+namespace RaceBoard.PushMessaging.Providers
 {
-    public enum NotificationType
-    {
-        Message = 1,
-        Topic = 2
-    }
-
     public class AndroidContent
     {
         public AndroidNotificationContent notification { get; set; }
@@ -56,11 +50,11 @@ namespace RaceBoard.Messaging.Providers
         public AppleContent apns { get; set; }
     }
 
-    public class GoogleFirebaseNotification
+    public class GoogleFirebasePushNotification
     {
         public Message message { get; set; }
 
-        public GoogleFirebaseNotification(string title, string message, string? imageFileUrl = null)
+        public GoogleFirebasePushNotification(string title, string message, string? imageFileUrl = null)
         {
             this.message = new Message()
             {

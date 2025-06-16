@@ -9,7 +9,7 @@
         public DateTimeOffset StartDate { get; set; }
         public DateTimeOffset EndDate { get; set; }
         public File? ImageFile {  get; set; }
-
         public User CreationUser { get; set; }
+        //public List<ChampionshipGroup> Groups { get; set; }
     }
 }

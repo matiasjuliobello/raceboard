@@ -55,7 +55,7 @@
     <ProjectReference Include="..\RaceBoard.Domain\RaceBoard.Domain.csproj" />
     <ProjectReference Include="..\RaceBoard.DTOs\RaceBoard.DTOs.csproj" />
     <ProjectReference Include="..\RaceBoard.IoC\RaceBoard.IoC.csproj" />
-    <ProjectReference Include="..\RaceBoard.Messaging\RaceBoard.Messaging.csproj" />
+    <ProjectReference Include="..\RaceBoard.Messaging\RaceBoard.PushMessaging.csproj" />
     <ProjectReference Include="..\RaceBoard.Translations\RaceBoard.Translations.csproj" />
   </ItemGroup>
 

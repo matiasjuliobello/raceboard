@@ -3,6 +3,8 @@ using RaceBoard.Mailing.Interfaces;
 using System.Net.Mail;
 using System.Net;
 using Microsoft.Extensions.Configuration;
+using RaceBoard.Notification.Interfaces;
+using RaceBoard.Mailing.Entities;
 
 namespace RaceBoard.Mailing.BaseClasses
 {
@@ -67,6 +69,11 @@ namespace RaceBoard.Mailing.BaseClasses
 
         public abstract void PrepareSend(EmailDeliveryType emailDeliveryType);
 
+        public async Task SendAsync()
+        {
+            await Task.Run(() => Send());
+        }
+
         public virtual void Send()
         {
             //throw new NotImplementedException("Method not available in base class <EmailSenderSMTP>. Must implement in derived class.");
@@ -108,6 +115,20 @@ namespace RaceBoard.Mailing.BaseClasses
             }
 
             smtpClient.Send(mailMessage);
+        }
+
+        public Task Send(INotification notification)
+        {
+            var settings = notification.Settings as EmailNotificationSettings;
+            var data = notification.Data as EmailNotificationData;
+
+            //this.AddSender(settings);
+            this.AddRecipient(new EmailAddress(data.EmailAddress, data.FullName));
+            //this.AddAttachments(data.Attachments);
+            this.AddBody(data.Body);
+            this.AddSubject(data.Subject);
+
+            return this.SendAsync();
         }
     }
 }

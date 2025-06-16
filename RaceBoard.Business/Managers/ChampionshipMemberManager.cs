@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.Extensions.Configuration;
+﻿using RaceBoard.Business.Helpers.Interfaces;
 using RaceBoard.Business.Managers.Abstract;
 using RaceBoard.Business.Managers.Interfaces;
-using RaceBoard.Business.Validators;
 using RaceBoard.Business.Validators.Interfaces;
 using RaceBoard.Common;
 using RaceBoard.Common.Enums;
@@ -21,15 +19,13 @@ namespace RaceBoard.Business.Managers
     {
         private readonly IChampionshipMemberRepository _championshipMemberRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IPersonRepository _personRepository;
-        private readonly IChampionshipRepository _championshipRepository;
         private readonly ICustomValidator<ChampionshipMember> _championshipMemberValidator;
         private readonly ICustomValidator<ChampionshipMemberInvitation> _championshipMemberInvitationValidator;
         private readonly IDateTimeHelper _dateTimeHelper;
         private readonly IStringHelper _stringHelper;
         private readonly ICryptographyHelper _cryptographyHelper;
         private readonly IAuthorizationManager _authorizationManager;
-        private readonly IInvitationManager _invitationManager;
+        private readonly INotificationHelper _notificationHelper;
 
         private const int _INVITATION_TOKEN_LENGTH = 32;
 
@@ -39,8 +35,6 @@ namespace RaceBoard.Business.Managers
             (
                 IChampionshipMemberRepository championshipMemberRepository,
                 IUserRepository userRepository,
-                IPersonRepository personRepository,
-                IChampionshipRepository championshipRepository,
                 ICustomValidator<ChampionshipMember> championshipMemberValidator,
                 ICustomValidator<ChampionshipMemberInvitation> championshipMemberInvitationValidator,
                 ITranslator translator,
@@ -49,20 +43,18 @@ namespace RaceBoard.Business.Managers
                 ICryptographyHelper cryptographyHelper,
                 IRequestContextManager requestContextManager,
                 IAuthorizationManager authorizationManager,
-                IInvitationManager invitationManager
+                INotificationHelper notificationHelper
             ) : base(requestContextManager, translator)
         {
             _championshipMemberRepository = championshipMemberRepository;
             _userRepository = userRepository;
-            _personRepository = personRepository;
-            _championshipRepository = championshipRepository;
             _championshipMemberValidator = championshipMemberValidator;
             _championshipMemberInvitationValidator = championshipMemberInvitationValidator;
             _dateTimeHelper = dateTimeHelper;
             _stringHelper = stringHelper;
             _cryptographyHelper = cryptographyHelper;
             _authorizationManager = authorizationManager;
-            _invitationManager = invitationManager;
+            _notificationHelper = notificationHelper;
         }
 
         #endregion
@@ -129,7 +121,7 @@ namespace RaceBoard.Business.Managers
             {
                 _championshipMemberRepository.CreateInvitation(championshipMemberInvitation, context);
 
-                _invitationManager.SendChampionshipInvitation(championshipMemberInvitation);
+                _notificationHelper.SendNotification(Notification.Enums.NotificationType.Championship_Invitation, championshipMemberInvitation);
 
                 context.Confirm();
             }

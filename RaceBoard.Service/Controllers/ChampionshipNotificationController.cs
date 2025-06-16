@@ -18,21 +18,21 @@ namespace RaceBoard.Service.Controllers
     public class ChampionshipNotificationController : AbstractController<ChampionshipNotificationController>
     {
         private readonly IChampionshipNotificationManager _championshipNotificationManager;
-        private readonly INotificationManager _notificationManager;
+        private readonly IPushNotificationManager _pushNotificationManager;
 
         public ChampionshipNotificationController
             (
                 IMapper mapper,
                 ILogger<ChampionshipNotificationController> logger,
                 ITranslator translator,
-                IChampionshipNotificationManager championshipNotificationManager,                
-                INotificationManager notificationManager,
+                IChampionshipNotificationManager championshipNotificationManager,
+                IPushNotificationManager pushNotificationManager,
                 ISessionHelper sessionHelper,
                 IRequestContextManager requestContextManager
             ) : base(mapper, logger, translator, sessionHelper, requestContextManager)
         {
             _championshipNotificationManager = championshipNotificationManager;
-            _notificationManager = notificationManager;
+            _pushNotificationManager = pushNotificationManager;
         }
 
         [HttpGet("{id}/notifications")]
@@ -60,7 +60,7 @@ namespace RaceBoard.Service.Controllers
 
             _championshipNotificationManager.Create(championshipNotification);
 
-            await _notificationManager.SendNotifications
+            await _pushNotificationManager.Send
                 (
                     championshipNotification.Title, 
                     championshipNotification.Message, 

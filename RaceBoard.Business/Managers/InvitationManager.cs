@@ -3,6 +3,7 @@ using RaceBoard.Business.Managers.Abstract;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
+using RaceBoard.Notification.Interfaces;
 using RaceBoard.Translations.Interfaces;
 using System.Text;
 
@@ -10,7 +11,7 @@ namespace RaceBoard.Business.Managers
 {
     public class InvitationManager : AbstractManager, IInvitationManager
     {
-        private readonly IMailManager _mailManager;
+        private readonly INotificationStrategyFactory _notificationStrategyFactory;
         private readonly ITeamMemberRoleRepository _teamMemberRoleRepository;
         private readonly ITeamRepository _teamRepository;
         private readonly IOrganizationRepository _organizationRepository;
@@ -22,7 +23,7 @@ namespace RaceBoard.Business.Managers
 
         public InvitationManager
             (
-                IMailManager mailManager,
+                INotificationStrategyFactory notificationStrategyFactory,
                 IRequestContextManager requestContextManager,
                 IPersonRepository personRepository,
                 ITeamRepository teamRepository,
@@ -34,7 +35,7 @@ namespace RaceBoard.Business.Managers
                 IConfiguration configuration
             ) : base(requestContextManager, translator)
         {
-            _mailManager = mailManager;
+            _notificationStrategyFactory = notificationStrategyFactory;
             _teamMemberRoleRepository = teamMemberRoleRepository;
             _teamRepository = teamRepository;
             _organizationRepository = organizationRepository;
@@ -47,28 +48,34 @@ namespace RaceBoard.Business.Managers
 
         public void SendOrganizationInvitation(OrganizationMemberInvitation organizationMemberInvitation)
         {
-            var requestUser = _personRepository.GetByIdUser(organizationMemberInvitation.RequestUser.Id);
+            //var requestUser = _personRepository.GetByIdUser(organizationMemberInvitation.RequestUser.Id);
 
-            var role = _roleRepository.Get().Results.First(x => x.Id == organizationMemberInvitation.Role.Id);
-            organizationMemberInvitation.Role.Name = role.Name;
+            //var role = _roleRepository.Get().Results.First(x => x.Id == organizationMemberInvitation.Role.Id);
+            //organizationMemberInvitation.Role.Name = role.Name;
 
-            var organization = _organizationRepository.Get(organizationMemberInvitation.Organization.Id);
+            //var organization = _organizationRepository.Get(organizationMemberInvitation.Organization.Id);
 
-            string emailSubject = $"You've been invited to join an organization";
+            //string emailSubject = $"You've been invited to join an organization";
 
-            string link = BuildInvitationLink("organization", organization!.Id, organizationMemberInvitation.Invitation);
+            //string link = BuildInvitationLink("organization", organization!.Id, organizationMemberInvitation.Invitation);
 
-            var emailHtmlContent = new StringBuilder();
-            emailHtmlContent.AppendLine("<br />");
-            emailHtmlContent.AppendLine($"You've been invited by <b>{requestUser.Fullname}</b> to join <b>'{organization!.Name}'</b>, performing as <b>{organizationMemberInvitation.Role.Name}</b>");
-            emailHtmlContent.AppendLine("<br /><br /><br />");
-            emailHtmlContent.AppendLine(link);
-            string emailBody = emailHtmlContent.ToString();
+            //var emailHtmlContent = new StringBuilder();
+            //emailHtmlContent.AppendLine("<br />");
+            //emailHtmlContent.AppendLine($"You've been invited by <b>{requestUser.Fullname}</b> to join <b>'{organization!.Name}'</b>, performing as <b>{organizationMemberInvitation.Role.Name}</b>");
+            //emailHtmlContent.AppendLine("<br /><br /><br />");
+            //emailHtmlContent.AppendLine(link);
+            //string emailBody = emailHtmlContent.ToString();
 
-            string emailRecipientAddress = organizationMemberInvitation.Invitation.EmailAddress;
-            string emailRecipientName = organizationMemberInvitation.Invitation.EmailAddress;
+            //string emailRecipientAddress = organizationMemberInvitation.Invitation.EmailAddress;
+            //string emailRecipientName = organizationMemberInvitation.Invitation.EmailAddress;
 
-            _mailManager.SendMail(emailSubject, emailBody, emailRecipientAddress, emailRecipientName);
+            //_notificationStrategyFactory.SendMail(emailSubject, emailBody, emailRecipientAddress, emailRecipientName);
+
+            var strategies = _notificationStrategyFactory.ResolveStrategy(Notification.Enums.NotificationType.Organization_Invitation);
+            foreach(var strategy in strategies)
+            {
+                //strategy.SendNotificationAsync();
+            }
         }
 
         public void SendChampionshipInvitation(ChampionshipMemberInvitation championshipMemberInvitation)
@@ -94,7 +101,7 @@ namespace RaceBoard.Business.Managers
             string emailRecipientAddress = championshipMemberInvitation.Invitation.EmailAddress;
             string emailRecipientName = championshipMemberInvitation.Invitation.EmailAddress;
 
-            _mailManager.SendMail(emailSubject, emailBody, emailRecipientAddress, emailRecipientName);
+            //_notificationStrategyFactory.SendMail(emailSubject, emailBody, emailRecipientAddress, emailRecipientName);
         }    
 
         public void SendTeamInvitation(TeamMemberInvitation teamMemberInvitation)
@@ -123,7 +130,7 @@ namespace RaceBoard.Business.Managers
             string emailRecipientAddress = teamMemberInvitation.Invitation.EmailAddress;
             string emailRecipientName = teamMemberInvitation.Invitation.EmailAddress;
 
-            _mailManager.SendMail(emailSubject, emailBody, emailRecipientAddress, emailRecipientName);
+            //_notificationStrategyFactory.SendMail(emailSubject, emailBody, emailRecipientAddress, emailRecipientName);
         }
 
         #region Private Methods
