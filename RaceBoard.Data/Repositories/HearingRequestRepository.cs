@@ -544,7 +544,8 @@ namespace RaceBoard.Data.Repositories
         {
             string sql = $@"SELECT
                                 [Resolution].Id [Id],
-	                            [Resolution].CommissionAcceptsShipSchematic [CommissionAcceptsShipSchematic],
+                                [Resolution].AcceptedFacts [AcceptedFacts],	                            
+                                [Resolution].CommissionAcceptsShipSchematic [CommissionAcceptsShipSchematic],
 	                            [Resolution].CommissionAttachesOwnSchematic [CommissionAttachesOwnSchematic],
 	                            [Resolution].Comments [Comments],
 	                            [Resolution].Dismissed [Dismissed],
@@ -830,13 +831,15 @@ namespace RaceBoard.Data.Repositories
             string sql = @" INSERT INTO [HearingRequest_Resolution]
                             (
                                 IdHearingRequest,
+                                AcceptedFacts,
                                 CommissionAcceptsShipSchematic, CommissionAttachesOwnSchematic, Comments, Dismissed,
                                 ProtestedBoatsAreDisqualified, PenaltiesAreAssessed, PenaltiesDescription,
                                 CommissionChairmanAndOthers, ResolutionDate
                             )
                         VALUES
                             ( 
-                                @idHearingRequest, 
+                                @idHearingRequest,
+                                @acceptedFacts,
                                 @commissionAcceptsShipSchematic, @commissionAttachesOwnSchematic, @comments, @dismissed, 
                                 @protestedBoatsAreDisqualified, @penaltiesAreAssessed, @penaltiesDescription,
                                 @commissionChairmanAndOthers, @resolutionDate
@@ -847,6 +850,7 @@ namespace RaceBoard.Data.Repositories
             var resolution = hearingRequest.Resolution;
 
             QueryBuilder.AddParameter("idHearingRequest", hearingRequest.Id);
+            QueryBuilder.AddParameter("acceptedFacts", resolution.AcceptedFacts);
             QueryBuilder.AddParameter("commissionAcceptsShipSchematic", resolution.CommissionAcceptsShipSchematic);
             QueryBuilder.AddParameter("commissionAttachesOwnSchematic", resolution.CommissionAttachesOwnSchematic);
             QueryBuilder.AddParameter("comments", resolution.Comments);
