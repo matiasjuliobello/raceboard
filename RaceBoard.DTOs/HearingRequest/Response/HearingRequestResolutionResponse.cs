@@ -3,6 +3,7 @@
     public class HearingRequestResolutionResponse
     {
         public int Id { get; set; }
+        public string AcceptedFacts { get; set; }
         public bool CommissionAcceptsShipSchematic { get; set; }
         public bool CommissionAttachesOwnSchematic { get; set; }
         public string Comments { get; set; }
