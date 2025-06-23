@@ -224,7 +224,7 @@ namespace RaceBoard.Data.Repositories
                                 [MedicalInsurance].Id [Id],
                                 [MedicalInsurance].Name [Name]
                             FROM [Person] [Person]
-                            INNER JOIN [Gender] ON [Gender].Id = [Person].IdGender 
+                            LEFT JOIN [Gender] ON [Gender].Id = [Person].IdGender 
                             LEFT JOIN [Country] [Country] ON [Country].Id = [Person].IdCountry
                             LEFT JOIN [BloodType] [BloodType] ON [BloodType].Id = [Person].IdBloodType
                             LEFT JOIN [MedicalInsurance] [MedicalInsurance] ON [MedicalInsurance].Id = [Person].IdMedicalInsurance

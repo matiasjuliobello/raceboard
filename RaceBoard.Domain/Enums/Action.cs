@@ -2,6 +2,11 @@
 {
     public enum Action
     {
+        User_Get = 1,
+        User_Create = 2,
+        User_Update = 3,
+        User_Delete = 4,
+
         //Person_Get = 1,
         //Person_Create = 2,
         //Person_Update = 3,

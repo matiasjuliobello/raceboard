@@ -233,7 +233,7 @@ namespace RaceBoard.Data.Repositories
         {
             string sql = @" UPDATE [Boat] SET
                                 Name = @name,
-                                SailNumber = @sailNumber
+                                SailNumber = @sailNumber,
                                 HullNumber = @hullNumber";
 
             QueryBuilder.AddCommand(sql);

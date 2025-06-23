@@ -25,6 +25,8 @@ namespace RaceBoard.Business.Managers
         private readonly ICustomValidator<UserPassword> _userPasswordValidator;
         private readonly ICryptographyHelper _cryptographyHelper;
         private readonly IStringHelper _stringHelper;
+        private readonly IAuthorizationManager _authorizationManager;
+        private readonly IInvitationManager _invitationManager;
 
         #region Constructors
 
@@ -36,6 +38,8 @@ namespace RaceBoard.Business.Managers
                 ICustomValidator<UserPassword> userPasswordValidator,
                 ICryptographyHelper cryptographyHelper,
                 IStringHelper stringHelper,
+                IAuthorizationManager authorizationManager,
+                IInvitationManager invitationManager,
                 ITranslator translator,
                 IConfiguration configuration
                 //IRequestContextManager requestContextManager
@@ -47,6 +51,8 @@ namespace RaceBoard.Business.Managers
             _userPasswordValidator = userPasswordValidator;
             _cryptographyHelper = cryptographyHelper;
             _stringHelper = stringHelper;
+            _authorizationManager = authorizationManager;
+            _invitationManager = invitationManager;
 
             _passwordResetTokenLength = Convert.ToInt32(configuration["PasswordResetToken_Length"]);
             _passwordResetTokenLifetime = Convert.ToInt32(configuration["PasswordResetToken_Lifetime"]);
@@ -104,6 +110,7 @@ namespace RaceBoard.Business.Managers
 
                 _userRepository.Create(user, context);
 
+                // TODO: remove this hardcoding
                 var userSettings = new UserSettings()
                 {
                     User        = new User() { Id = user.Id },
@@ -112,6 +119,7 @@ namespace RaceBoard.Business.Managers
                     DateFormat  = new DateFormat() { Id = 3 }
                 };
                 _userSettingsRepository.Create(userSettings, context);
+
 
                 context.Confirm();
             }

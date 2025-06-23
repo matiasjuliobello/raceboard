@@ -1,17 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Linq;
-using RaceBoard.Translations.Entities;
+﻿using RaceBoard.Translations.Entities;
 using RaceBoard.Translations.Interfaces;
-using System.Diagnostics;
-using System.Diagnostics.Metrics;
-using System.Drawing;
-using System.Drawing.Printing;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.Xml;
 
 namespace RaceBoard.Translations
 {
@@ -625,6 +613,10 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("MedicalInsurance"),
                 new Tuple<string, string>(Languages.English, "Medical insurance"),
                 new Tuple<string, string>(Languages.Spanish, "Obra social"));
+            AddText(AddTranslation("MedicalInsuranceNumber"),
+                new Tuple<string, string>(Languages.English, "Medical insurance number"),
+                new Tuple<string, string>(Languages.Spanish, "Número obra social"));
+            
             AddText(AddTranslation("Email"),
                 new Tuple<string, string>(Languages.English, "E-mail"),
                 new Tuple<string, string>(Languages.Spanish, "E-mail"));
@@ -673,9 +665,9 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.English, "No class boat has been created yet"),
                 new Tuple<string, string>(Languages.Spanish, "Aún no se ha dado de alta a ningún barco de la clase"));
 
-            AddText(AddTranslation("WelcomeToRaceBoard"),
-                new Tuple<string, string>(Languages.English, "Welcome to RaceBoard"),
-                new Tuple<string, string>(Languages.Spanish, "Bienvenido a RaceBoard"));
+            AddText(AddTranslation("WelcomeToApp"),
+                new Tuple<string, string>(Languages.English, "Welcome to Pixails"),
+                new Tuple<string, string>(Languages.Spanish, "Bienvenido a Pixails"));
             AddText(AddTranslation("LandingWelcomeMessage"),
                 new Tuple<string, string>(Languages.English, "Access championship results, get regattas latest status, and get in touch with the committee"),
                 new Tuple<string, string>(Languages.Spanish, "Accede a los resultados de los campeonatos, informate sobre el estado de las regatas y comunicate con la comisión"));

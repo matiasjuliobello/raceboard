@@ -15,8 +15,8 @@ namespace RaceBoard.Data.Repositories
         {
             { "Id", "[RaceClass].Id" },
             { "Name", "[RaceClass].Name"},
-            { "[RaceCategory].Id", "[RaceCategory].Id" },
-            { "[RaceCategory].Name", "[RaceCategory].Name"}
+            { "RaceCategory.Id", "[RaceCategory].Id" },
+            { "RaceCategory.Name", "[RaceCategory].Name"}
         };
 
         #endregion
@@ -33,14 +33,14 @@ namespace RaceBoard.Data.Repositories
 
         public PaginatedResult<RaceClass> Get(RaceClassSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
-            return this.GetRaceCategories(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
+            return this.GetRaceClasses(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
         }
 
         #endregion
 
         #region Private Methods
 
-        private PaginatedResult<RaceClass> GetRaceCategories(RaceClassSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        private PaginatedResult<RaceClass> GetRaceClasses(RaceClassSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             string sql = $@"SELECT
                                 [RaceClass].Id [Id],
