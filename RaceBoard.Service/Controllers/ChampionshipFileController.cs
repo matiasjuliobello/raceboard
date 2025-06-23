@@ -20,7 +20,6 @@ namespace RaceBoard.Service.Controllers
     {
         private readonly IChampionshipFileManager _championshipFileManager;
         //private readonly IPushNotificationManager _pushNotificationManager;
-        private readonly INotificationHelper _notificationHelper;
 
         public ChampionshipFileController
             (
@@ -29,14 +28,12 @@ namespace RaceBoard.Service.Controllers
                 ITranslator translator,
                 IChampionshipFileManager championshipFileManager,
                 //IPushNotificationManager pushNotificationManager,
-                INotificationHelper notificationHelper,
                 ISessionHelper sessionHelper,
                 IRequestContextManager requestContextManager
             ) : base(mapper, logger, translator, sessionHelper, requestContextManager)
         {
             _championshipFileManager = championshipFileManager;
             //_pushNotificationManager = pushNotificationManager;
-            _notificationHelper = notificationHelper;
         }
 
         [HttpGet("{id}/files")]
@@ -76,16 +73,6 @@ namespace RaceBoard.Service.Controllers
             championshipFile.File.Description = championshipFileUploadRequest.Description;
 
             _championshipFileManager.Create(championshipFile);
-
-            //_pushNotificationManager.Send
-            //    (
-            //        base.Translate("NewFileHasBeenUploaded"),
-            //        championshipFile.File.Description,
-            //        championshipFile.Championship.Id,
-            //        championshipFile.RaceClasses.Select(x => x.Id).ToArray()
-            //    );
-            ////string title, string message, int idChampionship, int[] idsRaceClasses)
-            _notificationHelper.SendNotification(Notification.Enums.NotificationType.Championship_File_Uploaded, championshipFile);
 
             return Ok();
         }

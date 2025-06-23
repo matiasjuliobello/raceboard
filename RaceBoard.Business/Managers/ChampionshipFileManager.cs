@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
+using RaceBoard.Business.Helpers;
+using RaceBoard.Business.Helpers.Interfaces;
 using RaceBoard.Business.Managers.Abstract;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Business.Validators.Interfaces;
@@ -21,6 +23,8 @@ namespace RaceBoard.Business.Managers
         private readonly ICustomValidator<ChampionshipFile> _championshipFileValidator;
 
         private readonly IFileHelper _fileHelper;
+        private readonly INotificationHelper _notificationHelper;
+
         private readonly IFileRepository _fileRepository;
 
         private readonly IAuthorizationManager _authorizationManager;
@@ -35,6 +39,7 @@ namespace RaceBoard.Business.Managers
                 ITranslator translator,
                 IDateTimeHelper dateTimeHelper,
                 IFileHelper fileHelper,
+                INotificationHelper notificationHelper,
                 IFileStorageProvider fileStorageProvider,
                 IFileRepository fileRepository,
                 IConfiguration configuration,
@@ -44,6 +49,7 @@ namespace RaceBoard.Business.Managers
             _championshipFileRepository = championshipFileRepository;
             _championshipFileValidator = championshipFileValidator;
             _fileHelper = fileHelper;
+            _notificationHelper = notificationHelper;
             _fileRepository = fileRepository;
             _authorizationManager = authorizationManager;
         }
@@ -94,6 +100,16 @@ namespace RaceBoard.Business.Managers
 
                 _championshipFileRepository.Create(championshipFile, context);
                 _championshipFileRepository.AssociateRaceClasses(championshipFile, context);
+
+                //_pushNotificationManager.Send
+                //    (
+                //        base.Translate("NewFileHasBeenUploaded"),
+                //        championshipFile.File.Description,
+                //        championshipFile.Championship.Id,
+                //        championshipFile.RaceClasses.Select(x => x.Id).ToArray()
+                //    );
+                ////string title, string message, int idChampionship, int[] idsRaceClasses)
+                _notificationHelper.SendNotification(Notification.Enums.NotificationType.Championship_File_Uploaded, championshipFile);
 
                 context.Confirm();
             }
