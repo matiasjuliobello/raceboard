@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using RaceBoard.Business.Strategies.Notifications.Email;
-using RaceBoard.Business.Strategies.Notifications.Push;
 using RaceBoard.Notification.Enums;
 using RaceBoard.Notification.Interfaces;
 using Email = RaceBoard.Business.Strategies.Notifications.Email;
@@ -20,20 +18,44 @@ namespace RaceBoard.Business.Factories
             strategies = new Dictionary<NotificationType, Type[]>
             {
                 {
-                    NotificationType.Championship_Invitation,
+                    NotificationType.User_Creation,
                     new Type[]
                     {
-                        typeof(Email.ChampionshipInvitationStrategy),
-                        typeof(Push.ChampionshipInvitationStrategy)
+                        typeof(Email.UserCreationStrategy)
                     }
                 },
-                //{
-                //    NotificationType.TeamInvitation,
-                //    new Type[]
-                //    {
-                //        typeof(Email.TeamInvitationStrategy) 
-                //    }
-                //}
+                {
+                    NotificationType.Organization_Member_Invitation,
+                    new Type[]
+                    {
+                        typeof(Email.OrganizationMemberInvitationStrategy),
+                        //typeof(Push.OrganizationMemberInvitationStrategy)
+                    }
+                },
+                {
+                    NotificationType.Championship_Member_Invitation,
+                    new Type[]
+                    {
+                        typeof(Email.ChampionshipMemberInvitationStrategy),
+                        typeof(Push.ChampionshipMemberInvitationStrategy)
+                    }
+                },
+                {
+                    NotificationType.Championship_File_Upload,
+                    new Type[]
+                    {
+                        typeof(Email.ChampionshipFileUploadStrategy),
+                        typeof(Push.ChampionshipFileUploadStrategy)
+                    }
+                },
+                {
+                    NotificationType.Team_Member_Invitation,
+                    new Type[]
+                    {
+                        typeof(Email.TeamMemberInvitationStrategy),
+                        //typeof(Push.TeamMemberInvitationStrategy)
+                    }
+                },
             };
         }
 
@@ -45,9 +67,9 @@ namespace RaceBoard.Business.Factories
 
                 return _serviceProvider.GetServices<INotificationStrategy>().Where(x => strategyTypes.Contains(x.GetType()));
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new NotImplementedException("EmailNotificationStrategyNotImplemented");
+                throw new NotImplementedException("NotificationStrategyNotImplemented");
             }
         }
     }

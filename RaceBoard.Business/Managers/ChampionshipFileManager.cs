@@ -101,16 +101,6 @@ namespace RaceBoard.Business.Managers
                 _championshipFileRepository.Create(championshipFile, context);
                 _championshipFileRepository.AssociateRaceClasses(championshipFile, context);
 
-                //_pushNotificationManager.Send
-                //    (
-                //        base.Translate("NewFileHasBeenUploaded"),
-                //        championshipFile.File.Description,
-                //        championshipFile.Championship.Id,
-                //        championshipFile.RaceClasses.Select(x => x.Id).ToArray()
-                //    );
-                ////string title, string message, int idChampionship, int[] idsRaceClasses)
-                _notificationHelper.SendNotification(Notification.Enums.NotificationType.Championship_File_Uploaded, championshipFile);
-
                 context.Confirm();
             }
             catch (Exception)
@@ -123,6 +113,8 @@ namespace RaceBoard.Business.Managers
 
                 throw;
             }
+
+            _notificationHelper.SendNotification(Notification.Enums.NotificationType.Championship_File_Upload, championshipFile);
         }
 
         public void Delete(int id, ITransactionalContext? context = null)

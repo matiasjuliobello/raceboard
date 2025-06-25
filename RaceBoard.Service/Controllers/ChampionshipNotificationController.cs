@@ -60,13 +60,13 @@ namespace RaceBoard.Service.Controllers
 
             _championshipNotificationManager.Create(championshipNotification);
 
-            await _pushNotificationManager.Send
-                (
-                    championshipNotification.Title, 
-                    championshipNotification.Message, 
-                    championshipNotification.Id, 
-                    championshipNotification.RaceClasses.Select(x => x.Id).ToArray()
-                );
+            //await _pushNotificationManager.Send
+            //    (
+            //        championshipNotification.Title, 
+            //        championshipNotification.Message, 
+            //        championshipNotification.Id, 
+            //        championshipNotification.RaceClasses.Select(x => x.Id).ToArray()
+            //    );
 
             return Ok(championshipNotification.Id);
         }

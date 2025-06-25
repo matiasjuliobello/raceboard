@@ -71,7 +71,7 @@ namespace RaceBoard.IoC
             services.AddScoped<IFileTypeManager, FileTypeManager>();
             services.AddScoped<IPushNotificationManager, PushNotificationManager>();
             services.AddScoped<IMailManager, MailManager>();
-            services.AddScoped<IInvitationManager, InvitationManager>();
+            //services.AddScoped<IInvitationManager, InvitationManager>();
             services.AddScoped<IRequestManager, RequestManager>();
             services.AddScoped<IFileManager, FileManager>();
             services.AddScoped<IMemberManager, MemberManager>();
@@ -180,16 +180,24 @@ namespace RaceBoard.IoC
             services.AddScoped<IPushNotificationProvider, GoogleFirebasePushNotificationProvider>();
             #endregion
 
-            #region Factories
-
+            #region Factories & Strategies
             //services.AddScoped<INotificationStrategyFactory, EmailNotificationStrategyFactory>();
             //services.AddScoped<INotificationStrategyFactory, PushNotificationStrategyFactory>();
             services.AddScoped<INotificationStrategyFactory, NotificationStrategyFactory>();
 
-            services.AddScoped<INotificationStrategy, EmailStrategies.ChampionshipInvitationStrategy>();
-            services.AddScoped<INotificationStrategy, PushStrategies.ChampionshipInvitationStrategy>();
-            //services.AddScoped<INotificationStrategy, EmailStrategies.TeamInvitationStrategy>();
+            services.AddScoped<INotificationStrategy, EmailStrategies.UserCreationStrategy>();
 
+            services.AddScoped<INotificationStrategy, EmailStrategies.OrganizationMemberInvitationStrategy>();
+            //services.AddScoped<INotificationStrategy, PushStrategies.OrganizationMemberInvitationStrategy>();
+
+            services.AddScoped<INotificationStrategy, EmailStrategies.ChampionshipMemberInvitationStrategy>();
+            services.AddScoped<INotificationStrategy, PushStrategies.ChampionshipMemberInvitationStrategy>();
+
+            services.AddScoped<INotificationStrategy, EmailStrategies.ChampionshipFileUploadStrategy>();
+            services.AddScoped<INotificationStrategy, PushStrategies.ChampionshipFileUploadStrategy>();
+
+            services.AddScoped<INotificationStrategy, EmailStrategies.TeamMemberInvitationStrategy>();
+            //services.AddScoped<INotificationStrategy, PushStrategies.TeamMemberInvitationStrategy>();
             #endregion
 
             services.AddScoped<IContextResolver, ContextResolver>();

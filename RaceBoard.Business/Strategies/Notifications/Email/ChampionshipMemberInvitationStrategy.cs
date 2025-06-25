@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using RaceBoard.Business.Strategies.Notifications.Abstract;
+using RaceBoard.Common.Exceptions;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 using RaceBoard.Mailing.Entities;
@@ -8,20 +9,21 @@ using RaceBoard.Translations.Interfaces;
 
 namespace RaceBoard.Business.Strategies.Notifications.Email
 {
-    public class ChampionshipInvitationStrategy : AbstractStrategy, INotificationStrategy
+    public class ChampionshipMemberInvitationStrategy : AbstractStrategy, INotificationStrategy
     {
         private readonly IPersonRepository _personRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly IChampionshipRepository _championshipRepository;
 
-        public ChampionshipInvitationStrategy
+        public ChampionshipMemberInvitationStrategy
             (
                 IConfiguration configuration,
                 ITranslator translator,
                 IPersonRepository personRepository, 
                 IRoleRepository roleRepository, 
-                IChampionshipRepository championshipRepository
-            ) : base(configuration, translator)
+                IChampionshipRepository championshipRepository,
+                IMemberRepository memberRepository
+            ) : base(configuration, translator, memberRepository)
         {
             _personRepository = personRepository;
             _roleRepository = roleRepository;
@@ -44,30 +46,28 @@ namespace RaceBoard.Business.Strategies.Notifications.Email
 
         private EmailNotificationData BuildNotificationData(ChampionshipMemberInvitation championshipMemberInvitation)
         {
-            var requestUser = _personRepository.GetByIdUser(championshipMemberInvitation.RequestUser.Id);
+            var championship = _championshipRepository.Get(championshipMemberInvitation.Championship.Id);
+            if (championship == null)
+                throw new FunctionalException(Common.Enums.ErrorType.NotFound, base.Translate("RecordNotFound"));
 
             var role = _roleRepository.Get().Results.First(x => x.Id == championshipMemberInvitation.Role.Id);
-            championshipMemberInvitation.Role.Name = role.Name;
 
-            var championship = _championshipRepository.Get(championshipMemberInvitation.Championship.Id);
+            var requestUser = _personRepository.GetByIdUser(championshipMemberInvitation.RequestUser.Id);
 
-            string emailSubject = base.Translate("YouVeBeenInvitedToJoinChampionship"); //"You've been invited to join a championship"
-
+            string subject = base.Translate("ChampionshipMemberInvitationEmailSubject");
+            string body = String.Format(base.Translate("ChampionshipMemberInvitationEmailBody"), requestUser.Fullname, championship.Name, role.Name);
             string link = base.BuildInvitationLink("championship", championship!.Id, championshipMemberInvitation.Invitation);
+            body = $"<br />{body}<br /><br /><br />{link}";
 
-            string body = $"You've been invited by <b>{requestUser.Fullname}</b> to join <b>'{championship.Name}'</b>, performing as <b>{championshipMemberInvitation.Role.Name}</b>";
-            
-            string emailBody = $"<br />{body}<br /><br /><br />{link}";
-
-            string emailRecipientAddress = championshipMemberInvitation.Invitation.EmailAddress;
-            string emailRecipientName = championshipMemberInvitation.Invitation.EmailAddress;
+            string recipientAddress = championshipMemberInvitation.Invitation.EmailAddress;
+            string recipientName = championshipMemberInvitation.Invitation.EmailAddress;
 
             return new EmailNotificationData()
             {
-                Subject = emailSubject,
-                Body = emailBody,
-                EmailAddress = emailRecipientAddress,
-                FullName = emailRecipientName
+                Subject = subject,
+                Body = body,
+                EmailAddress = recipientAddress,
+                FullName = recipientName
             };
         }
 

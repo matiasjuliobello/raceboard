@@ -121,7 +121,7 @@ namespace RaceBoard.Business.Managers
             {
                 _championshipMemberRepository.CreateInvitation(championshipMemberInvitation, context);
 
-                _notificationHelper.SendNotification(Notification.Enums.NotificationType.Championship_Invitation, championshipMemberInvitation);
+                _notificationHelper.SendNotification(Notification.Enums.NotificationType.Championship_Member_Invitation, championshipMemberInvitation);
 
                 context.Confirm();
             }

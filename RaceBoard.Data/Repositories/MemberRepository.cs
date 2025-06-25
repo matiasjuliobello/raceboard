@@ -1,4 +1,5 @@
-﻿using RaceBoard.Common.Helpers.Pagination;
+﻿using Microsoft.AspNetCore.Http.Extensions;
+using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
@@ -19,7 +20,7 @@ namespace RaceBoard.Data.Repositories
             { "Organization.Name", "[Organization].Name" },
             { "Team.Id", "[Team].Id" },
             { "RaceClass.Id", "[RaceClass].Id" },
-            { "RaceClass.Id", "[RaceClass].Name" },
+            { "RaceClass.Name", "[RaceClass].Name" },
             { "User.Id", "[User].Id" },
             { "Person.Id", "[Person].Id" },
             { "Person.Firstname", "[Person].Firstname" },
@@ -87,6 +88,7 @@ namespace RaceBoard.Data.Repositories
                             INNER JOIN [User_Person] [User_Person] ON [User_Person].IdUser = [User].Id
                             INNER JOIN [Person] [Person] ON [Person].Id = [User_Person].IdPerson";
 
+            QueryBuilder.Clear();
             QueryBuilder.AddCommand(sql);
             this.ProcessMemberSearchFilter(memberSearchFilter);
 
@@ -99,12 +101,14 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<Member, Championship, Organization, Team, RaceClass, User, Person, Member>
+                        return reader.Read<Championship, Organization, Team, RaceClass, User, Person, Member>
                         (
-                            (member, championship, organization, team, raceClass, user, person) =>
+                            (championship, organization, team, raceClass, user, person) =>
                             {
+                                var member = new Member();
+
                                 member.Championship = championship;
-                                member.Championship.Organizations.Add(organization);
+                                member.Championship.Organizations = new List<Organization> { organization };
                                 member.Team = team;
                                 member.Team.RaceClass = raceClass;
                                 member.User = user;

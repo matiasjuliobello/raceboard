@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Configuration;
+using RaceBoard.Business.Helpers.Interfaces;
 using RaceBoard.Business.Managers.Abstract;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Business.Validators;
@@ -30,7 +31,8 @@ namespace RaceBoard.Business.Managers
         private readonly IStringHelper _stringHelper;
         private readonly ICryptographyHelper _cryptographyHelper;
         private readonly IAuthorizationManager _authorizationManager;
-        private readonly IInvitationManager _invitationManager;
+        //private readonly IInvitationManager _invitationManager;
+        private readonly INotificationHelper _notificationHelper;
 
         private const int _INVITATION_TOKEN_LENGTH = 32;
 
@@ -50,7 +52,8 @@ namespace RaceBoard.Business.Managers
                 ICryptographyHelper cryptographyHelper,
                 IRequestContextManager requestContextManager,
                 IAuthorizationManager authorizationManager,
-                IInvitationManager invitationManager
+                //IInvitationManager invitationManager
+                INotificationHelper notificationHelper
             ) : base(requestContextManager, translator)
         {
             _organizationMemberRepository = organizationMemberRepository;
@@ -63,7 +66,8 @@ namespace RaceBoard.Business.Managers
             _stringHelper = stringHelper;
             _cryptographyHelper = cryptographyHelper;
             _authorizationManager = authorizationManager;
-            _invitationManager = invitationManager;
+            //_invitationManager = invitationManager;
+            _notificationHelper = notificationHelper;
         }
 
         #endregion
@@ -130,7 +134,8 @@ namespace RaceBoard.Business.Managers
             {
                 _organizationMemberRepository.CreateInvitation(organizationMemberInvitation, context);
 
-                _invitationManager.SendOrganizationInvitation(organizationMemberInvitation);
+                //_invitationManager.SendOrganizationInvitation(organizationMemberInvitation);
+                _notificationHelper.SendNotification(Notification.Enums.NotificationType.Organization_Member_Invitation, organizationMemberInvitation);
 
                 context.Confirm();
             }

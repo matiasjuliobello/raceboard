@@ -9,7 +9,7 @@ namespace RaceBoard.Business.Managers
     public class PushNotificationManager : IPushNotificationManager
     {
         private readonly IPushNotificationProvider _pushNotificationProvider;
-        private readonly IRaceClassManager _raceClassManager;
+        //private readonly IRaceClassManager _raceClassManager;
 
         private readonly bool _enabled;
 
@@ -18,12 +18,12 @@ namespace RaceBoard.Business.Managers
         public PushNotificationManager
         (
             IConfiguration configuration,
-            IPushNotificationProvider pushNotificationProvider,
-            IRaceClassManager raceClassManager
+            IPushNotificationProvider pushNotificationProvider
+            //IRaceClassManager raceClassManager
         )
         {
             _pushNotificationProvider = pushNotificationProvider;
-            _raceClassManager = raceClassManager;
+            //_raceClassManager = raceClassManager;
 
             bool.TryParse(configuration["Messaging_Enabled"], out _enabled);
         }
@@ -37,31 +37,37 @@ namespace RaceBoard.Business.Managers
 
             int[] targetRaceClassIds = new int[] { };
 
-            string idTarget = null;
+            string? idTarget = (idsRaceClasses == null || idsRaceClasses.Length == 0) ? idChampionship.ToString() : null;
 
-            var allRaceClassIds = _raceClassManager.Get().Results.Select(x => x.Id).ToArray();
-            if (allRaceClassIds.Length == idsRaceClasses.Length)
-            {
-                idTarget = $"{idChampionship}";
+            if (!String.IsNullOrEmpty(idTarget))
+                targetRaceClassIds = idsRaceClasses!;
 
-                targetRaceClassIds = allRaceClassIds;
-            }
-            else
-            {
-                targetRaceClassIds = idsRaceClasses;
-            }
+            //if (idsRaceClasses == null || idsRaceClasses.Length == 0)
+            //    idTarget = idChampionship.ToString();
+
+            //var allRaceClassIds = _raceClassManager.Get().Results.Select(x => x.Id).ToArray();
+            //if (allRaceClassIds.Length == idsRaceClasses.Length)
+            //{
+            //    idTarget = $"{idChampionship}";
+
+            //    targetRaceClassIds = allRaceClassIds;
+            //}
+            //else
+            //{
+            //    targetRaceClassIds = idsRaceClasses;
+            //}
 
             if (message.Length > _MESSAGE_MAX_LENGTH)
                 message = message.Substring(0, _MESSAGE_MAX_LENGTH) + "...";
 
-            Parallel.ForEach(targetRaceClassIds, idsRaceClass =>
+            Parallel.ForEach(targetRaceClassIds, idRaceClass =>
             {
                 var notification = new PushNotification()
                 {
                     Data = new PushNotificationData()
                     {
                         NotificationType = PushNotificationType.Topic,
-                        IdTarget = idTarget != null ? idTarget : $"{idChampionship}_{idsRaceClass}",
+                        IdTarget = idTarget != null ? idTarget : $"{idChampionship}_{idRaceClass}",
                         Title = title,
                         Message = message,
                         ImageFileUrl = null
@@ -74,7 +80,6 @@ namespace RaceBoard.Business.Managers
             });
 
             await Task.WhenAll(tasks);
-
 
             List<int> items = new List<int>();
             for (int i = 0; i < 10; i++)

@@ -1,4 +1,6 @@
-﻿using RaceBoard.Business.Managers.Abstract;
+﻿using RaceBoard.Business.Helpers;
+using RaceBoard.Business.Helpers.Interfaces;
+using RaceBoard.Business.Managers.Abstract;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Business.Validators;
 using RaceBoard.Business.Validators.Interfaces;
@@ -27,7 +29,8 @@ namespace RaceBoard.Business.Managers
         private readonly IStringHelper _stringHelper;
         private readonly ICryptographyHelper _cryptographyHelper;
         private readonly IAuthorizationManager _authorizationManager;
-        private readonly IInvitationManager _invitationManager;
+        //private readonly IInvitationManager _invitationManager;
+        private readonly INotificationHelper _notificationHelper;
 
         private const int _INVITATION_TOKEN_LENGTH = 32;
 
@@ -48,7 +51,8 @@ namespace RaceBoard.Business.Managers
                 ICustomValidator<TeamMemberInvitation> teamMemberInvitationValidator,
                 IRequestContextManager requestContextManager,
                 IAuthorizationManager authorizationManager,
-                IInvitationManager invitationManager,
+                //IInvitationManager invitationManager,
+                INotificationHelper notificationHelper,
                 ITranslator translator
 
             ) : base(requestContextManager, translator)
@@ -64,7 +68,8 @@ namespace RaceBoard.Business.Managers
             _teamMemberValidator = teamMemberValidator;
             _teamMemberInvitationValidator = teamMemberInvitationValidator;
             _authorizationManager = authorizationManager;
-            _invitationManager = invitationManager;
+            //_invitationManager = invitationManager;
+            _notificationHelper = notificationHelper;
         }
 
         #endregion
@@ -131,7 +136,8 @@ namespace RaceBoard.Business.Managers
             {
                 _teamMemberRepository.CreateInvitation(teamMemberInvitation, context);
 
-                _invitationManager.SendTeamInvitation(teamMemberInvitation);
+                //_invitationManager.SendTeamInvitation(teamMemberInvitation);
+                _notificationHelper.SendNotification(Notification.Enums.NotificationType.Team_Member_Invitation, teamMemberInvitation);
 
                 context.Confirm();
             }

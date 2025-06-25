@@ -1,17 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Linq;
-using RaceBoard.Translations.Entities;
+﻿using RaceBoard.Translations.Entities;
 using RaceBoard.Translations.Interfaces;
-using System.Diagnostics;
-using System.Diagnostics.Metrics;
-using System.Drawing;
-using System.Drawing.Printing;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.Xml;
 
 namespace RaceBoard.Translations
 {
@@ -218,6 +206,35 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("YouHaveAcceptedTheRequest"),
                 new Tuple<string, string>(Languages.English, "You have accepted the request"),
                 new Tuple<string, string>(Languages.Spanish, "Aceptaste la soliticud"));
+
+            AddText(AddTranslation("InvitationEmailLinkText"),
+                new Tuple<string, string>(Languages.English, "Click here to proceed"),
+                new Tuple<string, string>(Languages.Spanish, "Haz click aquí para continuar"));
+            AddText(AddTranslation("OrganizationMemberInvitationEmailSubject"),
+                new Tuple<string, string>(Languages.English, "You've been invited to join a organization"),
+                new Tuple<string, string>(Languages.Spanish, "Te invitaron a unirte a una organización"));
+            AddText(AddTranslation("OrganizationMemberInvitationEmailBody"),
+                new Tuple<string, string>(Languages.English, "You've been invited by <b>{0}</b> to join organization <b>'{1}'</b>, performing as <b>{2}</b>"),
+                new Tuple<string, string>(Languages.Spanish, "Recibiste una invitación de <b>{0}</b> para unirte a la organización <b>'{1}'</b>, desempeñándote como <b>{2}</b>"));
+            AddText(AddTranslation("ChampionshipMemberInvitationEmailSubject"),
+                new Tuple<string, string>(Languages.English, "You've been invited to join a championship"),
+                new Tuple<string, string>(Languages.Spanish, "Te invitaron a unirte a un campeonato"));
+            AddText(AddTranslation("ChampionshipMemberInvitationEmailBody"),
+                new Tuple<string, string>(Languages.English, "You've been invited by <b>{0}</b> to join championship <b>'{1}'</b>, performing as <b>{2}</b>"),
+                new Tuple<string, string>(Languages.Spanish, "Recibiste una invitación de <b>{0}</b> para unirte al campeonato <b>'{1}'</b>, desempeñándote como <b>{2}</b>"));
+            AddText(AddTranslation("TeamMemberInvitationEmailSubject"),
+                new Tuple<string, string>(Languages.English, "You've been invited to join a team"),
+                new Tuple<string, string>(Languages.Spanish, "Te invitaron a unirte a un equipo"));
+            AddText(AddTranslation("TeamMemberInvitationEmailBody"),
+                new Tuple<string, string>(Languages.English, "You've been invited by <b>{0}</b> to join a team in <b>'{1}'</b>, performing as <b>{2}</b>"),
+                new Tuple<string, string>(Languages.Spanish, "Recibiste una invitación de <b>{0}</b> para unirte a un equipo en <b>'{1}'</b>, desempeñándote como <b>{2}</b>"));
+            AddText(AddTranslation("ChampionshipNewFileUploadEmailSubject"),
+                new Tuple<string, string>(Languages.English, "A new file has been uploaded to the championship"),
+                new Tuple<string, string>(Languages.Spanish, "Se ha subido un nuevo archivo al campeonato"));
+            AddText(AddTranslation("ChampionshipNewFileUploadEmailSubjectEmailBody"),
+                new Tuple<string, string>(Languages.English, "User <b>{0}</b> has uploaded file <b>'{1}'</b> to championship <b>{2}</b>"),
+                new Tuple<string, string>(Languages.Spanish, "El usuario <b>{0}</b> ha subido el archivo <b>'{1}'</b> al campeonato <b>{2}</b>"));
+
 
             AddText(AddTranslation("Members"),
                 new Tuple<string, string>(Languages.English, "Members"),
@@ -657,6 +674,11 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("CreateNewAccount"),
                 new Tuple<string, string>(Languages.English, "Create new account"),
                 new Tuple<string, string>(Languages.Spanish, "Crear nueva cuenta"));
+            AddText(AddTranslation("NewAccountCreated"),
+                new Tuple<string, string>(Languages.English, "New user account created"),
+                new Tuple<string, string>(Languages.Spanish, "Nueva cuenta de usuario creada"));
+
+            
             AddText(AddTranslation("CreateNewOrganization"),
                 new Tuple<string, string>(Languages.English, "Create new club"),
                 new Tuple<string, string>(Languages.Spanish, "Crear nuevo club"));
@@ -704,6 +726,10 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("LogIn"),
                 new Tuple<string, string>(Languages.English, "Login"),
                 new Tuple<string, string>(Languages.Spanish, "Entrar"));
+            AddText(AddTranslation("LoginLinkText"),
+                new Tuple<string, string>(Languages.English, "Log in to Pixails"),
+                new Tuple<string, string>(Languages.Spanish, "Inicia sesión en Pixails"));
+            
             AddText(AddTranslation("LogOut"),
                 new Tuple<string, string>(Languages.English, "Logout"),
                 new Tuple<string, string>(Languages.Spanish, "Cerrar sesión"));
@@ -1229,16 +1255,6 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("TypeBoatNameOrSailNumber"),
                 new Tuple<string, string>(Languages.English, "TypeBoatNameOrSailNumber"),
                 new Tuple<string, string>(Languages.Spanish, "Escribir nombre o número de vela"));
-
-            AddText(AddTranslation("InvitationEmailLinkText"),
-                new Tuple<string, string>(Languages.English, "Click here to proceed"),
-                new Tuple<string, string>(Languages.Spanish, "Haz click aquí para continuar"));
-            AddText(AddTranslation("TeamMemberInvitationEmailSubject"),
-                new Tuple<string, string>(Languages.English, "You've been invited to join a team"),
-                new Tuple<string, string>(Languages.Spanish, "Te invitaron a unirte a un equipo"));
-            AddText(AddTranslation("TeamMemberInvitationEmailBody"),
-                new Tuple<string, string>(Languages.English, "You've been invited by <b>{0}</b> to join a team in <b>'{1}'</b>, performing as <b>{2}</b>"),
-                new Tuple<string, string>(Languages.Spanish, "Recibiste una invitación de <b>{0}</b> para unirte a un equipo en <b>'{1}'</b>, desempeñándote como <b>{2}</b>"));
 
             AddText(AddTranslation("DateAndTime"),
                 new Tuple<string, string>(Languages.English, "Date and time"),

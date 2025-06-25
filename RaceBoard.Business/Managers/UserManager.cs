@@ -11,6 +11,7 @@ using RaceBoard.Domain;
 using RaceBoard.Translations.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Enums = RaceBoard.Common.Enums;
+using RaceBoard.Business.Helpers.Interfaces;
 
 namespace RaceBoard.Business.Managers
 {
@@ -24,6 +25,7 @@ namespace RaceBoard.Business.Managers
         private readonly ICustomValidator<User> _userValidator;
         private readonly ICustomValidator<UserPassword> _userPasswordValidator;
         private readonly ICryptographyHelper _cryptographyHelper;
+        private readonly INotificationHelper _notificationHelper;
         private readonly IStringHelper _stringHelper;
 
         #region Constructors
@@ -36,6 +38,7 @@ namespace RaceBoard.Business.Managers
                 ICustomValidator<UserPassword> userPasswordValidator,
                 ICryptographyHelper cryptographyHelper,
                 IStringHelper stringHelper,
+                INotificationHelper notificationHelper,
                 ITranslator translator,
                 IConfiguration configuration
                 //IRequestContextManager requestContextManager
@@ -46,6 +49,7 @@ namespace RaceBoard.Business.Managers
             _userValidator = userValidator;
             _userPasswordValidator = userPasswordValidator;
             _cryptographyHelper = cryptographyHelper;
+            _notificationHelper = notificationHelper;
             _stringHelper = stringHelper;
 
             _passwordResetTokenLength = Convert.ToInt32(configuration["PasswordResetToken_Length"]);
@@ -104,6 +108,7 @@ namespace RaceBoard.Business.Managers
 
                 _userRepository.Create(user, context);
 
+                // TODO: remove this hardcoding
                 var userSettings = new UserSettings()
                 {
                     User        = new User() { Id = user.Id },
@@ -112,6 +117,8 @@ namespace RaceBoard.Business.Managers
                     DateFormat  = new DateFormat() { Id = 3 }
                 };
                 _userSettingsRepository.Create(userSettings, context);
+
+                _notificationHelper.SendNotification(Notification.Enums.NotificationType.User_Creation, user);
 
                 context.Confirm();
             }

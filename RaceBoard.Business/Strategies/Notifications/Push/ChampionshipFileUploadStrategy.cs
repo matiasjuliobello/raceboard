@@ -8,18 +8,20 @@ using RaceBoard.Translations.Interfaces;
 
 namespace RaceBoard.Business.Strategies.Notifications.Push
 {
-    public class ChampionshipFileUploadedStrategy : AbstractStrategy, INotificationStrategy
+    public class ChampionshipFileUploadStrategy : AbstractStrategy, INotificationStrategy
     {
         private readonly IChampionshipRepository _championshipRepository;
 
-        public ChampionshipFileUploadedStrategy
+        public ChampionshipFileUploadStrategy
             (
                 IConfiguration configuration,
                 ITranslator translator,
-                IChampionshipRepository championshipRepository
-            ) : base(configuration, translator)
+                IChampionshipRepository championshipRepository,
+                IMemberRepository memberRepository
+            ) : base(configuration, translator, memberRepository)
         {
             _championshipRepository = championshipRepository;
+            //_memberRepository = memberRepository;
         }
 
         public INotification Produce(object data)
@@ -35,6 +37,8 @@ namespace RaceBoard.Business.Strategies.Notifications.Push
         }
         private PushNotificationData BuildNotificationData(ChampionshipFile championshipFile)
         {
+            var members = base.CheckForTargetMembers(championshipFile.Championship, championshipFile.RaceClasses);
+
             var championship = _championshipRepository.Get(championshipFile.Championship.Id);
 
             string title = $"'{championshipFile.Championship.Name}': " + base.Translate("NewFileHasBeenUploaded");

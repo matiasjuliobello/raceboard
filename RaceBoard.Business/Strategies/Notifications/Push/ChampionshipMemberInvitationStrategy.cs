@@ -8,23 +8,23 @@ using RaceBoard.Translations.Interfaces;
 
 namespace RaceBoard.Business.Strategies.Notifications.Push
 {
-    public class ChampionshipInvitationStrategy : AbstractStrategy, INotificationStrategy
+    public class ChampionshipMemberInvitationStrategy : AbstractStrategy, INotificationStrategy
     {
         private readonly IPersonRepository _personRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly IChampionshipRepository _championshipRepository;
         private readonly IChampionshipGroupRepository _championshipGroupRepository;
 
-        public ChampionshipInvitationStrategy
+        public ChampionshipMemberInvitationStrategy
             (
                 IConfiguration configuration,
                 ITranslator translator,
                 IPersonRepository personRepository,
                 IRoleRepository roleRepository,
                 IChampionshipRepository championshipRepository,
-                IChampionshipGroupRepository championshipGroupRepository
-
-            ) : base(configuration, translator)
+                IChampionshipGroupRepository championshipGroupRepository,
+                IMemberRepository memberRepository
+            ) : base(configuration, translator, memberRepository)
         {
             _personRepository = personRepository;
             _roleRepository = roleRepository;
@@ -46,13 +46,17 @@ namespace RaceBoard.Business.Strategies.Notifications.Push
 
         private PushNotificationData BuildNotificationData(ChampionshipMemberInvitation championshipMemberInvitation)
         {
+            var championship = _championshipRepository.Get(championshipMemberInvitation.Championship.Id);
+            var championshipGroups = _championshipGroupRepository.Get(championship.Id);
+
+            var raceClasses = championshipGroups.SelectMany(x => x.RaceClasses);
+
+            base.CheckForTargetMembers(championship, raceClasses);
+
             var requestUser = _personRepository.GetByIdUser(championshipMemberInvitation.RequestUser.Id);
 
             var role = _roleRepository.Get().Results.First(x => x.Id == championshipMemberInvitation.Role.Id);
             championshipMemberInvitation.Role.Name = role.Name;
-
-            var championship = _championshipRepository.Get(championshipMemberInvitation.Championship.Id);
-            var championshipGroups = _championshipGroupRepository.Get(championship.Id);
 
             string title = base.Translate("YouVeBeenInvitedToJoinChampionship");
 
@@ -61,7 +65,7 @@ namespace RaceBoard.Business.Strategies.Notifications.Push
             return new PushNotificationData()
             {
                 IdChampionship = championship.Id,
-                IdsRaceClasses = championshipGroups.SelectMany(x => x.RaceClasses).Select(x => x.Id).ToArray(),
+                IdsRaceClasses = raceClasses.Select(x => x.Id).ToArray(),
                 Title = title,
                 Message = message
             };

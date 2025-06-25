@@ -75,13 +75,13 @@ namespace RaceBoard.Service.Controllers
             var championshipGroups = _championshipManager.GetGroups(championshipFlagGroup.Championship.Id);
             int[] idsRaceClasses = championshipGroups.SelectMany(x => x.RaceClasses.Select(y => y.Id)).ToArray();
 
-            _pushNotificationManager.Send
-                (
-                    base.Translate("NewFlagsHoisted"),
-                    listOfFlagNames,
-                    championshipFlagGroup.Championship.Id,
-                    idsRaceClasses
-                );
+            //_pushNotificationManager.Send
+            //    (
+            //        base.Translate("NewFlagsHoisted"),
+            //        listOfFlagNames,
+            //        championshipFlagGroup.Championship.Id,
+            //        idsRaceClasses
+            //    );
             #endregion
 
             return Ok(championshipFlagGroup.Id);
