@@ -12,6 +12,7 @@ using RaceBoard.Data;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 using RaceBoard.Translations.Interfaces;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using Enums = RaceBoard.Domain.Enums;
 
 namespace RaceBoard.Business.Managers
@@ -114,9 +115,12 @@ namespace RaceBoard.Business.Managers
             return teamMemberInvitation;
         }
 
-        public void AddInvitation(TeamMemberInvitation teamMemberInvitation, ITransactionalContext? context = null)
+        public void CreateInvitation(TeamMemberInvitation teamMemberInvitation, ITransactionalContext? context = null)
         {
             var contextUser = base.GetContextUser();
+
+            teamMemberInvitation.RequestUser = contextUser;
+
             _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamMember_Create, teamMemberInvitation.Team.Id);
 
             if (context == null)
@@ -152,7 +156,10 @@ namespace RaceBoard.Business.Managers
 
         public void UpdateInvitation(TeamMemberInvitation teamMemberInvitation, ITransactionalContext? context = null)
         {
-            //var contextUser = base.GetContextUser();
+            var contextUser = base.GetContextUser();
+
+            teamMemberInvitation.User = contextUser;
+
             //_authorizationManager.ValidatePermission(Enums.Action.TeamMember_Update, teamMemberInvitation.Team.Id, contextUser.Id);
 
             var invitations = _teamMemberRepository.GetInvitations(new TeamMemberInvitationSearchFilter() { Token = teamMemberInvitation.Invitation.Token });
@@ -162,6 +169,9 @@ namespace RaceBoard.Business.Managers
             var invitation = invitations.Results.First();
             if (invitation.Invitation.IsExpired)
                 throw new FunctionalException(ErrorType.NotFound, this.Translate("InvitationExpired"));
+
+            if (invitation.Invitation.EmailAddress != contextUser.Email)
+                throw new FunctionalException(ErrorType.Forbidden, this.Translate("InvitationUnauthorized"));
 
             if (context == null)
                 context = _teamMemberRepository.GetTransactionalContext(TransactionContextScope.Internal);

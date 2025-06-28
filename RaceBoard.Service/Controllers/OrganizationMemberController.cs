@@ -67,9 +67,7 @@ namespace RaceBoard.Service.Controllers
         {
             var data = _mapper.Map<OrganizationMemberInvitation>(organizationMemberInvitationRequest);
 
-            data.RequestUser = base.GetUserFromRequestContext();
-
-            _organizationMemberManager.AddInvitation(data);
+            _organizationMemberManager.CreateInvitation(data);
 
             return Ok();
         }
@@ -78,8 +76,6 @@ namespace RaceBoard.Service.Controllers
         public ActionResult UpdateMemberInvitation([FromBody] OrganizationMemberInvitationRequest organizationMemberInvitationRequest)
         {
             var data = _mapper.Map<OrganizationMemberInvitation>(organizationMemberInvitationRequest);
-
-            data.User = base.GetUserFromRequestContext();
 
             _organizationMemberManager.UpdateInvitation(data);
 

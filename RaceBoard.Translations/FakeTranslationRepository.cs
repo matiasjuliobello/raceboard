@@ -197,6 +197,9 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("InvitationExpired"),
                 new Tuple<string, string>(Languages.English, "Invitation expired"),
                 new Tuple<string, string>(Languages.Spanish, "Invitación vencida"));
+            AddText(AddTranslation("InvitationUnauthorized"),
+                new Tuple<string, string>(Languages.English, "Invitation unauthorized"),
+                new Tuple<string, string>(Languages.Spanish, "Invitación no autorizada"));
             AddText(AddTranslation("InvitationSent"),
                 new Tuple<string, string>(Languages.English, "Invitation was sent"),
                 new Tuple<string, string>(Languages.Spanish, "Se envió la invitación"));

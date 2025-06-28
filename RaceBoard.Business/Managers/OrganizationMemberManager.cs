@@ -112,9 +112,12 @@ namespace RaceBoard.Business.Managers
             return organizationMemberInvitation;
         }
 
-        public void AddInvitation(OrganizationMemberInvitation organizationMemberInvitation, ITransactionalContext? context = null)
+        public void CreateInvitation(OrganizationMemberInvitation organizationMemberInvitation, ITransactionalContext? context = null)
         {
             var contextUser = base.GetContextUser();
+
+            organizationMemberInvitation.RequestUser = contextUser;
+
             _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.OrganizationMember_Create, organizationMemberInvitation.Organization.Id);
 
             if (context == null)
@@ -150,16 +153,22 @@ namespace RaceBoard.Business.Managers
 
         public void UpdateInvitation(OrganizationMemberInvitation organizationMemberInvitation, ITransactionalContext? context = null)
         {
-            //var contextUser = base.GetContextUser();
+            var contextUser = base.GetContextUser();
+
+            organizationMemberInvitation.User = contextUser;
+
             //_authorizationManager.ValidatePermission(Enums.Action.OrganizationMember_Update, organizationMemberInvitation.Organization.Id, contextUser.Id);
+
             var invitations = _organizationMemberRepository.GetInvitations(new OrganizationMemberInvitationSearchFilter() { Token = organizationMemberInvitation.Invitation.Token });
             if (invitations.Results.Count() == 0)
                 throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
 
             var invitation = invitations.Results.First();
-
             if (invitation.Invitation.IsExpired)
                 throw new FunctionalException(ErrorType.NotFound, this.Translate("InvitationExpired"));
+
+            if (invitation.Invitation.EmailAddress != contextUser.Email)
+                throw new FunctionalException(ErrorType.Forbidden, this.Translate("InvitationUnauthorized"));
 
             if (context == null)
                 context = _organizationMemberRepository.GetTransactionalContext(TransactionContextScope.Internal);

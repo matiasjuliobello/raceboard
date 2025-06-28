@@ -10,7 +10,7 @@ namespace RaceBoard.Business.Managers.Interfaces
         OrganizationMember Get(int id, ITransactionalContext? context = null);
         PaginatedResult<OrganizationMemberInvitation> GetMemberInvitations(int idOrganization, bool isPending, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
         OrganizationMemberInvitation GetInvitation(int id, ITransactionalContext? context = null);
-        void AddInvitation(OrganizationMemberInvitation organizationMemberInvitation, ITransactionalContext? context = null);
+        void CreateInvitation(OrganizationMemberInvitation organizationMemberInvitation, ITransactionalContext? context = null);
         void UpdateInvitation(OrganizationMemberInvitation organizationMemberInvitation, ITransactionalContext? context = null);
         void Remove(int id, ITransactionalContext? context = null);
         void RemoveInvitation(int id, ITransactionalContext? context = null);
