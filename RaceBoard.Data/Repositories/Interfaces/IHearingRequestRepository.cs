@@ -27,6 +27,8 @@ namespace RaceBoard.Data.Repositories.Interfaces
         HearingRequestValidity GetValidity(int id, ITransactionalContext? context = null);
         HearingRequestResolution GetResolution(int id, ITransactionalContext? context = null);
 
+        PaginatedResult<HearingRequest> FindHearingRequestsIncludingTeamBoat(int idTeamBoat, ITransactionalContext? context = null);
+
         void Create(HearingRequest hearingRequest, ITransactionalContext? context = null);
         void UpdateStatus(HearingRequest hearingRequest, ITransactionalContext? context = null);
         void CreateProtestor(HearingRequest hearingRequest, ITransactionalContext? context = null);

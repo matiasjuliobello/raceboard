@@ -280,6 +280,10 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("BoatAlreadyAssignedToAnotherTeam"),
                 new Tuple<string, string>(Languages.English, "The boat is already assigned to another team in the same championship"),
                 new Tuple<string, string>(Languages.Spanish, "El barco ya está asignado a otro equipo de la misma campeonato"));
+            AddText(AddTranslation("BoatIsInvolvedInHearingRequest"),
+                new Tuple<string, string>(Languages.English, "Due to being involved in hearing request(s) the boat cannot be modified or deleted."),
+                new Tuple<string, string>(Languages.Spanish, "Debido a que el barco está involucrado en pedido(s) de audencia no se lo puede modificar o eliminar."));
+
 
             AddText(AddTranslation("OrganizationWasCreated"),
                 new Tuple<string, string>(Languages.English, "Club was created"),

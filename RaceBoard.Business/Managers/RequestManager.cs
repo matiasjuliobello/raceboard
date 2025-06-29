@@ -669,8 +669,8 @@ namespace RaceBoard.Business.Managers
                     table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("BoatName")).Bold();
                     table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("SailNumber")).Bold();
                     table.Cell().Element(CellStyle).Text(ReturnEmptyStringIfNull(_request.Team.RaceClass.Name));
-                    table.Cell().Element(CellStyle).Text(ReturnEmptyStringIfNull(_request.Protestor.Boat.Name));
-                    table.Cell().Element(CellStyle).Text(ReturnEmptyStringIfNull(_request.Protestor.Boat.SailNumber));
+                    table.Cell().Element(CellStyle).Text(ReturnEmptyStringIfNull(_request.Protestor.TeamBoat.Boat.Name));
+                    table.Cell().Element(CellStyle).Text(ReturnEmptyStringIfNull(_request.Protestor.TeamBoat.Boat.SailNumber));
 
                     table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("RepresentedBy")).Bold();
                     table.Cell().Element(CellStyleWithNoBorderAndTopPadding).Text(Translate("Address")).Bold();
@@ -806,7 +806,7 @@ namespace RaceBoard.Business.Managers
                 },
                 Protestor = new HearingRequestProtestor()
                 {
-                    Boat = new Boat() { Name = "" },
+                    TeamBoat = new TeamBoat() { Boat = new Boat() { Name = "" } },
                     Notice = new HearingRequestProtestorNotice() { HailingWhen = "", HailingWordsUsed = "", RedFlagWhen = "", OtherHow = "", OtherWhere = "" }
                 },
                 Protestees = new HearingRequestProtestees()

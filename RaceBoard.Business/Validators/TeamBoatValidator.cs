@@ -10,15 +10,18 @@ namespace RaceBoard.Business.Validators
     public class TeamBoatValidator : AbstractCustomValidator<TeamBoat>
     {
         private readonly ITeamBoatRepository _teamBoatRepository;
+        private readonly IHearingRequestRepository _hearingRequestRepository;
 
         public TeamBoatValidator
             (
                 ITranslator translator,
-                ITeamBoatRepository teamBoatRepository
+                ITeamBoatRepository teamBoatRepository,
+                IHearingRequestRepository hearingRequestRepository
             )
             : base(translator)
         {
             _teamBoatRepository = teamBoatRepository;
+            _hearingRequestRepository = hearingRequestRepository;
 
             base.SetRules(this.AddRules);
         }
@@ -44,6 +47,12 @@ namespace RaceBoard.Business.Validators
                 .Must(x => !_teamBoatRepository.ExistsDuplicate(x, base.TransactionalContext))
                 .WithMessage(Translate("BoatAlreadyAssignedToAnotherTeam"))
                 .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+
+            RuleFor(x => x)
+                .Must(x => _hearingRequestRepository.FindHearingRequestsIncludingTeamBoat(x.Id, base.TransactionalContext).Results.Count() == 0)
+                .WithMessage(Translate("BoatIsInvolvedInHearingRequest"))
+                .When(x =>  Scenario == Scenario.Update || Scenario == Scenario.Delete);
+
         }
     }
 }

@@ -120,7 +120,6 @@ namespace RaceBoard.Business.Managers
             if (!_teamBoatValidator.IsValid(teamBoat, Scenario.Delete))
                 throw new FunctionalException(ErrorType.ValidationError, _teamBoatValidator.Errors);
 
-
             try
             {
                 _teamBoatRepository.Delete(teamBoat, context);

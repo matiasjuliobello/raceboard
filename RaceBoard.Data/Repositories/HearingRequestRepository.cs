@@ -131,6 +131,22 @@ namespace RaceBoard.Data.Repositories
             return this.GetHearingRequestResolution(id, context);
         }
 
+        public PaginatedResult<HearingRequest> FindHearingRequestsIncludingTeamBoat(int idTeamBoat, ITransactionalContext? context = null)
+        {
+            var searchFilter = new HearingRequestSearchFilter()
+            {
+                Protestees = new HearingRequestProtestees()
+                {
+                    Protestees = new List<HearingRequestProtestee>()
+                    {
+                        new HearingRequestProtestee() { TeamBoat = new TeamBoat() { Id = idTeamBoat } }
+                    }
+                }
+            };
+
+            return this.GetHearingRequests(searchFilter: searchFilter, paginationFilter: null, sorting: null, context: context);
+        }
+
         public void Create(HearingRequest hearingRequest, ITransactionalContext? context = null)
         {
             this.CreateHearingRequest(hearingRequest, context);
@@ -323,8 +339,8 @@ namespace RaceBoard.Data.Repositories
                                 [ProtestorPerson].Firstname [Firstname],
                                 [ProtestorPerson].Lastname [Lastname],
                                 [ProtestorTeam].Id [Id],
-                                [ProtestorTeamRaceClass].Id [Id],
-                                [ProtestorTeamRaceClass].Name [Name],
+	                            [ProtestorTeamRaceClass].Id [Id],
+	                            [ProtestorTeamRaceClass].Id [Name],
                                 [ProtestorBoat].Id [Id],
                                 [ProtestorBoat].Name [Name],
                                 [ProtestorBoat].SailNumber [SailNumber],
@@ -344,9 +360,10 @@ namespace RaceBoard.Data.Repositories
                             INNER JOIN [User] [ProtestorUser]                               ON [ProtestorUser].Id = [Hearing].IdRequestUser
                             INNER JOIN [User_Person] [User_Person]                          ON [ProtestorUser].Id = [User_Person].IdUser
                             INNER JOIN [Person] [ProtestorPerson]                           ON [ProtestorPerson].Id = [User_Person].IdPerson
-                            INNER JOIN [Boat] [ProtestorBoat]                               ON [ProtestorBoat].Id = [Protestor].IdBoat
+                            INNER JOIN [Team_Boat] [ProtestorTeamBoat]                      ON [ProtestorTeamBoat].Id = [Protestor].IdTeamBoat
+                            INNER JOIN [Boat] [ProtestorBoat]								ON [ProtestorBoat].Id = [ProtestorTeamBoat].IdBoat
                             INNER JOIN [Team] [ProtestorTeam]                               ON [ProtestorTeam].Id = [Hearing].IdTeam
-                            INNER JOIN [RaceClass] [ProtestorTeamRaceClass]                 ON [ProtestorTeamRaceClass].Id = [ProtestorTeam].IdRaceClass";
+                            INNER JOIN [RaceClass] [ProtestorTeamRaceClass]					ON [ProtestorTeamRaceClass].Id = [ProtestorTeam].IdRaceClass";
 
             QueryBuilder.AddCommand(sql);
             QueryBuilder.AddCondition("[Hearing].Id = @idHearing");
@@ -369,7 +386,7 @@ namespace RaceBoard.Data.Repositories
                                     RequestUser = user,
                                     RequestPerson = person
                                 };
-                                protestor.Boat = boat;
+                                protestor.TeamBoat = new TeamBoat() { Boat = boat };
                                 protestor.Notice = notice;
 
                                 return protestor;
@@ -572,6 +589,8 @@ namespace RaceBoard.Data.Repositories
             base.AddFilterCriteria(ConditionType.In, "Hearing", "Id", "ids", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.Equal, "RequestTeam", "Id", "idTeam", searchFilter.Team?.Id);
             base.AddFilterCriteria(ConditionType.Equal, "RequestTeam", "IdChampionship", "idChampionship", searchFilter.Championship?.Id);
+
+            base.AddFilterCriteria(ConditionType.Equal, "RequestTeam", "IdChampionship", "idChampionship", searchFilter.Championship?.Id);
         }
 
         private void CreateHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null)
@@ -620,14 +639,14 @@ namespace RaceBoard.Data.Repositories
         private void CreateHearingRequestProtestor(HearingRequest hearingRequest, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [HearingRequest_Protestor]
-                            ( IdHearingRequest, IdBoat, Address, PhoneNumber )
+                            ( IdHearingRequest, IdTeamBoat, Address, PhoneNumber )
                         VALUES
-                            ( @idHearingRequest, @idBoat, @address, @phoneNumber )";
+                            ( @idHearingRequest, @idTeamBoat, @address, @phoneNumber )";
 
             QueryBuilder.AddCommand(sql);
 
             QueryBuilder.AddParameter("idHearingRequest", hearingRequest.Id);
-            QueryBuilder.AddParameter("idBoat", hearingRequest.Protestor.Boat.Id);
+            QueryBuilder.AddParameter("idTeamBoat", hearingRequest.Protestor.TeamBoat.Id);
             QueryBuilder.AddParameter("address", hearingRequest.Protestor.Address);
             QueryBuilder.AddParameter("phoneNumber", hearingRequest.Protestor.PhoneNumber);
 
@@ -858,7 +877,7 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddParameter("protestedBoatsAreDisqualified", resolution.ProtestedBoatsAreDisqualified);
             QueryBuilder.AddParameter("penaltiesAreAssessed", resolution.PenaltiesAreAssessed);
             QueryBuilder.AddParameter("penaltiesDescription", resolution.PenaltiesDescription);
-            QueryBuilder.AddParameter("commissionChairmanAndOthers", resolution.CommissionChairmanAndOthers); 
+            QueryBuilder.AddParameter("commissionChairmanAndOthers", resolution.CommissionChairmanAndOthers);
             QueryBuilder.AddParameter("resolutionDate", resolution.ResolutionDate);
 
             QueryBuilder.AddReturnLastInsertedId();
