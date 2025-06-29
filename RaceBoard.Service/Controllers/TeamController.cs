@@ -61,8 +61,6 @@ namespace RaceBoard.Service.Controllers
         {
             var data = _mapper.Map<Team>(teamRequest);
 
-            data.CreationUser = base.GetUserFromRequestContext();
-
             _teamManager.Create(data);
 
             return Ok(data.Id);

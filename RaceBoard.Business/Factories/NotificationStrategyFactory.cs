@@ -2,7 +2,7 @@
 using RaceBoard.Notification.Enums;
 using RaceBoard.Notification.Interfaces;
 using Email = RaceBoard.Business.Strategies.Notifications.Email;
-using Push = RaceBoard.Business.Strategies.Notifications.Push;
+using Push  = RaceBoard.Business.Strategies.Notifications.Push;
 
 namespace RaceBoard.Business.Factories
 {
@@ -25,11 +25,27 @@ namespace RaceBoard.Business.Factories
                     }
                 },
                 {
+                    NotificationType.Organization_Creation,
+                    new Type[]
+                    {
+                        typeof(Email.OrganizationCreationStrategy),
+                        //typeof(Push.OrganizationCreatedStrategy)
+                    }
+                },
+                {
                     NotificationType.Organization_Member_Invitation,
                     new Type[]
                     {
                         typeof(Email.OrganizationMemberInvitationStrategy),
                         //typeof(Push.OrganizationMemberInvitationStrategy)
+                    }
+                },
+                {
+                    NotificationType.Championship_Creation,
+                    new Type[]
+                    {
+                        typeof(Email.ChampionshipCreationStrategy),
+                        //typeof(Push.ChampionshipCreationStrategy)
                     }
                 },
                 {
@@ -46,6 +62,14 @@ namespace RaceBoard.Business.Factories
                     {
                         typeof(Email.ChampionshipFileUploadStrategy),
                         typeof(Push.ChampionshipFileUploadStrategy)
+                    }
+                },
+                {
+                    NotificationType.Team_Creation,
+                    new Type[]
+                    {
+                        typeof(Email.TeamCreationStrategy),
+                        //typeof(Push.TeamCreatedStrategy)
                     }
                 },
                 {

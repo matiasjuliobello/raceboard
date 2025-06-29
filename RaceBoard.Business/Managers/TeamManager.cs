@@ -10,6 +10,8 @@ using RaceBoard.Business.Validators.Interfaces;
 using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Enums;
 using Enums = RaceBoard.Domain.Enums;
+using RaceBoard.Business.Helpers.Interfaces;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RaceBoard.Business.Managers
 {
@@ -19,6 +21,7 @@ namespace RaceBoard.Business.Managers
         private readonly ITeamMemberRepository _teamMemberRepository;
         private readonly ICustomValidator<Team> _teamValidator;
         private readonly IDateTimeHelper _dateTimeHelper;
+        private readonly INotificationHelper _notificationHelper;
 
         #region Constructors
 
@@ -28,6 +31,7 @@ namespace RaceBoard.Business.Managers
                 ITeamMemberRepository teamMemberRepository,
                 ICustomValidator<Team> teamValidator,
                 IDateTimeHelper dateTimeHelper,
+                INotificationHelper notificationHelper,
                 IRequestContextManager requestContextManager,
                 ITranslator translator
             ) : base(requestContextManager, translator)
@@ -38,6 +42,7 @@ namespace RaceBoard.Business.Managers
             _teamValidator = teamValidator;
 
             _dateTimeHelper = dateTimeHelper;
+            _notificationHelper = notificationHelper;
         }
 
         #endregion
@@ -63,6 +68,8 @@ namespace RaceBoard.Business.Managers
             _teamValidator.SetTransactionalContext(context);
 
             var currentDate = _dateTimeHelper.GetCurrentTimestamp();
+            
+            team.CreationUser = base.GetContextUser();
 
             if (!_teamValidator.IsValid(team, Scenario.Create))
                 throw new FunctionalException(ErrorType.ValidationError, _teamValidator.Errors);
@@ -84,15 +91,19 @@ namespace RaceBoard.Business.Managers
                 };
                 _teamMemberRepository.Add(teamMember, context);
 
+                team.Members.Add(teamMember);
+
                 context.Confirm();
             }
             catch (Exception)
             {
                 if (context != null)
                     context.Cancel();
-                
+
                 throw;
             }
+
+            _notificationHelper.SendNotification(Notification.Enums.NotificationType.Team_Creation, team);
         }
 
         public void Update(Team team, ITransactionalContext? context = null)

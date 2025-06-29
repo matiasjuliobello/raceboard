@@ -114,10 +114,14 @@ namespace RaceBoard.Data.Repositories
                                 [Championship].Name [Name],
                                 [Championship].StartDate [StartDate],
                                 [Championship].EndDate [EndDate],
+	                            [ChampionshipOrganization].Id [Id],
+	                            [ChampionshipOrganization].Name [Name],
                                 [Team_Member].Id [Id]
                             FROM [Team] [Team]
                             INNER JOIN [Organization] [Organization] ON [Organization].Id = [Team].IdOrganization
                             INNER JOIN [Championship] [Championship] ON [Championship].Id = [Team].IdChampionship
+                            INNER JOIN [Championship_Organization] [Championship_Organization] ON [Championship_Organization].IdChampionship = [Championship].Id
+                            INNER JOIN [Organization] [ChampionshipOrganization] ON [ChampionshipOrganization].Id = [Championship_Organization].IdOrganization
                             INNER JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Team].IdRaceClass
                             LEFT JOIN [Team_Member] ON [Team_Member].IdTeam = [Team].Id";
 
@@ -134,9 +138,9 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<Team, Organization, RaceClass, Championship, TeamMember, Team>
+                        return reader.Read<Team, Organization, RaceClass, Championship, Organization, TeamMember, Team>
                         (
-                            (team, organization, raceClass, championship, member) =>
+                            (team, organization, raceClass, championship, championshipOrganization, member) =>
                             {
                                 var t = teams.FirstOrDefault(x => x.Id == team.Id);
                                 if (t == null)
@@ -148,12 +152,14 @@ namespace RaceBoard.Data.Repositories
                                 team.RaceClass = raceClass;
                                 team.Championship = championship;
 
+                                team.Championship.Organizations.Add(championshipOrganization);
+
                                 if (member != null)
                                     team.Members.Add(member);
 
                                 return team;
                             },
-                            splitOn: "Id, Id, Id, Id, Id"
+                            splitOn: "Id, Id, Id, Id, Id, Id"
                         ).AsList();
                     },
                     context

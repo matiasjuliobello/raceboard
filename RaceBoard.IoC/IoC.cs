@@ -187,6 +187,7 @@ namespace RaceBoard.IoC
 
             services.AddScoped<INotificationStrategy, EmailStrategies.UserCreationStrategy>();
 
+            services.AddScoped<INotificationStrategy, EmailStrategies.OrganizationCreationStrategy>();
             services.AddScoped<INotificationStrategy, EmailStrategies.OrganizationMemberInvitationStrategy>();
             //services.AddScoped<INotificationStrategy, PushStrategies.OrganizationMemberInvitationStrategy>();
 
@@ -196,6 +197,7 @@ namespace RaceBoard.IoC
             services.AddScoped<INotificationStrategy, EmailStrategies.ChampionshipFileUploadStrategy>();
             services.AddScoped<INotificationStrategy, PushStrategies.ChampionshipFileUploadStrategy>();
 
+            services.AddScoped<INotificationStrategy, EmailStrategies.TeamCreationStrategy>();
             services.AddScoped<INotificationStrategy, EmailStrategies.TeamMemberInvitationStrategy>();
             //services.AddScoped<INotificationStrategy, PushStrategies.TeamMemberInvitationStrategy>();
             #endregion

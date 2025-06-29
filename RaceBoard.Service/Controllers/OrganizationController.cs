@@ -62,8 +62,6 @@ namespace RaceBoard.Service.Controllers
         {
             var organization = _mapper.Map<Organization>(organizationRequest);
 
-            organization.CreationUser = base.GetUserFromRequestContext();
-
             _organizationManager.Create(organization);
 
             return Ok(organization.Id);

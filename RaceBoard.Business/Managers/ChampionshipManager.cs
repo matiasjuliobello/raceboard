@@ -10,6 +10,7 @@ using RaceBoard.Business.Validators.Interfaces;
 using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Enums;
 using Enums = RaceBoard.Domain.Enums;
+using RaceBoard.Business.Helpers.Interfaces;
 
 namespace RaceBoard.Business.Managers
 {
@@ -29,6 +30,7 @@ namespace RaceBoard.Business.Managers
 
         private readonly IDateTimeHelper _dateTimeHelper;
         private readonly IFileHelper _fileHelper;
+        private readonly INotificationHelper _notificationHelper;
 
         private readonly IAuthorizationManager _authorizationManager;
 
@@ -48,6 +50,7 @@ namespace RaceBoard.Business.Managers
                 IDateTimeHelper dateTimeHelper,
                 IRequestContextManager requestContextManager,
                 IFileHelper fileHelper,
+                INotificationHelper notificationHelper,
                 ITranslator translator,
                 IAuthorizationManager authorizationManager
             ) : base(requestContextManager, translator)
@@ -63,6 +66,7 @@ namespace RaceBoard.Business.Managers
             _committeeBoatReturnValidator = committeeBoatReturnValidator;
             _dateTimeHelper = dateTimeHelper;
             _fileHelper = fileHelper;
+            _notificationHelper = notificationHelper;
             _authorizationManager = authorizationManager;
         }
 
@@ -134,9 +138,10 @@ namespace RaceBoard.Business.Managers
 
                 if (!string.IsNullOrEmpty(championship.ImageFile?.Path))
                     _fileHelper.DeleteFile(Path.Combine(championship.ImageFile.Path, championship.ImageFile.Name));
-
                 throw;
             }
+
+            _notificationHelper.SendNotification(Notification.Enums.NotificationType.Championship_Creation, championship);
         }
 
         public void Update(Championship championship, ITransactionalContext? context = null)

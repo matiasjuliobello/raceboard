@@ -1,5 +1,4 @@
-﻿using RaceBoard.Business.Helpers;
-using RaceBoard.Business.Helpers.Interfaces;
+﻿using RaceBoard.Business.Helpers.Interfaces;
 using RaceBoard.Business.Managers.Abstract;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Business.Validators;
@@ -12,7 +11,6 @@ using RaceBoard.Data;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 using RaceBoard.Translations.Interfaces;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using Enums = RaceBoard.Domain.Enums;
 
 namespace RaceBoard.Business.Managers
@@ -141,7 +139,6 @@ namespace RaceBoard.Business.Managers
                 _teamMemberRepository.CreateInvitation(teamMemberInvitation, context);
 
                 //_invitationManager.SendTeamInvitation(teamMemberInvitation);
-                _notificationHelper.SendNotification(Notification.Enums.NotificationType.Team_Member_Invitation, teamMemberInvitation);
 
                 context.Confirm();
             }
@@ -152,6 +149,8 @@ namespace RaceBoard.Business.Managers
 
                 throw;
             }
+
+            _notificationHelper.SendNotification(Notification.Enums.NotificationType.Team_Member_Invitation, teamMemberInvitation);
         }
 
         public void UpdateInvitation(TeamMemberInvitation teamMemberInvitation, ITransactionalContext? context = null)

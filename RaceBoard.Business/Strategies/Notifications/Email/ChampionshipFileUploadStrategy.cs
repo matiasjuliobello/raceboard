@@ -7,7 +7,6 @@ using RaceBoard.Mailing.Entities;
 using RaceBoard.Notification.Interfaces;
 using RaceBoard.Translations.Interfaces;
 using System.Data;
-using System.Text;
 
 
 namespace RaceBoard.Business.Strategies.Notifications.Email
@@ -17,7 +16,6 @@ namespace RaceBoard.Business.Strategies.Notifications.Email
         private readonly IChampionshipRepository _championshipRepository;
         //private readonly IMemberRepository _memberRepository;
         private readonly IPersonRepository _personRepository;
-        private readonly string _baseUrl;
 
         public ChampionshipFileUploadStrategy
             (
@@ -31,8 +29,6 @@ namespace RaceBoard.Business.Strategies.Notifications.Email
             _championshipRepository = championshipRepository;
             //_memberRepository = memberRepository;
             _personRepository = personRepository;
-
-            _baseUrl = Path.Combine(configuration["FrontEndUrl"], "invitations");
         }
 
         public INotification Produce(object data)

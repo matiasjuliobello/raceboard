@@ -9,7 +9,7 @@ namespace RaceBoard.Business.Strategies.Notifications.Abstract
 {
     public abstract class AbstractStrategy
     {
-        private readonly string _baseUrl;
+        protected readonly string _baseUrl;
         private readonly ITranslator _translator;
         private readonly IMemberRepository _memberRepository;
 

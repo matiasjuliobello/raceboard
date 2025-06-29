@@ -124,8 +124,6 @@ namespace RaceBoard.Business.Managers
             {
                 _championshipMemberRepository.CreateInvitation(championshipMemberInvitation, context);
 
-                _notificationHelper.SendNotification(Notification.Enums.NotificationType.Championship_Member_Invitation, championshipMemberInvitation);
-
                 context.Confirm();
             }
             catch (Exception)
@@ -135,6 +133,8 @@ namespace RaceBoard.Business.Managers
 
                 throw;
             }
+
+            _notificationHelper.SendNotification(Notification.Enums.NotificationType.Championship_Member_Invitation, championshipMemberInvitation);
         }
 
         public void UpdateInvitation(ChampionshipMemberInvitation championshipMemberInvitation, ITransactionalContext? context = null)

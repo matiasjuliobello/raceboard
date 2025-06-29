@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using RaceBoard.Business.Strategies.Notifications.Abstract;
 using RaceBoard.Common.Exceptions;
-using RaceBoard.Data.Repositories;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
 using RaceBoard.Mailing.Entities;

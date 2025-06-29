@@ -9,7 +9,9 @@ using RaceBoard.Common.Enums;
 using RaceBoard.Common.Exceptions;
 using RaceBoard.Business.Validators.Interfaces;
 using RaceBoard.Common.Helpers.Interfaces;
+using RaceBoard.Business.Helpers.Interfaces;
 using Enums = RaceBoard.Domain.Enums;
+using RaceBoard.Business.Helpers;
 
 namespace RaceBoard.Business.Managers
 {
@@ -20,6 +22,7 @@ namespace RaceBoard.Business.Managers
         private readonly ICustomValidator<Organization> _organizationValidator;
         private readonly IDateTimeHelper _dateTimeHelper;
         private readonly IAuthorizationManager _authorizationManager;
+        private readonly INotificationHelper _notificationHelper;
 
         #region Constructors
 
@@ -29,6 +32,7 @@ namespace RaceBoard.Business.Managers
                 IOrganizationMemberRepository organizationMemberRepository,
                 ICustomValidator<Organization> organizationValidator,
                 IDateTimeHelper dateTimeHelper,
+                INotificationHelper notificationHelper,
                 IRequestContextManager requestContextManager,
                 IAuthorizationManager authorizationManager,
                 ITranslator translator
@@ -38,6 +42,7 @@ namespace RaceBoard.Business.Managers
             _organizationMemberRepository = organizationMemberRepository;
             _organizationValidator = organizationValidator;
             _dateTimeHelper = dateTimeHelper;
+            _notificationHelper = notificationHelper;
             _authorizationManager = authorizationManager;
         }
 
@@ -62,6 +67,9 @@ namespace RaceBoard.Business.Managers
         public void Create(Organization organization, ITransactionalContext? context = null)
         {
             var contextUser = base.GetContextUser();
+
+            organization.CreationUser = contextUser;
+
             _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.Organization_Create, 0);
 
             _organizationValidator.SetTransactionalContext(context);
@@ -97,6 +105,8 @@ namespace RaceBoard.Business.Managers
 
                 throw;
             }
+
+            _notificationHelper.SendNotification(Notification.Enums.NotificationType.Organization_Creation, organization);
         }
 
         public void Update(Organization organization, ITransactionalContext? context = null)

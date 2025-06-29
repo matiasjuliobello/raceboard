@@ -138,7 +138,6 @@ namespace RaceBoard.Business.Managers
                 _organizationMemberRepository.CreateInvitation(organizationMemberInvitation, context);
 
                 //_invitationManager.SendOrganizationInvitation(organizationMemberInvitation);
-                _notificationHelper.SendNotification(Notification.Enums.NotificationType.Organization_Member_Invitation, organizationMemberInvitation);
 
                 context.Confirm();
             }
@@ -149,6 +148,8 @@ namespace RaceBoard.Business.Managers
 
                 throw;
             }
+
+            _notificationHelper.SendNotification(Notification.Enums.NotificationType.Organization_Member_Invitation, organizationMemberInvitation);
         }
 
         public void UpdateInvitation(OrganizationMemberInvitation organizationMemberInvitation, ITransactionalContext? context = null)

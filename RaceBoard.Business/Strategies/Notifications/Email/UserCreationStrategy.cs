@@ -10,8 +10,6 @@ namespace RaceBoard.Business.Strategies.Notifications.Email
 {
     public class UserCreationStrategy : AbstractStrategy, INotificationStrategy
     {
-        private readonly string _appLink;
-
         public UserCreationStrategy
             (
                 IConfiguration configuration,
@@ -19,7 +17,6 @@ namespace RaceBoard.Business.Strategies.Notifications.Email
                 IMemberRepository memberRepository
             ) : base(configuration, translator, memberRepository)
         {
-            _appLink = configuration["FrontEndUrl"];
         }
 
         public INotification Produce(object data)

@@ -5,6 +5,7 @@ using System.Net;
 using Microsoft.Extensions.Configuration;
 using RaceBoard.Notification.Interfaces;
 using RaceBoard.Mailing.Entities;
+using System.Security.Authentication;
 
 namespace RaceBoard.Mailing.BaseClasses
 {
@@ -82,8 +83,11 @@ namespace RaceBoard.Mailing.BaseClasses
             {
                 Port = _port,
                 Credentials = new NetworkCredential(_username, _password),
-                EnableSsl = _useSSL,
+                EnableSsl = _useSSL
             };
+
+            //System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
             smtpClient.Timeout = 5000;
 
             if (_sender == null)
@@ -114,7 +118,18 @@ namespace RaceBoard.Mailing.BaseClasses
                 mailMessage.Attachments.Add(mailAttachment);
             }
 
-            smtpClient.Send(mailMessage);
+            try
+            {                
+                smtpClient.Send(mailMessage);
+            }
+            catch(SmtpException e)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
 
         public Task Send(INotification notification)
