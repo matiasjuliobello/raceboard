@@ -133,15 +133,30 @@ namespace RaceBoard.Data.Repositories
 
         public PaginatedResult<HearingRequest> FindHearingRequestsIncludingTeamBoat(int idTeamBoat, ITransactionalContext? context = null)
         {
+            string sql = @"
+	                        SELECT 
+		                        [HearingRequest].Id
+	                        FROM [HearingRequest_Protestor] [Protestor]
+	                        INNER JOIN [HearingRequest] [HearingRequest] ON [HearingRequest].Id = [Protestor].IdHearingRequest
+	                        WHERE [Protestor].IdTeamBoat = @idTeamBoat
+                        UNION
+	                        SELECT 
+		                        [HearingRequest].Id
+	                        FROM [HearingRequest_Protestee] [Protestee]
+	                        INNER JOIN [HearingRequest] [HearingRequest] ON [HearingRequest].Id = [Protestee].IdHearingRequest
+	                        WHERE [Protestee].IdTeamBoat = @idTeamBoat";
+
+            QueryBuilder.AddCommand(sql);
+            QueryBuilder.AddParameter("idTeamBoat", idTeamBoat);
+
+            IEnumerable<int> idsHearingRequest = base.GetMultipleResults<int>(context);
+
+            if (idsHearingRequest.Count() == 0)
+                return PaginatedResult<HearingRequest>.BuildEmptyObject();
+
             var searchFilter = new HearingRequestSearchFilter()
             {
-                Protestees = new HearingRequestProtestees()
-                {
-                    Protestees = new List<HearingRequestProtestee>()
-                    {
-                        new HearingRequestProtestee() { TeamBoat = new TeamBoat() { Id = idTeamBoat } }
-                    }
-                }
+                Ids = idsHearingRequest.ToArray()
             };
 
             return this.GetHearingRequests(searchFilter: searchFilter, paginationFilter: null, sorting: null, context: context);

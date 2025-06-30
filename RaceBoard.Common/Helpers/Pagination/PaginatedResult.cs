@@ -34,6 +34,11 @@ namespace RaceBoard.Common.Helpers.Pagination
             this.Results = results;
         }
 
+        public static PaginatedResult<T> BuildEmptyObject()
+        {
+            return new PaginatedResult<T>(0, null, Enumerable.Empty<T>());
+        }
+
         #region Private Methods
 
         private int GetTotalPages(int totalRecords, int pageSize)
