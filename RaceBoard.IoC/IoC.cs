@@ -53,6 +53,7 @@ namespace RaceBoard.IoC
             services.AddScoped<IOrganizationManager, OrganizationManager>();
             services.AddScoped<IOrganizationMemberManager, OrganizationMemberManager>();
             services.AddScoped<IBoatManager, BoatManager>();
+            services.AddScoped<IBoatOrganizationManager, BoatOrganizationManager>();
             services.AddScoped<IRaceClassManager, RaceClassManager>();
             services.AddScoped<IRaceCategoryManager, RaceCategoryManager>();
             services.AddScoped<IRaceManager, RaceManager>();
@@ -84,6 +85,7 @@ namespace RaceBoard.IoC
             services.AddTransient<ICustomValidator<UserPasswordReset>, UserPasswordResetValidator>();
             services.AddTransient<ICustomValidator<Person>, PersonValidator>();
             services.AddTransient<ICustomValidator<Boat>, BoatValidator>();
+            services.AddTransient<ICustomValidator<BoatOrganization>, BoatOrganizationValidator>();
             services.AddTransient<ICustomValidator<Championship>, ChampionshipValidator>();
             services.AddTransient<ICustomValidator<ChampionshipMember>, ChampionshipMemberValidator>();
             services.AddTransient<ICustomValidator<ChampionshipMemberInvitation>, ChampionshipMemberInvitationValidator>();
@@ -132,6 +134,7 @@ namespace RaceBoard.IoC
             services.AddScoped<IOrganizationRepository, OrganizationRepository>();
             services.AddScoped<IOrganizationMemberRepository, OrganizationMemberRepository>();
             services.AddScoped<IBoatRepository, BoatRepository>();
+            services.AddScoped<IBoatOrganizationRepository, BoatOrganizationRepository>();
             services.AddScoped<IRaceClassRepository, RaceClassRepository>();
             services.AddScoped<IRaceCategoryRepository, RaceCategoryRepository>();
             services.AddScoped<IRaceRepository, RaceRepository>();

@@ -537,6 +537,9 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("GoToTeams"),
                 new Tuple<string, string>(Languages.English, "Go to teams"),
                 new Tuple<string, string>(Languages.Spanish, "Ir a equipos"));
+            AddText(AddTranslation("GoToBoats"),
+                new Tuple<string, string>(Languages.English, "Go to boats"),
+                new Tuple<string, string>(Languages.Spanish, "Ir a barcos"));
             AddText(AddTranslation("Organization"),
                 new Tuple<string, string>(Languages.English, "Club"),
                 new Tuple<string, string>(Languages.Spanish, "Club"));
@@ -1344,7 +1347,14 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("StartToDeliberate"),
                 new Tuple<string, string>(Languages.English, "Start to deliberate"),
                 new Tuple<string, string>(Languages.Spanish, "Comenzar a deliberar"));
-            
+
+            AddText(AddTranslation("EndDateCannotBeInTheFuture"),
+                new Tuple<string, string>(Languages.English, "End date cannot be in the future"),
+                new Tuple<string, string>(Languages.Spanish, "La fecha de fin no puede ser futura"));
+
+            AddText(AddTranslation("Since"),
+                new Tuple<string, string>(Languages.English, "Since"),
+                new Tuple<string, string>(Languages.Spanish, "Desde"));
         }
 
         private Translation AddTranslation(string key)

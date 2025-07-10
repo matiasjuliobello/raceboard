@@ -175,10 +175,16 @@ namespace RaceBoard.Service.Mappings
 
             CreateMap<BoatRequest, Boat>()
                 .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
-
             CreateMap<BoatSearchFilterRequest, BoatSearchFilter>()
                 .ForMember(dest => dest.RaceCategory, opt => opt.MapFrom(src => CreateObject<RaceCategory>(src.IdRaceCategory)))
                 .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
+
+            CreateMap<BoatOrganizationRequest, BoatOrganization>()
+                .ForMember(dest => dest.Boat, opt => opt.MapFrom(src => CreateObject<Boat>(src.IdBoat)))
+                .ForMember(dest => dest.Organization, opt => opt.MapFrom(src => CreateObject<Organization>(src.IdOrganization)));
+            CreateMap<BoatOrganizationSearchFilterRequest, BoatOrganizationSearchFilter>()
+                .ForMember(dest => dest.Boat, opt => opt.MapFrom(src => CreateObject<Boat>(src.IdBoat)))
+                .ForMember(dest => dest.Organization, opt => opt.MapFrom(src => CreateObject<Organization>(src.IdOrganization)));
 
             CreateMap<RaceCategoryRequest, RaceCategory>();
             CreateMap<RaceCategorySearchFilterRequest, RaceCategorySearchFilter>();
@@ -398,6 +404,7 @@ namespace RaceBoard.Service.Mappings
             CreateMap<Person, PersonSimpleResponse>();
 
             CreateMap<Boat, BoatResponse>();
+            CreateMap<BoatOrganization, BoatOrganizationResponse>();
 
             CreateMap<Championship, ChampionshipResponse>();
             CreateMap<Championship, ChampionshipSimpleResponse>();

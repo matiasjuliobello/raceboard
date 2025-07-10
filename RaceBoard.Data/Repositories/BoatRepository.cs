@@ -4,6 +4,7 @@ using RaceBoard.Data.Helpers.Interfaces;
 using RaceBoard.Data.Repositories.Base.Abstract;
 using RaceBoard.Data.Repositories.Interfaces;
 using RaceBoard.Domain;
+using System.Text;
 using static RaceBoard.Data.Helpers.SqlQueryBuilder;
 
 namespace RaceBoard.Data.Repositories
@@ -21,7 +22,10 @@ namespace RaceBoard.Data.Repositories
             { "RaceClass.Id", "[RaceClass].Id" },
             { "RaceClass.Name", "[RaceClass].Name" },
             { "RaceCategory.Id", "[RaceCategory].Id" },
-            { "RaceCategory.Name", "[RaceCategory].Name" }
+            { "RaceCategory.Name", "[RaceCategory].Name" },
+            { "Organization.StartDate", "[Boat_Organization].StartDate" },
+            { "Organization.EndDate", "[Boat_Organization].EndDate" },
+            { "Organization.Organization.Name", "[Organization].Name" }
         };
 
         #endregion
@@ -102,17 +106,34 @@ namespace RaceBoard.Data.Repositories
 
         private PaginatedResult<Boat> SearchBoats(string searchTerm, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
-            string sql = $@"SELECT
+            bool includeOnlyActiveBoats = true;
+
+            var sql = new StringBuilder();
+
+            sql.AppendLine($@"SELECT
 	                            [Boat].Id [Id],	                            
 	                            [Boat].Name [Name],
                                 [Boat].SailNumber [SailNumber],
                                 [Boat].HullNumber [HullNumber],
                                 [RaceClass].Id [Id],
-                                [RaceClass].Name [Name]
+                                [RaceClass].Name [Name],
+                                [RaceCategory].Id [Id],
+                                [RaceCategory].Name [Name],
+                                [Boat_Organization].Id [Id],
+                                [Boat_Organization].StartDate [StartDate],
+                                [Boat_Organization].EndDate [EndDate],
+                                [Organization].Id [Id],
+                                [Organization].Name [Name]
                             FROM [Boat] [Boat]
-                            INNER JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Boat].IdRaceClass";
+                            INNER JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Boat].IdRaceClass
+                            INNER JOIN [RaceCategory] [RaceCategory] ON [RaceCategory].Id = [RaceClass].IdRaceCategory ");
 
-            QueryBuilder.AddCommand(sql);
+            sql.AppendLine(includeOnlyActiveBoats ? "INNER" : "LEFT");
+            sql.AppendLine(@" JOIN [Boat_Organization] [Boat_Organization] ON 
+                                ( [Boat_Organization].IdBoat = [Boat].Id AND [Boat_Organization].EndDate IS NULL )
+                            LEFT JOIN [Organization] [Organization] ON [Organization].Id = [Boat_Organization].IdOrganization ");
+
+            QueryBuilder.AddCommand(sql.ToString());
             QueryBuilder.AddCondition("[Boat].Name LIKE '%' + @searchTerm + '%'", LogicalOperator.Or);
             QueryBuilder.AddCondition("[Boat].SailNumber LIKE '%' + @searchTerm + '%'", LogicalOperator.Or);
             QueryBuilder.AddCondition("[Boat].HullNumber LIKE '%' + @searchTerm + '%'", LogicalOperator.Or);
@@ -126,17 +147,24 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<Boat, RaceClass, Boat>
+                        return reader.Read<Boat, RaceClass, RaceCategory, BoatOrganization, Organization, Boat>
                         (
-                            (boat, raceClass) =>
+                            (boat, raceClass, raceCategory, boatOrganization, organization) =>
                             {
+                                raceClass.RaceCategory = raceCategory;
                                 boat.RaceClass = raceClass;
+
+                                if (boatOrganization != null)
+                                {
+                                    boatOrganization.Organization = organization;
+                                    boat.Organization = boatOrganization;
+                                }
 
                                 boats.Add(boat);
 
                                 return boat;
                             },
-                            splitOn: "Id, Id"
+                            splitOn: "Id, Id, Id, Id, Id"
                         ).AsList();
                     },
                     context
@@ -149,7 +177,11 @@ namespace RaceBoard.Data.Repositories
 
         private PaginatedResult<Boat> GetBoats(BoatSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
-            string sql = $@"SELECT
+            bool includeOnlyActiveBoats = false;
+
+            var sql = new StringBuilder();
+
+            sql.AppendLine($@"SELECT
                                 [Boat].Id [Id],
                                 [Boat].Name [Name],
                                 [Boat].SailNumber [SailNumber],
@@ -157,12 +189,22 @@ namespace RaceBoard.Data.Repositories
                                 [RaceClass].Id [Id],
                                 [RaceClass].Name [Name],
                                 [RaceCategory].Id [Id],
-                                [RaceCategory].Name [Name]
+                                [RaceCategory].Name [Name],
+                                [Boat_Organization].Id [Id],
+                                [Boat_Organization].StartDate [StartDate],
+                                [Boat_Organization].EndDate [EndDate],
+                                [Organization].Id [Id],
+                                [Organization].Name [Name]
                             FROM [Boat] [Boat]
                             INNER JOIN [RaceClass] [RaceClass] ON [RaceClass].Id = [Boat].IdRaceClass
-                            INNER JOIN [RaceCategory] [RaceCategory] ON [RaceCategory].Id = [RaceClass].IdRaceCategory";
+                            INNER JOIN [RaceCategory] [RaceCategory] ON [RaceCategory].Id = [RaceClass].IdRaceCategory");
 
-            QueryBuilder.AddCommand(sql);
+            sql.AppendLine(includeOnlyActiveBoats ? "INNER" : "LEFT");
+            sql.AppendLine(@" JOIN [Boat_Organization] [Boat_Organization] ON 
+                                ( [Boat_Organization].IdBoat = [Boat].Id AND [Boat_Organization].EndDate IS NULL )
+                            LEFT JOIN [Organization] [Organization] ON [Organization].Id = [Boat_Organization].IdOrganization ");
+
+            QueryBuilder.AddCommand(sql.ToString());
 
             ProcessSearchFilter(searchFilter);
 
@@ -175,18 +217,24 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<Boat, RaceClass, RaceCategory, Boat>
+                        return reader.Read<Boat, RaceClass, RaceCategory, BoatOrganization, Organization, Boat>
                         (
-                            (boat, raceClass, raceCategory) =>
+                            (boat, raceClass, raceCategory, boatOrganization, organization) =>
                             {
                                 raceClass.RaceCategory = raceCategory;
                                 boat.RaceClass = raceClass;
+
+                                if (boatOrganization != null)
+                                {
+                                    boatOrganization.Organization = organization;
+                                    boat.Organization = boatOrganization;
+                                }
 
                                 boats.Add(boat);
 
                                 return boat;
                             },
-                            splitOn: "Id, Id, Id"
+                            splitOn: "Id, Id, Id, Id, Id"
                         ).AsList();
                     },
                     context
@@ -233,7 +281,7 @@ namespace RaceBoard.Data.Repositories
         {
             string sql = @" UPDATE [Boat] SET
                                 Name = @name,
-                                SailNumber = @sailNumber
+                                SailNumber = @sailNumber,
                                 HullNumber = @hullNumber";
 
             QueryBuilder.AddCommand(sql);

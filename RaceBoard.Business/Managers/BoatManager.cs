@@ -8,7 +8,6 @@ using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Business.Validators.Interfaces;
 using RaceBoard.Common.Exceptions;
 using RaceBoard.Common.Enums;
-using RaceBoard.Data.Repositories;
 
 namespace RaceBoard.Business.Managers
 {
@@ -111,7 +110,7 @@ namespace RaceBoard.Business.Managers
             var boat = this.Get(id, context);
 
             _boatValidator.SetTransactionalContext(context);
-            
+
             if (!_boatValidator.IsValid(boat, Scenario.Delete))
                 throw new FunctionalException(ErrorType.ValidationError, _boatValidator.Errors);
 

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using RaceBoard.Business.Managers;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
@@ -8,8 +7,6 @@ using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
 using RaceBoard.DTOs.Boat.Request;
 using RaceBoard.DTOs.Boat.Response;
-using RaceBoard.DTOs.Person.Response;
-using RaceBoard.DTOs.Race.Response;
 using RaceBoard.Service.Controllers.Abstract;
 using RaceBoard.Service.Helpers.Interfaces;
 using RaceBoard.Translations.Interfaces;
@@ -47,7 +44,6 @@ namespace RaceBoard.Service.Controllers
 
             return Ok(response);
         }
-
 
         [HttpGet()]
         public ActionResult<PaginatedResultResponse<BoatResponse>> Get([FromQuery] BoatSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
