@@ -1,5 +1,6 @@
 ﻿using RaceBoard.Business.Managers.Abstract;
 using RaceBoard.Business.Managers.Interfaces;
+using RaceBoard.Business.Validators;
 using RaceBoard.Business.Validators.Interfaces;
 using RaceBoard.Common.Enums;
 using RaceBoard.Common.Exceptions;
@@ -15,14 +16,14 @@ namespace RaceBoard.Business.Managers
     public class ChampionshipFlagManager : AbstractManager, IChampionshipFlagManager
     {
         private readonly IChampionshipFlagRepository _championshipFlagRepository;
-        private readonly ICustomValidator<ChampionshipFlag> _championshipFlagValidator;
+        private readonly ICustomValidator<ChampionshipFlagGroup> _championshipFlagValidator;
         private readonly IAuthorizationManager _authorizationManager;
         private readonly IDateTimeHelper _dateTimeHelper;
 
         public ChampionshipFlagManager
         (
             IChampionshipFlagRepository championshipFlagRepository,
-            ICustomValidator<ChampionshipFlag> championshipFlagValidator,
+            ICustomValidator<ChampionshipFlagGroup> championshipFlagValidator,
             IRequestContextManager requestContextManager,
             IAuthorizationManager authorizationManager,
             IDateTimeHelper dateTimeHelper,
@@ -94,6 +95,11 @@ namespace RaceBoard.Business.Managers
 
             if (context == null)
                 context = _championshipFlagRepository.GetTransactionalContext(TransactionContextScope.Internal);
+
+            _championshipFlagValidator.SetTransactionalContext(context);
+
+            if (!_championshipFlagValidator.IsValid(championshipFlagGroup, Scenario.Create))
+                throw new FunctionalException(ErrorType.ValidationError, _championshipFlagValidator.Errors);
 
             try
             {

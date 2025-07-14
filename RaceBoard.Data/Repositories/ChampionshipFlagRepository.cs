@@ -73,6 +73,32 @@ namespace RaceBoard.Data.Repositories
             return false;
         }
 
+        public bool ExistsOverlapping(ChampionshipFlagGroup championshipFlagGroup, ITransactionalContext? context = null)
+        {
+            string sql = @" SELECT 1 FROM [Championship_Flag] [Flag]
+                            INNER JOIN [Championship_FlagGroup] [Group] ON ( [Group].Id = [Flag].IdChampionshipFlagGroup )
+                            WHERE [Group].IdChampionship = @idChampionship
+	                        AND
+	                        (
+	                        	( [Flag].IdFlag = @idFlag AND Lowering IS NULL )
+	                        	OR
+	                        	( [Flag].IdFlag = @idFlag AND Lowering IS NOT NULL AND @raising BETWEEN Raising AND Lowering )
+	                        )";
+
+            foreach (var flag in championshipFlagGroup.Flags)
+            {
+                QueryBuilder.AddCommand(sql);
+                QueryBuilder.AddParameter("idChampionship", championshipFlagGroup.Championship.Id);
+                QueryBuilder.AddParameter("idFlag", flag.Flag.Id);
+                QueryBuilder.AddParameter("raising", flag.Raising);
+
+                if (base.Execute<bool>(context))
+                    return true;
+            }
+
+            return false;
+        }
+
         public PaginatedResult<ChampionshipFlagGroup> Get(ChampionshipFlagSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             return this.GetChampionshipFlags(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
@@ -104,7 +130,6 @@ namespace RaceBoard.Data.Repositories
 
         #endregion
 
-
         #region Private Methods
 
         private PaginatedResult<ChampionshipFlagGroup> GetChampionshipFlags(ChampionshipFlagSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
@@ -135,7 +160,7 @@ namespace RaceBoard.Data.Repositories
             ProcessSearchFilter(searchFilter);
 
             //QueryBuilder.AddSorting(sorting, _columnsMapping);
-            QueryBuilder.AddSorting(new string[] { "[Championship_Flag].Raising ASC", "[Championship_Flag].[Order] ASC" });
+            QueryBuilder.AddSorting(new string[] { "[Championship_Flag].Raising DESC", "[Championship_Flag].[Order] ASC" });
             QueryBuilder.AddPagination(paginationFilter);
 
             var championshipFlagGroups = new List<ChampionshipFlagGroup>();
@@ -184,14 +209,16 @@ namespace RaceBoard.Data.Repositories
                 return;
 
             base.AddFilterCriteria(ConditionType.In, "Championship_Flag", "Id", "ids", searchFilter.Ids);
-            base.AddFilterCriteria(ConditionType.Equal, "Championship", "Id", "idChampionship", searchFilter.Championship?.Id);
-            base.AddFilterCriteria(ConditionType.Equal, "Championship_FlagGroup", "IdChampionship", "idChampionship", searchFilter.Championship?.Id);
             base.AddFilterCriteria(ConditionType.Equal, "Championship_Flag", "IdFlag", "idFlag", searchFilter.Flag?.Id);
             base.AddFilterCriteria(ConditionType.Equal, "Championship_Flag", "IdUser", "idUser", searchFilter.Person?.User?.Id);
+            base.AddFilterCriteria(ConditionType.Equal, "Championship_FlagGroup", "IdChampionship", "idChampionship", searchFilter.Championship?.Id);
+            //base.AddFilterCriteria(ConditionType.Equal, "Championship", "Id", "idChampionship", searchFilter.Championship?.Id);
 
-            //if (searchFilter.Raising.HasValue)
-            //    searchFilter.Raising = searchFilter.Raising.Value.UtcDateTime.Date;
-            //base.AddFilterCriteria(ConditionType.GreaterOrEqualThan, "Championship_Flag", "Raising", "raising", searchFilter.Raising);
+            if (searchFilter.Raising.HasValue)
+            {
+                //searchFilter.Raising = searchFilter.Raising.Value.UtcDateTime;
+                base.AddFilterCriteria(ConditionType.GreaterOrEqualThan, "Championship_Flag", "Raising", "raising", searchFilter.Raising);
+            }
 
             //if (searchFilter.Lowering.HasValue)
             //{

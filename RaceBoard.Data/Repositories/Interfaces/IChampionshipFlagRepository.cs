@@ -10,6 +10,7 @@ namespace RaceBoard.Data.Repositories.Interfaces
         void CancelTransactionalContext(ITransactionalContext context);
         bool Exists(int id, ITransactionalContext? context = null);
         bool ExistsDuplicate(ChampionshipFlagGroup championshipFlagGroup, ITransactionalContext? context = null);
+        bool ExistsOverlapping(ChampionshipFlagGroup championshipFlagGroup, ITransactionalContext? context = null);
 
         PaginatedResult<ChampionshipFlagGroup> Get(ChampionshipFlagSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
         void CreateGroup(ChampionshipFlagGroup championshipFlagGroup, ITransactionalContext? context = null);

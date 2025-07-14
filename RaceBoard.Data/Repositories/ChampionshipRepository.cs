@@ -215,8 +215,12 @@ namespace RaceBoard.Data.Repositories
                                 IdCity = @idCity,
                                 Name = @name,
                                 StartDate = @startDate,
-                                EndDate = @endDate,
-                                IdFileImage =  @idFileImage";
+                                EndDate = @endDate";
+
+            bool hasImage = championship.ImageFile != null && championship.ImageFile.Id > 0;
+
+            if (hasImage)
+                sql += ", IdFileImage = @idFileImage";
 
             QueryBuilder.AddCommand(sql);
 
@@ -224,7 +228,7 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddParameter("name", championship.Name);
             QueryBuilder.AddParameter("startDate", championship.StartDate);
             QueryBuilder.AddParameter("endDate", championship.EndDate);
-            QueryBuilder.AddParameter("idFileImage", championship.ImageFile?.Id);
+            QueryBuilder.AddParameter("idFileImage", hasImage ? championship.ImageFile!.Id : null);
 
             QueryBuilder.AddParameter("id", championship.Id);
             QueryBuilder.AddCondition("Id = @id");

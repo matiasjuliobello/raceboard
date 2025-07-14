@@ -92,7 +92,7 @@ namespace RaceBoard.IoC
             services.AddTransient<ICustomValidator<ChampionshipNotification>, ChampionshipNotificationValidator>();
             services.AddTransient<ICustomValidator<ChampionshipGroup>, ChampionshipGroupValidator>();
             services.AddTransient<ICustomValidator<ChampionshipFile>, ChampionshipFileValidator>();
-            services.AddTransient<ICustomValidator<ChampionshipFlag>, ChampionshipFlagValidator>();
+            services.AddTransient<ICustomValidator<ChampionshipFlagGroup>, ChampionshipFlagValidator>();
             services.AddTransient<ICustomValidator<Organization>, OrganizationValidator>();
             services.AddTransient<ICustomValidator<OrganizationMember>, OrganizationMemberValidator>();
             services.AddTransient<ICustomValidator<OrganizationMemberInvitation>, OrganizationMemberInvitationValidator>();

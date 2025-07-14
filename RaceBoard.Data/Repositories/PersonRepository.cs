@@ -160,8 +160,8 @@ namespace RaceBoard.Data.Repositories
 
             QueryBuilder.AddCommand(sql);
 
-            QueryBuilder.AddCondition("[Person].Firstname LIKE '%' + @searchTerm + '%'", LogicalOperator.Or);
-            QueryBuilder.AddCondition("[Person].Lastname LIKE '%' + @searchTerm + '%'", LogicalOperator.Or);
+            QueryBuilder.AddCondition($"[Person].Firstname COLLATE {_collation_latin_CI_AI} LIKE '%' + @searchTerm + '%' ", LogicalOperator.Or);
+            QueryBuilder.AddCondition($"[Person].Lastname COLLATE {_collation_latin_CI_AI} LIKE '%' + @searchTerm + '%'", LogicalOperator.Or);
             //QueryBuilder.AddCondition("[User].Email LIKE '%' + @searchTerm + '%'", LogicalOperator.Or);
             //QueryBuilder.AddParameter("firstName", searchTerm);
             //QueryBuilder.AddParameter("lastName", searchTerm);

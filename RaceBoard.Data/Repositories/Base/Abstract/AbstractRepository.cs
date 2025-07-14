@@ -8,7 +8,6 @@ using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Data.Constants;
 using RaceBoard.Data.Helpers.Interfaces;
 using static RaceBoard.Data.Helpers.SqlQueryBuilder;
-using Newtonsoft.Json.Linq;
 
 namespace RaceBoard.Data.Repositories.Base.Abstract
 {
@@ -18,6 +17,8 @@ namespace RaceBoard.Data.Repositories.Base.Abstract
         private string _connectionString;
         private IDbConnection _connection;
         protected IQueryBuilder _queryBuilder;
+
+        protected string _collation_latin_CI_AI = "Latin1_General_CI_AI";
 
         protected enum ConditionType
         {

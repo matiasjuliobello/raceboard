@@ -8,30 +8,30 @@ using RaceBoard.Domain;
 
 namespace RaceBoard.Business.Validators
 {
-    public class ChampionshipFlagValidator : AbstractCustomValidator<ChampionshipFlag>
+    public class ChampionshipFlagValidator : AbstractCustomValidator<ChampionshipFlagGroup>
     {
-        private readonly IChampionshipFlagRepository _mastFlagRepository;
-        private readonly IChampionshipRepository _mastRepository;
-        private readonly IFlagRepository _flagRepository;
-        private readonly IPersonRepository _personRepository;
-        private readonly IDateTimeHelper _dateTimeHelper;
+        private readonly IChampionshipFlagRepository _championshipFlagRepository;
+        //private readonly IChampionshipRepository _championshipRepository;
+        //private readonly IFlagRepository _flagRepository;
+        //private readonly IPersonRepository _personRepository;
+        //private readonly IDateTimeHelper _dateTimeHelper;
 
         public ChampionshipFlagValidator
             (
                 ITranslator translator,
-                IChampionshipFlagRepository mastFlagRepository,
-                IChampionshipRepository mastRepository,
-                IFlagRepository flagRepository,
-                IPersonRepository personRepository,
-                IDateTimeHelper dateTimeHelper
+                IChampionshipFlagRepository championshipFlagRepository
+                //IChampionshipRepository championshipRepository,
+                //IFlagRepository flagRepository,
+                //IPersonRepository personRepository,
+                //IDateTimeHelper dateTimeHelper
             )
             : base(translator)
         {
-            _mastFlagRepository = mastFlagRepository;
-            _mastRepository = mastRepository;
-            _flagRepository = flagRepository;
-            _personRepository = personRepository;
-            _dateTimeHelper = dateTimeHelper;
+            _championshipFlagRepository = championshipFlagRepository;
+            //_championshipRepository = championshipRepository;
+            //_flagRepository = flagRepository;
+            //_personRepository = personRepository;
+            //_dateTimeHelper = dateTimeHelper;
 
             base.SetRules(this.AddRules);
         }
@@ -92,6 +92,12 @@ namespace RaceBoard.Business.Validators
             //    .Must(x => x.Lowering > x.Raising)
             //    .WithMessage(Translate("LoweringMustOccurAfterRaising"))
             //    .When(x => Scenario == Scenario.Create || Scenario == Scenario.Update);
+
+
+            RuleFor(x => x)
+                .Must(x => !_championshipFlagRepository.ExistsOverlapping(x, base.TransactionalContext))
+                .WithMessage(Translate("AtLeastOneFlagIsAlreadyRaised"))
+                .When(x => Scenario == Scenario.Create);
         }
     }
 }
