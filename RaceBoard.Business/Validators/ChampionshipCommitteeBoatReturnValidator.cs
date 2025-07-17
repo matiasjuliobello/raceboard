@@ -5,18 +5,18 @@ using RaceBoard.Translations.Interfaces;
 
 namespace RaceBoard.Business.Validators
 {
-    public class CommitteeBoatReturnValidator : AbstractCustomValidator<CommitteeBoatReturn>
+    public class ChampionshipCommitteeBoatReturnValidator : AbstractCustomValidator<ChampionshipCommitteeBoatReturn>
     {
-        private readonly ICommitteeBoatReturnRepository _committeeBoatReturnRepository;
+        private readonly IChampionshipCommitteeBoatReturnRepository _championshipCommitteeBoatReturnRepository;
 
-        public CommitteeBoatReturnValidator
+        public ChampionshipCommitteeBoatReturnValidator
             (
                 ITranslator translator,
-                ICommitteeBoatReturnRepository committeeBoatReturnRepository
+                IChampionshipCommitteeBoatReturnRepository championshipCommitteeBoatReturnRepository
             )
             : base(translator)
         {
-            _committeeBoatReturnRepository = committeeBoatReturnRepository;
+            _championshipCommitteeBoatReturnRepository = championshipCommitteeBoatReturnRepository;
 
             base.SetRules(this.AddRules);
         }

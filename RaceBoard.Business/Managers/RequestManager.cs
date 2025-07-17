@@ -26,7 +26,7 @@ namespace RaceBoard.Business.Managers
         private readonly IHearingRequestTypeRepository _hearingRequestTypeRepository;
         private readonly IHearingRequestStatusRepository _hearingRequestStatusRepository;
         private readonly IFileRepository _fileRepository;
-        private readonly ICommitteeBoatReturnRepository _committeeBoatReturnRepository;
+        private readonly IChampionshipCommitteeBoatReturnRepository _committeeBoatReturnRepository;
 
         private readonly IUserSettingsManager _userSettingsManager;
 
@@ -57,7 +57,7 @@ namespace RaceBoard.Business.Managers
                 IHearingRequestTypeRepository hearingRequestTypeRepository,
                 IHearingRequestStatusRepository hearingRequestStatusRepository,
                 IFileRepository fileRepository,
-                ICommitteeBoatReturnRepository committeeBoatReturnRepository,
+                IChampionshipCommitteeBoatReturnRepository committeeBoatReturnRepository,
                 IUserSettingsManager userSettingsManager,
                 IFileHelper fileHelper,
                 IDateTimeHelper dateTimeHelper,
@@ -271,7 +271,7 @@ namespace RaceBoard.Business.Managers
             return hearing;
         }
 
-        public CommitteeBoatReturn GetHearingRequestAssociatedCommitteeBoatReturn(int id, ITransactionalContext? context = null)
+        public ChampionshipCommitteeBoatReturn GetHearingRequestAssociatedCommitteeBoatReturn(int id, ITransactionalContext? context = null)
         {
             return _hearingRequestRepository.GetAssociatedCommitteeBoatReturn(id, context);
         }
@@ -435,11 +435,11 @@ namespace RaceBoard.Business.Managers
 
         #region Private Methods
 
-        private CommitteeBoatReturn? FindCommitteeBoatReturn(int idChampionship, int idRaceClass, DateTimeOffset hearingRequestCreationDate, ITransactionalContext? context = null)
+        private ChampionshipCommitteeBoatReturn? FindCommitteeBoatReturn(int idChampionship, int idRaceClass, DateTimeOffset hearingRequestCreationDate, ITransactionalContext? context = null)
         {
-            CommitteeBoatReturn? committeeBoatReturn = null;
+            ChampionshipCommitteeBoatReturn? committeeBoatReturn = null;
 
-            var searchFilter = new CommitteeBoatReturnSearchFilter()
+            var searchFilter = new ChampionshipCommitteeBoatReturnSearchFilter()
             {
                 Championship = new Championship() { Id = idChampionship },
                 RaceClasses = new List<RaceClass>() { { new RaceClass() { Id = idRaceClass } } },

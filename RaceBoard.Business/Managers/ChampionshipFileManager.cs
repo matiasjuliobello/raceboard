@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using RaceBoard.Business.Helpers;
 using RaceBoard.Business.Helpers.Interfaces;
 using RaceBoard.Business.Managers.Abstract;
 using RaceBoard.Business.Managers.Interfaces;
@@ -88,9 +87,9 @@ namespace RaceBoard.Business.Managers
             if (context == null)
                 context = _championshipFileRepository.GetTransactionalContext(TransactionContextScope.Internal);
 
-            //_championshipValidator.SetTransactionalContext(context);
-            //if (!_championshipValidator.IsValid(championship, Scenario.Create))
-            //    throw new FunctionalException(ErrorType.ValidationError, _championshipValidator.Errors);
+            _championshipFileValidator.SetTransactionalContext(context);
+            if (!_championshipFileValidator.IsValid(championshipFile, Scenario.Create))
+                throw new FunctionalException(ErrorType.ValidationError, _championshipFileValidator.Errors);
 
             try
             {
@@ -99,6 +98,44 @@ namespace RaceBoard.Business.Managers
                 _fileRepository.Create(championshipFile.File, context);
 
                 _championshipFileRepository.Create(championshipFile, context);
+                _championshipFileRepository.AssociateRaceClasses(championshipFile, context);
+
+                context.Confirm();
+            }
+            catch (Exception)
+            {
+                if (context != null)
+                    context.Cancel();
+
+                if (!string.IsNullOrEmpty(championshipFile.File.Path))
+                    _fileHelper.DeleteFile(Path.Combine(championshipFile.File.Path, championshipFile.File.Name));
+
+                throw;
+            }
+
+            _notificationHelper.SendNotification(Notification.Enums.NotificationType.Championship_File_Upload, championshipFile);
+        }
+
+        public void Update(ChampionshipFile championshipFile, ITransactionalContext? context = null)
+        {
+            var contextUser = base.GetContextUser();
+
+            _authorizationManager.ValidatePermission(contextUser.Id, Domain.Enums.Action.ChampionshipFile_Update, championshipFile.Championship.Id);
+
+            if (context == null)
+                context = _championshipFileRepository.GetTransactionalContext(TransactionContextScope.Internal);
+
+            _championshipFileValidator.SetTransactionalContext(context);
+            if (!_championshipFileValidator.IsValid(championshipFile, Scenario.Update))
+                throw new FunctionalException(ErrorType.ValidationError, _championshipFileValidator.Errors);
+
+            try
+            {
+                //championshipFile.File.Path = _fileHelper.SaveFile(Common.CommonValues.Directories.Files, championshipFile.Championship.Id.ToString(), championshipFile.File.Name, championshipFile.File.Content);
+
+                //_fileRepository.Create(championshipFile.File, context);
+
+                _championshipFileRepository.Update(championshipFile, context);
                 _championshipFileRepository.AssociateRaceClasses(championshipFile, context);
 
                 context.Confirm();

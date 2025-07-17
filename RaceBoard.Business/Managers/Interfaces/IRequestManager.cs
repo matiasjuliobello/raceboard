@@ -22,7 +22,7 @@ namespace RaceBoard.Business.Managers.Interfaces
 
         PaginatedResult<HearingRequest> GetHearingRequests(HearingRequestSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
         HearingRequest GetHearingRequest(int id, ITransactionalContext? context = null);
-        CommitteeBoatReturn GetHearingRequestAssociatedCommitteeBoatReturn(int id, ITransactionalContext? context = null);
+        ChampionshipCommitteeBoatReturn GetHearingRequestAssociatedCommitteeBoatReturn(int id, ITransactionalContext? context = null);
 
         void SubmitHearingRequest(HearingRequest hearingRequest, ITransactionalContext? context = null);
         void ChangeHearingRequestStatus(HearingRequest hearingRequest, ITransactionalContext? context = null);

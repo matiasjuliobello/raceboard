@@ -1,9 +1,8 @@
-﻿using RaceBoard.DTOs.Championship.Response;
-using RaceBoard.DTOs.RaceClass.Response;
+﻿using RaceBoard.DTOs.RaceClass.Response;
 
-namespace RaceBoard.DTOs.CommitteeBoatReturn.Response
+namespace RaceBoard.DTOs.Championship.Response
 {
-    public class CommitteeBoatReturnResponse
+    public class ChampionshipCommitteeBoatReturnResponse
     {
         public int Id { get; set; }
         public ChampionshipSimpleResponse Championship { get; set; }

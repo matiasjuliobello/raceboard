@@ -10,5 +10,6 @@ namespace RaceBoard.DTOs.Championship.Response
         public FileResponse File { get; set; }
         public FileTypeResponse FileType { get; set; }
         public List<RaceClassResponse> RaceClasses { get; set; }
+        public string Name { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace RaceBoard.Data.Repositories.Interfaces
         HearingRequestProtestor GetProtestor(int id, ITransactionalContext? context = null);
         HearingRequestProtestees GetProtestees(int id, ITransactionalContext? context = null);
         HearingRequestIncident GetIncident(int id, ITransactionalContext? context = null);
-        CommitteeBoatReturn GetAssociatedCommitteeBoatReturn(int id, ITransactionalContext? context = null);
+        ChampionshipCommitteeBoatReturn GetAssociatedCommitteeBoatReturn(int id, ITransactionalContext? context = null);
 
         HearingRequestWithdrawal GetWithdrawal(int id, ITransactionalContext? context = null);
         HearingRequestLodgement GetLodgement(int id, ITransactionalContext? context = null);
@@ -35,7 +35,7 @@ namespace RaceBoard.Data.Repositories.Interfaces
         void CreateProtestorNotice(HearingRequest hearingRequest, ITransactionalContext? context = null);
         void CreateProtestees(HearingRequest hearingRequest, ITransactionalContext? context = null);
         void CreateIncident(HearingRequest hearingRequest, ITransactionalContext? context = null);
-        void CreateCommitteeBoatReturnAssociation(HearingRequest hearingRequest, CommitteeBoatReturn commiteeBoatReturn, ITransactionalContext? context = null);
+        void CreateCommitteeBoatReturnAssociation(HearingRequest hearingRequest, ChampionshipCommitteeBoatReturn commiteeBoatReturn, ITransactionalContext? context = null);
         void CreateRequestWithdrawal(HearingRequest hearingRequest, ITransactionalContext? context = null);
         void CreateRequestLodgement(HearingRequest hearingRequest, ITransactionalContext? context = null);
         void CreateRequestAttendees(HearingRequest hearingRequest, ITransactionalContext? context = null);

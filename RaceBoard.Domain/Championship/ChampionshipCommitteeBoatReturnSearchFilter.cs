@@ -1,6 +1,6 @@
 ﻿namespace RaceBoard.Domain
 {
-    public class CommitteeBoatReturnSearchFilter
+    public class ChampionshipCommitteeBoatReturnSearchFilter
     {
         public int[]? Ids { get; set; }
         public Championship? Championship { get; set; }

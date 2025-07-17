@@ -59,8 +59,6 @@ using TimeZone = RaceBoard.Domain.TimeZone;
 using Action = RaceBoard.Domain.Action;
 using Enums = RaceBoard.Domain.Enums;
 using MessagingEnums = RaceBoard.Messaging.Providers;
-using RaceBoard.DTOs.CommitteeBoatReturn.Request;
-using RaceBoard.DTOs.CommitteeBoatReturn.Response;
 using RaceBoard.DTOs.Gender.Response;
 using RaceBoard.PushMessaging.Entities;
 using RaceBoard.PushMessaging.Enums;
@@ -204,11 +202,11 @@ namespace RaceBoard.Service.Mappings
                 .ForMember(dest => dest.Race, opt => opt.MapFrom(src => CreateObject<Race>(src.IdRace)))
                 .ForMember(dest => dest.TeamMember, opt => opt.MapFrom(src => CreateObject<TeamMember>(src.IdTeamMember)));
 
-            CreateMap<CommitteeBoatReturnRequest, CommitteeBoatReturn>()
+            CreateMap<ChampionshipCommitteeBoatReturnRequest, ChampionshipCommitteeBoatReturn>()
                 .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
                 .ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)));
 
-            CreateMap<CommitteeBoatReturnSearchFilterRequest, CommitteeBoatReturnSearchFilter>()
+            CreateMap<ChampionshipCommitteeBoatReturnSearchFilterRequest, ChampionshipCommitteeBoatReturnSearchFilter>()
                 .ForMember(dest => dest.Championship, opt => opt.MapFrom(src => CreateObject<Championship>(src.IdChampionship)))
                 .ForMember(dest => dest.RaceClasses, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdsRaceClass)));
 
@@ -410,7 +408,7 @@ namespace RaceBoard.Service.Mappings
             CreateMap<Championship, ChampionshipSimpleResponse>();
             CreateMap<ChampionshipGroup, ChampionshipGroupResponse>();
             CreateMap<ChampionshipNotification, ChampionshipNotificationResponse>();
-            CreateMap<CommitteeBoatReturn, CommitteeBoatReturnResponse>();
+            CreateMap<ChampionshipCommitteeBoatReturn, ChampionshipCommitteeBoatReturnResponse>();
             CreateMap<ChampionshipFile, ChampionshipFileResponse>();
             //CreateMap<ChampionshipRaceClass, ChampionshipRaceClassResponse>();
             CreateMap<ChampionshipMember, ChampionshipMemberResponse>();

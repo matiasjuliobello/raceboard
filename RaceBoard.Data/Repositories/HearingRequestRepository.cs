@@ -101,7 +101,7 @@ namespace RaceBoard.Data.Repositories
             return this.GetHearingRequestIncident(id, context);
         }
 
-        public CommitteeBoatReturn GetAssociatedCommitteeBoatReturn(int id, ITransactionalContext? context = null)
+        public ChampionshipCommitteeBoatReturn GetAssociatedCommitteeBoatReturn(int id, ITransactionalContext? context = null)
         {
             return this.GetHearingRequestAssociatedCommitteeBoatReturn(id, context);
         }
@@ -198,7 +198,7 @@ namespace RaceBoard.Data.Repositories
             this.CreateHearingRequestIncident(hearingRequest, context);
         }
 
-        public void CreateCommitteeBoatReturnAssociation(HearingRequest hearingRequest, CommitteeBoatReturn commiteeBoatReturn, ITransactionalContext? context = null)
+        public void CreateCommitteeBoatReturnAssociation(HearingRequest hearingRequest, ChampionshipCommitteeBoatReturn commiteeBoatReturn, ITransactionalContext? context = null)
         {
             this.CreateHearingRequestCommitteeBoatReturn(hearingRequest, commiteeBoatReturn, context);
         }
@@ -314,7 +314,7 @@ namespace RaceBoard.Data.Repositories
                (
                    (reader) =>
                    {
-                       return reader.Read<HearingRequestCommitteeBoatReturn, HearingRequest, CommitteeBoatReturn, HearingRequestCommitteeBoatReturn>
+                       return reader.Read<HearingRequestCommitteeBoatReturn, HearingRequest, ChampionshipCommitteeBoatReturn, HearingRequestCommitteeBoatReturn>
                        (
                            (hearingRequestCommitteeBoatReturn, hearingRequest, committeeBoatReturn) =>
                            {
@@ -483,7 +483,7 @@ namespace RaceBoard.Data.Repositories
             return base.GetSingleResult<HearingRequestIncident>(context);
         }
 
-        private CommitteeBoatReturn GetHearingRequestAssociatedCommitteeBoatReturn(int id, ITransactionalContext? context = null)
+        private ChampionshipCommitteeBoatReturn GetHearingRequestAssociatedCommitteeBoatReturn(int id, ITransactionalContext? context = null)
         {
             string sql = $@"SELECT
 	                            [CommitteeBoatReturn].Id [Id],
@@ -497,7 +497,7 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddCondition("[Hearing].Id = @idHearing");
             QueryBuilder.AddParameter("idHearing", id);
 
-            return base.GetSingleResult<CommitteeBoatReturn>(context);
+            return base.GetSingleResult<ChampionshipCommitteeBoatReturn>(context);
         }
 
         private HearingRequestWithdrawal GetHearingRequestWithdrawal(int id, ITransactionalContext? context = null)
@@ -733,7 +733,7 @@ namespace RaceBoard.Data.Repositories
             hearingRequestProtestee.Id = base.Execute<int>(context);
         }
 
-        private void CreateHearingRequestCommitteeBoatReturn(HearingRequest hearingRequest, CommitteeBoatReturn commiteeBoatReturn, ITransactionalContext? context = null)
+        private void CreateHearingRequestCommitteeBoatReturn(HearingRequest hearingRequest, ChampionshipCommitteeBoatReturn commiteeBoatReturn, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [HearingRequest_CommitteeBoatReturn]
                             ( IdHearingRequest, IdCommitteeBoatReturn )

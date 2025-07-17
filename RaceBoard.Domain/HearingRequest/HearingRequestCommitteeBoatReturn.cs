@@ -4,6 +4,6 @@
     {
         public int Id { get; set; }
         public HearingRequest HearingRequest { get; set; }
-        public CommitteeBoatReturn CommitteeBoatReturn { get; set; }
+        public ChampionshipCommitteeBoatReturn CommitteeBoatReturn { get; set; }
     }
 }

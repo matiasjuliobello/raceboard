@@ -7,9 +7,9 @@ using RaceBoard.Domain;
 using RaceBoard.Domain.Enums;
 using RaceBoard.DTOs._Pagination.Request;
 using RaceBoard.DTOs._Pagination.Response;
+using RaceBoard.DTOs.Championship.Response;
 using RaceBoard.DTOs.ChangeRequest.Request;
 using RaceBoard.DTOs.ChangeRequest.Response;
-using RaceBoard.DTOs.CommitteeBoatReturn.Response;
 using RaceBoard.DTOs.HearingRequest.Request;
 using RaceBoard.DTOs.HearingRequest.Response;
 using RaceBoard.Service.Controllers.Abstract;
@@ -246,9 +246,9 @@ namespace RaceBoard.Service.Controllers
         [HttpGet("hearings/{id}/committee-boat-return")]
         public ActionResult GetHearingRequestAssociatedCommitteeBoatReturn(int id)
         {
-            CommitteeBoatReturn committeeBoatReturn = _requestManager.GetHearingRequestAssociatedCommitteeBoatReturn(id);
+            ChampionshipCommitteeBoatReturn committeeBoatReturn = _requestManager.GetHearingRequestAssociatedCommitteeBoatReturn(id);
 
-            var response = _mapper.Map<CommitteeBoatReturnResponse>(committeeBoatReturn);
+            var response = _mapper.Map<ChampionshipCommitteeBoatReturnResponse>(committeeBoatReturn);
 
             return Ok(response);
         }

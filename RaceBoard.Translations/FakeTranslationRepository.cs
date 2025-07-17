@@ -900,6 +900,9 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("ChooseOrganization"),
                 new Tuple<string, string>(Languages.English, "Choose club"),
                 new Tuple<string, string>(Languages.Spanish, "Seleccionar club"));
+            AddText(AddTranslation("ChooseOrganizations"),
+                new Tuple<string, string>(Languages.English, "Choose clubs"),
+                new Tuple<string, string>(Languages.Spanish, "Seleccionar clubes"));
             AddText(AddTranslation("SetChampionshipName"),
                 new Tuple<string, string>(Languages.English, "Set championship name"),
                 new Tuple<string, string>(Languages.Spanish, "Indicar nombre del campeonato"));

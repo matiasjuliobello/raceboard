@@ -7,6 +7,7 @@
         public List<RaceClass> RaceClasses { get; set; }
         public File File { get; set; }
         public FileType FileType { get; set; }
+        public string Name { get; set; }
 
         public ChampionshipFile()
         {

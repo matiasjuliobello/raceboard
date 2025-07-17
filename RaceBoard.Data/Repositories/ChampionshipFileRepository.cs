@@ -85,19 +85,25 @@ namespace RaceBoard.Data.Repositories
         public void Create(ChampionshipFile championshipFile, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [Championship_File]
-                                ( IdChampionship, IdFile, IdFileType )
+                                ( IdChampionship, IdFile, IdFileType, Name )
                             VALUES
-                                ( @idChampionship, @idFile, @idFileType )";
+                                ( @idChampionship, @idFile, @idFileType, @name )";
 
             QueryBuilder.AddCommand(sql);
 
             QueryBuilder.AddParameter("idChampionship", championshipFile.Championship.Id);
             QueryBuilder.AddParameter("idFile", championshipFile.File.Id);
             QueryBuilder.AddParameter("idFileType", championshipFile.FileType.Id);
+            QueryBuilder.AddParameter("name", championshipFile.Name);
 
             QueryBuilder.AddReturnLastInsertedId();
 
             championshipFile.Id = base.Execute<int>(context);
+        }
+
+        public void Update(ChampionshipFile championshipFile, ITransactionalContext? context = null)
+        {
+            this.UpdateChampionshipFile(championshipFile, context);
         }
 
         public void AssociateRaceClasses(ChampionshipFile championshipFile, ITransactionalContext? context = null)
@@ -135,22 +141,23 @@ namespace RaceBoard.Data.Repositories
         private PaginatedResult<ChampionshipFile> GetChampionshipFiles(ChampionshipFileSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             string sql = $@"SELECT
-	                            [Championship_File].Id   [Id],
-                                [Championship].Id        [Id],
-                                [Championship].[Name]    [Name],
-	                            [File].Id               [Id],
-	                            [File].[Description]    [Description],
-	                            [File].[Name]           [Name],
-	                            [File].[Path]           [Path],
-	                            [File].CreationDate     [CreationDate],
-	                            [FileType].Id           [Id],
-	                            [FileType].[Name]       [Name],
-	                            [User].Id               [Id],
-                                [Person].Id             [Id],
-                                [Person].Firstname      [Firstname],
-	                            [Person].Lastname       [Lastname],
-	                            [RaceClass].Id          [Id],
-	                            [RaceClass].[Name]      [Name]
+	                            [Championship_File].Id      [Id],
+                                [Championship_File].Name    [Name],
+                                [Championship].Id           [Id],
+                                [Championship].[Name]       [Name],
+	                            [File].Id                   [Id],
+	                            [File].[Description]        [Description],
+	                            [File].[Name]               [Name],
+	                            [File].[Path]               [Path],
+	                            [File].CreationDate         [CreationDate],
+	                            [FileType].Id               [Id],
+	                            [FileType].[Name]           [Name],
+	                            [User].Id                   [Id],
+                                [Person].Id                 [Id],
+                                [Person].Firstname          [Firstname],
+	                            [Person].Lastname           [Lastname],
+	                            [RaceClass].Id              [Id],
+	                            [RaceClass].[Name]          [Name]
                             FROM [Championship_File] 
                             INNER JOIN [Championship] [Championship] ON [Championship].Id = [Championship_File].IdChampionship
                             INNER JOIN [File] ON [File].Id = [Championship_File].IdFile
@@ -221,6 +228,23 @@ namespace RaceBoard.Data.Repositories
             base.AddFilterCriteria(ConditionType.In, "Championship_File_RaceClass", "IdRaceClass", "idRaceClass", searchFilter.RaceClasses);
         }
 
+        private void UpdateChampionshipFile(ChampionshipFile championshipFile, ITransactionalContext? context = null)
+        {
+            string sql = @" UPDATE [Championship_File] SET
+                                Name = @name, IdFile = @idFile, IdFileType = @idFileType";
+
+            QueryBuilder.AddCommand(sql);
+
+            QueryBuilder.AddParameter("idChampionship", championshipFile.Championship.Id);
+            QueryBuilder.AddParameter("name", championshipFile.Name);
+            QueryBuilder.AddParameter("idFile", championshipFile.File.Id);
+            QueryBuilder.AddParameter("idFileType", championshipFile.FileType.Id);
+
+            QueryBuilder.AddParameter("id", championshipFile.Id);
+            QueryBuilder.AddCondition("Id = @id");
+
+            base.ExecuteAndGetRowsAffected(context);
+        }
         #endregion
     }
 }

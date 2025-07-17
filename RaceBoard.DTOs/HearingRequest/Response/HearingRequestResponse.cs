@@ -1,4 +1,4 @@
-﻿using RaceBoard.DTOs.CommitteeBoatReturn.Response;
+﻿using RaceBoard.DTOs.Championship.Response;
 using RaceBoard.DTOs.Person.Response;
 using RaceBoard.DTOs.Team.Response;
 using RaceBoard.DTOs.User.Response;
@@ -19,7 +19,7 @@ namespace RaceBoard.DTOs.HearingRequest.Response
         public HearingRequestProtestorResponse Protestor { get; set; }
         public HearingRequestProtesteesResponse Protestees { get; set; }
         public HearingRequestIncidentResponse Incident { get; set; }
-        public CommitteeBoatReturnResponse CommitteeBoatReturn { get; set; }
+        public ChampionshipCommitteeBoatReturnResponse CommitteeBoatReturn { get; set; }
 
         public HearingRequestWithdrawalResponse Withdrawal { get; set; }
         public HearingRequestLodgementResponse Lodgement { get; set; }

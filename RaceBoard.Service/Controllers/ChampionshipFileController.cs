@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using RaceBoard.Business.Helpers.Interfaces;
 using RaceBoard.Business.Managers.Interfaces;
 using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Domain;
@@ -56,7 +55,17 @@ namespace RaceBoard.Service.Controllers
 
             return Ok(response);
         }
-        
+
+        [HttpGet("files/{id}")]
+        public ActionResult<ChampionshipFileResponse> GetById([FromRoute] int id)
+        {
+            var data = _championshipFileManager.Get(id);
+
+            var response = _mapper.Map<ChampionshipFileResponse>(data);
+
+            return Ok(response);
+        }
+
         [HttpPost("files")]
         public ActionResult<int> Create(IFormFile file, [FromForm] ChampionshipFileRequest championshipFileUploadRequest)
         {
@@ -70,9 +79,27 @@ namespace RaceBoard.Service.Controllers
             var championshipFile = _mapper.Map<ChampionshipFile>(championshipFileUploadRequest);
 
             championshipFile.File = base.CreateFileInstance(uploadedFile);
-            championshipFile.File.Description = championshipFileUploadRequest.Description;
 
             _championshipFileManager.Create(championshipFile);
+
+            return Ok();
+        }
+
+        [HttpPut("files")]
+        public ActionResult<int> Update(IFormFile file, [FromForm] ChampionshipFileRequest championshipFileUploadRequest)
+        {
+            var validationResult = ValidateBadRequestMessage(file, championshipFileUploadRequest);
+            if (!validationResult.success)
+            {
+                return ReturnBadRequestResponse(validationResult.errorMessage);
+            }
+
+            var uploadedFile = _mapper.Map<IFormFile, FileUpload>(file);
+            var championshipFile = _mapper.Map<ChampionshipFile>(championshipFileUploadRequest);
+
+            championshipFile.File = base.CreateFileInstance(uploadedFile);
+
+            _championshipFileManager.Update(championshipFile);
 
             return Ok();
         }
