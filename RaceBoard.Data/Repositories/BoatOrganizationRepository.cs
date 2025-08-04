@@ -19,11 +19,7 @@ namespace RaceBoard.Data.Repositories
             { "Boat.Id", "[Boat].Id" },
             { "Boat.Name", "[Boat].Name" },
             { "Boat.SailNumber", "[Boat].SailNumber"},
-            { "Boat.HullNumber", "[Boat].HullNumber"},
-            { "Boat.RaceClass.Id", "[RaceClass].Id" },
-            { "Boat.RaceClass.Name", "[RaceClass].Name" },
-            { "Boat.RaceClass.RaceCategory.Id", "[RaceCategory].Id" },
-            { "Boat.RaceClass.RaceCategory.Name", "[RaceCategory].Name" }
+            { "Boat.HullNumber", "[Boat].HullNumber"}
         };
 
         #endregion
@@ -78,19 +74,9 @@ namespace RaceBoard.Data.Repositories
             return this.GetBoatOrganizations(searchFilter, paginationFilter, sorting, context);
         }
 
-        public void Create(BoatOrganization boatOrganization, ITransactionalContext? context = null)
+        public void Set(List<BoatOrganization> boatOrganizatios, ITransactionalContext? context = null)
         {
-            this.CreateBoatOrganization(boatOrganization, context);
-        }
-
-        public void Update(BoatOrganization boatOrganization, ITransactionalContext? context = null)
-        {
-            this.UpdateBoatOrganization(boatOrganization, context);
-        }
-
-        public int Delete(int id, ITransactionalContext? context = null)
-        {
-            return base.Delete("[Boat_Organization]", id, "Id", context);
+            this.SetBoatOrganizations(boatOrganizatios, context);
         }
 
         #endregion
@@ -103,6 +89,7 @@ namespace RaceBoard.Data.Repositories
                                 [Boat_Organization].Id [Id],
                                 [Boat_Organization].StartDate [StartDate],
                                 [Boat_Organization].EndDate [EndDate],
+                                [Boat_Organization].IsActive [IsActive],
                                 [Organization].Id [Id],
                                 [Organization].Name [Name],
                                 [Boat].Id [Id],
@@ -165,42 +152,57 @@ namespace RaceBoard.Data.Repositories
             base.AddFilterCriteria(ConditionType.In, "[Boat_Organization]", "Id", "ids", searchFilter.Ids);
             base.AddFilterCriteria(ConditionType.GreaterOrEqualThan, "[Boat_Organization]", "StartDate", "startDate", searchFilter.StartDate);
             base.AddFilterCriteria(ConditionType.LessOrEqualThan, "[Boat_Organization]", "EndDate", "endDate", searchFilter.EndDate);
+            base.AddFilterCriteria(ConditionType.Equal, "[Boat_Organization]", "IsActive", "isActive", searchFilter.IsActive);
             base.AddFilterCriteria(ConditionType.Equal, "[Boat]", "Id", "idBoat", searchFilter.Boat?.Id);
             base.AddFilterCriteria(ConditionType.Equal, "[Organization]", "Id", "idOrganization", searchFilter.Organization?.Id);
         }
 
-        private void CreateBoatOrganization(BoatOrganization boatOrganization, ITransactionalContext? context = null)
+        private void SetBoatOrganizations(List<BoatOrganization> newBoatOrganizations, ITransactionalContext? context = null)
         {
-            string sql = @" INSERT INTO [Boat_Organization]
-                                ( IdBoat, IdOrganization, StartDate, EndDate )
-                            VALUES
-                                ( @idBoat, @idOrganization, @startDate, @endDate )";
+            if (newBoatOrganizations.Count == 0)
+                return;
+
+            int idBoat = newBoatOrganizations.First().Boat.Id;
+
+            int[] activeOrganizations = newBoatOrganizations.Select(x => x.Organization.Id).ToArray();
+
+            string sql = @"UPDATE [Boat_Organization] SET EndDate = GETUTCDATE(), IsActive = @isActive ";
 
             QueryBuilder.AddCommand(sql);
-
-            QueryBuilder.AddParameter("idBoat", boatOrganization.Boat.Id);
-            QueryBuilder.AddParameter("idOrganization", boatOrganization.Organization.Id);
-            QueryBuilder.AddParameter("startDate", boatOrganization.StartDate);
-            QueryBuilder.AddParameter("endDate", boatOrganization.EndDate);
-
-            QueryBuilder.AddReturnLastInsertedId();
-
-            boatOrganization.Id = base.Execute<int>(context);
-        }
-
-        private void UpdateBoatOrganization(BoatOrganization boatOrganization, ITransactionalContext? context = null)
-        {
-            string sql = @" UPDATE [Boat_Organization] SET
-                                EndDate = @endDate";
-
-            QueryBuilder.AddCommand(sql);
-
-            QueryBuilder.AddParameter("endDate", boatOrganization.EndDate);
-
-            QueryBuilder.AddParameter("id", boatOrganization.Id);
-            QueryBuilder.AddCondition("Id = @id");
+            QueryBuilder.AddParameter("idBoat", idBoat);
+            QueryBuilder.AddParameter("activeOrganizations", activeOrganizations);
+            QueryBuilder.AddParameter("isActive", false);
+            QueryBuilder.AddCondition("IdBoat = @idBoat AND EndDate IS NULL AND IdOrganization NOT IN @activeOrganizations");
 
             base.ExecuteAndGetRowsAffected(context);
+
+            var existingBoatOrganizations = this.GetBoatOrganizations(new BoatOrganizationSearchFilter()
+            {
+                Boat = new Boat() { Id = idBoat },
+                IsActive = true
+            }, null, null, context).Results;
+
+            foreach (var newBoatOwner in newBoatOrganizations)
+            {
+                if (existingBoatOrganizations.FirstOrDefault(x => x.Organization.Id == newBoatOwner.Organization.Id) != null)
+                    continue;
+
+                sql = @"INSERT INTO [Boat_Organization]
+                            ( IdBoat, IdOrganization, StartDate, EndDate, IsActive )
+                        VALUES
+                            ( @idBoat, @idOrganization, @startDate, NULL, @isActive )";
+
+                QueryBuilder.Clear();
+                QueryBuilder.AddCommand(sql);
+                QueryBuilder.AddParameter("idBoat", newBoatOwner.Boat.Id);
+                QueryBuilder.AddParameter("idOrganization", newBoatOwner.Organization.Id);
+                QueryBuilder.AddParameter("startDate", newBoatOwner.StartDate);
+                QueryBuilder.AddParameter("isActive", true);
+
+                QueryBuilder.AddReturnLastInsertedId();
+
+                newBoatOwner.Id = base.Execute<int>(context);
+            }
         }
 
         #endregion

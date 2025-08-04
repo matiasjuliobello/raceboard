@@ -7,9 +7,10 @@ namespace RaceBoard.DTOs.Boat.Response
     {
         public int Id { get; set; }
         public RaceClassResponse RaceClass { get; set; }
-        public BoatOrganizationResponse? Organization { get; set; }
         public string Name { get; set; }
         public string SailNumber { get; set; }
         public string HullNumber { get; set; }
+        public BoatOrganizationResponse? Organization { get; set; }
+        public List<BoatOwnerResponse> Owners { get; set; }
     }
 }

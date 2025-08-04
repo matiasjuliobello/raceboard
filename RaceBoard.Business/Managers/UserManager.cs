@@ -21,6 +21,7 @@ namespace RaceBoard.Business.Managers
         private readonly int _passwordResetTokenLifetime;
 
         private readonly IUserRepository _userRepository;
+        private readonly IUserRoleRepository _userRoleRepository;
         private readonly IUserSettingsRepository _userSettingsRepository;
         private readonly ICustomValidator<User> _userValidator;
         private readonly ICustomValidator<UserPassword> _userPasswordValidator;
@@ -33,6 +34,7 @@ namespace RaceBoard.Business.Managers
         public UserManager
             (
                 IUserRepository userRepository,
+                IUserRoleRepository userRoleRepository,
                 IUserSettingsRepository userSettingsRepository,
                 ICustomValidator<User> userValidator,
                 ICustomValidator<UserPassword> userPasswordValidator,
@@ -41,10 +43,11 @@ namespace RaceBoard.Business.Managers
                 INotificationHelper notificationHelper,
                 ITranslator translator,
                 IConfiguration configuration
-                //IRequestContextManager requestContextManager
+            //IRequestContextManager requestContextManager
             ) : base(null, translator)
         {
             _userRepository = userRepository;
+            _userRoleRepository = userRoleRepository;
             _userSettingsRepository = userSettingsRepository;
             _userValidator = userValidator;
             _userPasswordValidator = userPasswordValidator;
@@ -108,13 +111,23 @@ namespace RaceBoard.Business.Managers
 
                 _userRepository.Create(user, context);
 
+                var userRole = new UserRole()
+                {
+                    User = user,
+                    Role = new Role()
+                    {
+                        Id = user.UserRole.Role.Id
+                    }
+                };
+                _userRoleRepository.Create(userRole, context);
+
                 // TODO: remove this hardcoding
                 var userSettings = new UserSettings()
                 {
-                    User        = new User() { Id = user.Id },
-                    TimeZone    = new Domain.TimeZone() { Id = 1 },
-                    Language    = new Domain.Language() { Id = (int)Enums.Language.Spanish },
-                    DateFormat  = new DateFormat() { Id = 3 }
+                    User = new User() { Id = user.Id },
+                    TimeZone = new Domain.TimeZone() { Id = 1 },
+                    Language = new Domain.Language() { Id = (int)Enums.Language.Spanish },
+                    DateFormat = new DateFormat() { Id = 3 }
                 };
                 _userSettingsRepository.Create(userSettings, context);
 

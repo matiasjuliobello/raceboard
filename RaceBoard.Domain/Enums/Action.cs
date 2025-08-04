@@ -90,6 +90,21 @@
         TeamHearingRequest_Get = 65,
         TeamHearingRequest_Create = 66,
         TeamHearingRequest_Update = 67,
-        TeamHearingRequest_Delete = 68
+        TeamHearingRequest_Delete = 68,
+
+        Coach_Get = 69,
+        Coach_Create = 70,
+        Coach_Update = 71,
+        Coach_Delete = 72,
+
+        CoachOrganization_Get = 73,
+        CoachOrganization_Create = 74,
+        CoachOrganization_Update = 75,
+        CoachOrganization_Delete = 76,
+
+        CoachTeam_Get = 77,
+        CoachTeam_Create = 78,
+        CoachTeam_Update = 79,
+        CoachTeam_Delete = 80,
     }
 }

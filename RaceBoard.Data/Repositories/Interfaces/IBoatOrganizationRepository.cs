@@ -13,8 +13,6 @@ namespace RaceBoard.Data.Repositories.Interfaces
         bool ExistsDuplicate(BoatOrganization boatOrganization, ITransactionalContext? context = null);
 
         PaginatedResult<BoatOrganization> Get(BoatOrganizationSearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null);
-        void Create(BoatOrganization boatOrganization, ITransactionalContext? context = null);
-        void Update(BoatOrganization boatOrganization, ITransactionalContext? context = null);
-        int Delete(int id, ITransactionalContext? context = null);
+        void Set(List<BoatOrganization> boatOrganizations, ITransactionalContext? context = null);
     }
 }

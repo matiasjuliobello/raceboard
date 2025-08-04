@@ -15,6 +15,7 @@ namespace RaceBoard.Business.Managers
     public class TeamBoatManager : AbstractManager, ITeamBoatManager
     {
         private readonly ITeamBoatRepository _teamBoatRepository;
+        private readonly IBoatOwnerRepository _boatOwnerRepository;
         private readonly ICustomValidator<TeamBoat> _teamBoatValidator;
         private readonly IAuthorizationManager _authorizationManager;
 
@@ -23,6 +24,7 @@ namespace RaceBoard.Business.Managers
         public TeamBoatManager
             (
                 ITeamBoatRepository teamBoatRepository,
+                IBoatOwnerRepository boatOwnerRepository,
                 ICustomValidator<TeamBoat> teamBoatValidator,
                 IRequestContextManager requestContextManager,
                 IAuthorizationManager authorizationManager,
@@ -30,6 +32,7 @@ namespace RaceBoard.Business.Managers
             ) : base(requestContextManager, translator)
         {
             _teamBoatRepository = teamBoatRepository;
+            _boatOwnerRepository = boatOwnerRepository;
             _teamBoatValidator = teamBoatValidator;
             _authorizationManager = authorizationManager;
         }
@@ -55,8 +58,10 @@ namespace RaceBoard.Business.Managers
         public void Create(TeamBoat teamBoat, ITransactionalContext? context = null)
         {
             var contextUser = base.GetContextUser();
-            _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamBoat_Create, teamBoat.Team.Id);
 
+            bool isCurrentUserBoatOwner = this.IsCurrentUserInBoatOwnerList(teamBoat, contextUser);
+            if (!isCurrentUserBoatOwner)
+                _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamBoat_Create, teamBoat.Team.Id);
 
             _teamBoatValidator.SetTransactionalContext(context);
 
@@ -82,7 +87,10 @@ namespace RaceBoard.Business.Managers
         public void Update(TeamBoat teamBoat, ITransactionalContext? context = null)
         {
             var contextUser = base.GetContextUser();
-            _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamBoat_Update, teamBoat.Team.Id);
+
+            bool isCurrentUserBoatOwner = this.IsCurrentUserInBoatOwnerList(teamBoat, contextUser);
+            if (!isCurrentUserBoatOwner)
+                _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamBoat_Update, teamBoat.Team.Id);
 
             _teamBoatValidator.SetTransactionalContext(context);
 
@@ -110,7 +118,10 @@ namespace RaceBoard.Business.Managers
             var teamBoat = this.Get(id, context);
 
             var contextUser = base.GetContextUser();
-            _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamBoat_Delete, teamBoat.Team.Id);
+
+            bool isCurrentUserBoatOwner = this.IsCurrentUserInBoatOwnerList(teamBoat, contextUser);
+            if (!isCurrentUserBoatOwner)
+                _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamBoat_Delete, teamBoat.Team.Id);
 
             if (context == null)
                 context = _teamBoatRepository.GetTransactionalContext(TransactionContextScope.Internal);
@@ -132,6 +143,27 @@ namespace RaceBoard.Business.Managers
                 _teamBoatRepository.CancelTransactionalContext(context);
                 throw;
             }
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private bool IsCurrentUserInBoatOwnerList(TeamBoat teamBoat, User user)
+        {
+            var searchFilter = new BoatOwnerSearchFilter()
+            {
+                Boat = new Boat()
+                {
+                    Id = teamBoat.Boat.Id
+                }
+            };
+
+            var boatOwners = _boatOwnerRepository.Get(searchFilter).Results;
+            if (boatOwners == null || boatOwners.Count() == 0)
+                throw new FunctionalException(ErrorType.NotFound);
+
+            return boatOwners.Select(x => x.Id).Contains(user.Id);
         }
 
         #endregion

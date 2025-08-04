@@ -101,8 +101,6 @@ namespace RaceBoard.Business.Managers
 
         public void Update(ChampionshipCommitteeBoatReturn championshipCommitteeBoatReturn, ITransactionalContext? context = null)
         {
-            championshipCommitteeBoatReturn.ReturnTime = _dateTimeHelper.GetCurrentTimestamp();
-
             _committeeBoatReturnValidator.SetTransactionalContext(context);
 
             if (!_committeeBoatReturnValidator.IsValid(championshipCommitteeBoatReturn, Scenario.Update))

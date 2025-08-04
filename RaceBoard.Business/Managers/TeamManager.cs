@@ -11,7 +11,6 @@ using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Enums;
 using Enums = RaceBoard.Domain.Enums;
 using RaceBoard.Business.Helpers.Interfaces;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RaceBoard.Business.Managers
 {

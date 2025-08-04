@@ -96,9 +96,6 @@ namespace RaceBoard.Data.Repositories
         public void Create(User user, ITransactionalContext? context = null)
         {
             this.CreateUser(user, context);
-
-            if (user.Role != null)
-                this.SetUserRole(user, context);
         }
 
         public void Update(User user, ITransactionalContext? context = null)
@@ -135,6 +132,7 @@ namespace RaceBoard.Data.Repositories
                                 [User].Password [Password],
                                 [User].Email [Email],
                                 [User].IsActive [IsActive],
+                                [User_Role].Id [Id],
                                 [Role].Id [Id],
                                 [Role].Name [Name]
                             FROM [User] [User]
@@ -154,17 +152,19 @@ namespace RaceBoard.Data.Repositories
                 (
                     (reader) =>
                     {
-                        return reader.Read<User, Role, User>
+                        return reader.Read<User, UserRole, Role, User>
                         (
-                            (user, userRole) =>
+                            (user, userRole, role) =>
                             {
-                                user.Role = userRole;
+                                userRole.Role = role;
+                                
+                                user.UserRole = userRole;
 
                                 users.Add(user);
 
                                 return user;
                             },
-                            splitOn: "Id, Id"
+                            splitOn: "Id, Id, Id"
                         ).AsList();
                     },
                     context
@@ -202,23 +202,6 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddReturnLastInsertedId();
 
             user.Id = base.Execute<int>(context);
-        }
-
-        private void SetUserRole(User user, ITransactionalContext? context = null)
-        {
-            string sql = @" INSERT INTO [User_Role]
-                                ( IdUser, IdRole )
-                            VALUES
-                                ( @idUser, @idRole )";
-
-            QueryBuilder.AddCommand(sql);
-
-            QueryBuilder.AddParameter("idUser", user.Id);
-            QueryBuilder.AddParameter("idRole", user.Role.Id);
-
-            QueryBuilder.AddReturnLastInsertedId();
-
-            base.Execute<int>(context);
         }
 
         private void UpdateUser(User user, ITransactionalContext? context = null)

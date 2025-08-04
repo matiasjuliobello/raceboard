@@ -325,7 +325,7 @@ namespace RaceBoard.Business.Managers
                 var contextUser = base.GetContextUser();
                 var currentTimestamp = _dateTimeHelper.GetCurrentTimestamp();
 
-                if (contextUser.Role.Id != (int)Enums.UserRole.Jury)
+                if (contextUser.UserRole.Id != (int)Enums.UserRole.Jury)
                     throw new FunctionalException(Common.Enums.ErrorType.Forbidden, base.Translate("NeedPermissions"));
 
                 _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamHearingRequest_Update, hearingRequest.Team.Championship.Id, AuthorizationManager.Entity.Championship);
@@ -358,7 +358,7 @@ namespace RaceBoard.Business.Managers
                 var contextUser = base.GetContextUser();
                 var currentTimestamp = _dateTimeHelper.GetCurrentTimestamp();
 
-                if (contextUser.Role.Id == (int)Enums.UserRole.Jury)
+                if (contextUser.UserRole.Id == (int)Enums.UserRole.Jury)
                     _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamHearingRequest_Update, hearingRequest.Team.Championship.Id, AuthorizationManager.Entity.Championship);
                 else
                     _authorizationManager.ValidatePermission(contextUser.Id, Enums.Action.TeamHearingRequest_Update, hearingRequest.Team.Id);

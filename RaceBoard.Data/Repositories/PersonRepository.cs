@@ -18,14 +18,16 @@ namespace RaceBoard.Data.Repositories
             { "Firstname", "[Person].Firstname" },
             { "Lastname", "[Person].Lastname"},
             { "BirthDate", "[Person].BirthDate"},
-            { "MedicalInsuranceNumber", "[Person].MedicalInsuranceNumber"},
             { "Address", "[Person].Address"},
             { "PhoneNumber", "[Person].PhoneNumber"},
             { "EmergencyContactPhoneNumber", "[Person].EmergencyContactPhoneNumber"},
+            { "MedicalInsuranceNumber", "[Person].MedicalInsuranceNumber"},
             { "Gender.Id", "[Gender].Id"},
+            { "PersonalIdentificationCardNumber", "[Person].PersonalIdentificationCardNumber"},
             { "Gender.Name", "[Gender].Name"},
             { "Country.Id", "[Country].Id"},
             { "Country.Name", "[Country].Name"},
+            { "Country.IsoCode", "[Country].IsoCode"},
             { "BloodType.Id", "[BloodType].Id"},
             { "BloodType.Name", "[BloodType].Name"},
             { "MedicalInsurance.Id", "[MedicalInsurance].Id"},
@@ -139,6 +141,7 @@ namespace RaceBoard.Data.Repositories
                                 [Person].PhoneNumber [PhoneNumber],
                                 [Person].EmergencyContactPhoneNumber [EmergencyContactPhoneNumber],
                                 [Person].MedicalInsuranceNumber [MedicalInsuranceNumber],
+                                [Person].PersonalIdentificationCardNumber [PersonalIdentificationCardNumber],
                                 [Gender].Id [Id],
                                 [Gender].Name [Name],
                                 [User].Id [Id],
@@ -146,12 +149,13 @@ namespace RaceBoard.Data.Repositories
                                 [User].Email [Email],
                                 [Country].Id [Id],
                                 [Country].Name [Name],
+                                [Country].IsoCode [IsoCode],
                                 [BloodType].Id [Id],
                                 [BloodType].Name [Name],
                                 [MedicalInsurance].Id [Id],
                                 [MedicalInsurance].Name [Name]
                             FROM [Person] [Person]
-                            INNER JOIN [Gender] ON [Gender].Id = [Person].IdGender 
+                            LEFT JOIN [Gender] ON [Gender].Id = [Person].IdGender 
                             LEFT JOIN [Country] [Country] ON [Country].Id = [Person].IdCountry
                             LEFT JOIN [BloodType] [BloodType] ON [BloodType].Id = [Person].IdBloodType
                             LEFT JOIN [MedicalInsurance] [MedicalInsurance] ON [MedicalInsurance].Id = [Person].IdMedicalInsurance
@@ -212,6 +216,7 @@ namespace RaceBoard.Data.Repositories
                                 [Person].PhoneNumber [PhoneNumber],
                                 [Person].EmergencyContactPhoneNumber [EmergencyContactPhoneNumber],
                                 [Person].MedicalInsuranceNumber [MedicalInsuranceNumber],
+                                [Person].PersonalIdentificationCardNumber [PersonalIdentificationCardNumber],
                                 [Gender].Id [Id],
                                 [Gender].Name [Name],
                                 [User].Id [Id],
@@ -219,6 +224,7 @@ namespace RaceBoard.Data.Repositories
                                 [User].Email [Email],
                                 [Country].Id [Id],
                                 [Country].Name [Name],
+                                [Country].IsoCode [IsoCode],
                                 [BloodType].Id [Id],
                                 [BloodType].Name [Name],
                                 [MedicalInsurance].Id [Id],
@@ -284,9 +290,9 @@ namespace RaceBoard.Data.Repositories
         private void CreatePerson(Person person, ITransactionalContext? context = null)
         {
             string sql = @" INSERT INTO [Person]
-                                ( IdGender, IdCountry, IdBloodType, IdMedicalInsurance, MedicalInsuranceNumber, FirstName, LastName, BirthDate, Address, PhoneNumber, EmergencyContactPhoneNumber )
+                                ( IdGender, IdCountry, IdBloodType, IdMedicalInsurance, MedicalInsuranceNumber, PersonalIdentificationCardNumber, FirstName, LastName, BirthDate, Address, PhoneNumber, EmergencyContactPhoneNumber )
                             VALUES
-                                ( @idGender, @idCountry, @idBloodType, @idMedicalInsurance, @medicalInsuranceNumber, @firstname, @lastname, @birthDate, @address, @phoneNumber, @emergencyContactPhoneNumber )";
+                                ( @idGender, @idCountry, @idBloodType, @idMedicalInsurance, @medicalInsuranceNumber, @personalIdentificationCardNumber, @firstname, @lastname, @birthDate, @address, @phoneNumber, @emergencyContactPhoneNumber )";
 
             QueryBuilder.AddCommand(sql);
 
@@ -301,7 +307,9 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddParameter("phoneNumber", person.PhoneNumber);
             QueryBuilder.AddParameter("emergencyContactPhoneNumber", person.EmergencyContactPhoneNumber);
             QueryBuilder.AddParameter("medicalInsuranceNumber", person.MedicalInsuranceNumber);
-            
+            QueryBuilder.AddParameter("personalIdentificationCardNumber", person.PersonalIdentificationCardNumber);
+
+
             QueryBuilder.AddReturnLastInsertedId();
 
             person.Id = base.Execute<int>(context);
@@ -315,6 +323,7 @@ namespace RaceBoard.Data.Repositories
                                 IdBloodType = @idBloodType,
                                 IdMedicalInsurance = @idMedicalInsurance,
                                 MedicalInsuranceNumber = @medicalInsuranceNumber,
+                                PersonalIdentificationCardNumber = @personalIdentificationCardNumber,
                                 Firstname = @firstname,
                                 Lastname = @lastname,
                                 BirthDate = @birthDate,
@@ -335,6 +344,7 @@ namespace RaceBoard.Data.Repositories
             QueryBuilder.AddParameter("phoneNumber", person.PhoneNumber);
             QueryBuilder.AddParameter("emergencyContactPhoneNumber", person.EmergencyContactPhoneNumber);
             QueryBuilder.AddParameter("medicalInsuranceNumber", person.MedicalInsuranceNumber);
+            QueryBuilder.AddParameter("personalIdentificationCardNumber", person.PersonalIdentificationCardNumber);
 
             QueryBuilder.AddParameter("id", person.Id);
             QueryBuilder.AddCondition("Id = @id");

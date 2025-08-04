@@ -15,6 +15,7 @@
         public string Address { get; set; }
         public string PhoneNumber { get; set; }
         public string EmergencyContactPhoneNumber { get; set; }
+        public string PersonalIdentificationCardNumber { get; set; }
 
         #region Calculated Properties
 

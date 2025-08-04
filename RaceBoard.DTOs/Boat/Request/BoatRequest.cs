@@ -7,5 +7,6 @@
         public string Name { get; set; }
         public string SailNumber { get; set; }
         public string HullNumber { get; set; }
+        public int[] IdsOwner { get; set; }
     }
 }

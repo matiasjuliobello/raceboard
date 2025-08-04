@@ -13,7 +13,8 @@ namespace RaceBoard.Data.Repositories
         private readonly Dictionary<string, string> _columnsMapping = new()
         {
             { "Id", "[Country].Id" },
-            { "Name", "[Country].Name"}
+            { "Name", "[Country].Name"},
+            { "IsoCode", "[Country].IsoCode"}
         };
 
         #endregion
@@ -35,18 +36,19 @@ namespace RaceBoard.Data.Repositories
 
         public PaginatedResult<Country> Get(CountrySearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
-            return this.GetCountrys(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
+            return this.GetCountries(searchFilter: searchFilter, paginationFilter: paginationFilter, sorting: sorting, context: context);
         }
 
         #endregion
 
         #region Private Methods
 
-        private PaginatedResult<Country> GetCountrys(CountrySearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
+        private PaginatedResult<Country> GetCountries(CountrySearchFilter? searchFilter = null, PaginationFilter? paginationFilter = null, Sorting? sorting = null, ITransactionalContext? context = null)
         {
             string sql = $@"SELECT
                                 [Country].Id [Id],
-                                [Country].Name [Name]
+                                [Country].Name [Name],
+                                [Country].IsoCode [IsoCode]
                             FROM [Country] [Country]";
 
             QueryBuilder.AddCommand(sql);

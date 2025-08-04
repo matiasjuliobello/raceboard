@@ -157,20 +157,26 @@ namespace RaceBoard.Business.Managers
         {
             var contextUser = base.GetContextUser();
 
-            teamMemberInvitation.User = contextUser;
-
             //_authorizationManager.ValidatePermission(Enums.Action.TeamMember_Update, teamMemberInvitation.Team.Id, contextUser.Id);
 
-            var invitations = _teamMemberRepository.GetInvitations(new TeamMemberInvitationSearchFilter() { Token = teamMemberInvitation.Invitation.Token });
+            var searchFilter = new TeamMemberInvitationSearchFilter();
+
+            if (String.IsNullOrEmpty(teamMemberInvitation.Invitation.Token))
+                searchFilter.Ids = new int[] { teamMemberInvitation.Invitation.Id };
+            else
+                searchFilter.Token = teamMemberInvitation.Invitation.Token;
+
+            var invitations = _teamMemberRepository.GetInvitations(searchFilter);
             if (invitations.Results.Count() == 0)
                 throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
 
             var invitation = invitations.Results.First();
-            if (invitation.Invitation.IsExpired)
-                throw new FunctionalException(ErrorType.NotFound, this.Translate("InvitationExpired"));
 
             if (invitation.Invitation.EmailAddress != contextUser.Email)
                 throw new FunctionalException(ErrorType.Forbidden, this.Translate("InvitationUnauthorized"));
+
+            if (invitation.Invitation.IsExpired)
+                throw new FunctionalException(ErrorType.NotFound, this.Translate("InvitationExpired"));
 
             if (context == null)
                 context = _teamMemberRepository.GetTransactionalContext(TransactionContextScope.Internal);
@@ -189,11 +195,11 @@ namespace RaceBoard.Business.Managers
                     JoinDate = currentDate,
                     Team = invitation.Team,
                     Role = invitation.Role,
-                    User = teamMemberInvitation.User!
+                    User = contextUser
                 };
                 _teamMemberRepository.Add(teamMember, context);
 
-                invitation.User = teamMemberInvitation.User;
+                invitation.User = contextUser;
                 _teamMemberRepository.UpdateInvitation(invitation, context);
 
                 context.Confirm();

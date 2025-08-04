@@ -55,6 +55,7 @@ namespace RaceBoard.IoC
             services.AddScoped<IOrganizationMemberManager, OrganizationMemberManager>();
             services.AddScoped<IBoatManager, BoatManager>();
             services.AddScoped<IBoatOrganizationManager, BoatOrganizationManager>();
+            services.AddScoped<IBoatOwnerManager, BoatOwnerManager>();
             services.AddScoped<IRaceClassManager, RaceClassManager>();
             services.AddScoped<IRaceCategoryManager, RaceCategoryManager>();
             services.AddScoped<IRaceManager, RaceManager>();
@@ -77,6 +78,9 @@ namespace RaceBoard.IoC
             services.AddScoped<IRequestManager, RequestManager>();
             services.AddScoped<IFileManager, FileManager>();
             services.AddScoped<IMemberManager, MemberManager>();
+            services.AddScoped<ICoachManager, CoachManager>();
+            services.AddScoped<ICoachOrganizationManager, CoachOrganizationManager>();
+            services.AddScoped<ICoachTeamManager, CoachTeamManager>();
             #endregion
 
             #region Validators
@@ -87,6 +91,7 @@ namespace RaceBoard.IoC
             services.AddTransient<ICustomValidator<Person>, PersonValidator>();
             services.AddTransient<ICustomValidator<Boat>, BoatValidator>();
             services.AddTransient<ICustomValidator<BoatOrganization>, BoatOrganizationValidator>();
+            services.AddTransient<ICustomValidator<BoatOwner>, BoatOwnerValidator>();
             services.AddTransient<ICustomValidator<Championship>, ChampionshipValidator>();
             services.AddTransient<ICustomValidator<ChampionshipMember>, ChampionshipMemberValidator>();
             services.AddTransient<ICustomValidator<ChampionshipMemberInvitation>, ChampionshipMemberInvitationValidator>();
@@ -108,12 +113,16 @@ namespace RaceBoard.IoC
             services.AddTransient<ICustomValidator<EquipmentChangeRequest>, EquipmentChangeRequestValidator>();
             services.AddTransient<ICustomValidator<CrewChangeRequest>, CrewChangeRequestValidator>();
             services.AddTransient<ICustomValidator<HearingRequest>, HearingRequestValidator>();
+            services.AddTransient<ICustomValidator<Coach>, CoachValidator>();
+            services.AddTransient<ICustomValidator<CoachOrganization>, CoachOrganizationValidator>();
+            services.AddTransient<ICustomValidator<CoachTeam>, CoachTeamValidator>();
             #endregion
 
             #region Repositories
             services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
             services.AddScoped<IAuthorizationRepository, AuthorizationRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserRoleRepository, UserRoleRepository>();
             services.AddScoped<IUserAccessRepository, UserAccessRepository>();
             services.AddScoped<IUserSettingsRepository, UserSettingsRepository>();
             services.AddScoped<IUserPasswordResetRepository, UserPasswordResetRepository>();
@@ -137,11 +146,11 @@ namespace RaceBoard.IoC
             services.AddScoped<IOrganizationMemberRepository, OrganizationMemberRepository>();
             services.AddScoped<IBoatRepository, BoatRepository>();
             services.AddScoped<IBoatOrganizationRepository, BoatOrganizationRepository>();
+            services.AddScoped<IBoatOwnerRepository, BoatOwnerRepository>();
             services.AddScoped<IRaceClassRepository, RaceClassRepository>();
             services.AddScoped<IRaceCategoryRepository, RaceCategoryRepository>();
             services.AddScoped<IRaceRepository, RaceRepository>();
             services.AddScoped<IRaceProtestRepository, RaceProtestRepository>();
-            services.AddScoped<ChampionshipCommitteeBoatReturnRepository, ChampionshipCommitteeBoatReturnRepository>();
             services.AddScoped<IPersonRepository, PersonRepository>();
             services.AddScoped<ITeamMemberRoleRepository, TeamMemberRoleRepository>();
             services.AddScoped<ITeamRepository, TeamRepository>();
@@ -159,6 +168,9 @@ namespace RaceBoard.IoC
             services.AddScoped<IHearingRequestTypeRepository, HearingRequestTypeRepository>();
             services.AddScoped<IHearingRequestStatusRepository, HearingRequestStatusRepository>();
             services.AddScoped<IMemberRepository, MemberRepository>();
+            services.AddScoped<ICoachRepository, CoachRepository>();
+            services.AddScoped<ICoachOrganizationRepository, CoachOrganizationRepository>();
+            services.AddScoped<ICoachTeamRepository, CoachTeamRepository>();
             #endregion
 
             #region Helpers

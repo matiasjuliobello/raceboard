@@ -45,7 +45,6 @@ using RaceBoard.DTOs.Team.Response;
 using RaceBoard.DTOs.City.Request;
 using RaceBoard.DTOs.Country.Request;
 using RaceBoard.DTOs.Format.Response;
-using RaceBoard.DTOs.Notification.Request;
 using RaceBoard.DTOs.Device.Request;
 using RaceBoard.DTOs.Device.Response;
 using RaceBoard.DTOs.Invitation.Response;
@@ -58,10 +57,10 @@ using File = RaceBoard.Domain.File;
 using TimeZone = RaceBoard.Domain.TimeZone;
 using Action = RaceBoard.Domain.Action;
 using Enums = RaceBoard.Domain.Enums;
-using MessagingEnums = RaceBoard.Messaging.Providers;
 using RaceBoard.DTOs.Gender.Response;
-using RaceBoard.PushMessaging.Entities;
-using RaceBoard.PushMessaging.Enums;
+using RaceBoard.DTOs.Coach.Request;
+using RaceBoard.DTOs.Coach.Response;
+
 
 namespace RaceBoard.Service.Mappings
 {
@@ -89,7 +88,7 @@ namespace RaceBoard.Service.Mappings
 
             CreateMap<UserRequest, User>()
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-                .ForMember(x => x.Role, opt => opt.MapFrom(x => CreateObject<Role>(x.IdRole)));
+                .ForMember(x => x.UserRole, opt => opt.MapFrom(x => new UserRole() { Role = new Role() { Id = x.IdRole } }));
 
             CreateMap<UserSearchFilterRequest, UserSearchFilter>();
 
@@ -172,7 +171,8 @@ namespace RaceBoard.Service.Mappings
 
 
             CreateMap<BoatRequest, Boat>()
-                .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
+                .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)))
+                .ForMember(dest => dest.Owners, opt => opt.MapFrom(src => CreateObject<BoatOwner>(src.IdsOwner)));            
             CreateMap<BoatSearchFilterRequest, BoatSearchFilter>()
                 .ForMember(dest => dest.RaceCategory, opt => opt.MapFrom(src => CreateObject<RaceCategory>(src.IdRaceCategory)))
                 .ForMember(dest => dest.RaceClass, opt => opt.MapFrom(src => CreateObject<RaceClass>(src.IdRaceClass)));
@@ -183,6 +183,14 @@ namespace RaceBoard.Service.Mappings
             CreateMap<BoatOrganizationSearchFilterRequest, BoatOrganizationSearchFilter>()
                 .ForMember(dest => dest.Boat, opt => opt.MapFrom(src => CreateObject<Boat>(src.IdBoat)))
                 .ForMember(dest => dest.Organization, opt => opt.MapFrom(src => CreateObject<Organization>(src.IdOrganization)));
+
+            CreateMap<BoatOwnerRequest, BoatOwner>()
+                .ForMember(dest => dest.Boat, opt => opt.MapFrom(src => CreateObject<Boat>(src.IdBoat)))
+                .ForMember(dest => dest.Person, opt => opt.MapFrom(src => CreateObject<Person>(src.IdPerson)));
+            CreateMap<BoatOwnerSearchFilterRequest, BoatOwnerSearchFilter>()
+                .ForMember(dest => dest.Boat, opt => opt.MapFrom(src => CreateObject<Boat>(src.IdBoat)))
+                .ForMember(dest => dest.Person, opt => opt.MapFrom(src => CreateObject<Person>(src.IdPerson)));
+
 
             CreateMap<RaceCategoryRequest, RaceCategory>();
             CreateMap<RaceCategorySearchFilterRequest, RaceCategorySearchFilter>();
@@ -340,6 +348,26 @@ namespace RaceBoard.Service.Mappings
             CreateMap<HearingRequestValidityRequest, HearingRequestValidity>();
             CreateMap<HearingRequestResolutionRequest, HearingRequestResolution>();
 
+            CreateMap<CoachRequest, Coach>()
+                .ForMember(dest => dest.Person, opt => opt.MapFrom(src => CreateObject<Person>(src.IdPerson)));
+            CreateMap<CoachSearchFilterRequest, CoachSearchFilter>()
+                .ForMember(dest => dest.Person, opt => opt.MapFrom(src => CreateObject<Person>(src.IdPerson)));
+
+            CreateMap<CoachOrganizationRequest, CoachOrganization>()
+                .ForMember(dest => dest.Coach, opt => opt.MapFrom(src => CreateObject<Coach>(src.IdCoach)))
+                .ForMember(dest => dest.Organization, opt => opt.MapFrom(src => CreateObject<Organization>(src.IdOrganization)));
+            CreateMap<CoachOrganizationSearchFilterRequest, CoachOrganizationSearchFilter>()
+                .ForMember(dest => dest.Coach, opt => opt.MapFrom(src => CreateObject<Coach>(src.IdCoach)))
+                .ForMember(dest => dest.Organization, opt => opt.MapFrom(src => CreateObject<Organization>(src.IdOrganization)));
+
+            CreateMap<CoachTeamRequest, CoachTeam>()
+                .ForMember(dest => dest.Coach, opt => opt.MapFrom(src => CreateObject<Coach>(src.IdCoach)))
+                .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)));
+            CreateMap<CoachTeamSearchFilterRequest, CoachTeamSearchFilter>()
+                .ForMember(dest => dest.Coach, opt => opt.MapFrom(src => CreateObject<Coach>(src.IdCoach)))
+                .ForMember(dest => dest.Team, opt => opt.MapFrom(src => CreateObject<Team>(src.IdTeam)));
+
+
             #endregion
 
             #region Responses
@@ -362,13 +390,12 @@ namespace RaceBoard.Service.Mappings
 
             CreateMap<PasswordPolicy, PasswordPolicyResponse>();
 
-            CreateMap<Role, UserRoleResponse>();
+            CreateMap<Role, RoleResponse>();
 
             CreateMap<User, UserResponse>();
             CreateMap<User, UserSimpleResponse>();
-
-            CreateMap<Role, RoleResponse>();
-
+            CreateMap<UserRole, UserRoleResponse>();
+            
             CreateMap<Gender, GenderResponse>();
 
             CreateMap<File, FileResponse>();
@@ -403,6 +430,7 @@ namespace RaceBoard.Service.Mappings
 
             CreateMap<Boat, BoatResponse>();
             CreateMap<BoatOrganization, BoatOrganizationResponse>();
+            CreateMap<BoatOwner, BoatOwnerResponse>();
 
             CreateMap<Championship, ChampionshipResponse>();
             CreateMap<Championship, ChampionshipSimpleResponse>();
@@ -451,6 +479,10 @@ namespace RaceBoard.Service.Mappings
             CreateMap<HearingRequestAttendees, HearingRequestAttendeesResponse>();
             CreateMap<HearingRequestValidity, HearingRequestValidityResponse>();
             CreateMap<HearingRequestResolution, HearingRequestResolutionResponse>();
+
+            CreateMap<Coach, CoachResponse>();
+            CreateMap<CoachOrganization, CoachOrganizationResponse>();
+            CreateMap<CoachTeam, CoachTeamResponse>();
 
             #endregion
         }

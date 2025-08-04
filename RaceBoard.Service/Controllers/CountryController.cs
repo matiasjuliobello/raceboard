@@ -32,7 +32,6 @@ namespace RaceBoard.Service.Controllers
             _countryManager = countryManager;
         }
 
-
         [HttpGet()]
         public ActionResult<PaginatedResultResponse<CountryResponse>> Get([FromQuery] CountrySearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {

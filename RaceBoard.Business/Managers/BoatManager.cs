@@ -1,19 +1,20 @@
 ﻿using RaceBoard.Business.Managers.Abstract;
 using RaceBoard.Business.Managers.Interfaces;
-using RaceBoard.Data.Repositories.Interfaces;
-using RaceBoard.Data;
-using RaceBoard.Translations.Interfaces;
-using RaceBoard.Domain;
-using RaceBoard.Common.Helpers.Pagination;
 using RaceBoard.Business.Validators.Interfaces;
-using RaceBoard.Common.Exceptions;
 using RaceBoard.Common.Enums;
+using RaceBoard.Common.Exceptions;
+using RaceBoard.Common.Helpers.Pagination;
+using RaceBoard.Data;
+using RaceBoard.Data.Repositories.Interfaces;
+using RaceBoard.Domain;
+using RaceBoard.Translations.Interfaces;
 
 namespace RaceBoard.Business.Managers
 {
     public class BoatManager : AbstractManager, IBoatManager
     {
         private readonly IBoatRepository _boatRepository;
+        private readonly IBoatOwnerRepository _boatOwnerRepository;
         private readonly ICustomValidator<Boat> _boatValidator;
 
         #region Constructors
@@ -21,12 +22,14 @@ namespace RaceBoard.Business.Managers
         public BoatManager
             (
                 IBoatRepository boatRepository,
+                IBoatOwnerRepository boatOwnerRepository,
                 ICustomValidator<Boat> boatValidator,
                 IRequestContextManager requestContextManager,
                 ITranslator translator
             ) : base(requestContextManager, translator)
         {
             _boatRepository = boatRepository;
+            _boatOwnerRepository = boatOwnerRepository;
             _boatValidator = boatValidator;
         }
 
@@ -70,6 +73,8 @@ namespace RaceBoard.Business.Managers
             try
             {
                 _boatRepository.Create(boat, context);
+
+                //_boatOwnerRepository.SetOwners(boat.Owners, context);
 
                 _boatRepository.ConfirmTransactionalContext(context);
 
@@ -120,6 +125,8 @@ namespace RaceBoard.Business.Managers
             try
             {
                 _boatRepository.Delete(id, context);
+                // TODO: delete boat organizations
+                // TODO: delete boat owners 
 
                 _boatRepository.ConfirmTransactionalContext(context);
 

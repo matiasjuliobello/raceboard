@@ -33,8 +33,13 @@ namespace RaceBoard.Service.Controllers
         }
 
         [HttpGet("{id}/organizations")]
-        public ActionResult<PaginatedResultResponse<BoatOrganizationResponse>> Get([FromQuery] BoatOrganizationSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
+        public ActionResult<PaginatedResultResponse<BoatOrganizationResponse>> Get([FromRoute] int id, [FromQuery] BoatOrganizationSearchFilterRequest? searchFilterRequest = null, [FromQuery] PaginationFilterRequest? paginationFilterRequest = null, [FromQuery] SortingRequest? sortingRequest = null)
         {
+            if (searchFilterRequest == null)
+                searchFilterRequest = new BoatOrganizationSearchFilterRequest();
+
+            searchFilterRequest.IdBoat = id;
+
             var searchFilter = _mapper.Map<BoatOrganizationSearchFilter>(searchFilterRequest);
             var paginationFilter = _mapper.Map<PaginationFilter>(paginationFilterRequest);
             var sorting = _mapper.Map<Sorting>(sortingRequest);
@@ -46,40 +51,12 @@ namespace RaceBoard.Service.Controllers
             return Ok(response);
         }
 
-        [HttpGet("organizations/{id}")]
-        public ActionResult<BoatOrganizationResponse> Get([FromRoute] int id)
-        {
-            var data = _boatOrganizationManager.Get(id);
-
-            var response = _mapper.Map<BoatOrganizationResponse>(data);
-
-            return Ok(response);
-        }
-
         [HttpPost("organizations")]
-        public ActionResult<int> Create(BoatOrganizationRequest boatOrganizationRequest)
+        public ActionResult<int> Set(BoatOrganizationRequest[] boatOrganizationRequests)
         {
-            var boatOrganization = _mapper.Map<BoatOrganization>(boatOrganizationRequest);
+            var boatOrganizations = _mapper.Map<List<BoatOrganization>>(boatOrganizationRequests);
 
-            _boatOrganizationManager.Create(boatOrganization);
-
-            return Ok(boatOrganization.Id);
-        }
-
-        [HttpPut("organizations")]
-        public ActionResult Update(BoatOrganizationRequest boatOrganizationRequest)
-        {
-            var boatOrganization = _mapper.Map<BoatOrganization>(boatOrganizationRequest);
-
-            _boatOrganizationManager.Update(boatOrganization);
-
-            return Ok();
-        }
-
-        [HttpDelete("organizations/{id}")]
-        public ActionResult Delete([FromRoute] int id)
-        {
-            _boatOrganizationManager.Delete(id);
+            _boatOrganizationManager.Set(boatOrganizations);
 
             return Ok();
         }

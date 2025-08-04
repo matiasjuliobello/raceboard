@@ -22,6 +22,8 @@ namespace RaceBoard.DTOs.Person.Response
         public BloodTypeResponse BloodType { get; set; }
         public MedicalInsuranceResponse MedicalInsurance { get; set; }
         public string MedicalInsuranceNumber { get; set; }
+        public string? PersonalIdentificationCardNumber { get; set; }
+
 
         #region Calculated Properties
 

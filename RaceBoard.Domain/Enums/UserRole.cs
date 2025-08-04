@@ -6,6 +6,7 @@
 		Manager = 2,
 		Auxiliary = 3,
 		Jury = 4,
-		Competitor = 5
+		Competitor = 5,
+		Coach = 6
 	}
 }
