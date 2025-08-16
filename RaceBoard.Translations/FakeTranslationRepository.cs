@@ -1,6 +1,5 @@
 ﻿using RaceBoard.Translations.Entities;
 using RaceBoard.Translations.Interfaces;
-using System.Security.Policy;
 
 namespace RaceBoard.Translations
 {
@@ -770,6 +769,10 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.English, "Personal identification card number"),
                 new Tuple<string, string>(Languages.Spanish, "Número de identificación personal"));
 
+            
+            AddText(AddTranslation("Information"),
+                new Tuple<string, string>(Languages.English, "Information"),
+                new Tuple<string, string>(Languages.Spanish, "Información"));
             AddText(AddTranslation("Help"),
                 new Tuple<string, string>(Languages.English, "Help"),
                 new Tuple<string, string>(Languages.Spanish, "Ayuda"));
@@ -801,6 +804,21 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("Status"),
                 new Tuple<string, string>(Languages.English, "Status"),
                 new Tuple<string, string>(Languages.Spanish, "Estado"));
+
+
+            AddText(AddTranslation("RoleManagerDescription"),
+                new Tuple<string, string>(Languages.English, "This is the Manager role description"),
+                new Tuple<string, string>(Languages.Spanish, "Esta es la descripción del rol Administrador"));
+            AddText(AddTranslation("RoleAuxiliaryDescription"),
+                new Tuple<string, string>(Languages.English, "This is the Auxiliary role description"),
+                new Tuple<string, string>(Languages.Spanish, "Esta es la descripción del rol Auxiliar"));
+            AddText(AddTranslation("RoleCoachDescription"),
+                new Tuple<string, string>(Languages.English, "This is the Coach role description"),
+                new Tuple<string, string>(Languages.Spanish, "Esta es la descripción del rol Entrenador"));
+            AddText(AddTranslation("RoleCompetitorDescription"),
+                new Tuple<string, string>(Languages.English, "This is the Competitor role description"),
+                new Tuple<string, string>(Languages.Spanish, "Esta es la descripción del rol Participante"));
+
 
             AddText(AddTranslation("ThisIsYourCurrentRole"),
                 new Tuple<string, string>(Languages.English, "This is your current role"),
