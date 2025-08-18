@@ -14,7 +14,7 @@ namespace RaceBoard.Common.Helpers
         #region Private Members
 
         private readonly int _tokenLifetime;
-        private readonly string _secretKey;
+        private string _secretKey;
         private readonly string _issuer;
         private readonly string _audience;
         private readonly string _securityAlgorithm;
@@ -33,11 +33,11 @@ namespace RaceBoard.Common.Helpers
 
         #region ISecurityTicketHelper implementation
 
-        public AccessToken CreateToken(string username)
+        public AccessToken GenerateToken(string id, string email)
         {
             var signingCredentials = GetSigningCredentials();
 
-            var claims = BuildClaims(username, username);
+            var claims = BuildClaims(id, email);
 
             var expires = GetTokenExpirationTimestamp(_tokenLifetime);
 
@@ -157,13 +157,13 @@ namespace RaceBoard.Common.Helpers
             return currentTimestamp.AddMinutes(tokenLifeTimeInMinutes);
         }
 
-        private ClaimsIdentity BuildClaims(string JWT_ID, string username)
+        private ClaimsIdentity BuildClaims(string id, string username)
         {
             return new ClaimsIdentity
                 (
                     new[]
                     {
-                        new Claim(JwtRegisteredClaimNames.Jti, JWT_ID),
+                        new Claim(JwtRegisteredClaimNames.Jti, id),
                         new Claim(JwtRegisteredClaimNames.Sub, username),
                         new Claim(JwtRegisteredClaimNames.Email, username)
                     }

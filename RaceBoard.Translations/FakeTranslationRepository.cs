@@ -867,6 +867,13 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("OrStartSessionWith"),
                 new Tuple<string, string>(Languages.English, "Or start session with"),
                 new Tuple<string, string>(Languages.Spanish, "O iniciar sesión con"));
+            AddText(AddTranslation("OrIfYouPreferYouCan"),
+                new Tuple<string, string>(Languages.English, "Or if you want, you can"),
+                new Tuple<string, string>(Languages.Spanish, "O si prefieres, puedes"));
+            AddText(AddTranslation("ContinueWithGoogle"),
+                new Tuple<string, string>(Languages.English, "Continue with Google"),
+                new Tuple<string, string>(Languages.Spanish, "Continuar con Google"));
+            
             AddText(AddTranslation("DontHaveAnAccountYet?"),
                 new Tuple<string, string>(Languages.English, "Don't have an account yet?"),
                 new Tuple<string, string>(Languages.Spanish, "¿Aún no tienes una cuenta?"));

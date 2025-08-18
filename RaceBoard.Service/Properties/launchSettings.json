@@ -24,7 +24,7 @@
         "SecurityTicket_TokenLifetime": "43200",
         "SecurityTicket_SecretKey": "bd1a1ccf8095037f361a4d351e7c0de65f0776bfc2f478ea8d312c763bb6caca",
         "SecurityTicket_Issuer": "https://www.RaceBoard.com",
-        "SecurityTicket_Audience": "Pixails_API",
+        "SecurityTicket_Audience": "https://pixails.pro",
         "Logging_Enriched": "false",
         "Translator_DefaultLanguage": "es-AR",
         "Cache_Lifetime": "60",
@@ -57,7 +57,12 @@
         "Google_Credentials_Scope": "https://www.googleapis.com/auth/firebase.messaging",
         "Google_Firebase_Credentials_FilePath": "C:\\Matias.Bello\\Race Board\\SourceCode\\credentials.json",
         "Google_Firebase_ApiBaseUrl": "https://fcm.googleapis.com/v1",
-        "Google_Firebase_ProjectId": "raceboard-b3663"
+        "Google_Firebase_ProjectId": "raceboard-b3663",
+
+        "Google_SSO_Url": "https://oauth2.googleapis.com/token",
+        "Google_SSO_ClientId": "79551184562-7u84dlbulevn8228v334gctjr23a86im.apps.googleusercontent.com",
+        "Google_SSO_ClientSecret": "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",
+        "Google_SSO_RedirectUrl": "http://localhost:5173/login/sso/callback"
 
         //[Mail Relay]
         //"EmailProvider_SenderEmailAddress": "raceboard@ipzmarketing.com",

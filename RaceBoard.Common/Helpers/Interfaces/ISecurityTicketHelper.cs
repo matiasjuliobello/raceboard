@@ -4,7 +4,7 @@ namespace RaceBoard.Common.Helpers.Interfaces
 {
     public interface ISecurityTicketHelper
     {
-        AccessToken CreateToken(string username);
+        AccessToken GenerateToken(string id, string email);
         SecurityToken GetSecurityToken(string token);
     }
 }
