@@ -11,17 +11,32 @@ namespace RaceBoard.Common.Helpers
 
         private readonly IFileStorageProvider _fileStorageProvider;
 
+        private readonly string _basePath;
+
         #endregion
 
         public FileHelper(IConfiguration configuration, IFileStorageProvider fileStorageProvider)
         {
-            _fileStorageProvider = fileStorageProvider;
+            _basePath = AppDomain.CurrentDomain.BaseDirectory; // Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
-            string currentWorkingPath = AppDomain.CurrentDomain.BaseDirectory; // Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            _fileStorageProvider.SetCurrentDirectory(currentWorkingPath);
+            _fileStorageProvider = fileStorageProvider;
+            _fileStorageProvider.SetCurrentDirectory(_basePath);
         }
 
         #region IFileHelper implementation
+
+        public string GetBasePath()
+        {
+            return _basePath;
+        }
+
+        public string RemoveBasePath(string fullFilePath)
+        {
+            if (string.IsNullOrEmpty(fullFilePath))
+                return string.Empty;
+
+            return fullFilePath.Replace(_basePath, string.Empty).TrimStart('\\');
+        }
 
         public string SaveFile(string path, string directoryName, string fileName, byte[] fileContent)
         {

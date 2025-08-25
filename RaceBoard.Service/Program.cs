@@ -22,6 +22,8 @@ var app = builder.Build();
 
 startup.Configure(app, builder.Environment);
 
+app.UseStaticFiles();
+
 app.UseSerilogRequestLogging();
 
 app.Run();

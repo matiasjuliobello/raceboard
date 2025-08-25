@@ -99,6 +99,22 @@ namespace RaceBoard.Data.Repositories
         {
             string sql = $@"SELECT
                                 [Coach].Id [Id],
+                                (
+                                    SELECT COUNT(1)
+                                    FROM [Coach_Organization]
+                                    WHERE [Coach_Organization].IdCoach = [Coach].Id AND [Coach_Organization].IsActive = 1
+                                ) [OrganizationCount],
+                                (
+                                    SELECT COUNT(1)
+                                    FROM [Coach_Team]
+                                    WHERE [Coach_Team].IdCoach = [Coach].Id AND [Coach_Team].IsActive = 1
+                                ) [TeamCount],
+                                (
+                                    SELECT COUNT(1)
+                                    FROM [Team_Member]
+                                    INNER JOIN [Coach_Team] ON [Coach_Team].IdTeam = [Team_Member].IdTeam
+                                    WHERE [Coach_Team].IdCoach = [Coach].Id AND [Coach_Team].IsActive = 1 AND [Team_Member].IsActive = 1
+                                ) [CoacheeCount],
                                 [Person].Id [Id],
                                 [Person].Firstname [Firstname],
                                 [Person].Lastname [Lastname]

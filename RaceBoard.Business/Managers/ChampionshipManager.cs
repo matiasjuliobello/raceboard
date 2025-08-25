@@ -1,16 +1,17 @@
-﻿using RaceBoard.Business.Managers.Abstract;
+﻿using RaceBoard.Business.Helpers.Interfaces;
+using RaceBoard.Business.Managers.Abstract;
 using RaceBoard.Business.Managers.Interfaces;
-using RaceBoard.Data.Repositories.Interfaces;
-using RaceBoard.Data;
-using RaceBoard.Translations.Interfaces;
-using RaceBoard.Domain;
-using RaceBoard.Common.Helpers.Pagination;
-using RaceBoard.Common.Exceptions;
 using RaceBoard.Business.Validators.Interfaces;
-using RaceBoard.Common.Helpers.Interfaces;
 using RaceBoard.Common.Enums;
+using RaceBoard.Common.Exceptions;
+using RaceBoard.Common.Helpers;
+using RaceBoard.Common.Helpers.Interfaces;
+using RaceBoard.Common.Helpers.Pagination;
+using RaceBoard.Data;
+using RaceBoard.Data.Repositories.Interfaces;
+using RaceBoard.Domain;
+using RaceBoard.Translations.Interfaces;
 using Enums = RaceBoard.Domain.Enums;
-using RaceBoard.Business.Helpers.Interfaces;
 
 namespace RaceBoard.Business.Managers
 {
@@ -80,11 +81,18 @@ namespace RaceBoard.Business.Managers
 
             var championships = _championshipRepository.Get(searchFilter: searchFilter, paginationFilter: null, sorting: null, context);
 
-            var competiton = championships.Results.FirstOrDefault();
-            if (competiton == null)
+            var championship = championships.Results.FirstOrDefault();
+            if (championship == null)
                 throw new FunctionalException(ErrorType.NotFound, this.Translate("RecordNotFound"));
 
-            return competiton;
+            if (championship.ImageFile != null)
+            {
+                string basePath = _fileHelper.GetBasePath();
+
+                championship.ImageFile.Path = basePath;
+            }
+
+            return championship;
         }
 
         public void Create(Championship championship, ITransactionalContext? context = null)
@@ -119,7 +127,9 @@ namespace RaceBoard.Business.Managers
 
                 if (championship.ImageFile != null)
                 {
-                    championship.ImageFile.Path = _fileHelper.SaveFile(Common.CommonValues.Directories.Files, championship.Id.ToString(), championship.ImageFile.Name, championship.ImageFile.Content);
+                    string savedFilePath = _fileHelper.SaveFile(Common.CommonValues.Directories.Files, championship.Id.ToString(), championship.ImageFile.Name, championship.ImageFile.Content);
+                    championship.ImageFile.Path = _fileHelper.RemoveBasePath(savedFilePath);
+
                     _fileRepository.Create(championship.ImageFile, context);
                     _championshipRepository.Update(championship, context);
                 }

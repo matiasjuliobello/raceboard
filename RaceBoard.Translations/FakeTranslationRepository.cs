@@ -476,6 +476,9 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("EndDate"),
                 new Tuple<string, string>(Languages.English, "End date"),
                 new Tuple<string, string>(Languages.Spanish, "Fecha de fin"));
+            AddText(AddTranslation("JoinDate"),
+                new Tuple<string, string>(Languages.English, "Join date"),
+                new Tuple<string, string>(Languages.Spanish, "Fecha de unión"));
 
             AddText(AddTranslation("CreateNotification"),
                 new Tuple<string, string>(Languages.English, "Create notification"),
@@ -709,6 +712,9 @@ namespace RaceBoard.Translations
                 new Tuple<string, string>(Languages.English, "Races"),
                 new Tuple<string, string>(Languages.Spanish, "Carreras"));
 
+            AddText(AddTranslation("ChampionshipHasNotDefinedParticipatingRaceClassesYet"),
+                new Tuple<string, string>(Languages.English, "The championship hasn't defined particpating classes yet"),
+                new Tuple<string, string>(Languages.Spanish, "El campeonato aún no ha definido las clases participantes"));
             AddText(AddTranslation("Group"),
                 new Tuple<string, string>(Languages.English, "Group"),
                 new Tuple<string, string>(Languages.Spanish, "Grupo"));
@@ -1163,6 +1169,10 @@ namespace RaceBoard.Translations
             AddText(AddTranslation("Warning"),
                 new Tuple<string, string>(Languages.English, "Warning"),
                 new Tuple<string, string>(Languages.Spanish, "Advertencia"));
+            
+            AddText(AddTranslation("TypeInClassName"),
+                new Tuple<string, string>(Languages.English, "Type in class name.."),
+                new Tuple<string, string>(Languages.Spanish, "Escribir nombre de clase.."));
 
             AddText(AddTranslation("Filter"),
                 new Tuple<string, string>(Languages.English, "Filter"),
